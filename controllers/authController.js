@@ -7,12 +7,12 @@ const syncUser = async (req, res) => {
         if (!result.isNew) {
             res.json({
                 message: 'User đã tồn tại trong cơ sở dữ liệu',
-                user: { uid: result.user.firebase_uid, email: result.user.email }
+                user: { uid: result.user.id, email: result.user.email }
             });
         } else {
             res.json({
                 message: 'User mới đã được tạo và đồng bộ vào cơ sở dữ liệu',
-                user: { uid: result.user.firebase_uid, email: result.user.email }
+                user: { uid: result.user.id, email: result.user.email }
             });
         }
 
