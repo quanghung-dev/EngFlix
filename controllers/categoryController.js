@@ -24,6 +24,16 @@ const createCategory = async (req, res, next) => {
     }
 };
 
+const getCategoryById = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const result = await categoryService.getCategoryById(id);
+        return successResponse(res, 200, 'Lay thong tin danh muc thanh cong', result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const updateCategory = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -56,6 +66,7 @@ const deleteCategory = async (req, res, next) => {
 
 module.exports = {
     getAllCategories,
+    getCategoryById,
     createCategory,
     updateCategory,
     deleteCategory
