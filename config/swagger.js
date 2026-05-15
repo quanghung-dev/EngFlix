@@ -22,6 +22,37 @@ const options = {
           bearerFormat: 'JWT',
         },
       },
+      schemas: {
+        Transcript: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            content: {
+              type: 'string',
+            },
+            end_timestamp: {
+              type: 'number',
+            },
+            lesson_id: {
+              type: 'integer',
+            },
+            phonetic: {
+              type: 'string',
+            },
+            sequence: {
+              type: 'integer',
+            },
+            start_timestamp: {
+              type: 'number',
+            },
+            vietnamese: {
+              type: 'string',
+            },
+          },
+        },
+      },
     },
   },
   // Đường dẫn đến các file chứa chú thích Swagger (docs)

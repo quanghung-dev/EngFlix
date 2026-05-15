@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const transcriptController = require('../controllers/transcriptController.js');
 const lessonController = require('../controllers/lessonsController.js');
 
 /**
@@ -166,5 +167,103 @@ router.get('/', lessonController.getLessons);
  *         description: Internal server error
  */
 router.get('/:lessonId', lessonController.getLessonById);
+
+/**
+ * @swagger
+ * /api/v1/lessons/{lessonId}/transcript:
+ *   get:
+ *     summary: Get transcripts by lesson ID
+ *     description: Returns transcripts for a lesson ordered by sequence. If the lesson exists but has no transcripts, data is an empty array.
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: path
+ *         name: lessonId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Lesson ID
+ *     responses:
+ *       200:
+ *         description: Transcripts returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       content:
+ *                         type: string
+ *                       end_timestamp:
+ *                         type: number
+ *                       lesson_id:
+ *                         type: integer
+ *                       phonetic:
+ *                         type: string
+ *                       sequence:
+ *                         type: integer
+ *                       start_timestamp:
+ *                         type: number
+ *                       vietnamese:
+ *                         type: string
+ *             example:
+ *               message: Transcripts retrieved successfully
+ *               data:
+ *                 - id: 1
+ *                   content: "Hello, how are you?"
+ *                   end_timestamp: 2.5
+ *                   lesson_id: 1
+ *                   phonetic: "heh-loh, how ar yoo"
+ *                   sequence: 0
+ *                   start_timestamp: 0
+ *                   vietnamese: "Xin chao, ban khoe khong?"
+ *       400:
+ *         description: Invalid lesson ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     code:
+ *                       type: integer
+ *                     message:
+ *                       type: string
+ *             example:
+ *               error:
+ *                 code: 400
+ *                 message: lessonId must be a positive integer
+ *       404:
+ *         description: Lesson not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     code:
+ *                       type: integer
+ *                     message:
+ *                       type: string
+ *             example:
+ *               error:
+ *                 code: 404
+ *                 message: Lesson not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/:lessonId/transcript', transcriptController.getTranscriptsByLessonId);
 
 module.exports = router;
