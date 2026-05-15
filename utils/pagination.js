@@ -18,7 +18,17 @@ const formatPaginatedResponse = (data, totalRows, page, limit) => {
     };
 };
 
+const buildPaginationMeta = (page, limit, total) => {
+    return {
+        page,
+        limit,
+        total,
+        total_pages: Math.ceil(total / limit)
+    };
+};
+
 module.exports = {
     getPagination,
-    formatPaginatedResponse
+    formatPaginatedResponse,
+    buildPaginationMeta
 };

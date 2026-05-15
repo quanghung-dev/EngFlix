@@ -1,24 +1,29 @@
-const { successResponse } = require('../utils/response');
 const { AppError } = require('../utils/AppError');
 const categoryService = require('../services/categoryServices.js');
+const { successResponse, dataResponse, errorResponse } = require('../utils/response');
+const { getPagination, buildPaginationMeta } = require('../utils/pagination');
+const e = require('cors');
 
 const getAllCategories = async (req, res, next) => {
-    try {
-        const result = await categoryService.getAllCategories();
-        return successResponse(res, 200, 'Lấy danh sách danh mục thành công', result);
-    } catch (error) {
-        next(error);
-    }
+    const { limit, offset, page } = getPagination(req.query);
+    const { categories, totalCount } = await categoryService.getAllCategories(limit, offset);
+    if (categories.length === 0) {
+        return errorResponse(res, 404, 'No categories found');
+    };
+    return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
 };
 
 const createCategory = async (req, res, next) => {
     try {
         const {name} = req.body;
     if (!name) {
-        return next(new AppError('Tên danh mục là bắt buộc', 400));
+        return errorResponse(res, 400, 'Tên danh mục là bắt buộc');
     }
     const result = await categoryService.createCategory( name );
-    return successResponse(res, 201, 'Tạo danh mục thành công', result);
+    if (!result) {
+        return errorResponse(res, 500, 'Tạo danh mục thất bại');
+    }
+    return dataResponse(res,201, result);
     } catch (error) {
         next(error);
     }
@@ -28,7 +33,10 @@ const getCategoryById = async (req, res, next) => {
     try {
         const id = req.params.id;
         const result = await categoryService.getCategoryById(id);
-        return successResponse(res, 200, 'Lay thong tin danh muc thanh cong', result);
+        if (!result) {
+            return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
+        }
+        return dataResponse(res, 200, result);
     } catch (error) {
         next(error);
     }
@@ -39,13 +47,13 @@ const updateCategory = async (req, res, next) => {
         const id = req.params.id;
         const {name} = req.body;
         if (!name) {
-            return next(new AppError('Tên danh mục là bắt buộc', 400));
+            return errorResponse(res, 400, 'Tên danh mục là bắt buộc');
         }   
         const result = await categoryService.updateCategory(id,name );
         if (!result) {
-            return next(new AppError('Không tìm thấy danh mục với ID đã cho', 404));
+            return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
-        return successResponse(res, 200, 'Cập nhật danh mục thành công', result);
+        return dataResponse(res, 200, result);
     } catch (error) {
         next(error);    
     }
@@ -55,9 +63,9 @@ const deleteCategory = async (req, res, next) => {
         const id = req.params.id;
         const result = await categoryService.deleteCategory(id);
         if (!result) {
-            return next(new AppError('Không tìm thấy danh mục với ID đã cho', 404));
+            return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
-        return successResponse(res, 200, 'Xóa danh mục thành công');
+        return dataResponse(res, 200, { message: 'Xóa danh mục thành công' });
     } catch (error) {
         next(error);
     }

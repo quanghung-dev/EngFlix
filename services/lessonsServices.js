@@ -1,6 +1,54 @@
 const pool = require('../db/index');
 const { AppError } = require('../utils/AppError');
 
+
+const getLessons = async (category_id, level, limit, offset) => {
+    const conditions = [];
+    const values = [];
+
+    if (category_id) {
+        values.push(category_id);
+        conditions.push(`category_id = $${values.length}`);
+    }
+
+    if (level) {
+        values.push(level);
+        conditions.push(`level = $${values.length}`);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const totalCountQuery = `SELECT COUNT(*) FROM lessons ${whereClause}`;
+
+    values.push(limit);
+    const limitParamIndex = values.length;
+    values.push(offset);
+    const offsetParamIndex = values.length;
+
+    const lessonsQuery = `
+        SELECT *
+        FROM lessons
+        ${whereClause}
+        ORDER BY id ASC
+        LIMIT $${limitParamIndex} OFFSET $${offsetParamIndex}
+    `;
+
+    const [lessonsResult, totalCountResult] = await Promise.all([
+        pool.query(lessonsQuery, values),
+        pool.query(totalCountQuery, values.slice(0, values.length - 2))
+    ]);
+
+    return {
+        lessons: lessonsResult.rows,
+        totalCount: parseInt(totalCountResult.rows[0].count)
+    };
+};
+
+const getAllLessons = async () => {
+    const query = 'SELECT * FROM lessons';
+    const result = await pool.query(query);
+    return result.rows;
+};
+
 const getLessonsByCategory = async (categoryId, limit, offset) => {
     const lessonsQuery = 'SELECT * FROM lessons WHERE category_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3';
     const totalCountQuery = 'SELECT COUNT(*) FROM lessons WHERE category_id = $1';
@@ -49,6 +97,8 @@ const deleteLesson = async (id) => {
 };
 
 module.exports = {
+    getLessons,
+    getAllLessons,
     getLessonsByCategory,
     getLessonById,
     createLesson,
