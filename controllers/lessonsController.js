@@ -34,10 +34,8 @@ const getLessonsByCategory = async (req, res, next) => {
         if (!category_id) {
             return errorResponse(res, 400, 'category_id la bat buoc');
         }
-
         const { limit, offset, page } = getPagination(req.query);
         const { lessons, totalCount } = await lessonService.getLessonsByCategory(category_id, limit, offset);
-
         return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -51,7 +49,6 @@ const getLessonById = async (req, res, next) => {
         if (!lesson) {
             return errorResponse(res, 404, 'lesson not found');
         }
-
         return dataResponse(res, 200, lesson);
     } catch (error) {
         if (error.statusCode === 404) {
@@ -68,7 +65,10 @@ const createLesson = async (req, res, next) => {
             return errorResponse(res, 400, 'category_id, title va video_url la bat buoc');
         }
         const newLesson = await lessonService.createLesson({ category_id, title, video_url, description });
-        return successResponse(res, 201, 'Tao bai hoc thanh cong', newLesson);
+        if (!newLesson) {
+            return errorResponse(res, 500, 'Tao bai hoc that bai');
+        }
+        return dataResponse(res, 201, newLesson);
     } catch (error) {
         next(error);
     }
@@ -82,7 +82,10 @@ const updateLesson = async (req, res, next) => {
             return errorResponse(res, 400, 'category_id, title va video_url la bat buoc');
         }
         const updatedLesson = await lessonService.updateLesson(id, { category_id, title, video_url, description });
-        return successResponse(res, 200, 'Cap nhat bai hoc thanh cong', updatedLesson);
+        if (!updatedLesson) {
+            return errorResponse(res, 404, 'Khong tim thay bai hoc de cap nhat');
+        }
+        return dataResponse(res, 200, updatedLesson);
     } catch (error) {
         next(error);
     }
@@ -95,7 +98,7 @@ const deleteLesson = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay bai hoc de xoa');
         }
-        return successResponse(res, 200, 'Xoa bai hoc thanh cong');
+        return dataResponse(res, 200, { message: 'Xoa bai hoc thanh cong' });
     } catch (error) {
         next(error);
     }

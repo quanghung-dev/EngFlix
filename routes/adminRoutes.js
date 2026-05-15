@@ -10,7 +10,7 @@ const ROLES = require('../constants/roles.js');
 
 router.get('/dashboard', verifyToken, requireRole(ROLES.Admin), adminControllers.getDashboardData);
 
-router.use('/lessons', verifyToken, requireRole(ROLES.Admin), lessonsAdminRoutes);
+router.use('/lessons', lessonsAdminRoutes);
 router.use('/categories', categoryAdminRoutes);
 
 module.exports = router;

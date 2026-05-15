@@ -91,9 +91,9 @@ const deleteLesson = async (id) => {
     const query = 'DELETE FROM lessons WHERE id = $1 RETURNING *';
     const result = await pool.query(query, [id]);       
     if (result.rows.length === 0) {
-        throw new AppError('Không tìm thấy bài học để xóa', 404);
+        return false;
     }
-    return result.rows[0];
+    return true;
 };
 
 module.exports = {
