@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const lessonController = require('../controllers/lessonsController.js');
-
+const transcriptController = require('../controllers/transcriptController.js');
 /**
  * @swagger
  * tags:
@@ -457,5 +457,210 @@ router.put('/:id', lessonController.updateLesson);
  *         description: Internal server error
  */
 router.delete('/:id', lessonController.deleteLesson);
+
+/**
+ * @swagger
+ * /api/v1/admin/lessons/{lessonId}/transcripts:
+ *   put:
+ *     summary: Replace transcripts of a lesson
+ *     description: Deletes all existing transcripts of the lesson, then inserts the provided transcript list in a transaction.
+ *     tags: [Admin Lessons]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: lessonId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Lesson ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - transcripts
+ *             properties:
+ *               transcripts:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - content
+ *                     - sequence
+ *                     - start_timestamp
+ *                     - end_timestamp
+ *                   properties:
+ *                     content:
+ *                       type: string
+ *                     sequence:
+ *                       type: integer
+ *                       minimum: 0
+ *                     phonetic:
+ *                       type: string
+ *                     vietnamese:
+ *                       type: string
+ *                     start_timestamp:
+ *                       type: number
+ *                       minimum: 0
+ *                     end_timestamp:
+ *                       type: number
+ *                       minimum: 0
+ *           example:
+ *             transcripts:
+ *               - sequence: 0
+ *                 content: "Hello, how are you?"
+ *                 phonetic: "heh-loh, how ar yoo"
+ *                 vietnamese: "Xin chao, ban khoe khong?"
+ *                 start_timestamp: 0
+ *                 end_timestamp: 2.5
+ *     responses:
+ *       201:
+ *         description: Transcripts replaced successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Transcript'
+ *             example:
+ *               data:
+ *                 - id: 1
+ *                   lesson_id: 1
+ *                   sequence: 0
+ *                   content: "Hello, how are you?"
+ *                   phonetic: "heh-loh, how ar yoo"
+ *                   vietnamese: "Xin chao, ban khoe khong?"
+ *                   start_timestamp: 0
+ *                   end_timestamp: 2.5
+ *       400:
+ *         description: Invalid lesson ID or transcripts payload
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Lesson not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/:lessonId/transcripts',transcriptController.replaceTranscipts);
+
+/**
+ * @swagger
+ * /api/v1/admin/lessons/{lessonId}/transcripts/bulk:
+ *   post:
+ *     summary: Bulk create transcripts for a lesson
+ *     description: Appends the provided transcript list to the lesson in a transaction. Existing transcripts are not deleted.
+ *     tags: [Admin Lessons]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: lessonId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Lesson ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - transcripts
+ *             properties:
+ *               transcripts:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - content
+ *                     - sequence
+ *                     - start_timestamp
+ *                     - end_timestamp
+ *                   properties:
+ *                     content:
+ *                       type: string
+ *                     sequence:
+ *                       type: integer
+ *                       minimum: 0
+ *                     phonetic:
+ *                       type: string
+ *                     vietnamese:
+ *                       type: string
+ *                     start_timestamp:
+ *                       type: number
+ *                       minimum: 0
+ *                     end_timestamp:
+ *                       type: number
+ *                       minimum: 0
+ *           example:
+ *             transcripts:
+ *               - sequence: 0
+ *                 content: "Hello, how are you?"
+ *                 phonetic: "heh-loh, how ar yoo"
+ *                 vietnamese: "Xin chao, ban khoe khong?"
+ *                 start_timestamp: 0
+ *                 end_timestamp: 2.5
+ *               - sequence: 1
+ *                 content: "I'm fine, thank you."
+ *                 phonetic: "ime fine, thank yoo"
+ *                 vietnamese: "Toi khoe, cam on ban."
+ *                 start_timestamp: 2.6
+ *                 end_timestamp: 4.8
+ *     responses:
+ *       201:
+ *         description: Transcripts created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Transcript'
+ *             example:
+ *               data:
+ *                 - id: 1
+ *                   lesson_id: 1
+ *                   sequence: 0
+ *                   content: "Hello, how are you?"
+ *                   phonetic: "heh-loh, how ar yoo"
+ *                   vietnamese: "Xin chao, ban khoe khong?"
+ *                   start_timestamp: 0
+ *                   end_timestamp: 2.5
+ *                 - id: 2
+ *                   lesson_id: 1
+ *                   sequence: 1
+ *                   content: "I'm fine, thank you."
+ *                   phonetic: "ime fine, thank yoo"
+ *                   vietnamese: "Toi khoe, cam on ban."
+ *                   start_timestamp: 2.6
+ *                   end_timestamp: 4.8
+ *       400:
+ *         description: Invalid lesson ID or transcripts payload
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Lesson not found
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/:lessonId/transcripts/bulk', transcriptController.bulkCreateTranscripts);
+
 
 module.exports = router;

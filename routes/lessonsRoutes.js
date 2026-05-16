@@ -170,7 +170,7 @@ router.get('/:lessonId', lessonController.getLessonById);
 
 /**
  * @swagger
- * /api/v1/lessons/{lessonId}/transcript:
+ * /api/v1/lessons/{lessonId}/transcripts:
  *   get:
  *     summary: Get transcripts by lesson ID
  *     description: Returns transcripts for a lesson ordered by sequence. If the lesson exists but has no transcripts, data is an empty array.
@@ -264,6 +264,6 @@ router.get('/:lessonId', lessonController.getLessonById);
  *       500:
  *         description: Internal server error
  */
-router.get('/:lessonId/transcript', transcriptController.getTranscriptsByLessonId);
+router.get('/:lessonId/transcripts', transcriptController.getTranscriptsByLessonId);
 
 module.exports = router;

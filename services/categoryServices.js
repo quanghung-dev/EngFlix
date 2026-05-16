@@ -3,7 +3,7 @@ const pool = require('../db/index.js');
 
 
 const getAllCategories = async (limit, offset) => {
-    const categoriesQuery = 'SELECT * FROM categories LIMIT $1 OFFSET $2';
+    const categoriesQuery = 'SELECT * FROM categories ORDER BY id ASC LIMIT $1 OFFSET $2';
     const totalCountQuery = 'SELECT COUNT(*) FROM categories';
 
     const [categoriesResult, totalCountResult] = await Promise.all([
