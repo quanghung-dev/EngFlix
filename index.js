@@ -10,9 +10,10 @@ const adminRoutes = require('./routes/adminRoutes.js');
 const categoryRoutes = require('./routes/categoryRoutes.js');
 const lessonsRoutes = require('./routes/lessonsRoutes.js');
 const transcriptRoutes = require('./routes/transcriptRoutes.js');
+const bookmarkRoutes = require('./routes/bookmarkRoutes.js');
 
-app.use(cors()); 
-app.use(express.json()); 
+app.use(cors());
+app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);
@@ -20,11 +21,11 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/lessons', lessonsRoutes);
 app.use('/api/v1/transcripts', transcriptRoutes);
+app.use('/api/v1/bookmarks', bookmarkRoutes);
 app.use(errorHandler);
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server EngFlix đang chạy tại cổng http://localhost:${PORT}`);
-    console.log(`📚 API documentation available at http://localhost:${PORT}/api-docs`);
+    console.log(`Server EngFlex is running at http://localhost:${PORT}`);
+    console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
 });
