@@ -23,6 +23,43 @@ const options = {
         },
       },
       schemas: {
+        Lesson: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            category_id: {
+              type: 'integer',
+            },
+            title: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
+              nullable: true,
+            },
+            video_url: {
+              type: 'string',
+            },
+            thumbnail_url: {
+              type: 'string',
+              nullable: true,
+            },
+            level: {
+              type: 'string',
+              nullable: true,
+            },
+            duration: {
+              type: 'integer',
+              nullable: true,
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+          },
+        },
         Transcript: {
           type: 'object',
           properties: {

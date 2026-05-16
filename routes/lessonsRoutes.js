@@ -15,7 +15,7 @@ const lessonController = require('../controllers/lessonsController.js');
  * /api/v1/lessons:
  *   get:
  *     summary: Get lessons
- *     description: Returns all lessons by default. If category_id or level is provided, results are filtered by those values.
+ *     description: Returns lessons ordered by created_at DESC. Supports filtering by category_id, level, and title search.
  *     tags: [Lessons]
  *     parameters:
  *       - in: query
@@ -30,6 +30,12 @@ const lessonController = require('../controllers/lessonsController.js');
  *         schema:
  *           type: string
  *         description: Optional lesson level filter
+ *       - in: query
+ *         name: search
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Optional case-insensitive title search keyword
  *       - in: query
  *         name: page
  *         required: false
@@ -57,26 +63,7 @@ const lessonController = require('../controllers/lessonsController.js');
  *                 data:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       category_id:
- *                         type: integer
- *                       title:
- *                         type: string
- *                       description:
- *                         type: string
- *                       video_url:
- *                         type: string
- *                       thumbnail_url:
- *                         type: string
- *                       level:
- *                         type: string
- *                       duration:
- *                         type: integer
- *                       created_at:
- *                         type: string
+ *                     $ref: '#/components/schemas/Lesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -90,20 +77,22 @@ const lessonController = require('../controllers/lessonsController.js');
  *                       type: integer
  *             example:
  *               data:
- *                 - id: 0
- *                   category_id: 0
- *                   title: "string"
- *                   description: "string"
- *                   video_url: "string"
- *                   thumbnail_url: "string"
- *                   level: "string"
- *                   duration: 0
- *                   created_at: "string"
+ *                 - id: 1
+ *                   category_id: 1
+ *                   title: "Basic Greetings"
+ *                   description: "Learn common greetings"
+ *                   video_url: "https://example.com/video.mp4"
+ *                   thumbnail_url: "https://example.com/thumb.jpg"
+ *                   level: "beginner"
+ *                   duration: 300
+ *                   created_at: "2026-05-15T00:00:00.000Z"
  *               meta:
- *                 page: 0
- *                 limit: 0
- *                 total: 0
- *                 total_pages: 0
+ *                 page: 1
+ *                 limit: 10
+ *                 total: 1
+ *                 total_pages: 1
+ *       400:
+ *         description: Invalid query parameter
  *       500:
  *         description: Internal server error
  */
@@ -120,7 +109,8 @@ router.get('/', lessonController.getLessons);
  *         name: lessonId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
+ *           minimum: 1
  *         description: Lesson ID
  *     responses:
  *       200:
@@ -131,18 +121,18 @@ router.get('/', lessonController.getLessons);
  *               type: object
  *               properties:
  *                 data:
- *                   type: object
+ *                   $ref: '#/components/schemas/Lesson'
  *             example:
  *               data:
- *                   id: 0
- *                   category_id: 0
- *                   title: "string"
- *                   description: "string"
- *                   video_url: "string"
- *                   thumbnail_url: "string"
- *                   level: "string"
- *                   duration: 0
- *                   created_at: "string"
+ *                 id: 1
+ *                 category_id: 1
+ *                 title: "Basic Greetings"
+ *                 description: "Learn common greetings"
+ *                 video_url: "https://example.com/video.mp4"
+ *                 thumbnail_url: "https://example.com/thumb.jpg"
+ *                 level: "beginner"
+ *                 duration: 300
+ *                 created_at: "2026-05-15T00:00:00.000Z"
  *       404:
  *         description: Lesson not found
  *         content:

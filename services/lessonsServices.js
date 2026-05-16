@@ -2,45 +2,41 @@ const pool = require('../db/index');
 const { AppError } = require('../utils/AppError');
 
 
-const getLessons = async (category_id, level, limit, offset) => {
+const getLessons = async (category_id, level, search, limit, offset) => {
+    let dataQuery = 'SELECT * FROM lessons';
+    let countQuery = 'SELECT COUNT(*) FROM lessons';
     const conditions = [];
     const values = [];
-
+    let paramIndex = 1;
     if (category_id) {
+        conditions.push(`category_id = $${paramIndex++}`);
         values.push(category_id);
-        conditions.push(`category_id = $${values.length}`);
     }
-
     if (level) {
+        conditions.push(`level = $${paramIndex++}`);
         values.push(level);
-        conditions.push(`level = $${values.length}`);
     }
 
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-    const totalCountQuery = `SELECT COUNT(*) FROM lessons ${whereClause}`;
-
-    values.push(limit);
-    const limitParamIndex = values.length;
-    values.push(offset);
-    const offsetParamIndex = values.length;
-
-    const lessonsQuery = `
-        SELECT *
-        FROM lessons
-        ${whereClause}
-        ORDER BY id ASC
-        LIMIT $${limitParamIndex} OFFSET $${offsetParamIndex}
-    `;
-
+    if (search) {
+        conditions.push(`title ILIKE $${paramIndex++}`);
+        values.push(`%${search}%`); 
+    }
+    let whereClause = '';
+    if (conditions.length > 0) {
+        whereClause = ' WHERE ' + conditions.join(' AND ');
+    }
+    const finalCountQuery = countQuery + whereClause;
+    const finalDataQuery = `${dataQuery} ${whereClause} ORDER BY created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+    const dataValues = [...values, limit, offset];
     const [lessonsResult, totalCountResult] = await Promise.all([
-        pool.query(lessonsQuery, values),
-        pool.query(totalCountQuery, values.slice(0, values.length - 2))
+        pool.query(finalDataQuery, dataValues),
+        pool.query(finalCountQuery, values)
     ]);
-
     return {
         lessons: lessonsResult.rows,
         totalCount: parseInt(totalCountResult.rows[0].count)
     };
+
 };
 
 const getAllLessons = async () => {

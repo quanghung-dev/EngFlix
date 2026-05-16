@@ -13,11 +13,31 @@ const transcriptController = require('../controllers/transcriptController.js');
  * @swagger
  * /api/v1/admin/lessons:
  *   get:
- *     summary: Get all lessons
+ *     summary: Get lessons
+ *     description: Returns lessons ordered by created_at DESC. Supports filtering by category_id, level, and title search.
  *     tags: [Admin Lessons]
  *     security:
  *       - bearerAuth: []
  *     parameters:
+ *       - in: query
+ *         name: category_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Optional category ID filter
+ *       - in: query
+ *         name: level
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Optional lesson level filter
+ *       - in: query
+ *         name: search
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Optional case-insensitive title search keyword
  *       - in: query
  *         name: page
  *         required: false
@@ -45,27 +65,7 @@ const transcriptController = require('../controllers/transcriptController.js');
  *                 data:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       category_id:
- *                         type: integer
- *                       title:
- *                         type: string
- *                       description:
- *                         type: string
- *                       video_url:
- *                         type: string
- *                       thumbnail_url:
- *                         type: string
- *                       level:
- *                         type: string
- *                       duration:
- *                         type: integer
- *                       created_at:
- *                         type: string
- *                         format: date-time
+ *                     $ref: '#/components/schemas/Lesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -93,6 +93,8 @@ const transcriptController = require('../controllers/transcriptController.js');
  *                 limit: 10
  *                 total: 1
  *                 total_pages: 1
+ *       400:
+ *         description: Invalid query parameter
  *       401:
  *         description: Unauthorized
  *       403:
@@ -100,7 +102,7 @@ const transcriptController = require('../controllers/transcriptController.js');
  *       500:
  *         description: Internal server error
  */
-router.get('/', lessonController.getAllLessons);
+router.get('/', lessonController.getLessons);
 
 /**
  * @swagger
@@ -126,27 +128,7 @@ router.get('/', lessonController.getAllLessons);
  *               type: object
  *               properties:
  *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     category_id:
- *                       type: integer
- *                     title:
- *                       type: string
- *                     description:
- *                       type: string
- *                     video_url:
- *                       type: string
- *                     thumbnail_url:
- *                       type: string
- *                     level:
- *                       type: string
- *                     duration:
- *                       type: integer
- *                     created_at:
- *                       type: string
- *                       format: date-time
+ *                   $ref: '#/components/schemas/Lesson'
  *             example:
  *               data:
  *                 id: 1
@@ -551,7 +533,7 @@ router.delete('/:id', lessonController.deleteLesson);
  *       500:
  *         description: Internal server error
  */
-router.put('/:lessonId/transcripts',transcriptController.replaceTranscipts);
+router.put('/:lessonId/transcripts',transcriptController.replaceTranscripts);
 
 /**
  * @swagger

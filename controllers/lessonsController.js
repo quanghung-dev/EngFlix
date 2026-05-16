@@ -1,46 +1,36 @@
-const { successResponse, dataResponse, errorResponse } = require('../utils/response');
+const { dataResponse, errorResponse } = require('../utils/response');
 const lessonService = require('../services/lessonsServices.js');
-const { AppError } = require('../utils/AppError');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
+
+const parseOptionalPositiveInteger = (value, fieldName) => {
+    if (value === undefined || value === null || value === '') {
+        return { value: undefined };
+    }
+
+    const number = Number(value);
+    if (!Number.isInteger(number) || number <= 0) {
+        return { error: `${fieldName} must be a positive integer` };
+    }
+
+    return { value: number };
+};
 
 const getLessons = async (req, res, next) => {
     try {
-        const category_id = req.query.category_id;
-        const level = req.query.level;
-        const { limit, offset, page } = getPagination(req.query);
-        const { lessons, totalCount } = await lessonService.getLessons(category_id, level, limit, offset);
-        if (lessons.length === 0) {
-            return errorResponse(res, 404, 'No lessons found');
-        };
-        return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getAllLessons = async (req, res, next) => {
-    try {
-        const { limit, offset, page } = getPagination(req.query);
-        const { lessons, totalCount } = await lessonService.getLessons(null, null, limit, offset);
-        return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getLessonsByCategory = async (req, res, next) => {
-    try {
-        const category_id = req.query.category_id;
-        if (!category_id) {
-            return errorResponse(res, 400, 'category_id la bat buoc');
+        const { category_id, level, search } = req.query;
+        const categoryIdResult = parseOptionalPositiveInteger(category_id, 'category_id');
+        if (categoryIdResult.error) {
+            return errorResponse(res, 400, categoryIdResult.error);
         }
+
         const { limit, offset, page } = getPagination(req.query);
-        const { lessons, totalCount } = await lessonService.getLessonsByCategory(category_id, limit, offset);
+        const { lessons, totalCount } = await lessonService.getLessons(categoryIdResult.value, level, search, limit, offset);
         return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
     }
 };
+
 
 const getLessonById = async (req, res, next) => {
     try {
@@ -106,8 +96,6 @@ const deleteLesson = async (req, res, next) => {
 
 module.exports = {
     getLessons,
-    getAllLessons,
-    getLessonsByCategory,
     getLessonById,
     createLesson,
     updateLesson,

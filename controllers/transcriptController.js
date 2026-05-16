@@ -121,7 +121,7 @@ const validateTranscriptItems = (transcripts) => {
     return null;
 };
 
-const replaceTranscipts = async(req, res, next) =>{
+const replaceTranscripts = async(req, res, next) =>{
     try {
         const lessonId = parsePositiveInteger(req.params.lessonId);
         if (!lessonId) {
@@ -181,6 +181,6 @@ module.exports = {
     updateTranscript,
     deleteTranscript,
     getTranscriptsByLessonId,
-    replaceTranscipts,
+    replaceTranscripts,
     bulkCreateTranscripts
 };
