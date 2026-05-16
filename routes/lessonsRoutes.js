@@ -181,31 +181,11 @@ router.get('/:lessonId', lessonController.getLessonById);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       content:
- *                         type: string
- *                       end_timestamp:
- *                         type: number
- *                       lesson_id:
- *                         type: integer
- *                       phonetic:
- *                         type: string
- *                       sequence:
- *                         type: integer
- *                       start_timestamp:
- *                         type: number
- *                       vietnamese:
- *                         type: string
+ *                     $ref: '#/components/schemas/Transcript'
  *             example:
- *               message: Transcripts retrieved successfully
  *               data:
  *                 - id: 1
  *                   content: "Hello, how are you?"

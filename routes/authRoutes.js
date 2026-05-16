@@ -95,6 +95,55 @@ router.post('/clerk/login', authController.loginWithClerk);
  */
 router.post('/clerk/register', authController.registerWithClerk);
 
+/**
+ * @swagger
+ * /api/v1/auth/sync:
+ *   post:
+ *     summary: Sync authenticated user
+ *     description: Creates the authenticated Firebase user in the local database if it does not already exist.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User synced successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     uid:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *             examples:
+ *               existingUser:
+ *                 summary: Existing user
+ *                 value:
+ *                   message: "User already exists in the database"
+ *                   user:
+ *                     uid: "firebase-user-id"
+ *                     email: "user@example.com"
+ *               newUser:
+ *                 summary: New user
+ *                 value:
+ *                   message: "New user created and synced to the database"
+ *                   user:
+ *                     uid: "firebase-user-id"
+ *                     email: "user@example.com"
+ *       401:
+ *         description: Missing or expired bearer token
+ *       403:
+ *         description: Token verification failed
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/sync', verifyToken, authController.syncUser);
 
 module.exports = router;
