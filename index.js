@@ -11,6 +11,7 @@ const categoryRoutes = require('./routes/categoryRoutes.js');
 const lessonsRoutes = require('./routes/lessonsRoutes.js');
 const transcriptRoutes = require('./routes/transcriptRoutes.js');
 const bookmarkRoutes = require('./routes/bookmarkRoutes.js');
+const learningHistoryRoutes = require('./routes/learningHistoryRoutes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/lessons', lessonsRoutes);
 app.use('/api/v1/transcripts', transcriptRoutes);
 app.use('/api/v1/bookmarks', bookmarkRoutes);
+app.use('/api/v1/learning-history', learningHistoryRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

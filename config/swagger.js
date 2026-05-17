@@ -129,6 +129,32 @@ const options = {
             },
           },
         },
+        LearningHistory: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            user_id: {
+              type: 'string',
+            },
+            lesson_id: {
+              type: 'integer',
+            },
+            duration_watched: {
+              type: 'number',
+              nullable: true,
+            },
+            completed: {
+              type: 'boolean',
+              nullable: true,
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+          },
+        },
       },
     },
   },
