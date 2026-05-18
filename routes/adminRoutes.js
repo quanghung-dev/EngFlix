@@ -49,11 +49,13 @@ const ROLES = require('../constants/roles.js');
  *       401:
  *         description: Missing or expired bearer token
  *       403:
- *         description: Forbidden or token verification failed
+ *         description: Forbidden
  *       500:
  *         description: Internal server error
  */
-router.get('/dashboard', verifyToken, requireRole(ROLES.Admin), adminControllers.getDashboardData);
+router.use(verifyToken, requireRole(ROLES.Admin));
+
+router.get('/dashboard', adminControllers.getDashboardData);
 
 router.use('/lessons', lessonsAdminRoutes);
 router.use('/categories', categoryAdminRoutes);

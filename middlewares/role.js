@@ -9,7 +9,7 @@ const requireRole = (requiredRole) => {
             }
 
             const uid = req.user.uid;
-            const query = 'SELECT user_role FROM users WHERE id = $1';
+            const query = 'SELECT user_role FROM users WHERE uid = $1';
             const result = await pool.query(query, [uid]);
             if (result.rows.length === 0) {
                 return res.status(404).json({ error: 'Không tìm thấy user trong database' });
