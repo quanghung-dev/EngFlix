@@ -207,32 +207,9 @@ router.get('/:id', lessonController.getLessonById);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     category_id:
- *                       type: integer
- *                     title:
- *                       type: string
- *                     description:
- *                       type: string
- *                     video_url:
- *                       type: string
- *                     thumbnail_url:
- *                       type: string
- *                     level:
- *                       type: string
- *                     duration:
- *                       type: integer
- *                     created_at:
- *                       type: string
- *                       format: date-time
+ *                   $ref: '#/components/schemas/Lesson'
  *             example:
- *               message: Tao bai hoc thanh cong
  *               data:
  *                 id: 1
  *                 category_id: 1
@@ -317,32 +294,9 @@ router.post('/', lessonController.createLesson);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     category_id:
- *                       type: integer
- *                     title:
- *                       type: string
- *                     description:
- *                       type: string
- *                     video_url:
- *                       type: string
- *                     thumbnail_url:
- *                       type: string
- *                     level:
- *                       type: string
- *                     duration:
- *                       type: integer
- *                     created_at:
- *                       type: string
- *                       format: date-time
+ *                   $ref: '#/components/schemas/Lesson'
  *             example:
- *               message: Cap nhat bai hoc thanh cong
  *               data:
  *                 id: 1
  *                 category_id: 1
@@ -405,14 +359,14 @@ router.put('/:id', lessonController.updateLesson);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
  *                   type: object
- *                   nullable: true
+ *                   properties:
+ *                     message:
+ *                       type: string
  *             example:
- *               message: Xoa bai hoc thanh cong
- *               data: null
+ *               data:
+ *                 message: Xoa bai hoc thanh cong
  *       401:
  *         description: Unauthorized
  *       403:

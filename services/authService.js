@@ -16,8 +16,7 @@ const syncUser = async ({ uid, email, name, avatarUrl = null }) => {
             name,
             user_role,
             avatar_url,
-            created_at,
-            (xmax = 0) AS is_new
+            created_at
     `;
     const result = await pool.query(query, [
         uid,
@@ -26,12 +25,7 @@ const syncUser = async ({ uid, email, name, avatarUrl = null }) => {
         ROLES.User,
         avatarUrl
     ]);
-    const { is_new, ...user } = result.rows[0];
-
-    return {
-        isNew: is_new,
-        user
-    };
+    return result.rows[0];
 };
 
 module.exports = {

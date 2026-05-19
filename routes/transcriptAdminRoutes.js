@@ -66,12 +66,9 @@ const transcriptController = require('../controllers/transcriptController.js');
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Transcript'
  *             example:
- *               message: Transcript created successfully
  *               data:
  *                 id: 1
  *                 content: "Hello, how are you?"
@@ -118,12 +115,9 @@ router.post('/', transcriptController.createTranscript);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Transcript'
  *             example:
- *               message: Transcript retrieved successfully
  *               data:
  *                 id: 1
  *                 content: "Hello, how are you?"
@@ -206,12 +200,9 @@ router.get('/:id', transcriptController.getTranscriptsById);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Transcript'
  *             example:
- *               message: Transcript updated successfully
  *               data:
  *                 id: 1
  *                 content: "Hello, how are you today?"
@@ -258,13 +249,14 @@ router.put('/:id', transcriptController.updateTranscript);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
  *                 data:
- *                   nullable: true
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
  *             example:
- *               message: Transcript deleted successfully
- *               data: null
+ *               data:
+ *                 message: Xoa transcript thanh cong
  *       400:
  *         description: Invalid transcript ID
  *       401:
