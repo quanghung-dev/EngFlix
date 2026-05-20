@@ -231,6 +231,7 @@ public class DictationFragment extends Fragment {
             return;
         }
 
+
         WebSettings settings = webViewYoutube.getSettings();
 
         settings.setJavaScriptEnabled(true);
@@ -435,7 +436,7 @@ public class DictationFragment extends Fragment {
 
     public void checkAnswer(String userInput) {
 
-        if (listTranscripts == null && currentSentenceIndex > listTranscripts.size()) {
+        if (listTranscripts == null || currentSentenceIndex >= listTranscripts.size()) {
             return;
         };
 

@@ -3,7 +3,6 @@ package com.example.app.data.remote;
 
 import android.content.Context;
 
-import androidx.navigation.internal.SynchronizedObject;
 
 import com.example.app.data.local.TokenManager;
 import com.example.app.data.remote.api.AuthApi;
@@ -16,7 +15,6 @@ import com.example.app.utils.Constants;
 
 import java.util.concurrent.TimeUnit;
 
-import kotlin.jvm.Synchronized;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

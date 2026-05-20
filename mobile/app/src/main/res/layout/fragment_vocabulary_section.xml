@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    fragment_vocabulary_section.xml
+    Đại diện cho MỘT danh mục từ vựng:
+      - Header: tên danh mục + badge số lượng
+      - Body: RecyclerView nằm NGANG chứa các card từ vựng
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="24dp">
+
+    <!-- ── Header: Tên danh mục + Badge số lượng ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tv_category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên Danh Mục"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium" />
+
+        <!-- Badge số lượng (ví dụ: "6") -->
+        <TextView
+            android:id="@+id/tv_category_count"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:text="0"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:background="@drawable/bg_badge_blue" />
+
+    </LinearLayout>
+
+    <!-- ── Body: RecyclerView HORIZONTAL chứa card từ vựng ── -->
+    <!--
+        LayoutManager set bằng code:
+            LinearLayoutManager lm = new LinearLayoutManager(
+                context, LinearLayoutManager.HORIZONTAL, false);
+            rvVocabCards.setLayoutManager(lm);
+            rvVocabCards.setAdapter(new VocabCardAdapter(cardList));
+
+        Adapter inflate: item_vocabulary_card.xml
+    -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_vocab_cards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false" />
 
 </LinearLayout>
