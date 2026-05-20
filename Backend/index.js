@@ -13,6 +13,7 @@ const transcriptRoutes = require('./routes/transcriptRoutes.js');
 const bookmarkRoutes = require('./routes/bookmarkRoutes.js');
 const learningHistoryRoutes = require('./routes/learningHistoryRoutes.js');
 const vocabularyRoutes = require('./routes/vocabularyRoutes.js');
+const vocabularyDecksRoutes = require('./routes/vocabularyDecksRoutes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use('/api/v1/transcripts', transcriptRoutes);
 app.use('/api/v1/bookmarks', bookmarkRoutes);
 app.use('/api/v1/learning-history', learningHistoryRoutes);
 app.use('/api/v1/vocabulary-categories', vocabularyRoutes);
+app.use('/api/v1/vocabulary-decks', vocabularyDecksRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

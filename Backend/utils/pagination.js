@@ -1,7 +1,7 @@
 const getPagination = (query, defaultLimit = 10) => {
     const page = Math.abs(parseInt(query.page)) || 1;
     const limit = Math.abs(parseInt(query.limit)) || defaultLimit;
-    const offset = (page - 1) * limit; // số câu bỏ qua để lấy trang hiện tại
+    const offset = (page - 1) * limit; 
     return {page, limit, offset };
 }
 
