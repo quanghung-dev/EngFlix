@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/StudyFragment"
+        android:icon="@drawable/ic_study"
+        android:title="Học tập" />
+
+    <item
+        android:id="@+id/vocabularyFragment"
+        android:icon="@drawable/ic_vocab"
+        android:title="Từ vựng" />
+
+    <item
+        android:id="@+id/reviewFragment"
+        android:icon="@drawable/ic_review"
+        android:title="Ôn tập" />
+
+    <item
+        android:id="@+id/progressFragment"
+        android:icon="@drawable/ic_progress"
+        android:title="Tiến độ" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="Cài đặt" />
+
+</menu>

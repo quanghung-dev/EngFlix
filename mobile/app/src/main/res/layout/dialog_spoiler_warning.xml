@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="350dp"
+    android:layout_height="220dp"
+    android:layout_marginHorizontal="32dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Cảnh báo tiết lộ từ"
+            android:textColor="#1A1A1A"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Message -->
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:lineSpacingMultiplier="1.4"
+            android:text="Các từ được tiết lộ sẽ được tính là lỗi và sẽ ảnh hưởng đến điểm số của bạn."
+            android:textColor="#6B6B6B"
+            android:textSize="15sp" />
+
+        <!-- Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Hủy -->
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#EBEBEB"
+                android:stateListAnimator="@null"
+                android:text="Hủy"
+                android:textColor="#3D9BF0"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:cornerRadius="26dp" />
+
+            <!-- Tiếp tục -->
+            <Button
+                android:id="@+id/btnContinue"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#EBEBEB"
+                android:stateListAnimator="@null"
+                android:text="Tiếp tục"
+                android:textColor="#3D9BF0"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:cornerRadius="26dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/StudyFragment">
+
+    <fragment
+        android:id="@+id/SignupFragment"
+        android:name="com.example.app.feature.auth.SignupFragment"
+        android:label="Signup" >
+        <action android:id="@+id/action_signupFragment_to_loginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="com.example.app.feature.auth.LoginFragment"
+        android:label="Login" >
+        <action android:id="@+id/action_LoginFragment_to_signupFragment"
+            app:destination="@id/SignupFragment" />
+        <action
+            android:id="@+id/action_LoginFragment_to_StudyFragment"
+            app:destination="@id/StudyFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/StudyFragment"
+        android:name="com.example.app.feature.study.StudyFragment"
+        android:label="Học tập" >
+        <action
+            android:id="@+id/action_StudyFragment_to_LessonsListFragment"
+            app:destination="@id/LessonsListFragment" />
+        <action
+            android:id="@+id/action_StudyFragment_to_DictationFragment"
+            app:destination="@id/DictationFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/LessonsListFragment"
+        android:name="com.example.app.feature.study.LessonsListFragment"
+        android:label="Tiến độ" >
+
+        <action
+            android:id="@+id/action_LessonsListFragment_to_DictationFragment"
+            app:destination="@id/DictationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/vocabularyFragment"
+        android:name="com.example.app.feature.vocubulary.VocubularyFragment"
+        android:label="Từ vựng" />
+
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.example.app.feature.review.fragment_review"
+        android:label="Ôn tập" />
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.example.app.feature.study.LessonsListFragment"
+        android:label="Tiến độ" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.app.feature.setting.SettingsFragment"
+        android:label="Cài đặt" >
+        <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/LoginFragment" >
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/DictationFragment"
+        android:name="com.example.app.feature.study.DictationFragment"
+        android:label="Học Chính Tả" >
+        <action
+            android:id="@+id/action_DictationFragment_to_progressFragment"
+            app:destination="@id/progressFragment" >
+        </action>
+
+</fragment>
+
+</navigation>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088865567584",
+    "project_id": "engflix-app",
+    "storage_bucket": "engflix-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088865567584:android:2771f14c311f357d5d5405",
+        "android_client_info": {
+          "package_name": "com.quanghung.engflix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrM7LWwxt3EsVC02INI0McZmoILud5pIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

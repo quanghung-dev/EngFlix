@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D0D0D">
+
+    <!-- Background gradient (reuse) -->
+    <View
+        android:id="@+id/bgGradient"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_gradient"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Decorative circle top-right (reuse) -->
+    <View
+        android:id="@+id/circleTopRight"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:background="@drawable/shape_circle_accent"
+        android:alpha="0.12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="-60dp"
+        android:layout_marginEnd="-60dp" />
+
+    <!-- Decorative circle bottom-left (reuse) -->
+    <View
+        android:id="@+id/circleBottomLeft"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/shape_circle_accent"
+        android:alpha="0.08"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="-40dp" />
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingTop="56dp"
+            android:paddingBottom="48dp"
+            android:gravity="center_horizontal">
+
+            <!-- Logo -->
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/shape_logo_bg" />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_person_outline"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="Logo" />
+            </FrameLayout>
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Tạo tài khoản"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Đăng ký để bắt đầu hành trình"
+                android:textColor="#9E9E9E"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif" />
+
+            <!-- Card form (reuse bg_card style) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                app:cardCornerRadius="24dp"
+                app:cardBackgroundColor="#1A1A1A"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Họ và tên -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Họ và tên"
+                        android:textColor="#BDBDBD"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_field" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_person_outline"
+                            app:tint="#6C63FF"
+                            android:contentDescription="Name icon" />
+
+                        <EditText
+                            android:id="@+id/getFullName"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="sans-serif"
+                            android:hint="Nhập họ và tên"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName"
+                            android:paddingStart="52dp"
+                            android:paddingEnd="16dp"
+                            android:singleLine="true"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#616161"
+                            android:textSize="15sp" />
+                    </FrameLayout>
+
+                    <!-- Tên tài khoản -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Tài khoản"
+                        android:textColor="#BDBDBD"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_field" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_person_outline"
+                            app:tint="#6C63FF"
+                            android:contentDescription="Username icon" />
+
+                        <EditText
+                            android:id="@+id/getUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:paddingStart="52dp"
+                            android:paddingEnd="16dp"
+                            android:hint="Nhập tên tài khoản"
+                            android:textColorHint="#616161"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:inputType="text"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="sans-serif"
+                            android:singleLine="true"
+                            android:imeOptions="actionNext" />
+                    </FrameLayout>
+
+                    <!-- Mật khẩu -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Mật khẩu"
+                        android:textColor="#BDBDBD"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_field" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_lock_outline"
+                            app:tint="#6C63FF"
+                            android:contentDescription="Lock icon" />
+
+                        <EditText
+                            android:id="@+id/getPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:paddingStart="52dp"
+                            android:paddingEnd="52dp"
+                            android:hint="Nhập mật khẩu"
+                            android:textColorHint="#616161"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:inputType="textPassword"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="sans-serif"
+                            android:singleLine="true"
+                            android:imeOptions="actionNext" />
+
+                        <ImageView
+                            android:id="@+id/ivTogglePassword"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="16dp"
+                            android:src="@drawable/ic_visibility_off"
+                            app:tint="#616161"
+                            android:contentDescription="Toggle password"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </FrameLayout>
+
+                    <!-- Xác nhận mật khẩu -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Xác nhận mật khẩu"
+                        android:textColor="#BDBDBD"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_field" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_lock_outline"
+                            app:tint="#6C63FF"
+                            android:contentDescription="Confirm lock icon" />
+
+                        <EditText
+                            android:id="@+id/getConfirmPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:paddingStart="52dp"
+                            android:paddingEnd="52dp"
+                            android:hint="Nhập lại mật khẩu"
+                            android:textColorHint="#616161"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:inputType="textPassword"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="sans-serif"
+                            android:singleLine="true"
+                            android:imeOptions="actionDone" />
+
+                        <ImageView
+                            android:id="@+id/ivToggleConfirmPassword"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="16dp"
+                            android:src="@drawable/ic_visibility_off"
+                            app:tint="#616161"
+                            android:contentDescription="Toggle confirm password"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </FrameLayout>
+
+                    <!-- Terms & Conditions -->
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Register Button (reuse bg_btn_primary) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="#6C63FF">
+
+                <TextView
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="ĐĂNG KÝ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.12"
+                    android:fontFamily="sans-serif-medium"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/bg_btn_primary" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Divider -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="28dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#2A2A2A" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="hoặc đăng ký bằng"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#2A2A2A" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="36dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đã có tài khoản? "
+                    android:textColor="#9E9E9E"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif" />
+
+                <TextView
+                    android:id="@+id/tvLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng nhập"
+                    android:textColor="#6C63FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

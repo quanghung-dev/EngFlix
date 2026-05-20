@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/fragment_choose_mode.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_center"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="32dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn chế độ học"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1A1A1A"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Mô tả -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn chế độ học phù hợp nhất với bạn"
+        android:textSize="14sp"
+        android:textColor="#888888"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 2 card lựa chọn -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <!-- Card Chính tả -->
+        <LinearLayout
+            android:id="@+id/cardChinhTa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_mode_card_blue"
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgChinhTa"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@drawable/img_logo_engflix"
+                android:contentDescription="Chính tả mascot"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="48dp"
+                android:layout_height="44dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_icon_circle_blue"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="pencil icon"
+                    android:src="@drawable/ic_pencil" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chính tả"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
+
+        </LinearLayout>
+
+        <!-- Card Luyện nói -->
+        <LinearLayout
+            android:id="@+id/cardLuyenNoi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_mode_card_peach"
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgLuyenNoi"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@drawable/img_logo_engflix"
+                android:contentDescription="Luyện nói mascot"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_icon_circle_blue"
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_mic"
+                    android:contentDescription="mic icon" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Luyện nói"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

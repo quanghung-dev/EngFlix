@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_nav_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="10dp">
+
+    <com.example.app.core.ui.NavItem
+        android:id="@+id/nav_hoc_tap"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="3dp"/>
+
+    <com.example.app.core.ui.NavItem
+        android:id="@+id/nav_tu_vung"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="3dp"/>
+
+    <com.example.app.core.ui.NavItem
+        android:id="@+id/nav_on_tap"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="3dp"/>
+
+    <com.example.app.core.ui.NavItem
+        android:id="@+id/nav_tien_do"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="3dp"/>
+
+    <com.example.app.core.ui.NavItem
+        android:id="@+id/nav_cai_dat"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
+
+</LinearLayout>

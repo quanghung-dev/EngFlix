@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvWord"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_word_hidden"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="12dp"
+    android:textSize="14sp"
+    android:textColor="#999999"
+    android:maxLines="1"
+    android:ellipsize="end" />
