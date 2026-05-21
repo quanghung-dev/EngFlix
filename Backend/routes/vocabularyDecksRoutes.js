@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const vocabularyDecksController = require('../controllers/vocabularyDecksController.js');
+const vocabularyItemsController = require('../controllers/vocabularyItemsController.js');
 
 /**
  * @swagger
@@ -112,6 +113,51 @@ const vocabularyDecksController = require('../controllers/vocabularyDecksControl
  *         description: Internal server error
  */
 router.get('/', vocabularyDecksController.getVocabularyDecks);
+
+/**
+ * @swagger
+ * /api/v1/vocabulary-decks/{deckId}/items:
+ *   get:
+ *     summary: Get vocabulary items by deck ID
+ *     tags: [Vocabulary Decks]
+ *     parameters:
+ *       - in: path
+ *         name: deckId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary deck ID
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Current page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Number of vocabulary items per page
+ *     responses:
+ *       200:
+ *         description: Vocabulary items returned successfully
+ *       400:
+ *         description: Invalid deck ID
+ *       404:
+ *         description: Vocabulary deck not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/:deckId/items', vocabularyItemsController.getVocabularyItems);
+router.post('/:deckId/items', vocabularyItemsController.addVocabularyItems);
+router.put('/:deckId/items/:itemId', vocabularyItemsController.updateVocabularyItems);
+router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabularyItems);
 
 /**
  * @swagger
