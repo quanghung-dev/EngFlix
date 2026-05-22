@@ -4,16 +4,18 @@ import android.content.Context;
 
 import com.example.app.data.remote.RetrofitClient;
 import com.example.app.data.remote.api.VocabularyApi;
+import com.example.app.data.remote.model.request.vocaDecks.AddItemsToDeckRequest;
+import com.example.app.data.remote.model.request.vocaDecks.CreateVocaDeckRequest;
+import com.example.app.data.remote.model.request.vocaDecks.UpdateDeckRequest;
+import com.example.app.data.remote.model.request.vocaDecks.UpdateVocaItemRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.vocabulary.VocaCategoryResponse;
 import com.example.app.data.remote.model.response.vocabulary.VocaDecksResponse;
 import com.example.app.data.remote.model.response.vocabulary.VocaItemsResponse;
+import com.example.app.utils.ApiCallWrapper;
+import com.example.app.utils.BaseCallback;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class VocabularyRepository {
     private final VocabularyApi vocabularyApi;
@@ -21,75 +23,44 @@ public class VocabularyRepository {
     public VocabularyRepository(Context context) {
         this.vocabularyApi = RetrofitClient.getInstance(context).getVocabularyApi();
     }
-    public interface VocabularyCallback<T> {
-        void onSuccess(T data);
-        void onError(String message);
-    }
-    public void getVocabularyCategories(VocabularyCallback<ApiResponse<List<VocaCategoryResponse>>> callback) {
-        vocabularyApi.getVocaCategories().enqueue(new Callback<ApiResponse<List<VocaCategoryResponse>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<VocaCategoryResponse>>> call, Response<ApiResponse<List<VocaCategoryResponse>>> response) {
-                if(response.isSuccessful() && response.body() != null){
-                    callback.onSuccess(response.body());
-                }
-                else {
-                    try {
-                        String errorDetail = response.errorBody() != null ? response.errorBody().string() : "Lỗi không xác định";
-                        callback.onError(errorDetail);
-                    } catch (Exception e){
-                        callback.onError(e.getMessage());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<ApiResponse<List<VocaCategoryResponse>>> call, Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+
+    public void getVocabularyCategories(BaseCallback<ApiResponse<List<VocaCategoryResponse>>> callback){
+        vocabularyApi.getVocaCategories().enqueue(new ApiCallWrapper<>(callback));
     }
 
-    public void getVocabularyDecks(int CateoryId,VocabularyCallback<ApiResponse<List<VocaDecksResponse>>> callback) {
-        vocabularyApi.getVocaDecks(CateoryId).enqueue(new Callback<ApiResponse<List<VocaDecksResponse>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<VocaDecksResponse>>> call, Response<ApiResponse<List<VocaDecksResponse>>> response) {
-                if(response.isSuccessful() && response.body() != null){
-                    callback.onSuccess(response.body());
-                }
-                else {
-                    try {
-                        String errorDetail = response.errorBody() != null ? response.errorBody().string() : "Lỗi không xác định";
-                        callback.onError(errorDetail);
-                    } catch (Exception e){
-                        callback.onError(e.getMessage());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<ApiResponse<List<VocaDecksResponse>>> call, Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+    public void getVocabularyDecks(int categoryId, BaseCallback<ApiResponse<List<VocaDecksResponse>>> callback) {
+        vocabularyApi.getVocaDecks(categoryId).enqueue(new ApiCallWrapper<>(callback));
     }
-    public void getVocabularyItems(VocabularyCallback<ApiResponse<List<VocaItemsResponse>>> callback) {
-        vocabularyApi.getVocaItems().enqueue(new Callback<ApiResponse<List<VocaItemsResponse>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<VocaItemsResponse>>> call, Response<ApiResponse<List<VocaItemsResponse>>> response) {
-                if(response.isSuccessful() && response.body() != null){
-                 callback.onSuccess(response.body());
-                }
-                else{
-                    try {
-                        String errorDetail = response.errorBody() != null ? response.errorBody().string() : "Lỗi không xác định";
-                        callback.onError(errorDetail);
-                    } catch (Exception e){
-                        callback.onError(e.getMessage());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<ApiResponse<List<VocaItemsResponse>>> call, Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+
+    public void createVocaDeck(CreateVocaDeckRequest request, BaseCallback<ApiResponse<VocaDecksResponse>> callback) {
+        vocabularyApi.createVocaDeck(request).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void updateDeck(int id, UpdateDeckRequest request, BaseCallback<ApiResponse<VocaDecksResponse>> callback) {
+        vocabularyApi.updateDeck(id, request).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void deleteDeck(int id, BaseCallback<ApiResponse<VocaDecksResponse>> callback) {
+        vocabularyApi.deleteDeck(id).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void getVocabularyItemsByDeckId(int deckId, BaseCallback<ApiResponse<List<VocaItemsResponse>>> callback) {
+        vocabularyApi.getVocaItemsByDeckId(deckId).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void addVocaItemToDeck(int deckId, AddItemsToDeckRequest request, BaseCallback<ApiResponse<VocaItemsResponse>> callback) {
+        vocabularyApi.addVocaItemToDeck(deckId, request).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void updateItem(int deckId, int itemId, UpdateVocaItemRequest request, BaseCallback<ApiResponse<VocaItemsResponse>> callback) {
+        vocabularyApi.updateItem(deckId, itemId, request).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void deleteItem(int deckId, int itemId, BaseCallback<ApiResponse<VocaItemsResponse>> callback) {
+        vocabularyApi.deleteItem(deckId, itemId).enqueue(new ApiCallWrapper<>(callback));
+    }
+
+    public void getVocabularyItems(BaseCallback<ApiResponse<List<VocaItemsResponse>>> callback) {
+        vocabularyApi.getVocaItems().enqueue(new ApiCallWrapper<>(callback));
     }
 }
