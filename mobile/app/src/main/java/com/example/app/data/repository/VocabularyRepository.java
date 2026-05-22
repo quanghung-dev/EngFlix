@@ -48,8 +48,8 @@ public class VocabularyRepository {
         });
     }
 
-    public void getVocabularyDecks(VocabularyCallback<ApiResponse<List<VocaDecksResponse>>> callback) {
-        vocabularyApi.getVocaDecks().enqueue(new Callback<ApiResponse<List<VocaDecksResponse>>>() {
+    public void getVocabularyDecks(int CateoryId,VocabularyCallback<ApiResponse<List<VocaDecksResponse>>> callback) {
+        vocabularyApi.getVocaDecks(CateoryId).enqueue(new Callback<ApiResponse<List<VocaDecksResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<VocaDecksResponse>>> call, Response<ApiResponse<List<VocaDecksResponse>>> response) {
                 if(response.isSuccessful() && response.body() != null){
@@ -64,7 +64,6 @@ public class VocabularyRepository {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<ApiResponse<List<VocaDecksResponse>>> call, Throwable t) {
                 callback.onError(t.getMessage());
