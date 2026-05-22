@@ -29,7 +29,6 @@ public class LessonSectionAdapter extends RecyclerView.Adapter<LessonSectionAdap
     private OnLessonClickListener lessonClickListener;
 
 
-
     public LessonSectionAdapter(List<LessonSection> categories, OnSeeAllClickListener listener, OnLessonClickListener lessonClickListener) {
         this.categories = categories;
         this.listener = listener;

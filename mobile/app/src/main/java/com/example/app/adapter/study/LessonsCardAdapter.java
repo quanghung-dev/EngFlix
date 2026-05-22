@@ -55,7 +55,6 @@ public class LessonsCardAdapter extends RecyclerView.Adapter<LessonsCardAdapter.
                 }
             }
         });
-
     }
 
     @Override

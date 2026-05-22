@@ -10,27 +10,53 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
+import com.example.app.data.remote.model.response.vocabulary.VocaDecksResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VocabularyCardAdapter extends RecyclerView.Adapter<VocabularyCardAdapter.VocabularyCardViewHolder> {
+    private List<VocaDecksResponse> vocaCategories = new ArrayList<>();
+    public interface OnClickListener{
+        void onClick(int position, VocaDecksResponse vocaCategory);
+    }
+    private OnClickListener listener;
 
-    public VocabularyCardAdapter() {
+    public void setData(List<VocaDecksResponse> vocaCategories){
+        this.vocaCategories = vocaCategories;
+        notifyDataSetChanged();
+    }
 
+    public VocabularyCardAdapter(List<VocaDecksResponse> vocaCategories, OnClickListener listener) {
+        this.vocaCategories = vocaCategories;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public VocabularyCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lesson_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_vocabulary_card, parent, false);
         return new VocabularyCardViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VocabularyCardViewHolder holder, int position) {
-
+        VocaDecksResponse vocaCategory = vocaCategories.get(position);
+        holder.cardTitle.setText(vocaCategory.getName());
+        holder.cardWordCount.setText(vocaCategory.getDescription());
+        holder.itemView.setOnClickListener(v -> {
+            int currentPosition = holder.getBindingAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                listener.onClick(currentPosition, vocaCategories.get(currentPosition));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
+        if(vocaCategories != null){
+            return vocaCategories.size();
+        }
         return 0;
     }
 

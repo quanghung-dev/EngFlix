@@ -155,6 +155,50 @@ const options = {
             },
           },
         },
+        VocabularyItem: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            deck_id: {
+              type: 'integer',
+            },
+            lesson_id: {
+              type: 'integer',
+              nullable: true,
+            },
+            transcript_id: {
+              type: 'integer',
+              nullable: true,
+            },
+            phrase: {
+              type: 'string',
+            },
+            normalized_phrase: {
+              type: 'string',
+            },
+            meaning: {
+              type: 'string',
+            },
+            example_sentence: {
+              type: 'string',
+              nullable: true,
+            },
+            note: {
+              type: 'string',
+              nullable: true,
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+          },
+        },
       },
     },
   },

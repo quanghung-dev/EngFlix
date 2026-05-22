@@ -147,6 +147,44 @@ router.get('/', vocabularyDecksController.getVocabularyDecks);
  *     responses:
  *       200:
  *         description: Vocabulary items returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/VocabularyItem'
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     total_pages:
+ *                       type: integer
+ *             example:
+ *               data:
+ *                 - id: 1
+ *                   deck_id: 1
+ *                   lesson_id: 1
+ *                   transcript_id: 1
+ *                   phrase: "How are you?"
+ *                   normalized_phrase: "how are you"
+ *                   meaning: "Ban co khoe khong?"
+ *                   example_sentence: "Hi John, how are you?"
+ *                   note: "Common greeting"
+ *                   created_at: "2026-05-20T00:00:00.000Z"
+ *                   updated_at: "2026-05-20T00:00:00.000Z"
+ *               meta:
+ *                 page: 1
+ *                 limit: 10
+ *                 total: 1
+ *                 total_pages: 1
  *       400:
  *         description: Invalid deck ID
  *       404:
@@ -155,8 +193,196 @@ router.get('/', vocabularyDecksController.getVocabularyDecks);
  *         description: Internal server error
  */
 router.get('/:deckId/items', vocabularyItemsController.getVocabularyItems);
+
+/**
+ * @swagger
+ * /api/v1/vocabulary-decks/{deckId}/items:
+ *   post:
+ *     summary: Add vocabulary item to deck
+ *     tags: [Vocabulary Decks]
+ *     parameters:
+ *       - in: path
+ *         name: deckId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary deck ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phrase
+ *               - normalized_phrase
+ *               - meaning
+ *             properties:
+ *               lesson_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 nullable: true
+ *               transcript_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 nullable: true
+ *               phrase:
+ *                 type: string
+ *               normalized_phrase:
+ *                 type: string
+ *               meaning:
+ *                 type: string
+ *               example_sentence:
+ *                 type: string
+ *                 nullable: true
+ *               note:
+ *                 type: string
+ *                 nullable: true
+ *           example:
+ *             lesson_id: 1
+ *             transcript_id: 1
+ *             phrase: "How are you?"
+ *             normalized_phrase: "how are you"
+ *             meaning: "Ban co khoe khong?"
+ *             example_sentence: "Hi John, how are you?"
+ *             note: "Common greeting"
+ *     responses:
+ *       201:
+ *         description: Vocabulary item created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/VocabularyItem'
+ *       400:
+ *         description: Invalid deck ID, request body, lesson_id, or transcript_id
+ *       404:
+ *         description: Vocabulary deck not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/:deckId/items', vocabularyItemsController.addVocabularyItems);
+
+/**
+ * @swagger
+ * /api/v1/vocabulary-decks/{deckId}/items/{itemId}:
+ *   put:
+ *     summary: Update vocabulary item
+ *     tags: [Vocabulary Decks]
+ *     parameters:
+ *       - in: path
+ *         name: deckId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary deck ID
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary item ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phrase
+ *               - normalized_phrase
+ *               - meaning
+ *             properties:
+ *               lesson_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 nullable: true
+ *               transcript_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 nullable: true
+ *               phrase:
+ *                 type: string
+ *               normalized_phrase:
+ *                 type: string
+ *               meaning:
+ *                 type: string
+ *               example_sentence:
+ *                 type: string
+ *                 nullable: true
+ *               note:
+ *                 type: string
+ *                 nullable: true
+ *           example:
+ *             lesson_id: 1
+ *             transcript_id: 1
+ *             phrase: "How are you doing?"
+ *             normalized_phrase: "how are you doing"
+ *             meaning: "Ban dang the nao?"
+ *             example_sentence: "How are you doing today?"
+ *             note: "Updated phrase"
+ *     responses:
+ *       200:
+ *         description: Vocabulary item updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/VocabularyItem'
+ *       400:
+ *         description: Invalid deck ID, item ID, request body, lesson_id, or transcript_id
+ *       404:
+ *         description: Vocabulary item not found
+ *       500:
+ *         description: Internal server error
+ */
 router.put('/:deckId/items/:itemId', vocabularyItemsController.updateVocabularyItems);
+
+/**
+ * @swagger
+ * /api/v1/vocabulary-decks/{deckId}/items/{itemId}:
+ *   delete:
+ *     summary: Delete vocabulary item
+ *     tags: [Vocabulary Decks]
+ *     parameters:
+ *       - in: path
+ *         name: deckId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary deck ID
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Vocabulary item ID
+ *     responses:
+ *       200:
+ *         description: Vocabulary item deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/VocabularyItem'
+ *       400:
+ *         description: Invalid deck ID or item ID
+ *       404:
+ *         description: Vocabulary item not found
+ *       500:
+ *         description: Internal server error
+ */
 router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabularyItems);
 
 /**

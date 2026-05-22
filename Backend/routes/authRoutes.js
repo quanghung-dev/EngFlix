@@ -54,6 +54,8 @@ const verifyToken = require('../middlewares/auth.js');
  *                 user_role: "User"
  *                 avatar_url: null
  *                 created_at: "2026-05-19T10:00:00.000Z"
+ *       400:
+ *         description: Authenticated Firebase user is missing uid or email
  *       401:
  *         description: Missing or expired bearer token
  *       500:
