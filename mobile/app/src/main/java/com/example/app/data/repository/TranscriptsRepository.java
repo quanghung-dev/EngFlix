@@ -52,6 +52,5 @@ public class TranscriptsRepository {
                 callback.onError(t.getMessage());
             }
         });
-
     }
 }
