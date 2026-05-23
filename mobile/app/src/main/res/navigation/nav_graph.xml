@@ -49,7 +49,7 @@
 
     <fragment
         android:id="@+id/vocabularyFragment"
-        android:name="com.example.app.feature.vocubulary.VocubularyFragment"
+        android:name="com.example.app.feature.vocabulary.VocabularyFragment"
         android:label="Từ vựng" />
 
     <fragment

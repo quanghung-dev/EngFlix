@@ -6,27 +6,23 @@
     android:background="#F2F3F7">
 
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Từ vựng"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:gravity="center"
         android:paddingVertical="16dp" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_vocabulary_sections"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:paddingBottom="8dp"
             android:clipToPadding="false" />
 
-    </ScrollView>
 
 </LinearLayout>
