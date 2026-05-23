@@ -32,8 +32,6 @@ public class ListLessonsAdapter extends RecyclerView.Adapter<ListLessonsAdapter.
         this.listener = listener;
     }
 
-
-
     @NonNull
     @Override
     public LessonsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

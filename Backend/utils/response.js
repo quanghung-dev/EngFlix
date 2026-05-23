@@ -1,10 +1,3 @@
-const successResponse = (res, statusCode, message, data = null )=> {
-    return res.status(statusCode).json({
-        message: message,
-        data: data
-    });
-};
-
 const dataResponse = (res, statusCode = 200, data = null, meta = null, error = null) => {
     const response = { data };
     if (error !== null) response.error = error;
@@ -22,7 +15,6 @@ const errorResponse = (res, statusCode, message) => {
 };
 
 module.exports = {
-    successResponse,
     dataResponse,
     errorResponse
 };

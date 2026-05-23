@@ -5,18 +5,6 @@ const getPagination = (query, defaultLimit = 10) => {
     return {page, limit, offset };
 }
 
-const formatPaginatedResponse = (data, totalRows, page, limit) => {
-    const totalPages = Math.ceil(totalRows / limit);
-    return {
-        items: data,
-        meta:{
-            totalRows: parseInt(totalRows),
-            totalPages: totalPages,
-            currentPage: page,
-            pageSize: limit
-        }
-    };
-};
 
 const buildPaginationMeta = (page, limit, total) => {
     return {
@@ -29,6 +17,5 @@ const buildPaginationMeta = (page, limit, total) => {
 
 module.exports = {
     getPagination,
-    formatPaginatedResponse,
     buildPaginationMeta
 };
