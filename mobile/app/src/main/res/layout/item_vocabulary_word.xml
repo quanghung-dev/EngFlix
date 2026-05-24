@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_vocabulary_word.xml
+    Item từng từ vựng trong RecyclerView
+    Gồm: icon sparkle tròn | từ + IPA + nghĩa | icon âm thanh | chevron
+    Đã được chuyển sang cấu trúc LinearLayout.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_margin_vertical"
+    android:foreground="@drawable/item_vocab_ripple"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/bg_card_white"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation"
+    app:cardUseCompatPadding="false">
+
+    <!-- Outer Horizontal LinearLayout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/spacing_12"
+        android:paddingHorizontal="@dimen/card_padding"
+        android:gravity="center_vertical">
+
+        <!-- Icon sparkle tròn -->
+        <ImageView
+            android:id="@+id/ivWordStatus"
+            android:layout_width="@dimen/icon_circle_size"
+            android:layout_height="@dimen/icon_circle_size"
+            android:background="@drawable/bg_icon_circle"
+            android:contentDescription="Word status"
+            android:padding="@dimen/spacing_10"
+            android:src="@drawable/ic_sparkle"
+            app:tint="@color/primary_blue" />
+
+        <!-- Middle Vertical LinearLayout (chứa Text) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_12"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvWord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_md"
+                    android:textStyle="bold"
+                    android:text="ABC" />
+
+                <TextView
+                    android:id="@+id/tvWordTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_6"
+                    android:background="@drawable/bg_tag_noun"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingHorizontal="@dimen/tag_padding_h"
+                    android:paddingVertical="@dimen/tag_padding_v"
+                    android:textColor="@color/tag_noun_text"
+                    android:textSize="@dimen/text_xs"
+                    android:textStyle="bold"
+                    android:text="noun" />
+
+            </LinearLayout>
+
+            <!-- Dòng 2: IPA -->
+            <TextView
+                android:id="@+id/tvIPA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primary_blue"
+                android:textSize="@dimen/ipa_text_size"
+                android:text="ABC" />
+
+            <!-- Dòng 3: Nghĩa -->
+            <TextView
+                android:id="@+id/tvMeaning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_2"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_sm"
+                android:text="ABC" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/ivSound"
+            android:layout_width="@dimen/icon_circle_size_small"
+            android:layout_height="@dimen/icon_circle_size_small"
+            android:background="@drawable/bg_icon_circle_sound"
+            android:contentDescription="Play sound"
+            android:padding="@dimen/spacing_8"
+            android:src="@drawable/ic_volume_up"
+            app:tint="@color/primary_blue" />
+
+        <!-- Chevron > -->
+        <ImageView
+            android:id="@+id/ivChevron"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/spacing_8"
+            android:contentDescription="Detail"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/text_hint" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

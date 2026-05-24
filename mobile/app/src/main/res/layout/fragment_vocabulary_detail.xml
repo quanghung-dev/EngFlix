@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_vocabulary_detail.xml
+    Màn hình danh sách từ vựng theo chủ đề (Image 2 - "Family")
+    Gồm: toolbar chuẩn, header card thống kê, RecyclerView danh sách từ, nút "Bắt đầu học"
+    Đã được chuyển đổi sang LinearLayout.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_screen">
+
+    <!-- ======================== TOOLBAR ======================== -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bg_screen"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/screen_padding_horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_back_btn"
+                android:contentDescription="Back"
+                android:padding="@dimen/spacing_10"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tvTopicTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_lg"
+                android:textStyle="bold"
+                tools:text="Family" />
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- ======================== CONTENT SCROLL ======================== -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingBottom="@dimen/spacing_16"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_padding_horizontal"
+            android:paddingTop="@dimen/spacing_8">
+
+            <!-- ======== HEADER CARD THỐNG KÊ ======== -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_16"
+                app:cardBackgroundColor="@color/bg_card_white"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <!-- Top section with icon and texts -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Icon tập từ vựng -->
+                        <ImageView
+                            android:id="@+id/ivTopicIcon"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:contentDescription="Topic icon"
+                            android:padding="@dimen/spacing_12"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_book_stack"
+                            app:tint="@color/primary_blue" />
+
+                        <!-- Text content -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_12"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvHeaderTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/text_primary"
+                                android:textSize="@dimen/text_xl"
+                                android:textStyle="bold"
+                                tools:text="Family" />
+
+                            <!-- Progress chip -->
+                            <TextView
+                                android:id="@+id/tvCardCount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_2"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_sm"
+                                tools:text="Thẻ mới • 0/49" />
+
+                            <LinearLayout
+                                android:id="@+id/layoutProgress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_4"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:contentDescription="Progress"
+                                    android:src="@drawable/ic_check_circle"
+                                    app:tint="@color/counter_icon" />
+
+                                <TextView
+                                    android:id="@+id/tvProgressPercent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/spacing_4"
+                                    android:textColor="@color/counter_text"
+                                    android:textSize="@dimen/text_sm"
+                                    tools:text="0% đã hoàn thành" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Progress bar mảnh -->
+                    <ProgressBar
+                        android:id="@+id/progressBarHeader"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/progress_height"
+                        android:layout_marginTop="@dimen/spacing_12"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/bg_progress_bar" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ======== RECYCLER VIEW DANH SÁCH TỪ ======== -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvWordList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_vocabulary_word" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ======================== BOTTOM BAR - NÚT BẮT ĐẦU HỌC ======================== -->
+    <LinearLayout
+        android:id="@+id/layoutBottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_screen"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/spacing_8"
+        android:paddingBottom="@dimen/spacing_20">
+
+        <Button
+            android:id="@+id/btnStartLearning"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:background="@drawable/bg_btn_start_ripple"
+            android:drawableStart="@drawable/ic_play_arrow"
+            android:drawablePadding="@dimen/spacing_8"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:stateListAnimator="@null"
+            android:text="Bắt đầu học"
+            android:textColor="@color/bg_card_white"
+            android:textSize="@dimen/text_md"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

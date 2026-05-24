@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_tag_noun.xml
+     Badge "Noun" màu xanh primary -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tag_noun_bg" />
+    <corners android:radius="@dimen/tag_corner_radius" />
+</shape>

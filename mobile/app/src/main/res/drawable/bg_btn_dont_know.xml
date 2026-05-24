@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_btn_dont_know.xml
+     Button "Không biết" đỏ cam, bo tròn -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/btn_dont_know" />
+            <corners android:radius="@dimen/btn_corner_radius" />
+        </shape>
+    </item>
+</ripple>

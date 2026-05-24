@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_toolbar_icon_btn.xml
+     Các nút icon toolbar (keyboard, flag, settings) - tròn, nền xám nhạt -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_dark">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/primary_blue_light" />
+        </shape>
+    </item>
+</ripple>

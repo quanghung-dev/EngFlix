@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Screen padding -->
+    <dimen name="screen_padding_horizontal">16dp</dimen>
+    <dimen name="screen_padding_top">12dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="card_corner_radius_small">12dp</dimen>
+    <dimen name="card_elevation">3dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin_vertical">8dp</dimen>
+
+    <!-- Flashcard (learning screen) -->
+    <dimen name="flashcard_padding">24dp</dimen>
+    <dimen name="flashcard_corner_radius">24dp</dimen>
+    <dimen name="flashcard_elevation">6dp</dimen>
+    <dimen name="flashcard_margin_horizontal">16dp</dimen>
+    <dimen name="flashcard_margin_vertical">16dp</dimen>
+
+    <!-- Icon -->
+    <dimen name="icon_circle_size">44dp</dimen>
+    <dimen name="icon_circle_size_large">88dp</dimen>
+    <dimen name="icon_circle_size_small">36dp</dimen>
+    <dimen name="icon_size">22dp</dimen>
+    <dimen name="icon_size_large">48dp</dimen>
+    <dimen name="icon_star_size">18dp</dimen>
+
+    <!-- Button -->
+    <dimen name="btn_height">56dp</dimen>
+    <dimen name="btn_corner_radius">28dp</dimen>
+    <dimen name="btn_small_height">40dp</dimen>
+    <dimen name="btn_small_corner_radius">20dp</dimen>
+    <dimen name="btn_hint_size">56dp</dimen>
+
+    <!-- Progress bar -->
+    <dimen name="progress_height">4dp</dimen>
+    <dimen name="progress_corner_radius">2dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="text_xs">11sp</dimen>
+    <dimen name="text_sm">13sp</dimen>
+    <dimen name="text_base">15sp</dimen>
+    <dimen name="text_md">17sp</dimen>
+    <dimen name="text_lg">20sp</dimen>
+    <dimen name="text_xl">24sp</dimen>
+    <dimen name="text_2xl">28sp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="spacing_2">2dp</dimen>
+    <dimen name="spacing_4">4dp</dimen>
+    <dimen name="spacing_6">6dp</dimen>
+    <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_10">10dp</dimen>
+    <dimen name="spacing_12">12dp</dimen>
+    <dimen name="spacing_16">16dp</dimen>
+    <dimen name="spacing_20">20dp</dimen>
+    <dimen name="spacing_24">24dp</dimen>
+    <dimen name="spacing_32">32dp</dimen>
+
+    <!-- Tag/Badge -->
+    <dimen name="tag_corner_radius">6dp</dimen>
+    <dimen name="tag_padding_h">8dp</dimen>
+    <dimen name="tag_padding_v">3dp</dimen>
+
+    <!-- Toolbar -->
+    <dimen name="toolbar_height">56dp</dimen>
+
+    <!-- Dot indicator -->
+    <dimen name="dot_size">10dp</dimen>
+    <dimen name="dot_spacing">4dp</dimen>
+
+    <!-- Counter chip -->
+    <dimen name="counter_corner_radius">14dp</dimen>
+    <dimen name="counter_padding_h">12dp</dimen>
+    <dimen name="counter_padding_v">6dp</dimen>
+
+    <!-- IPA text -->
+    <dimen name="ipa_text_size">14sp</dimen>
+</resources>

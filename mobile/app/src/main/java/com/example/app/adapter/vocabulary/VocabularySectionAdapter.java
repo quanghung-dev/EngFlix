@@ -59,7 +59,14 @@ public class VocabularySectionAdapter extends RecyclerView.Adapter<VocabularySec
         
         holder.tv_category_count.setText(String.valueOf(decks.size()));
 
-        VocabularyCardAdapter cardAdapter = new VocabularyCardAdapter(decks, cardListener);
+        VocabularyCardAdapter cardAdapter = new VocabularyCardAdapter(decks, new VocabularyCardAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position, VocaDecksResponse vocaCategory) {
+                if (cardListener != null) {
+                    cardListener.onClick(position, vocaCategory);
+                }
+            }
+        });
         holder.rv_vocab_cards.setAdapter(cardAdapter);
         
         holder.itemView.setOnClickListener(v -> {

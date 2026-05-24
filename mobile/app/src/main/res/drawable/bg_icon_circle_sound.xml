@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_icon_circle_sound.xml
+     Nền tròn xanh nhạt cho icon âm thanh -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_blue">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/primary_blue_light" />
+        </shape>
+    </item>
+</ripple>

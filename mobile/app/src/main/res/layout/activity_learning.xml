@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_learning.xml
+    Màn hình học tập flashcard (Image 1 - "Học tập")
+    Gồm: toolbar (X, tiêu đề, icons), progress, flashcard to, dot indicator + hint, 2 nút bottom
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_screen"
+    tools:context=".LearningActivity">
+
+    <!-- ======================== TOOLBAR ======================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/bg_card_white"
+        android:elevation="2dp"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Nút X tròn -->
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_toolbar_close_btn"
+            android:contentDescription="Close"
+            android:padding="@dimen/spacing_8"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_primary" />
+
+        <!-- Tiêu đề "Học tập" -->
+        <TextView
+            android:id="@+id/tvToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Học tập"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_lg"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Nhóm icon bên phải -->
+        <LinearLayout
+            android:id="@+id/layoutToolbarIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:spacing="@dimen/spacing_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Icon bàn phím -->
+            <ImageButton
+                android:id="@+id/btnKeyboard"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="@dimen/spacing_6"
+                android:background="@drawable/bg_toolbar_icon_btn"
+                android:contentDescription="Keyboard"
+                android:padding="@dimen/spacing_8"
+                android:src="@drawable/ic_keyboard"
+                app:tint="@color/primary_blue" />
+
+            <!-- Icon cờ -->
+            <ImageButton
+                android:id="@+id/btnFlag"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="@dimen/spacing_6"
+                android:background="@drawable/bg_toolbar_icon_btn"
+                android:contentDescription="Flag"
+                android:padding="@dimen/spacing_8"
+                android:src="@drawable/ic_flag"
+                app:tint="@color/btn_dont_know" />
+
+            <!-- Icon cài đặt -->
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_toolbar_icon_btn"
+                android:contentDescription="Settings"
+                android:padding="@dimen/spacing_8"
+                android:src="@drawable/ic_settings"
+                app:tint="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ======================== PROGRESS ROW (% + counter chip) ======================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutProgressRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/spacing_12"
+        android:paddingBottom="@dimen/spacing_8"
+        android:background="@color/bg_card_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <!-- Label % hoàn thành -->
+        <TextView
+            android:id="@+id/tvProgressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_sm"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="0% hoàn thành" />
+
+        <!-- Counter chip (0/49) -->
+        <LinearLayout
+            android:id="@+id/layoutCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_counter_chip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/counter_padding_h"
+            android:paddingVertical="@dimen/counter_padding_v"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:contentDescription="Check"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/counter_icon" />
+
+            <TextView
+                android:id="@+id/tvCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_4"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/counter_text"
+                android:textSize="@dimen/text_sm"
+                android:textStyle="bold"
+                tools:text="0/49" />
+
+        </LinearLayout>
+
+        <!-- Progress bar mảnh -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/progress_height"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_progress_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvProgressLabel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ======================== FLASHCARD CHÍNH ======================== -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFlashcard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/flashcard_margin_horizontal"
+        android:layout_marginTop="@dimen/flashcard_margin_vertical"
+        android:layout_marginBottom="@dimen/spacing_12"
+        app:cardBackgroundColor="@color/bg_card_white"
+        app:cardCornerRadius="@dimen/flashcard_corner_radius"
+        app:cardElevation="@dimen/flashcard_elevation"
+        app:cardUseCompatPadding="false"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottomControls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutProgressRow">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/flashcard_padding">
+
+            <!-- Ảnh minh họa (vuông bo góc, ở giữa trên) -->
+            <ImageView
+                android:id="@+id/ivWordImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/bg_image_flashcard"
+                android:contentDescription="Word image"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <!-- Label danh mục nhỏ dưới ảnh -->
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_4"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_xs"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivWordImage"
+                tools:text="people" />
+
+            <!-- Từ tiếng Anh lớn + tag Noun cạnh nhau -->
+            <TextView
+                android:id="@+id/tvFlashWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_16"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/text_blue_word"
+                android:textSize="@dimen/text_2xl"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tvFlashTag"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCategory"
+                tools:text="Cha mẹ" />
+
+            <TextView
+                android:id="@+id/tvFlashTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_8"
+                android:background="@drawable/bg_tag_noun"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="@dimen/tag_padding_h"
+                android:paddingVertical="@dimen/tag_padding_v"
+                android:textColor="@color/tag_noun_text"
+                android:textSize="@dimen/text_xs"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/tvFlashWord"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvFlashWord"
+                tools:text="Noun" />
+
+            <!-- Định nghĩa / mô tả tiếng Việt -->
+            <TextView
+                android:id="@+id/tvDefinition"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_10"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_base"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFlashWord"
+                tools:text="Mẹ và cha của một người. Những người nuôi dưỡng một đứa trẻ." />
+
+            <!-- Hộp ví dụ -->
+            <LinearLayout
+                android:id="@+id/layoutExample"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_16"
+                android:background="@drawable/bg_example_box"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDefinition">
+
+                <!-- Header "VÍ DỤ" với icon -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="Example"
+                        android:src="@drawable/ic_format_quote"
+                        app:tint="@color/text_example_orange" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_4"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="VÍ DỤ"
+                        android:textColor="@color/text_example_orange"
+                        android:textSize="@dimen/text_xs"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Câu ví dụ tiếng Anh (từ cần điền bị che) -->
+                <TextView
+                    android:id="@+id/tvExampleEn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_8"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_base"
+                    android:textStyle="italic"
+                    tools:text='My ******* taught me to be kind.' />
+
+                <!-- Mũi tên + dịch nghĩa -->
+                <TextView
+                    android:id="@+id/tvExampleVi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_6"
+                    android:drawableStart="@drawable/ic_subdirectory_arrow"
+                    android:drawablePadding="@dimen/spacing_6"
+                    android:textColor="@color/text_translation"
+                    android:textSize="@dimen/text_sm"
+                    app:drawableTint="@color/text_hint"
+                    tools:text="Cha mẹ tôi đã dạy tôi phải từ tế." />
+
+            </LinearLayout>
+
+            <!-- Spacer để đẩy content lên giữa card -->
+            <View
+                android:id="@+id/spacerBottom"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutExample" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- ======================== BOTTOM CONTROLS (dot + hint + 2 nút) ======================== -->
+    <LinearLayout
+        android:id="@+id/layoutBottomControls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_screen"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingBottom="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Row: Dot indicators + Hint button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/spacing_10">
+
+            <!-- Dot indicators container (LinearLayout, điền programmatically) -->
+            <LinearLayout
+                android:id="@+id/layoutDotIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_16"
+                android:paddingVertical="@dimen/spacing_12"
+                android:layout_marginEnd="@dimen/spacing_8"
+                app:cardCornerRadius="@dimen/card_corner_radius_small">
+
+                <!-- Dots sẽ được thêm programmatically hoặc dùng View cố định -->
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_active" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive" android:layout_marginEnd="@dimen/dot_spacing"/>
+                <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
+                    android:background="@drawable/dot_inactive"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_6"
+                    android:textColor="@color/text_hint"
+                    android:textSize="@dimen/text_sm"
+                    tools:text="(7)" />
+
+            </LinearLayout>
+
+            <!-- Nút gợi ý bóng đèn -->
+            <ImageButton
+                android:id="@+id/btnHint"
+                android:layout_width="@dimen/btn_hint_size"
+                android:layout_height="@dimen/btn_hint_size"
+                android:background="@drawable/bg_hint_btn"
+                android:contentDescription="Hint"
+                android:padding="@dimen/spacing_12"
+                android:src="@drawable/ic_lightbulb"
+                app:tint="#F5A623" />
+
+        </LinearLayout>
+
+        <!-- Row: 2 nút "Không biết" + "Kiểm tra đáp án" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Nút "Không biết" -->
+            <Button
+                android:id="@+id/btnDontKnow"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginEnd="@dimen/spacing_8"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_dont_know"
+                android:drawableStart="@drawable/ic_visibility"
+                android:drawablePadding="@dimen/spacing_6"
+                android:fontFamily="sans-serif-medium"
+                android:stateListAnimator="@null"
+                android:text="Không biết"
+                android:textColor="@color/bg_card_white"
+                android:textSize="@dimen/text_base"
+                android:textStyle="bold" />
+
+            <!-- Nút "Kiểm tra đáp án" (disabled mặc định) -->
+            <Button
+                android:id="@+id/btnCheckAnswer"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/btn_height"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_check_answer"
+                android:drawableStart="@drawable/ic_check_circle"
+                android:drawablePadding="@dimen/spacing_6"
+                android:enabled="false"
+                android:fontFamily="sans-serif-medium"
+                android:stateListAnimator="@null"
+                android:text="Kiểm tra đáp án"
+                android:textColor="@color/bg_card_white"
+                android:textSize="@dimen/text_base"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

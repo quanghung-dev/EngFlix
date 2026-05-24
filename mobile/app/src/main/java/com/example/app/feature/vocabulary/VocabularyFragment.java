@@ -11,10 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
+import com.example.app.adapter.vocabulary.VocabularyCardAdapter;
 import com.example.app.adapter.vocabulary.VocabularySectionAdapter;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.vocabulary.VocaCategoryResponse;
@@ -47,7 +49,16 @@ public class VocabularyFragment extends Fragment {
         tv_title.setText("Từ Vựng");
         vocabularyRepository = new VocabularyRepository(requireContext());
         fetchCategories();
-        sectionAdapter = new VocabularySectionAdapter(categoryList, null);
+        sectionAdapter = new VocabularySectionAdapter(categoryList, new VocabularyCardAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position, VocaDecksResponse vocaCategory) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("deckId", vocaCategory.getId());
+                bundle.putString("deckName", vocaCategory.getName());
+                bundle.putString("categoryName", categoryList.get(position).getName());
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.action_vocabularyFragment_to_detailItems, bundle);
+            }
+        });
         rv_vocabulary_sections.setAdapter(sectionAdapter);
 
         return(view);

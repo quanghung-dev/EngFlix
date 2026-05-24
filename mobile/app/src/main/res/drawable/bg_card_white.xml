@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_card_white.xml
+     Nền card trắng bo góc, viền xanh nhạt -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#FFFFFF" />
-    <corners android:radius="16dp" />
+    <solid android:color="@color/bg_card_white" />
+    <corners android:radius="@dimen/card_corner_radius" />
+    <stroke
+        android:width="1.5dp"
+        android:color="@color/primary_blue_border" />
 </shape>

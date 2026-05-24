@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_hint_btn.xml
+     Nút bóng đèn gợi ý nền vàng nhạt -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33F5A623">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFF8E1" />
+            <corners android:radius="@dimen/card_corner_radius_small" />
+        </shape>
+    </item>
+</ripple>

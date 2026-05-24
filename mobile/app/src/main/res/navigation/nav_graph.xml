@@ -50,7 +50,11 @@
     <fragment
         android:id="@+id/vocabularyFragment"
         android:name="com.example.app.feature.vocabulary.VocabularyFragment"
-        android:label="Từ vựng" />
+        android:label="Từ vựng" >
+        <action
+            android:id="@+id/action_vocabularyFragment_to_detailItems"
+            app:destination="@id/detailItemsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/reviewFragment"
@@ -79,7 +83,11 @@
             android:id="@+id/action_DictationFragment_to_progressFragment"
             app:destination="@id/progressFragment" >
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/detailItemsFragment"
+        android:name="com.example.app.feature.vocabulary.DetailItems"
+        android:label="Chi tiết từ vựng" />
 
-</fragment>
 
 </navigation>

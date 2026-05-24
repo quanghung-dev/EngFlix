@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/bg_toolbar_close_btn.xml
+     Nút X tròn trên toolbar màn học tập -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_dark">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/bg_screen" />
+        </shape>
+    </item>
+</ripple>
