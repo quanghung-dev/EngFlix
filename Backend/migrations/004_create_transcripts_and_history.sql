@@ -17,6 +17,18 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     PRIMARY KEY (user_id, lesson_id)
 );
 
+CREATE TABLE IF NOT EXISTS transcript_bookmarks (
+    user_id       VARCHAR(255) NOT NULL REFERENCES users (uid) ON DELETE CASCADE,
+    transcript_id INTEGER      NOT NULL REFERENCES transcripts (id) ON DELETE CASCADE,
+    note          TEXT,
+    created_at    TIMESTAMP    NOT NULL DEFAULT NOW(),
+ 
+    PRIMARY KEY (user_id, transcript_id)
+);
+ 
+CREATE INDEX IF NOT EXISTS idx_transcript_bookmarks_user_id
+    ON transcript_bookmarks (user_id);
+
 
 CREATE TABLE IF NOT EXISTS learning_history (
     id SERIAL PRIMARY KEY,
