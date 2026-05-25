@@ -2,6 +2,7 @@ package com.example.app.feature.study;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,7 +48,11 @@ import java.util.List;
 import retrofit2.Call;
 
 public class DictationFragment extends Fragment {
-
+    private LinearLayout layoutButtonBottom;
+    private ImageButton btnPrevious;
+    private ImageButton btnNext;
+    private ImageButton btnReplay2;
+    private ImageButton btnPlay;
     private TranscriptsRepository transcriptsRepository;
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
     private int currentSentenceIndex = 0;
@@ -84,7 +90,6 @@ public class DictationFragment extends Fragment {
 
 
 
-
     @Nullable
     @Override
     public View onCreateView(
@@ -96,6 +101,12 @@ public class DictationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
 
         transcriptsRepository = new TranscriptsRepository(requireContext());
+        layoutButtonBottom = view.findViewById(R.id.layoutButtonBottom);
+        btnPrevious = view.findViewById(R.id.btnPrevious);
+        btnNext = view.findViewById(R.id.btnNext);
+        btnReplay2 = view.findViewById(R.id.btnReplay2);
+        btnPlay = view.findViewById(R.id.btnPlay);
+        vietnamese = view.findViewById(R.id.vietnamese);
         toolbarTitle = view.findViewById(R.id.tvToolbarTitle);
         toolbarProgress = view.findViewById(R.id.tvProgress);
         timer = view.findViewById(R.id.tvTimer);
@@ -326,38 +337,23 @@ public class DictationFragment extends Fragment {
         });
 
         btnStart.setOnClickListener(v -> {
+            btnStart.setVisibility(View.GONE);
+            layoutButtonBottom.setVisibility(View.VISIBLE);
+        });
 
-            if(currentSentenceIndex >= listTranscripts.size()){
-                Navigation.findNavController(v).navigate(R.id.action_DictationFragment_to_progressFragment);
-                return;
+        btnPrevious.setOnClickListener(v -> {
+            if (listTranscripts != null && currentSentenceIndex > 0) {
+                currentSentenceIndex--;
+                prepareCurrentSentence();
+                replayCurrentSentence();
             }
+        });
 
-            if(isWaitingForNext){
+        btnNext.setOnClickListener(v -> {
+            if (listTranscripts != null && currentSentenceIndex < listTranscripts.size() - 1) {
                 currentSentenceIndex++;
-                if(currentSentenceIndex < listTranscripts.size()) {
-                    prepareCurrentSentence();
-                    btnStart.setText("Kiểm tra");
-                    isWaitingForNext = false;
-                    etInput.requestFocus();
-                    etInput.setEnabled(true);
-                }
-                else {
-                    btnStart.setText("Hoàn thành! Xem kết quả");
-                }
-                return;
-
-            }
-
-            if(!isPlaying){
-                isPlaying = true;
-                btnStart.setText("Kiểm tra");
-                etInput.setEnabled(true);
-                etInput.requestFocus();
-            }
-            else {
-                String userInput = etInput.getText().toString().trim();
-                checkAnswer(userInput);
-
+                prepareCurrentSentence();
+                replayCurrentSentence();
             }
         });
 
@@ -378,6 +374,16 @@ public class DictationFragment extends Fragment {
         btnPlaySentence.setOnClickListener(v -> {
             toggleVideoPlayback();
         });
+
+        btnReplay2.setOnClickListener(v -> {
+            replayCurrentSentence();
+            btnPlaysentenceState = true;
+        });
+
+        btnPlay.setOnClickListener(v -> {
+            toggleVideoPlayback();
+        });
+
     }
 
     public void changeVideoSpeed(float speed) {
@@ -457,7 +463,6 @@ public class DictationFragment extends Fragment {
         else {
             btnStart.setText("Sai! Thử lại");
         }
-
     }
 
     public void seekVideoTo(float seconds) {

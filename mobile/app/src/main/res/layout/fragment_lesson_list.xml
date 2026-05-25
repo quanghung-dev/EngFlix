@@ -19,6 +19,7 @@
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
 
     <!-- STATS CARD - glassmorphism style -->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -218,7 +218,7 @@
             <!-- ===== WORD CARDS (câu bị ẩn) ===== -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="200dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
@@ -265,23 +265,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
-                        <ImageButton
-                            android:id="@+id/btnBookmark"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_bookmark"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="bookmark"
-                            android:layout_marginEnd="4dp" />
-
-                        <ImageButton
-                            android:id="@+id/btnFlag"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_flag"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="flag" />
-
                     </LinearLayout>
 
                     <!-- Word cards: RecyclerView với FlexboxLayoutManager -->
@@ -313,7 +296,7 @@
             <EditText
                 android:id="@+id/etInput"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
@@ -344,5 +327,75 @@
         android:textColor="@android:color/white"
         android:background="@drawable/bg_btn_primary"
         android:stateListAnimator="@null" />
+    <LinearLayout
+        android:id="@+id/layoutButtonBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:background="@color/white">
+
+        <!-- Button Trước (Previous) -->
+        <ImageButton
+            android:id="@+id/btnPrevious"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@drawable/bg_btn_gray_outline"
+            android:foreground="?attr/selectableItemBackground"
+            android:contentDescription="Previous" />
+
+        <!-- Button Sau (Next) -->
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_arrow_forward"
+            android:background="@drawable/bg_btn_gray_outline"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Next" />
+
+        <!-- Button Replay -->
+        <ImageButton
+            android:id="@+id/btnReplay2"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_replay"
+            android:background="@drawable/bg_btn_blue_outline"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Replay" />
+
+        <!-- Button Play -->
+        <ImageButton
+            android:id="@+id/btnPlay"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_play_arrow"
+            android:background="@drawable/bg_btn_blue_fill"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Play" />
+
+        <!-- Button Kiểm tra -->
+        <Button
+            android:id="@+id/btnKiemTra"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
+            android:text="Kiểm tra"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_btn_gray_fill"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

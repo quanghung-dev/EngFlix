@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS lessons (
     thumbnail_url VARCHAR(500),
     level         VARCHAR(20),
     duration      DOUBLE PRECISION,
-    created_at    TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
+    is_complete   BOOLEAN DEFAULT false
 );
 
 CREATE INDEX IF NOT EXISTS idx_lessons_category_id ON lessons (category_id);

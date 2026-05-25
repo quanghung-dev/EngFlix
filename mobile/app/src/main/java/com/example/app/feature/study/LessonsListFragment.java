@@ -6,8 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.Navigator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LessonsListFragment extends Fragment {
+    Toolbar toolbar;
     private String currentCategoryName;
     private int currentCategoryId = -1;
     private List<LessonsResponse> lessonsResponseList = new ArrayList<>();
@@ -34,6 +38,11 @@ public class LessonsListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.rvLessons);
         CountNotStarted = view.findViewById(R.id.tvCountNotStarted);
+        toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            Navigation.findNavController(v).popBackStack();
+        });
+
         if (getArguments() != null) {
             currentCategoryId = getArguments().getInt("categoryId", -1);
             currentCategoryName = getArguments().getString("categoryName", "Danh mục");

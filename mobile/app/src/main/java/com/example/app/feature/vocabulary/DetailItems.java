@@ -37,7 +37,6 @@ public class DetailItems extends Fragment {
     private TextView tvCardCount;
     private RecyclerView rvWordList;
 
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_detail, container, false);
         btnBack = view.findViewById(R.id.btnBack);
