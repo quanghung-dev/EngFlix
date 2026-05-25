@@ -32,7 +32,6 @@ import java.util.Map;
 public class VocabularyFragment extends Fragment {
     private List<VocaCategoryResponse> categoryList = new ArrayList<>();
     private Map<Integer, List<VocaDecksResponse>> decksMap = new HashMap<>();
-    private TextView tv_title;
     LinearLayoutManager layoutManager;
     private RecyclerView rv_vocabulary_sections;
     private VocabularySectionAdapter sectionAdapter;
@@ -42,11 +41,9 @@ public class VocabularyFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_page, container, false);
-        tv_title = view.findViewById(R.id.tv_title);
         rv_vocabulary_sections = view.findViewById(R.id.rv_vocabulary_sections);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rv_vocabulary_sections.setLayoutManager(layoutManager);
-        tv_title.setText("Từ Vựng");
         vocabularyRepository = new VocabularyRepository(requireContext());
         fetchCategories();
         sectionAdapter = new VocabularySectionAdapter(categoryList, new VocabularyCardAdapter.OnClickListener() {

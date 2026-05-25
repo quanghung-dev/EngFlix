@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#0F0F1A">
+    android:background="#F2F3F7">
 
     <!-- TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
@@ -14,11 +14,12 @@
         android:layout_height="56dp"
         android:background="@android:color/transparent"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="#1A1A2E"
         app:title="Movie Short Clips"
-        app:titleTextColor="#FFFFFF"
+        app:titleTextColor="#1A1A2E"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
 
-    <!-- STATS CARD - glassmorphism style -->
+    <!-- STATS CARD - light theme -->
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -27,14 +28,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="20dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="0dp">
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="2dp">
 
-        <!-- thêm border bằng stroke drawable nếu muốn -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_glass"
             android:orientation="horizontal"
             android:padding="16dp"
             android:weightSum="3">
@@ -68,7 +67,7 @@
                         android:text="0"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#1A1A2E" />
                 </LinearLayout>
 
                 <TextView
@@ -76,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:text="Hoàn thành"
                     android:textSize="11sp"
-                    android:textColor="#66FFFFFF" />
+                    android:textColor="#8E8E93" />
             </LinearLayout>
 
             <!-- Divider -->
@@ -84,7 +83,7 @@
                 android:layout_width="1dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:background="#22FFFFFF" />
+                android:background="#E0E0E0" />
 
             <!-- Đang học -->
             <LinearLayout
@@ -115,7 +114,7 @@
                         android:text="0"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#1A1A2E" />
                 </LinearLayout>
 
                 <TextView
@@ -123,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đang học"
                     android:textSize="11sp"
-                    android:textColor="#66FFFFFF" />
+                    android:textColor="#8E8E93" />
             </LinearLayout>
 
             <!-- Divider -->
@@ -131,7 +130,7 @@
                 android:layout_width="1dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:background="#22FFFFFF" />
+                android:background="#E0E0E0" />
 
             <!-- Chưa bắt đầu -->
             <LinearLayout
@@ -153,6 +152,7 @@
                         android:layout_height="18dp"
                         android:src="@drawable/ic_circle_empty"
                         android:layout_marginEnd="4dp"
+                        app:tint="#8E8E93"
                         android:contentDescription="not started" />
 
                     <TextView
@@ -162,7 +162,7 @@
                         android:text="88"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#1A1A2E" />
                 </LinearLayout>
 
                 <TextView
@@ -170,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:text="Chưa bắt đầu"
                     android:textSize="11sp"
-                    android:textColor="#66FFFFFF" />
+                    android:textColor="#8E8E93" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

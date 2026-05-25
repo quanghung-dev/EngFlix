@@ -363,35 +363,6 @@
             </androidx.cardview.widget.CardView>
 
             <!-- Divider -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="28dp">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#2A2A2A" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="hoặc đăng ký bằng"
-                    android:textColor="#616161"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#2A2A2A" />
-            </LinearLayout>
 
 
             <LinearLayout

@@ -55,6 +55,7 @@ public class LessonsListFragment extends Fragment {
                 showBottomSheet(lesson);
             }
         });
+        toolbar.setTitle(currentCategoryName);
         repository = new LessonsRepository(requireContext());
         recyclerView.setAdapter(adapter);
         fetchLessons();

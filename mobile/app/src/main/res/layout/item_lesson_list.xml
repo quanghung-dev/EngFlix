@@ -11,14 +11,13 @@
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="10dp"
     app:cardCornerRadius="18dp"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="0dp">
+    app:cardBackgroundColor="@android:color/white"
+    app:cardElevation="2dp">
 
     <!-- Ripple effect khi click -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_card_glass"
         android:foreground="?attr/selectableItemBackground">
 
         <LinearLayout
@@ -59,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|start"
                     android:layout_margin="7dp"
-                    android:background="@drawable/bg_badge_level_dark"
+                    android:background="@drawable/bg_badge_level"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:paddingTop="3dp"
@@ -89,7 +88,7 @@
                     android:lineSpacingMultiplier="1.25"
                     android:maxLines="2"
                     android:text="KIKI'S DELIVERY SERVICE | Official English Trailer"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#1A1A1A"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -113,7 +112,7 @@
                         android:layout_marginStart="3dp"
                         android:text="00:50"
                         android:textSize="11sp"
-                        android:textColor="#66FFFFFF" />
+                        android:textColor="#999999" />
 
                 </LinearLayout>
 
@@ -129,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/bg_pill_dark"
+                        android:background="@drawable/bg_pill"
                         android:paddingStart="8dp"
                         android:paddingEnd="10dp"
                         android:paddingTop="4dp"
@@ -141,7 +140,7 @@
                             android:layout_width="7dp"
                             android:layout_height="7dp"
                             android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_circle_dot"
+                            android:src="@drawable/ic_radio_unchecked"
                             android:contentDescription="radio" />
 
                         <TextView
@@ -149,7 +148,7 @@
                             android:layout_height="wrap_content"
                             android:text="Chính tả"
                             android:textSize="10sp"
-                            android:textColor="#99FFFFFF" />
+                            android:textColor="#444444" />
 
                     </LinearLayout>
 
@@ -159,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/bg_pill_dark"
+                        android:background="@drawable/bg_pill"
                         android:paddingStart="8dp"
                         android:paddingEnd="10dp"
                         android:paddingTop="4dp"
@@ -170,7 +169,7 @@
                             android:layout_width="7dp"
                             android:layout_height="7dp"
                             android:layout_marginEnd="5dp"
-                            android:src="@drawable/ic_circle_dot"
+                            android:src="@drawable/ic_radio_unchecked"
                             android:contentDescription="radio" />
 
                         <TextView
@@ -178,7 +177,7 @@
                             android:layout_height="wrap_content"
                             android:text="Luyện nói"
                             android:textSize="10sp"
-                            android:textColor="#99FFFFFF" />
+                            android:textColor="#444444" />
 
                     </LinearLayout>
 
@@ -192,7 +191,7 @@
                 android:layout_height="14dp"
                 android:src="@drawable/ic_arrow_right"
                 android:contentDescription="arrow"
-                app:tint="#44FFFFFF" />
+                app:tint="#CCCCCC" />
 
         </LinearLayout>
 
