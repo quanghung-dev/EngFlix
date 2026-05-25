@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS bookmarks (
 );
 
 CREATE TABLE IF NOT EXISTS transcript_bookmarks (
+    id            SERIAL       PRIMARY KEY,
     user_id       VARCHAR(255) NOT NULL REFERENCES users (uid) ON DELETE CASCADE,
     transcript_id INTEGER      NOT NULL REFERENCES transcripts (id) ON DELETE CASCADE,
     note          TEXT,

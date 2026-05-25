@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- Note label (A, B, C...) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="24dp"
+            android:background="#4A90D9"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="≡"
+            android:textSize="16sp"
+            android:textColor="#4A90D9"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="There is evil at work in the land to the west, Prince Ashitaka."
+            android:textSize="14sp"
+            android:textColor="#1A1A1A"
+            android:lineSpacingExtra="2dp" />
+
+    </LinearLayout>
+
+    <!-- Phonetic -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="▌"
+            android:textSize="12sp"
+            android:textColor="#9B59B6"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_phonetic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="'ðer ɪz 'ɪvəl æt 'wɜrk ɪn ðə 'lænd tu ðə 'wɛst, 'prɪns ˌɑʃɪ'tɑkə."
+            android:textSize="13sp"
+            android:textColor="#7D3C98"
+            android:lineSpacingExtra="2dp" />
+
+    </LinearLayout>
+
+    <!-- Vietnamese translation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#F0FAF4"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="🌐"
+            android:textSize="13sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_vietnamese"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Có một thế lực tà ác đang hoành hành ở vùng đất phía tây, Hoàng tử Ashitaka."
+            android:textSize="13sp"
+            android:textColor="#2E7D32"
+            android:lineSpacingExtra="2dp" />
+
+    </LinearLayout>
+
+    <!-- Footer: date + delete button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="📅"
+            android:textSize="13sp"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:id="@+id/tv_created_at"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="01:37 ngày 26 thg 5, 2026"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:background="#F0F0F0"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp" />
+
+        <TextView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗑 Xóa"
+            android:textSize="13sp"
+            android:textColor="#E53935"
+            android:background="#FFEBEE"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginStart="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

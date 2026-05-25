@@ -23,6 +23,7 @@ public class TranscriptsRepository {
         this.transcriptsApi = RetrofitClient.getInstance(context).getTranscriptsApi();
     }
 
+
     public interface TranscriptsCallback {
         void onSuccess(List<TranscriptsResponse> data);
 

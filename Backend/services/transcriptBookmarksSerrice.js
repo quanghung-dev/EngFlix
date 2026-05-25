@@ -19,6 +19,11 @@ const getTranscriptBookmarksByUserId = async (user_id, limit, offset) => {
         totalCount: parseInt(countResult.rows[0].count, 10)
     };
 }
+const  updateTranscriptBookmark = async (id, note) => {
+    const query = `UPDATE transcript_bookmarks SET note = $1, updated_at = NOW() WHERE id = $2 RETURNING *`;
+    const result = await pool.query(query, [note, id]);
+    return result.rows[0];
+};
 
 const deleteTranscriptBookmark = async (id) => {
     const query = `DELETE FROM transcript_bookmarks WHERE id = $1 RETURNING *`;
@@ -28,5 +33,6 @@ const deleteTranscriptBookmark = async (id) => {
 module.exports = {
     createTranscriptBookmark,
     getTranscriptBookmarksByUserId,
+    updateTranscriptBookmark,
     deleteTranscriptBookmark
 };
