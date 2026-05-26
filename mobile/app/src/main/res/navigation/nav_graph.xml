@@ -64,7 +64,11 @@
     <fragment
         android:id="@+id/progressFragment"
         android:name="com.example.app.feature.progress.ProgressFragment"
-        android:label="Tiến độ" />
+        android:label="Tiến độ" >
+        <action
+            android:id="@+id/action_ProgressFragment_to_studyFragment"
+            app:destination="@id/StudyFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
