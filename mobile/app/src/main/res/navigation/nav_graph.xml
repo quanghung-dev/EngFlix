@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/progressFragment"
-        android:name="com.example.app.feature.study.LessonsListFragment"
+        android:name="com.example.app.feature.progress.ProgressFragment"
         android:label="Tiến độ" />
 
     <fragment

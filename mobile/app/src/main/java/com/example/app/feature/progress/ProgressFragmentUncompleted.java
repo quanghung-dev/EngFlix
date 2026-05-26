@@ -1,4 +1,4 @@
-package com.example.app.feature.progess;
+package com.example.app.feature.progress;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.app.R;
 
-public class ProgressFragment extends Fragment {
+public class ProgressFragmentUncompleted extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.item_vocabulary_word, container, false);
+        return inflater.inflate(R.layout.fragment_progress_uncompleted, container, false);
     }
 }
