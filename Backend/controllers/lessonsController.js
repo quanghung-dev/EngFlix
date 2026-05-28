@@ -1,5 +1,5 @@
 const { dataResponse, errorResponse } = require('../utils/response');
-const lessonService = require('../services/lessonsServices.js');
+const lessonService = require('../services/lessonsService.js');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const parseOptionalPositiveInteger = (value, fieldName) => {

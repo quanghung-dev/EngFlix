@@ -35,7 +35,7 @@ const createVocabularyDecks = async (category_id, name, description, level, thum
     return result.rows[0];
 };
 
-const upadteVocabularyDecks = async (id, name, description, level, thumbnail_url) => {
+const updateVocabularyDecks = async (id, name, description, level, thumbnail_url) => {
     const query = `
         UPDATE vocabulary_decks
         SET name = $1,
@@ -58,6 +58,6 @@ const deleteVocabularyDecks = async (id) => {
 module.exports = {
 getVocabularyDecks,
 createVocabularyDecks,
-upadteVocabularyDecks,
+updateVocabularyDecks,
 deleteVocabularyDecks
 }

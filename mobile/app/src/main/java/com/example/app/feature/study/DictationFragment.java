@@ -2,57 +2,52 @@ package com.example.app.feature.study;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.app.R;
 import com.example.app.adapter.dictation.SentenceAdapter;
 import com.example.app.adapter.dictation.WordCardAdapter;
 import com.example.app.adapter.dictation.WorkCardModel;
-import com.example.app.data.remote.api.TranscriptsApi;
+import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.progress.ProgressResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
-import com.example.app.data.remote.model.response.transcripts.WordCardResponse;
+import com.example.app.data.repository.ProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.diaglog.SpoilerWarning;
+import com.example.app.utils.BaseCallback;
+import com.example.app.utils.YouTubeWebViewManager;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxItemDecoration;
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-
 public class DictationFragment extends Fragment {
+    private Button btnKiemTra;
+    private YouTubeWebViewManager youTubeWebViewManager;
     private LinearLayout layoutButtonBottom;
     private ImageButton btnPrevious;
     private ImageButton btnNext;
     private ImageButton btnReplay2;
     private ImageButton btnPlay;
+    int lessonId;
     private TranscriptsRepository transcriptsRepository;
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
     private int currentSentenceIndex = 0;
@@ -75,8 +70,6 @@ public class DictationFragment extends Fragment {
     private androidx.appcompat.widget.SwitchCompat switchAutoStop;
     private RecyclerView rvSentenceNumbers;
     private RecyclerView rvWordCards;
-
-    private boolean isPlaying = false;
     private static final float[] SPEED_LEVELS = {0.25f, 0.5f, 0.75f, 1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
     private int speedIndex = 3;
     private float currentSpeed = 1.0f;
@@ -87,8 +80,7 @@ public class DictationFragment extends Fragment {
     private Handler autoStopHandler = new Handler();
     private Runnable timerRunnable;
     private Runnable autoStopRunnable;
-
-
+    private ProgressRepository progressRepository;
 
     @Nullable
     @Override
@@ -101,16 +93,19 @@ public class DictationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
 
         transcriptsRepository = new TranscriptsRepository(requireContext());
+        progressRepository = new ProgressRepository(requireContext());
         layoutButtonBottom = view.findViewById(R.id.layoutButtonBottom);
         btnPrevious = view.findViewById(R.id.btnPrevious);
         btnNext = view.findViewById(R.id.btnNext);
         btnReplay2 = view.findViewById(R.id.btnReplay2);
         btnPlay = view.findViewById(R.id.btnPlay);
+        btnKiemTra = view.findViewById(R.id.btnKiemTra);
         vietnamese = view.findViewById(R.id.vietnamese);
         toolbarTitle = view.findViewById(R.id.tvToolbarTitle);
         toolbarProgress = view.findViewById(R.id.tvProgress);
         timer = view.findViewById(R.id.tvTimer);
         webViewYoutube = view.findViewById(R.id.webViewYoutube);
+        youTubeWebViewManager = new YouTubeWebViewManager(webViewYoutube);
         btnClose = view.findViewById(R.id.btnClose);
         etInput = view.findViewById(R.id.etInput);
         btnStart = view.findViewById(R.id.btnStart);
@@ -156,11 +151,11 @@ public class DictationFragment extends Fragment {
             String lessonTitle = getArguments().getString("lessonTitle");
             String lessonVideoUrl = getArguments().getString("lessonVideoUrl");
             int lessonDuration = getArguments().getInt("lessonDuration");
-            int lessonId = getArguments().getInt("lessonId",-1);
+            lessonId = getArguments().getInt("lessonId",-1);
             toolbarTitle.setText(lessonTitle);
             toolbarProgress.setText("0% hoàn thành");
 
-            setupYoutubeWebView(lessonVideoUrl);
+            youTubeWebViewManager.setupYoutubeWebView(requireContext(), lessonVideoUrl);
             if (lessonId != -1) {
                 fetchTranscripts(lessonId);
             } else {
@@ -236,101 +231,24 @@ public class DictationFragment extends Fragment {
         }
     }
 
-    private void setupYoutubeWebView(String lessonVideoUrl) {
-
-        if (lessonVideoUrl == null || lessonVideoUrl.isEmpty()) {
-            return;
-        }
-
-
-        WebSettings settings = webViewYoutube.getSettings();
-
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-        settings.setMediaPlaybackRequiresUserGesture(false);
-        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-
-        String defaultUA = settings.getUserAgentString();
-        String fakedUA = defaultUA.replace("; wv", "");
-        settings.setUserAgentString(fakedUA);
-
-        webViewYoutube.setWebChromeClient(new WebChromeClient());
-        webViewYoutube.setWebViewClient(new WebViewClient());
-
-        String embedUrl = lessonVideoUrl;
-
-        if (embedUrl.startsWith("http://")) {
-            embedUrl = embedUrl.replaceFirst("http://", "https://");
-        }
-
-        if (embedUrl.contains("watch?v=")) {
-            embedUrl = embedUrl.replace("watch?v=", "embed/");
-        } else if (embedUrl.contains("youtu.be/")) {
-            embedUrl = "https://www.youtube.com/embed/"
-                    + embedUrl.substring(
-                    embedUrl.lastIndexOf("/") + 1
-            );
-        }
-
-        embedUrl = embedUrl.replace(
-                "youtube.com",
-                "youtube-nocookie.com"
-        );
-
-        String appOrigin = "https://" + requireContext().getPackageName();
-
-        String youtubeParams =
-                "controls=1&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=" + appOrigin;
-
-        if (embedUrl.contains("?")) {
-            embedUrl += "&" + youtubeParams;
-        } else {
-            embedUrl += "?" + youtubeParams;
-        }
-
-        String html =
-                "<!DOCTYPE html>" +
-                        "<html style='margin:0;padding:0;height:100%;'>" +
-                        "<body style='margin:0;padding:0;height:100%;background:#000;'>" +
-                        "<iframe width='100%' height='100%' " +
-                        "style='display:block;' " +
-                        "src='" + embedUrl + "' " +
-                        "allow='autoplay; encrypted-media; fullscreen' " +
-                        "referrerpolicy='strict-origin-when-cross-origin' " +
-                        "frameborder='0' allowfullscreen>" +
-                        "</iframe>" +
-                        "</body></html>";
-
-        webViewYoutube.loadDataWithBaseURL(
-                appOrigin,
-                html,
-                "text/html",
-                "utf-8",
-                null
-        );
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         stopStudyTime();
         cancelAutoStop();
-        if (webViewYoutube != null) {
-            webViewYoutube.loadUrl("about:blank");
-            webViewYoutube.onPause();
-            webViewYoutube.removeAllViews();
-            webViewYoutube.destroy();
-            webViewYoutube = null;
+        if (youTubeWebViewManager != null) {
+            youTubeWebViewManager.destroy();
         }
+        webViewYoutube = null;
     }
 
     public void setupListeners(){
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (webViewYoutube != null) {
-                    webViewYoutube.loadUrl("about:blank");
-                    webViewYoutube.onPause();
+                if (youTubeWebViewManager != null) {
+                    youTubeWebViewManager.stopVideo();
                 }
                 Navigation.findNavController(v).popBackStack();
             }
@@ -339,6 +257,7 @@ public class DictationFragment extends Fragment {
         btnStart.setOnClickListener(v -> {
             btnStart.setVisibility(View.GONE);
             layoutButtonBottom.setVisibility(View.VISIBLE);
+            etInput.setEnabled(true);
         });
 
         btnPrevious.setOnClickListener(v -> {
@@ -346,6 +265,7 @@ public class DictationFragment extends Fragment {
                 currentSentenceIndex--;
                 prepareCurrentSentence();
                 replayCurrentSentence();
+                btnKiemTra.setText("Kiểm tra");
             }
         });
 
@@ -354,6 +274,7 @@ public class DictationFragment extends Fragment {
                 currentSentenceIndex++;
                 prepareCurrentSentence();
                 replayCurrentSentence();
+                btnKiemTra.setText("Kiểm tra");
             }
         });
 
@@ -368,6 +289,7 @@ public class DictationFragment extends Fragment {
         btnReplay.setOnClickListener(v -> {
             replayCurrentSentence();
             btnPlaysentenceState = true;
+            btnKiemTra.setText("Kiểm tra");
 
         });
 
@@ -383,19 +305,14 @@ public class DictationFragment extends Fragment {
         btnPlay.setOnClickListener(v -> {
             toggleVideoPlayback();
         });
+        btnKiemTra.setOnClickListener(v -> {
+            checkAnswer(etInput.getText().toString());
+        });
 
     }
 
     public void changeVideoSpeed(float speed) {
-        if (webViewYoutube != null) {
-            String jsCommand = "javascript:(function() { " +
-                    "var iframe = document.querySelector('iframe'); " +
-                    "if(iframe && iframe.contentWindow) { " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: 'setPlaybackRate', args: [" + speed + "]}), '*'); " +
-                    "} " +
-                    "})()";
-            webViewYoutube.evaluateJavascript(jsCommand, null);
-        }
+        youTubeWebViewManager.changeSpeed(speed);
     }
 
     public void replayCurrentSentence() {
@@ -406,42 +323,26 @@ public class DictationFragment extends Fragment {
 
         float startTimestamp = listTranscripts.get(currentSentenceIndex).getStartTimestamp();
 
-        if (webViewYoutube != null) {
-            String jsCommand = "javascript:(function() { " +
-                    "var iframe = document.querySelector('iframe'); " +
-                    "if(iframe && iframe.contentWindow) { " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: 'seekTo', args: [" + startTimestamp + ", true]}), '*'); " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: 'playVideo', args: []}), '*'); " +
-                    "} " +
-                    "})()";
-            webViewYoutube.evaluateJavascript(jsCommand, null);
-        }
+        youTubeWebViewManager.seekTo(startTimestamp);
+        youTubeWebViewManager.playVideo();
     }
 
     private void toggleVideoPlayback() {
-        if (webViewYoutube != null) {
-            String action = btnPlaysentenceState ? "pauseVideo" : "playVideo";
+        if (btnPlaysentenceState) {
+            youTubeWebViewManager.pauseVideo();
+        } else {
+            youTubeWebViewManager.playVideo();
+        }
 
-            String jsCommand = "javascript:(function() { " +
-                    "var iframe = document.querySelector('iframe'); " +
-                    "if(iframe && iframe.contentWindow) { " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: '" + action + "', args: []}), '*'); " +
-                    "} " +
-                    "})()";
-
-            webViewYoutube.evaluateJavascript(jsCommand, null);
-
-            btnPlaysentenceState = !btnPlaysentenceState;
-            if (btnPlaysentenceState) {
-                btnPlaySentence.setImageResource(R.drawable.ic_pause);
-            } else {
-                btnPlaySentence.setImageResource(R.drawable.ic_play_filled);
-            }
+        btnPlaysentenceState = !btnPlaysentenceState;
+        if (btnPlaysentenceState) {
+            btnPlaySentence.setImageResource(R.drawable.ic_pause);
+        } else {
+            btnPlaySentence.setImageResource(R.drawable.ic_play_filled);
         }
     }
 
     public void checkAnswer(String userInput) {
-
         if (listTranscripts == null || currentSentenceIndex >= listTranscripts.size()) {
             return;
         };
@@ -451,31 +352,60 @@ public class DictationFragment extends Fragment {
         String normalizedTarget = correctAnswer.replaceAll("\\s+", " ");
 
         if(normalizedInput.equalsIgnoreCase(normalizedTarget)){
+            etInput.setEnabled(false);
             if( currentSentenceIndex != listTranscripts.size() - 1){
-            btnStart.setText("Chính xác! Câu tiếp theo");}
+                btnKiemTra.setText("Chính xác!");
+                btnKiemTra.setOnClickListener(v -> {
+                     currentSentenceIndex++;
+                     prepareCurrentSentence();
+                     replayCurrentSentence();
+                     progressRepository.createProgress(new CreateProgressRequest(lessonId,(int) elapsedSeconds,Boolean.FALSE),new BaseCallback<ApiResponse<ProgressResponse>>(){
+                         @Override
+                         public void onSuccess(ApiResponse<ProgressResponse> data) {
+                             android.util.Log.d("DictationFragment", "gửi api progress thành công ");
+                         }
+
+                         @Override
+                         public void onError(String message) {
+                             android.util.Log.d("DictationFragment", "gửi api progress thất bại ");
+                         }
+                     });
+                });
+
+            }
             else {
-                btnStart.setText("Hoàn thành! Xem kết quả");
+                btnKiemTra.setText("Hoàn thành!");
+                stopStudyTime();
+                int duration = (int) elapsedSeconds;
+                progressRepository.createProgress(new CreateProgressRequest(lessonId,duration,Boolean.TRUE),new BaseCallback<ApiResponse<ProgressResponse>>() {
+                    @Override
+                    public void onSuccess(ApiResponse<ProgressResponse> data) {
+                        android.util.Log.d("DictationFragment", "gửi api progress thành công ");
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        android.util.Log.d("DictationFragment", "gửi api progress thất bại ");
+                    }
+                });
+                btnKiemTra.setOnClickListener(v -> {
+                    Navigation.findNavController(requireView())
+                            .navigate(R.id.action_DictationFragment_to_progressFragment);
+                });
+
             }
             isWaitingForNext = true;
             etInput.setEnabled(false);
 
         }
         else {
-            btnStart.setText("Sai! Thử lại");
+            btnKiemTra.setText("Sai! Thử lại");
         }
     }
 
     public void seekVideoTo(float seconds) {
-        if (webViewYoutube != null) {
-            String jsCommand = "javascript:(function() { " +
-                    "var iframe = document.querySelector('iframe'); " +
-                    "if(iframe && iframe.contentWindow) { " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: 'seekTo', args: [" + seconds + ", true]}), '*'); " +
-                    "   iframe.contentWindow.postMessage(JSON.stringify({event: 'command', func: 'playVideo', args: []}), '*'); " +
-                    "} " +
-                    "})()";
-            webViewYoutube.evaluateJavascript(jsCommand, null);
-        }
+        youTubeWebViewManager.seekTo(seconds);
+        youTubeWebViewManager.playVideo();
     }
 
     public int dpToPx(int dp) {

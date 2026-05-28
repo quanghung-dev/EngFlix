@@ -85,8 +85,8 @@
         android:label="Học Chính Tả" >
         <action
             android:id="@+id/action_DictationFragment_to_progressFragment"
-            app:destination="@id/progressFragment" >
-        </action>
+            app:destination="@id/progressFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/detailItemsFragment"

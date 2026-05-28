@@ -1,11 +1,11 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const transcriptBookmarksSerrice = require('../services/transcriptBookmarksSerrice');
+const transcriptBookmarksService = require('../services/transcriptBookmarksService');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 const createTranscriptBookmark = async (req, res, next) => {
     try {
         const { transcript_id, note } = req.body;
         const user_id = req.user.uid;
-        const bookmark = await transcriptBookmarksSerrice.createTranscriptBookmark(user_id, transcript_id, note);
+        const bookmark = await transcriptBookmarksService.createTranscriptBookmark(user_id, transcript_id, note);
         if (!bookmark) {
             return errorResponse(res, 400, 'Failed to create transcript bookmark');
         }
@@ -20,7 +20,7 @@ const getTranscriptBookmarksByUserId = async (req, res, next) => {
     try {
         const user_id = req.user.uid;
         const { page,limit, offset } = getPagination(req.query);
-        const {bookmarks, totalCount} = await transcriptBookmarksSerrice.getTranscriptBookmarksByUserId(user_id, parseInt(limit), parseInt(offset));
+        const {bookmarks, totalCount} = await transcriptBookmarksService.getTranscriptBookmarksByUserId(user_id, parseInt(limit), parseInt(offset));
         if (!bookmarks) {
             return errorResponse(res, 404, 'Transcript bookmarks not found');
         }
@@ -35,7 +35,7 @@ const updateTranscriptBookmark = async (req, res, next) => {
         const user_id = req.user.uid;
         const { id } = req.params;
         const { note } = req.body;
-        const updatedBookmark = await transcriptBookmarksSerrice.updateTranscriptBookmark(user_id,id, note);
+        const updatedBookmark = await transcriptBookmarksService.updateTranscriptBookmark(user_id,id, note);
         if (!updatedBookmark) {
             return errorResponse(res, 404, 'Transcript bookmark not found');
         }
@@ -49,7 +49,7 @@ const deleteTranscriptBookmark = async (req, res, next) => {
     try { 
         const user_id = req.user.uid;       
         const { id } = req.params;
-        const deletedBookmark = await transcriptBookmarksSerrice.deleteTranscriptBookmark(user_id,id); 
+        const deletedBookmark = await transcriptBookmarksService.deleteTranscriptBookmark(user_id,id); 
         if (!deletedBookmark) {
             return errorResponse(res, 404, 'Transcript bookmark not found');
         }

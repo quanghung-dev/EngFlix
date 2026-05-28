@@ -1,12 +1,12 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const vocabularyDecksSerice = require('../services/vocabularyDecksSerice');
+const vocabularyDecksService = require('../services/vocabularyDecksService');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const getVocabularyDecks = async (req, res, next) => {
     try {
         const { category_id } = req.query;
         const { page, limit, offset } = getPagination(req.query);
-        const { result, totalCount } = await vocabularyDecksSerice.getVocabularyDecks(category_id, limit, offset);
+        const { result, totalCount } = await vocabularyDecksService.getVocabularyDecks(category_id, limit, offset);
         if (!result || result.length === 0) {
             return errorResponse(res, 400, 'Khong tim thay');
         }
@@ -22,7 +22,7 @@ const createVocabularyDecks = async (req, res, next) => {
         if (!name) {
             return errorResponse(res, 400, 'name la bat buoc');
         }
-        const result = await vocabularyDecksSerice.createVocabularyDecks(category_id, name, description, level, thumbnail_url);
+        const result = await vocabularyDecksService.createVocabularyDecks(category_id, name, description, level, thumbnail_url);
         return dataResponse(res, 201, result);
     } catch (error) {
         if (error.code === '23503') {
@@ -32,7 +32,7 @@ const createVocabularyDecks = async (req, res, next) => {
     }
 };
 
-const upadteVocabularyDecks = async (req, res, next) => {
+const updateVocabularyDecks = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, description, level, thumbnail_url } = req.body;
@@ -45,7 +45,7 @@ const upadteVocabularyDecks = async (req, res, next) => {
             return errorResponse(res, 400, 'name la bat buoc');
         }
 
-        const result = await vocabularyDecksSerice.upadteVocabularyDecks(id, name, description, level, thumbnail_url);
+        const result = await vocabularyDecksService.updateVocabularyDecks(id, name, description, level, thumbnail_url);
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay');
         }
@@ -62,7 +62,7 @@ const deleteVocabularyDecks = async (req, res, next) => {
         if (!id) {
             return errorResponse(res, 400, 'id la bat buoc');
         }
-        const result = await vocabularyDecksSerice.deleteVocabularyDecks(id);
+        const result = await vocabularyDecksService.deleteVocabularyDecks(id);
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay');
         }
@@ -77,6 +77,6 @@ const deleteVocabularyDecks = async (req, res, next) => {
 module.exports = {
     getVocabularyDecks,
     createVocabularyDecks,
-    upadteVocabularyDecks,
+    updateVocabularyDecks,
     deleteVocabularyDecks,
 };

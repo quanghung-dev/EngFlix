@@ -109,7 +109,7 @@ router.use(verifyToken);
  *       500:
  *         description: Internal server error
  */
-router.get('/', dictationStatusController.getdictationStatus);
+router.get('/', dictationStatusController.getDictationStatus);
 
 /**
  * @swagger
@@ -193,6 +193,6 @@ router.get('/', dictationStatusController.getdictationStatus);
  *       500:
  *         description: Internal server error
  */
-router.post('/:transcriptId', dictationStatusController.setdictationStatus);
+router.post('/:transcriptId', dictationStatusController.setDictationStatus);
 
 module.exports = router;

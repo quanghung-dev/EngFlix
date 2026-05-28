@@ -10,4 +10,4 @@
     android:textColor="#1A1A1A"
     android:textSize="15sp"
     android:textStyle="bold"
-    android:background="@drawable/bg_sentence_normal" />
+    android:background="@drawable/bg_btn_play_blue" />

@@ -1,5 +1,5 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const vocabularyItemsServices = require('../services/vocabularyItemsServices');
+const vocabularyItemsService = require('../services/vocabularyItemsService');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const parsePositiveInteger = (value) => {
@@ -14,13 +14,13 @@ const getVocabularyItems = async (req, res, next) => {
             return errorResponse(res, 400, 'deckId khong hop le');
         }
 
-        const deckExists = await vocabularyItemsServices.deckExists(deckId);
+        const deckExists = await vocabularyItemsService.deckExists(deckId);
         if (!deckExists) {
             return errorResponse(res, 404, 'Deck not found');
         }
 
         const { page, limit, offset } = getPagination(req.query);
-        const { result, totalCount } = await vocabularyItemsServices.getVocabularyItems(deckId, limit, offset);
+        const { result, totalCount } = await vocabularyItemsService.getVocabularyItems(deckId, limit, offset);
         return dataResponse(res, 200, result, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -77,7 +77,7 @@ const addVocabularyItems = async (req, res, next) => {
             return errorResponse(res, 400, 'deckId khong hop le');
         }
 
-        const deckExists = await vocabularyItemsServices.deckExists(deckId);
+        const deckExists = await vocabularyItemsService.deckExists(deckId);
         if (!deckExists) {
             return errorResponse(res, 404, 'Deck not found');
         }
@@ -87,7 +87,7 @@ const addVocabularyItems = async (req, res, next) => {
             return errorResponse(res, 400, payload);
         }
 
-        const result = await vocabularyItemsServices.addVocabularyItems(deckId, payload);
+        const result = await vocabularyItemsService.addVocabularyItems(deckId, payload);
         return dataResponse(res, 201, result);
     } catch (error) {
         if (error.code === '23503') {
@@ -113,7 +113,7 @@ const updateVocabularyItems = async (req, res, next) => {
             return errorResponse(res, 400, payload);
         }
 
-        const result = await vocabularyItemsServices.updateVocabularyItems(deckId, itemId, payload);
+        const result = await vocabularyItemsService.updateVocabularyItems(deckId, itemId, payload);
         if (!result) {
             return errorResponse(res, 404, 'Vocabulary item not found');
         }
@@ -138,7 +138,7 @@ const deleteVocabularyItems = async (req, res, next) => {
             return errorResponse(res, 400, 'itemId khong hop le');
         }
 
-        const result = await vocabularyItemsServices.deleteVocabularyItems(deckId, itemId);
+        const result = await vocabularyItemsService.deleteVocabularyItems(deckId, itemId);
         if (!result) {
             return errorResponse(res, 404, 'Vocabulary item not found');
         }

@@ -1,5 +1,5 @@
 const { AppError } = require('../utils/AppError');
-const categoryService = require('../services/categoryServices.js');
+const categoryService = require('../services/categoryService.js');
 const { successResponse, dataResponse, errorResponse } = require('../utils/response');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 const e = require('cors');

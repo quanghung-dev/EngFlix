@@ -1,5 +1,5 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const transcriptService = require('../services/transcriptServices.js');
+const transcriptService = require('../services/transcriptService.js');
 
 const createTranscript = async (req, res, next) => {
     try {

@@ -1,4 +1,4 @@
-const adminService = require('../services/adminServices.js');
+const adminService = require('../services/adminService.js');
 
 const getDashboardData = async (req, res) => {
     try {

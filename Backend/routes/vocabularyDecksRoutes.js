@@ -475,7 +475,7 @@ router.post('/', vocabularyDecksController.createVocabularyDecks);
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', vocabularyDecksController.upadteVocabularyDecks);
+router.put('/:id', vocabularyDecksController.updateVocabularyDecks);
 
 /**
  * @swagger

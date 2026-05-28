@@ -1,6 +1,6 @@
 const pool = require('../db/index');
 
-const getdictationStatus = async (userId, lessonId, limit, offset) => {
+const getDictationStatus = async (userId, lessonId, limit, offset) => {
     const conditions = ['ds.user_id = $1'];
     const values = [userId];
     let paramIndex = 2;
@@ -44,7 +44,7 @@ const getdictationStatus = async (userId, lessonId, limit, offset) => {
     };
 };
 
-const setdictationStatus = async (userId, transcriptId) => {
+const setDictationStatus = async (userId, transcriptId) => {
     const query = `
         WITH target_transcript AS (
             SELECT id, lesson_id
@@ -80,6 +80,6 @@ const setdictationStatus = async (userId, transcriptId) => {
 };
 
 module.exports = {
-    getdictationStatus,
-    setdictationStatus
+    getDictationStatus,
+    setDictationStatus
 };

@@ -1,5 +1,5 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const dictationStatusServices = require('../services/dictationStatusServices');
+const dictationStatusService = require('../services/dictationStatusService');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const parsePositiveInteger = (value) => {
@@ -21,7 +21,7 @@ const getOptionalLessonId = (req) => {
     return { lessonId };
 };
 
-const getdictationStatus = async (req, res, next) => {
+const getDictationStatus = async (req, res, next) => {
     try {
         const userId = req.user.uid;
         const { lessonId, error } = getOptionalLessonId(req);
@@ -30,14 +30,14 @@ const getdictationStatus = async (req, res, next) => {
         }
 
         const { page, limit, offset } = getPagination(req.query);
-        const { result, totalCount } = await dictationStatusServices.getdictationStatus(userId, lessonId, limit, offset);
+        const { result, totalCount } = await dictationStatusService.getDictationStatus(userId, lessonId, limit, offset);
         return dataResponse(res, 200, result, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
     }
 };
 
-const setdictationStatus = async (req, res, next) => {
+const setDictationStatus = async (req, res, next) => {
     try {
         const userId = req.user.uid;
         const transcriptId = parsePositiveInteger(req.params.transcriptId);
@@ -45,7 +45,7 @@ const setdictationStatus = async (req, res, next) => {
             return errorResponse(res, 400, 'transcriptId khong hop le');
         }
 
-        const result = await dictationStatusServices.setdictationStatus(userId, transcriptId);
+        const result = await dictationStatusService.setDictationStatus(userId, transcriptId);
         if (!result) {
             return errorResponse(res, 404, 'Transcript not found');
         }
@@ -61,6 +61,6 @@ const setdictationStatus = async (req, res, next) => {
 };
 
 module.exports = {
-    getdictationStatus,
-    setdictationStatus
+    getDictationStatus,
+    setDictationStatus
 }

@@ -1,5 +1,5 @@
 const { errorResponse, dataResponse } = require('../utils/response');
-const shadowingStatusServices = require('../services/shadowingStatusServices');
+const shadowingStatusService = require('../services/shadowingStatusService');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const parsePositiveInteger = (value) => {
@@ -30,7 +30,7 @@ const getShadowingStatus = async (req, res, next) => {
         }
 
         const { page, limit, offset } = getPagination(req.query);
-        const { result, totalCount } = await shadowingStatusServices.getShadowingStatus(userId, lessonId, limit, offset);
+        const { result, totalCount } = await shadowingStatusService.getShadowingStatus(userId, lessonId, limit, offset);
         return dataResponse(res, 200, result, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -45,7 +45,7 @@ const setShadowingStatus = async (req, res, next) => {
             return errorResponse(res, 400, 'transcriptId khong hop le');
         }
 
-        const result = await shadowingStatusServices.setShadowingStatus(userId, transcriptId);
+        const result = await shadowingStatusService.setShadowingStatus(userId, transcriptId);
         if (!result) {
             return errorResponse(res, 404, 'Transcript not found');
         }
