@@ -10,6 +10,38 @@ const learningHistoryController = require('../controllers/learningHistoryControl
  *   description: Authenticated learning history APIs
  */
 
+/**
+ * @swagger
+ * /api/v1/learning-history/test/all:
+ *   get:
+ *     summary: Test get all learning history
+ *     description: Returns all learning history records for testing without requiring a user ID or bearer token.
+ *     tags: [Learning History]
+ *     responses:
+ *       200:
+ *         description: Learning history returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/LearningHistory'
+ *             example:
+ *               data:
+ *                 - id: 1
+ *                   user_id: "firebase-user-id"
+ *                   lesson_id: 1
+ *                   duration_watched: 120
+ *                   completed: false
+ *                   created_at: "2026-05-15T00:00:00.000Z"
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/test/all', learningHistoryController.testGetgetLearningHistory);
+
 router.use(verifyToken);
 
 /**
@@ -148,6 +180,82 @@ router.get('/', learningHistoryController.getLearningHistory);
  *         description: Internal server error
  */
 router.post('/', learningHistoryController.recordLearningHistory);
+
+/**
+ * @swagger
+ * /api/v1/learning-history/finished:
+ *   get:
+ *     summary: Get finished learning history
+ *     description: Returns the authenticated user's completed learning history ordered by latest activity.
+ *     tags: [Learning History]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Finished learning history returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/LearningHistory'
+ *             example:
+ *               data:
+ *                 - id: 1
+ *                   user_id: "firebase-user-id"
+ *                   lesson_id: 1
+ *                   duration_watched: 300
+ *                   completed: true
+ *                   created_at: "2026-05-15T00:00:00.000Z"
+ *       401:
+ *         description: Missing or invalid bearer token
+ *       403:
+ *         description: Token verification failed
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/finished', learningHistoryController.getLearningHistoryFinished);
+
+/**
+ * @swagger
+ * /api/v1/learning-history/unfinished:
+ *   get:
+ *     summary: Get unfinished learning history
+ *     description: Returns the authenticated user's unfinished learning history ordered by latest activity.
+ *     tags: [Learning History]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Unfinished learning history returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/LearningHistory'
+ *             example:
+ *               data:
+ *                 - id: 2
+ *                   user_id: "firebase-user-id"
+ *                   lesson_id: 2
+ *                   duration_watched: 120
+ *                   completed: false
+ *                   created_at: "2026-05-16T00:00:00.000Z"
+ *       401:
+ *         description: Missing or invalid bearer token
+ *       403:
+ *         description: Token verification failed
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/unfinished', learningHistoryController.getLearningHistoryUnfinished);
 
 /**
  * @swagger

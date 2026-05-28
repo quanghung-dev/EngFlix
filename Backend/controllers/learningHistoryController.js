@@ -92,8 +92,39 @@ const getLearningHistoryByLesson = async (req, res, next) => {
     }
 };
 
+const getLearningHistoryFinished = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const result = await learningHistoryService.getLearningHistoryFinished(userId);
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+const getLearningHistoryUnfinished = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const result = await learningHistoryService.getLearningHistoryUnfinished(userId);
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const testGetgetLearningHistory = async (req, res, next) => {
+    try {
+        const result = await learningHistoryService.testGetgetLearningHistory();
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getLearningHistory,
     recordLearningHistory,
-    getLearningHistoryByLesson
+    getLearningHistoryByLesson,
+    getLearningHistoryFinished,
+    getLearningHistoryUnfinished,
+    testGetgetLearningHistory
 };

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS transcript_bookmarks (
     note          TEXT,
     created_at    TIMESTAMP    NOT NULL DEFAULT NOW(),
  
-    PRIMARY KEY (user_id, transcript_id)
+    UNIQUE (user_id, transcript_id)
 );
  
 CREATE INDEX IF NOT EXISTS idx_transcript_bookmarks_user_id
