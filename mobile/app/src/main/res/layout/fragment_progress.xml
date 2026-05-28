@@ -70,7 +70,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_in_progress_count"
+                    android:id="@+id/tv_uncompleted_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"

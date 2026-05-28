@@ -6,29 +6,33 @@ const createBookmark = async (userId, lessonId) => {
             INSERT INTO bookmarks (user_id, lesson_id, created_at)
             VALUES ($1, $2, NOW())
             ON CONFLICT (user_id, lesson_id) DO NOTHING
-            RETURNING user_id, lesson_id, created_at, false AS already_exists
+            RETURNING user_id, lesson_id, created_at, true AS created
+        ),
+        bookmark AS (
+            SELECT user_id, lesson_id, created_at, created
+            FROM inserted
+            UNION ALL
+            SELECT user_id, lesson_id, created_at, false AS created
+            FROM bookmarks
+            WHERE user_id = $1
+              AND lesson_id = $2
+              AND NOT EXISTS (SELECT 1 FROM inserted)
         )
-        SELECT user_id, lesson_id, created_at, already_exists
-        FROM inserted
-        UNION ALL
-        SELECT user_id, lesson_id, created_at, true AS already_exists
-        FROM bookmarks
-        WHERE user_id = $1
-          AND lesson_id = $2
-          AND NOT EXISTS (SELECT 1 FROM inserted)
+        SELECT b.user_id, b.lesson_id, b.created_at, b.created,
+               l.category_id, l.title, l.description, l.video_url, l.thumbnail_url, l.level, l.duration
+        FROM bookmark b
+        JOIN lessons l ON b.lesson_id = l.id
         LIMIT 1;
     `;
     const result = await pool.query(query, [userId, lessonId]);
-    return result.rows[0];
+    const { created, ...bookmark } = result.rows[0];
+    return { bookmark, created };
 };
 
 const removeBookmark = async (userId, lessonId) => {
     const query = 'DELETE FROM bookmarks WHERE user_id = $1 AND lesson_id = $2 RETURNING *';
     const result = await pool.query(query, [userId, lessonId]);
-    if (result.rows.length === 0) {
-        return false;
-    }
-    return true;
+    return result.rows[0]
 };
 
 const getBookmarks = async (userId, lessonId, limit, offset) => {

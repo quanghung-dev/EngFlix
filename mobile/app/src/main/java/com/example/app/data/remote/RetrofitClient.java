@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.example.app.data.local.TokenManager;
 import com.example.app.data.remote.api.AuthApi;
+import com.example.app.data.remote.api.BookMarksApi;
 import com.example.app.data.remote.api.CategoryApi;
 import com.example.app.data.remote.api.LessonsApi;
 import com.example.app.data.remote.api.ProgressApi;
@@ -66,5 +67,6 @@ public class RetrofitClient {
     public VocabularyApi getVocabularyApi(){return  retrofit.create(VocabularyApi.class);}
     public TranscriptBookmarksApi getTranscriptBookmarksApi(){return retrofit.create(TranscriptBookmarksApi.class);}
     public ProgressApi getProgressApi(){return retrofit.create(ProgressApi.class);}
+    public BookMarksApi getBookMarksApi(){return retrofit.create(BookMarksApi.class);}
 
 }

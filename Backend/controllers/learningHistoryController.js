@@ -111,6 +111,16 @@ const getLearningHistoryUnfinished = async (req, res, next) => {
     }
 };
 
+const getLearningHistorySummary = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const result = await learningHistoryService.getLearningHistorySummary(userId);
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const testGetgetLearningHistory = async (req, res, next) => {
     try {
         const result = await learningHistoryService.testGetgetLearningHistory();
@@ -126,5 +136,6 @@ module.exports = {
     getLearningHistoryByLesson,
     getLearningHistoryFinished,
     getLearningHistoryUnfinished,
+    getLearningHistorySummary,
     testGetgetLearningHistory
 };

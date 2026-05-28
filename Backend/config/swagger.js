@@ -91,6 +91,7 @@ const options = {
         },
         Bookmark: {
           type: 'object',
+          required: ['user_id', 'lesson_id', 'created_at'],
           properties: {
             user_id: {
               type: 'string',
@@ -102,32 +103,45 @@ const options = {
               type: 'string',
               format: 'date-time',
             },
-            category_id: {
-              type: 'integer',
-            },
-            title: {
-              type: 'string',
-            },
-            description: {
-              type: 'string',
-              nullable: true,
-            },
-            video_url: {
-              type: 'string',
-            },
-            thumbnail_url: {
-              type: 'string',
-              nullable: true,
-            },
-            level: {
-              type: 'string',
-              nullable: true,
-            },
-            duration: {
-              type: 'integer',
-              nullable: true,
-            },
           },
+        },
+        BookmarkWithLesson: {
+          allOf: [
+            {
+              $ref: '#/components/schemas/Bookmark',
+            },
+            {
+              type: 'object',
+              properties: {
+                category_id: {
+                  type: 'integer',
+                  nullable: true,
+                },
+                title: {
+                  type: 'string',
+                },
+                description: {
+                  type: 'string',
+                  nullable: true,
+                },
+                video_url: {
+                  type: 'string',
+                },
+                thumbnail_url: {
+                  type: 'string',
+                  nullable: true,
+                },
+                level: {
+                  type: 'string',
+                  nullable: true,
+                },
+                duration: {
+                  type: 'integer',
+                  nullable: true,
+                },
+              },
+            },
+          ],
         },
         LearningHistory: {
           type: 'object',

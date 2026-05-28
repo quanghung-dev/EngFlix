@@ -30,13 +30,6 @@ router.use(verifyToken);
  *           minimum: 1
  *         description: Optional lesson ID filter
  *       - in: query
- *         name: lesson_id
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *         description: Optional lesson ID filter, snake_case alias
- *       - in: query
  *         name: page
  *         required: false
  *         schema:
@@ -63,7 +56,7 @@ router.use(verifyToken);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Bookmark'
+ *                     $ref: '#/components/schemas/BookmarkWithLesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -147,7 +140,7 @@ router.get('/', bookmarkController.getBookmarks);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Bookmark'
+ *                     $ref: '#/components/schemas/BookmarkWithLesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -213,23 +206,19 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *               type: object
  *               properties:
  *                 data:
- *                   type: object
- *                   properties:
- *                     user_id:
- *                       type: string
- *                     lesson_id:
- *                       type: integer
- *                     created_at:
- *                       type: string
- *                       format: date-time
- *                     already_exists:
- *                       type: boolean
+ *                   $ref: '#/components/schemas/BookmarkWithLesson'
  *             example:
  *               data:
  *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
  *                 created_at: "2026-05-15T00:00:00.000Z"
- *                 already_exists: false
+ *                 category_id: 1
+ *                 title: "Basic Greetings"
+ *                 description: "Learn common greetings"
+ *                 video_url: "https://example.com/video.mp4"
+ *                 thumbnail_url: "https://example.com/thumb.jpg"
+ *                 level: "beginner"
+ *                 duration: 300
  *       200:
  *         description: Bookmark already exists
  *         content:
@@ -238,23 +227,19 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *               type: object
  *               properties:
  *                 data:
- *                   type: object
- *                   properties:
- *                     user_id:
- *                       type: string
- *                     lesson_id:
- *                       type: integer
- *                     created_at:
- *                       type: string
- *                       format: date-time
- *                     already_exists:
- *                       type: boolean
+ *                   $ref: '#/components/schemas/BookmarkWithLesson'
  *             example:
  *               data:
  *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
  *                 created_at: "2026-05-15T00:00:00.000Z"
- *                 already_exists: true
+ *                 category_id: 1
+ *                 title: "Basic Greetings"
+ *                 description: "Learn common greetings"
+ *                 video_url: "https://example.com/video.mp4"
+ *                 thumbnail_url: "https://example.com/thumb.jpg"
+ *                 level: "beginner"
+ *                 duration: 300
  *       400:
  *         description: Invalid lesson ID
  *       401:
@@ -273,7 +258,7 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  * /api/v1/bookmarks/{lessonId}:
  *   delete:
  *     summary: Remove bookmark
- *     description: Removes a bookmark for the authenticated user and lesson.
+ *     description: Removes a bookmark for the authenticated user and lesson, then returns the removed bookmark with lesson details.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -294,13 +279,19 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *               type: object
  *               properties:
  *                 data:
- *                   type: object
- *                   properties:
- *                     message:
- *                       type: string
+ *                   $ref: '#/components/schemas/BookmarkWithLesson'
  *             example:
  *               data:
- *                 message: "Bookmark removed successfully"
+ *                 user_id: "firebase-user-id"
+ *                 lesson_id: 1
+ *                 created_at: "2026-05-15T00:00:00.000Z"
+ *                 category_id: 1
+ *                 title: "Basic Greetings"
+ *                 description: "Learn common greetings"
+ *                 video_url: "https://example.com/video.mp4"
+ *                 thumbnail_url: "https://example.com/thumb.jpg"
+ *                 level: "beginner"
+ *                 duration: 300
  *       400:
  *         description: Invalid lesson ID
  *       401:

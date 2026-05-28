@@ -259,6 +259,43 @@ router.get('/unfinished', learningHistoryController.getLearningHistoryUnfinished
 
 /**
  * @swagger
+ * /api/v1/learning-history/summary:
+ *   get:
+ *     summary: Get learning history summary
+ *     description: Returns the number of completed and unfinished lessons for the authenticated user.
+ *     tags: [Learning History]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Learning history summary returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     completed_count:
+ *                       type: integer
+ *                     unfinished_count:
+ *                       type: integer
+ *             example:
+ *               data:
+ *                 completed_count: 3
+ *                 unfinished_count: 2
+ *       401:
+ *         description: Missing or invalid bearer token
+ *       403:
+ *         description: Token verification failed
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/summary', learningHistoryController.getLearningHistorySummary);
+
+/**
+ * @swagger
  * /api/v1/learning-history/{lessonId}:
  *   get:
  *     summary: Get learning history by lesson ID

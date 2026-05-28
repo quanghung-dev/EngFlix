@@ -25,8 +25,10 @@ import com.example.app.adapter.dictation.WordCardAdapter;
 import com.example.app.adapter.dictation.WorkCardModel;
 import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.bookmarks.BookmarksResponse;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
+import com.example.app.data.repository.BookMarksRepository;
 import com.example.app.data.repository.ProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.diaglog.SpoilerWarning;
@@ -40,14 +42,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DictationFragment extends Fragment {
+    private BookMarksRepository bookMarksRepository;
     private Button btnKiemTra;
+    private TextView btnBookmark;
     private YouTubeWebViewManager youTubeWebViewManager;
     private LinearLayout layoutButtonBottom;
     private ImageButton btnPrevious;
     private ImageButton btnNext;
     private ImageButton btnReplay2;
     private ImageButton btnPlay;
-    int lessonId;
+    private int lessonId;
     private TranscriptsRepository transcriptsRepository;
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
     private int currentSentenceIndex = 0;
@@ -92,11 +96,13 @@ public class DictationFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
 
+        bookMarksRepository = new BookMarksRepository(requireContext());
         transcriptsRepository = new TranscriptsRepository(requireContext());
         progressRepository = new ProgressRepository(requireContext());
         layoutButtonBottom = view.findViewById(R.id.layoutButtonBottom);
         btnPrevious = view.findViewById(R.id.btnPrevious);
         btnNext = view.findViewById(R.id.btnNext);
+        btnBookmark = view.findViewById(R.id.btnBookmark);
         btnReplay2 = view.findViewById(R.id.btnReplay2);
         btnPlay = view.findViewById(R.id.btnPlay);
         btnKiemTra = view.findViewById(R.id.btnKiemTra);
@@ -284,7 +290,33 @@ public class DictationFragment extends Fragment {
             tvSpeed.setText(currentSpeed + "x");
             changeVideoSpeed(currentSpeed);
         });
+        btnBookmark.setOnClickListener(v -> {
+            bookMarksRepository.createBookmark(lessonId,null,new BaseCallback<ApiResponse<BookmarksResponse>>(){
+                @Override
+                public void onSuccess(ApiResponse<BookmarksResponse> data) {
+                    android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
+                    Toast.makeText(requireContext(), "Đã lưu vào danh sách đánh dấu", Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onError(String message) {
+                    android.util.Log.d("DictationFragment", "gửi api bookmark thất bại ");
+                }
+            });
+            btnBookmark.setOnClickListener(v1 -> {
+                bookMarksRepository.deleteBookmark(lessonId,new BaseCallback<ApiResponse<BookmarksResponse>>(){
+                    @Override
+                    public void onSuccess(ApiResponse<BookmarksResponse> data) {
+                        android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
+                        Toast.makeText(requireContext(), "Đã xóa khỏi danh sách đánh dấu", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(String message) {
+                        android.util.Log.d("DictationFragment", "gửi api bookmark thất bại ");
+                    }
+                });
+            });
 
+        });
 
         btnReplay.setOnClickListener(v -> {
             replayCurrentSentence();

@@ -3,6 +3,7 @@ package com.example.app.data.remote.api;
 import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
+import com.example.app.data.remote.model.response.progress.ProgressSumaryResponse;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface ProgressApi {
     Call<ApiResponse<List<ProgressResponse>>> getProgressFinished();
     @GET("learning-history/unfinished")
     Call<ApiResponse<List<ProgressResponse>>> getProgressUnfinished();
+    @GET("learning-history/summary")
+    Call<ApiResponse<ProgressSumaryResponse>> getProgressSummary();
 }
