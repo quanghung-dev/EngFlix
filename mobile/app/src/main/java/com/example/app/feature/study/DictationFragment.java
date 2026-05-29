@@ -43,7 +43,7 @@ import java.util.List;
 public class DictationFragment extends Fragment {
     private BookMarksRepository bookMarksRepository;
     private Button btnKiemTra;
-    private TextView btnBookmark;
+    private ImageButton btnBookmark;
     private YouTubeWebViewManager youTubeWebViewManager;
     private LinearLayout layoutButtonBottom;
     private ImageButton btnPrevious;
@@ -290,30 +290,26 @@ public class DictationFragment extends Fragment {
             changeVideoSpeed(currentSpeed);
         });
         btnBookmark.setOnClickListener(v -> {
-            bookMarksRepository.createBookmark(lessonId,null,new BaseCallback<ApiResponse<BookmarksModel>>(){
-                @Override
-                public void onSuccess(ApiResponse<BookmarksModel> data) {
-                    android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
-                    Toast.makeText(requireContext(), "Đã lưu vào danh sách đánh dấu", Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onError(String message) {
-                    android.util.Log.d("DictationFragment", "gửi api bookmark thất bại ");
-                }
-            });
-            btnBookmark.setOnClickListener(v1 -> {
-                bookMarksRepository.deleteBookmark(lessonId,new BaseCallback<ApiResponse<BookmarksModel>>(){
-                    @Override
-                    public void onSuccess(ApiResponse<BookmarksModel> data) {
-                        android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
-                        Toast.makeText(requireContext(), "Đã xóa khỏi danh sách đánh dấu", Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onError(String message) {
-                        android.util.Log.d("DictationFragment", "gửi api bookmark thất bại ");
-                    }
-                });
-            });
+            if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
+                Toast.makeText(requireContext(), "Không có dữ liệu câu để tạo ghi chú!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            TranscriptsResponse currentTranscript = listTranscripts.get(currentSentenceIndex);
+            Bundle bundle = new Bundle();
+            bundle.putInt("lessonId", lessonId);
+            bundle.putInt("transcriptId", currentTranscript.getId());
+            bundle.putString("sentenceEn", currentTranscript.getContent());
+            bundle.putString("sentenceVi", currentTranscript.getVietnamese());
+            if (youTubeWebViewManager != null) {
+                youTubeWebViewManager.pauseVideo();
+            }
+            try{
+                Navigation.findNavController(v).navigate(R.id.action_DictationFragment_to_addNoteFragment, bundle);
+
+            }catch (IllegalArgumentException e){
+                android.util.Log.e("DictationFragment", "Chưa cấu hình action chuyển màn hình trong nav_graph: " + e.getMessage());
+                Toast.makeText(requireContext(), "Lỗi chuyển màn hình ghi chú!", Toast.LENGTH_SHORT).show();
+            }
 
         });
 

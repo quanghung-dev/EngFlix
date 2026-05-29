@@ -181,6 +181,30 @@ const options = {
             },
           },
         },
+        BookmarkMutationResponse: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                lesson_id: {
+                  type: 'integer',
+                },
+                transcript_id: {
+                  type: 'integer',
+                },
+                note: {
+                  type: 'string',
+                  nullable: true,
+                },
+                created_at: {
+                  type: 'string',
+                  format: 'date-time',
+                },
+              },
+            },
+          },
+        },
         LearningHistory: {
           type: 'object',
           properties: {

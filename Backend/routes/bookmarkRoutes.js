@@ -17,7 +17,7 @@ router.use(verifyToken);
  * /api/v1/bookmarks:
  *   get:
  *     summary: Get current user's bookmarks
- *     description: Returns the authenticated user's bookmarks grouped by lesson ID. Each lesson contains bookmarked transcripts.
+ *     description: Returns bookmarks grouped by lesson ID. Use lessonId query to filter one lesson.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -36,7 +36,6 @@ router.use(verifyToken);
  *           type: integer
  *           minimum: 1
  *           default: 1
- *         description: Current page number
  *       - in: query
  *         name: limit
  *         required: false
@@ -44,7 +43,6 @@ router.use(verifyToken);
  *           type: integer
  *           minimum: 1
  *           default: 10
- *         description: Number of bookmarks per page
  *     responses:
  *       200:
  *         description: Bookmarks returned successfully
@@ -74,16 +72,10 @@ router.use(verifyToken);
  *                   transcripts:
  *                     - transcript_id: 12
  *                       content: "Hello, how are you?"
- *                       phonetic: "həˈloʊ haʊ ɑr ju"
- *                       vietnamese: "Xin chào, bạn khỏe không?"
+ *                       phonetic: "hello how are you"
+ *                       vietnamese: "Xin chao, ban khoe khong?"
  *                       note: "Review this sentence"
  *                       created_at: "2026-05-15T00:00:00.000Z"
- *                     - transcript_id: 13
- *                       content: "I am fine, thank you."
- *                       phonetic: "aɪ æm faɪn θæŋk ju"
- *                       vietnamese: "Tôi khỏe, cảm ơn bạn."
- *                       note: null
- *                       created_at: "2026-05-14T00:00:00.000Z"
  *               meta:
  *                 page: 1
  *                 limit: 10
@@ -103,91 +95,9 @@ router.get('/', bookmarkController.getBookmarks);
 /**
  * @swagger
  * /api/v1/bookmarks/{lessonId}:
- *   get:
- *     summary: Get bookmarks by lesson ID
- *     description: Returns the authenticated user's bookmarks for a specific lesson grouped under that lesson ID. Data is an empty array when the lesson is not bookmarked.
- *     tags: [Bookmarks]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: lessonId
- *         required: true
- *         schema:
- *           type: integer
- *           minimum: 1
- *         description: Lesson ID
- *       - in: query
- *         name: page
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *         description: Current page number
- *       - in: query
- *         name: limit
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 10
- *         description: Number of bookmarks per page
- *     responses:
- *       200:
- *         description: Bookmark returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/BookmarkGroupedByLesson'
- *                 meta:
- *                   type: object
- *                   properties:
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     total:
- *                       type: integer
- *                     total_pages:
- *                       type: integer
- *             example:
- *               data:
- *                 - lesson_id: 1
- *                   transcripts:
- *                     - transcript_id: 12
- *                       content: "Hello, how are you?"
- *                       phonetic: "həˈloʊ haʊ ɑr ju"
- *                       vietnamese: "Xin chào, bạn khỏe không?"
- *                       note: "Review this sentence"
- *                       created_at: "2026-05-15T00:00:00.000Z"
- *               meta:
- *                 page: 1
- *                 limit: 10
- *                 total: 1
- *                 total_pages: 1
- *       400:
- *         description: Invalid lesson ID
- *       401:
- *         description: Missing or invalid bearer token
- *       403:
- *         description: Token verification failed
- *       500:
- *         description: Internal server error
- */
-router.get('/:lessonId', bookmarkController.getBookmarks);
-
-/**
- * @swagger
- * /api/v1/bookmarks/{lessonId}:
  *   post:
  *     summary: Create bookmark
- *     description: Adds a bookmark for the authenticated user. If it already exists, the existing bookmark is returned.
+ *     description: Creates one transcript bookmark in a lesson. If it already exists, returns the existing bookmark.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -217,7 +127,6 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *               note:
  *                 type: string
  *                 nullable: true
- *                 description: Optional bookmark note
  *             oneOf:
  *               - required: [transcriptId]
  *               - required: [transcript_id]
@@ -230,21 +139,7 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     lesson_id:
- *                       type: integer
- *                     transcript_id:
- *                       type: integer
- *                     note:
- *                       type: string
- *                       nullable: true
- *                     created_at:
- *                       type: string
- *                       format: date-time
+ *               $ref: '#/components/schemas/BookmarkMutationResponse'
  *             example:
  *               data:
  *                 lesson_id: 1
@@ -256,27 +151,7 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     lesson_id:
- *                       type: integer
- *                     transcript_id:
- *                       type: integer
- *                     note:
- *                       type: string
- *                       nullable: true
- *                     created_at:
- *                       type: string
- *                       format: date-time
- *             example:
- *               data:
- *                 lesson_id: 1
- *                 transcript_id: 12
- *                 note: "Review this sentence"
- *                 created_at: "2026-05-15T00:00:00.000Z"
+ *               $ref: '#/components/schemas/BookmarkMutationResponse'
  *       400:
  *         description: Invalid lesson ID or transcript ID
  *       401:
@@ -295,7 +170,7 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  * /api/v1/bookmarks/{lessonId}:
  *   delete:
  *     summary: Remove bookmark
- *     description: Removes one transcript bookmark for the authenticated user and lesson, then returns the removed bookmark.
+ *     description: Removes one transcript bookmark in a lesson.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -327,21 +202,7 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     lesson_id:
- *                       type: integer
- *                     transcript_id:
- *                       type: integer
- *                     note:
- *                       type: string
- *                       nullable: true
- *                     created_at:
- *                       type: string
- *                       format: date-time
+ *               $ref: '#/components/schemas/BookmarkMutationResponse'
  *             example:
  *               data:
  *                 lesson_id: 1

@@ -7,10 +7,15 @@ import com.example.app.data.remote.api.BookMarksApi;
 import com.example.app.data.remote.model.request.bookmarks.CreateBookMarksRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
+import com.example.app.data.remote.model.response.bookmarks.BookmarksResponse;
 import com.example.app.utils.ApiCallWrapper;
 import com.example.app.utils.BaseCallback;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookMarksRepository {
     private final BookMarksApi bookMarksApi;
@@ -23,10 +28,10 @@ public class BookMarksRepository {
     public void getBookmarkByLessonId(int lessonId, int page, int limit, BaseCallback<ApiResponse<BookmarksModel>> callback) {
         bookMarksApi.getBookmarkByLessonId(lessonId, page, limit).enqueue(new ApiCallWrapper<>(callback));
     }
-    public void createBookmark(int lessonId, CreateBookMarksRequest request, BaseCallback<ApiResponse<BookmarksModel>> callback) {
+    public void createBookmark(int lessonId, CreateBookMarksRequest request, BaseCallback<ApiResponse<BookmarksResponse>> callback) {
         bookMarksApi.createBookmark(lessonId, request).enqueue(new ApiCallWrapper<>(callback));
     }
-    public void deleteBookmark(int lessonId, BaseCallback<ApiResponse<BookmarksModel>> callback) {
+    public void deleteBookmark(int lessonId, BaseCallback<ApiResponse<BookmarksResponse>> callback) {
         bookMarksApi.deleteBookmark(lessonId).enqueue(new ApiCallWrapper<>(callback));
     }
 }

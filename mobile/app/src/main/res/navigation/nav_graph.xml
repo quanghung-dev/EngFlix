@@ -78,6 +78,9 @@
             android:id="@+id/action_settingsFragment_to_loginFragment"
             app:destination="@id/LoginFragment" >
         </action>
+        <action
+            android:id="@+id/action_settingsFragment_to_myNotesFragment"
+            app:destination="@id/myNotesFragment" />
     </fragment>
     <fragment
         android:id="@+id/DictationFragment"
@@ -86,12 +89,26 @@
         <action
             android:id="@+id/action_DictationFragment_to_progressFragment"
             app:destination="@id/progressFragment" />
+        <action
+            android:id="@+id/action_DictationFragment_to_addNoteFragment"
+            app:destination="@id/addNoteFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="com.example.app.feature.note.AddNoteFragment"
+        android:label="Thêm note" />
+
     <fragment
         android:id="@+id/detailItemsFragment"
         android:name="com.example.app.feature.vocabulary.DetailItems"
         android:label="Chi tiết từ vựng" />
 
+    <fragment
+        android:id="@+id/myNotesFragment"
+        android:name="com.example.app.feature.note.MyNoteFragment"
+        android:label="Quản lý note" >
+
+</fragment>
 
 </navigation>

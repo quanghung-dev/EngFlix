@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ public class SettingsFragment extends Fragment {
     private TextView tvSubtitle;
     private CardView cardLogin;
     private CardView cardLogout;
+    private LinearLayout rowNotes;
 
     @Nullable
     @Override
@@ -37,7 +39,10 @@ public class SettingsFragment extends Fragment {
         tvSubtitle = view.findViewById(R.id.tvSubtitle);
         cardLogin = view.findViewById(R.id.cardLogin);
         cardLogout = view.findViewById(R.id.cardLogout);
-
+        rowNotes = view.findViewById(R.id.rowNotes);
+        rowNotes.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_settingsFragment_to_myNotesFragment);
+                });
         setupMenuRows(view);
         setupLogout();
 
@@ -77,10 +82,6 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupMenuRows(View view) {
-        view.findViewById(R.id.rowNotes).setOnClickListener(v -> {
-            // TODO: navigate sang NotesFragment
-        });
-
         view.findViewById(R.id.rowProgress).setOnClickListener(v -> {
             // TODO: navigate sang ProgressFragment
         });
