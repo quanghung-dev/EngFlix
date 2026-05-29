@@ -143,6 +143,44 @@ const options = {
             },
           ],
         },
+        BookmarkGroupedByLesson: {
+          type: 'object',
+          properties: {
+            lesson_id: {
+              type: 'integer',
+            },
+            transcripts: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  transcript_id: {
+                    type: 'integer',
+                  },
+                  content: {
+                    type: 'string',
+                  },
+                  phonetic: {
+                    type: 'string',
+                    nullable: true,
+                  },
+                  vietnamese: {
+                    type: 'string',
+                    nullable: true,
+                  },
+                  note: {
+                    type: 'string',
+                    nullable: true,
+                  },
+                  created_at: {
+                    type: 'string',
+                    format: 'date-time',
+                  },
+                },
+              },
+            },
+          },
+        },
         LearningHistory: {
           type: 'object',
           properties: {

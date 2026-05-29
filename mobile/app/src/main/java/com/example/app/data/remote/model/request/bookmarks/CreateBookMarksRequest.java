@@ -3,18 +3,22 @@ package com.example.app.data.remote.model.request.bookmarks;
 import com.google.gson.annotations.SerializedName;
 
 public class CreateBookMarksRequest {
-    @SerializedName("user_id")
-    private String userId;
+    @SerializedName("transcriptId")
+    private int transcriptId;
 
-    @SerializedName("lesson_id")
-    private int lessonId;
+    @SerializedName("note")
+    private String note;
 
-    @SerializedName("created_at")
-    private String createdAt;
+    public CreateBookMarksRequest(int transcriptId, String note) {
+        this.transcriptId = transcriptId;
+        this.note = note;
+    }
 
-    public CreateBookMarksRequest(String userId, int lessonId, String createdAt) {
-        this.userId = userId;
-        this.lessonId = lessonId;
-        this.createdAt = createdAt;
+    public int getTranscriptId() {
+        return transcriptId;
+    }
+
+    public String getNote() {
+        return note;
     }
 }

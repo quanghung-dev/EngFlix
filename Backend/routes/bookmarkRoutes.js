@@ -17,7 +17,7 @@ router.use(verifyToken);
  * /api/v1/bookmarks:
  *   get:
  *     summary: Get current user's bookmarks
- *     description: Returns the authenticated user's bookmarked lessons ordered by bookmarked time.
+ *     description: Returns the authenticated user's bookmarks grouped by lesson ID. Each lesson contains bookmarked transcripts.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -56,7 +56,7 @@ router.use(verifyToken);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/BookmarkWithLesson'
+ *                     $ref: '#/components/schemas/BookmarkGroupedByLesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -70,16 +70,20 @@ router.use(verifyToken);
  *                       type: integer
  *             example:
  *               data:
- *                 - user_id: "firebase-user-id"
- *                   lesson_id: 1
- *                   created_at: "2026-05-15T00:00:00.000Z"
- *                   category_id: 1
- *                   title: "Basic Greetings"
- *                   description: "Learn common greetings"
- *                   video_url: "https://example.com/video.mp4"
- *                   thumbnail_url: "https://example.com/thumb.jpg"
- *                   level: "beginner"
- *                   duration: 300
+ *                 - lesson_id: 1
+ *                   transcripts:
+ *                     - transcript_id: 12
+ *                       content: "Hello, how are you?"
+ *                       phonetic: "həˈloʊ haʊ ɑr ju"
+ *                       vietnamese: "Xin chào, bạn khỏe không?"
+ *                       note: "Review this sentence"
+ *                       created_at: "2026-05-15T00:00:00.000Z"
+ *                     - transcript_id: 13
+ *                       content: "I am fine, thank you."
+ *                       phonetic: "aɪ æm faɪn θæŋk ju"
+ *                       vietnamese: "Tôi khỏe, cảm ơn bạn."
+ *                       note: null
+ *                       created_at: "2026-05-14T00:00:00.000Z"
  *               meta:
  *                 page: 1
  *                 limit: 10
@@ -100,8 +104,8 @@ router.get('/', bookmarkController.getBookmarks);
  * @swagger
  * /api/v1/bookmarks/{lessonId}:
  *   get:
- *     summary: Get bookmark by lesson ID
- *     description: Returns the authenticated user's bookmark for a specific lesson. Data is an empty array when the lesson is not bookmarked.
+ *     summary: Get bookmarks by lesson ID
+ *     description: Returns the authenticated user's bookmarks for a specific lesson grouped under that lesson ID. Data is an empty array when the lesson is not bookmarked.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -140,7 +144,7 @@ router.get('/', bookmarkController.getBookmarks);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/BookmarkWithLesson'
+ *                     $ref: '#/components/schemas/BookmarkGroupedByLesson'
  *                 meta:
  *                   type: object
  *                   properties:
@@ -154,16 +158,14 @@ router.get('/', bookmarkController.getBookmarks);
  *                       type: integer
  *             example:
  *               data:
- *                 - user_id: "firebase-user-id"
- *                   lesson_id: 1
- *                   created_at: "2026-05-15T00:00:00.000Z"
- *                   category_id: 1
- *                   title: "Basic Greetings"
- *                   description: "Learn common greetings"
- *                   video_url: "https://example.com/video.mp4"
- *                   thumbnail_url: "https://example.com/thumb.jpg"
- *                   level: "beginner"
- *                   duration: 300
+ *                 - lesson_id: 1
+ *                   transcripts:
+ *                     - transcript_id: 12
+ *                       content: "Hello, how are you?"
+ *                       phonetic: "həˈloʊ haʊ ɑr ju"
+ *                       vietnamese: "Xin chào, bạn khỏe không?"
+ *                       note: "Review this sentence"
+ *                       created_at: "2026-05-15T00:00:00.000Z"
  *               meta:
  *                 page: 1
  *                 limit: 10
@@ -197,6 +199,31 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *           type: integer
  *           minimum: 1
  *         description: Lesson ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               transcriptId:
+ *                 type: integer
+ *                 minimum: 1
+ *                 description: Transcript ID. The API also accepts transcript_id.
+ *               transcript_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 description: Snake_case alias for transcriptId.
+ *               note:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Optional bookmark note
+ *             oneOf:
+ *               - required: [transcriptId]
+ *               - required: [transcript_id]
+ *           example:
+ *             transcriptId: 12
+ *             note: "Review this sentence"
  *     responses:
  *       201:
  *         description: Bookmark created successfully
@@ -206,19 +233,24 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *               type: object
  *               properties:
  *                 data:
- *                   $ref: '#/components/schemas/BookmarkWithLesson'
+ *                   type: object
+ *                   properties:
+ *                     lesson_id:
+ *                       type: integer
+ *                     transcript_id:
+ *                       type: integer
+ *                     note:
+ *                       type: string
+ *                       nullable: true
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
  *             example:
  *               data:
- *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
+ *                 transcript_id: 12
+ *                 note: "Review this sentence"
  *                 created_at: "2026-05-15T00:00:00.000Z"
- *                 category_id: 1
- *                 title: "Basic Greetings"
- *                 description: "Learn common greetings"
- *                 video_url: "https://example.com/video.mp4"
- *                 thumbnail_url: "https://example.com/thumb.jpg"
- *                 level: "beginner"
- *                 duration: 300
  *       200:
  *         description: Bookmark already exists
  *         content:
@@ -227,27 +259,32 @@ router.get('/:lessonId', bookmarkController.getBookmarks);
  *               type: object
  *               properties:
  *                 data:
- *                   $ref: '#/components/schemas/BookmarkWithLesson'
+ *                   type: object
+ *                   properties:
+ *                     lesson_id:
+ *                       type: integer
+ *                     transcript_id:
+ *                       type: integer
+ *                     note:
+ *                       type: string
+ *                       nullable: true
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
  *             example:
  *               data:
- *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
+ *                 transcript_id: 12
+ *                 note: "Review this sentence"
  *                 created_at: "2026-05-15T00:00:00.000Z"
- *                 category_id: 1
- *                 title: "Basic Greetings"
- *                 description: "Learn common greetings"
- *                 video_url: "https://example.com/video.mp4"
- *                 thumbnail_url: "https://example.com/thumb.jpg"
- *                 level: "beginner"
- *                 duration: 300
  *       400:
- *         description: Invalid lesson ID
+ *         description: Invalid lesson ID or transcript ID
  *       401:
  *         description: Missing or invalid bearer token
  *       403:
  *         description: Token verification failed
  *       404:
- *         description: Lesson or user not found
+ *         description: Lesson, transcript, or user not found
  *       500:
  *         description: Internal server error
  */
@@ -258,7 +295,7 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  * /api/v1/bookmarks/{lessonId}:
  *   delete:
  *     summary: Remove bookmark
- *     description: Removes a bookmark for the authenticated user and lesson, then returns the removed bookmark with lesson details.
+ *     description: Removes one transcript bookmark for the authenticated user and lesson, then returns the removed bookmark.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
@@ -270,6 +307,20 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *           type: integer
  *           minimum: 1
  *         description: Lesson ID
+ *       - in: query
+ *         name: transcriptId
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Transcript ID. The API also accepts transcript_id.
+ *       - in: query
+ *         name: transcript_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Snake_case alias for transcriptId.
  *     responses:
  *       200:
  *         description: Bookmark removed successfully
@@ -279,21 +330,26 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *               type: object
  *               properties:
  *                 data:
- *                   $ref: '#/components/schemas/BookmarkWithLesson'
+ *                   type: object
+ *                   properties:
+ *                     lesson_id:
+ *                       type: integer
+ *                     transcript_id:
+ *                       type: integer
+ *                     note:
+ *                       type: string
+ *                       nullable: true
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
  *             example:
  *               data:
- *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
+ *                 transcript_id: 12
+ *                 note: "Review this sentence"
  *                 created_at: "2026-05-15T00:00:00.000Z"
- *                 category_id: 1
- *                 title: "Basic Greetings"
- *                 description: "Learn common greetings"
- *                 video_url: "https://example.com/video.mp4"
- *                 thumbnail_url: "https://example.com/thumb.jpg"
- *                 level: "beginner"
- *                 duration: 300
  *       400:
- *         description: Invalid lesson ID
+ *         description: Invalid lesson ID or transcript ID
  *       401:
  *         description: Missing or invalid bearer token
  *       403:

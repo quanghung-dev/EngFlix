@@ -1,37 +1,53 @@
 const pool = require('../db/index.js');
 
-const createBookmark = async (userId, lessonId) => {
+const createBookmark = async (userId, lessonId, transcriptId, note) => {
     const query = `
-        WITH inserted AS (
-            INSERT INTO bookmarks (user_id, lesson_id, created_at)
-            VALUES ($1, $2, NOW())
-            ON CONFLICT (user_id, lesson_id) DO NOTHING
-            RETURNING user_id, lesson_id, created_at, true AS created
+        WITH target_transcript AS (
+            SELECT id
+            FROM transcripts
+            WHERE id = $3
+              AND lesson_id = $2
+        ),
+        inserted AS (
+            INSERT INTO bookmarks (user_id, lesson_id, transcript_id, note, created_at)
+            SELECT $1, $2, id, $4, NOW()
+            FROM target_transcript
+            ON CONFLICT (user_id, transcript_id) DO NOTHING
+            RETURNING lesson_id, transcript_id, note, created_at, true AS created
         ),
         bookmark AS (
-            SELECT user_id, lesson_id, created_at, created
+            SELECT lesson_id, transcript_id, note, created_at, created
             FROM inserted
             UNION ALL
-            SELECT user_id, lesson_id, created_at, false AS created
+            SELECT lesson_id, transcript_id, note, created_at, false AS created
             FROM bookmarks
             WHERE user_id = $1
-              AND lesson_id = $2
+              AND transcript_id = $3
+              AND EXISTS (SELECT 1 FROM target_transcript)
               AND NOT EXISTS (SELECT 1 FROM inserted)
         )
-        SELECT b.user_id, b.lesson_id, b.created_at, b.created,
-               l.category_id, l.title, l.description, l.video_url, l.thumbnail_url, l.level, l.duration
-        FROM bookmark b
-        JOIN lessons l ON b.lesson_id = l.id
+        SELECT lesson_id, transcript_id, note, created_at, created
+        FROM bookmark
         LIMIT 1;
     `;
-    const result = await pool.query(query, [userId, lessonId]);
+    const result = await pool.query(query, [userId, lessonId, transcriptId, note ?? null]);
+    if (!result.rows[0]) {
+        return { bookmark: null, created: false };
+    }
+
     const { created, ...bookmark } = result.rows[0];
     return { bookmark, created };
 };
 
-const removeBookmark = async (userId, lessonId) => {
-    const query = 'DELETE FROM bookmarks WHERE user_id = $1 AND lesson_id = $2 RETURNING *';
-    const result = await pool.query(query, [userId, lessonId]);
+const removeBookmark = async (userId, lessonId, transcriptId) => {
+    const query = `
+        DELETE FROM bookmarks
+        WHERE user_id = $1
+          AND lesson_id = $2
+          AND transcript_id = $3
+        RETURNING lesson_id, transcript_id, note, created_at
+    `;
+    const result = await pool.query(query, [userId, lessonId, transcriptId]);
     return result.rows[0]
 };
 
@@ -39,22 +55,36 @@ const getBookmarks = async (userId, lessonId, limit, offset) => {
     const conditions = ['b.user_id = $1'];
     const values = [userId];
     let paramIndex = 2;
+
     if (lessonId) {
         conditions.push(`b.lesson_id = $${paramIndex++}`);
         values.push(lessonId);
     }
+
     const whereClause = 'WHERE ' + conditions.join(' AND ');
     const dataQuery = `
-        SELECT b.user_id, b.lesson_id, b.created_at,
-               l.category_id, l.title, l.description, l.video_url, l.thumbnail_url, l.level, l.duration
+        SELECT b.lesson_id,
+               JSON_AGG(
+                   JSON_BUILD_OBJECT(
+                       'transcript_id', b.transcript_id,
+                       'content', t.content,
+                       'phonetic', t.phonetic,
+                       'vietnamese', t.vietnamese,
+                       'note', b.note,
+                       'created_at', b.created_at
+                   )
+                   ORDER BY b.created_at DESC
+               ) AS transcripts
         FROM bookmarks b
         JOIN lessons l ON b.lesson_id = l.id
+        JOIN transcripts t ON b.transcript_id = t.id
         ${whereClause}
-        ORDER BY b.created_at DESC
+        GROUP BY b.lesson_id
+        ORDER BY MAX(b.created_at) DESC
         LIMIT $${paramIndex++} OFFSET $${paramIndex++}
     `;
     const countQuery = `
-        SELECT COUNT(*) 
+        SELECT COUNT(DISTINCT b.lesson_id) AS count
         FROM bookmarks b
         ${whereClause}
     `;

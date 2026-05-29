@@ -2,7 +2,6 @@ package com.example.app.feature.study;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import com.example.app.adapter.dictation.WordCardAdapter;
 import com.example.app.adapter.dictation.WorkCardModel;
 import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
-import com.example.app.data.remote.model.response.bookmarks.BookmarksResponse;
+import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
 import com.example.app.data.repository.BookMarksRepository;
@@ -291,9 +290,9 @@ public class DictationFragment extends Fragment {
             changeVideoSpeed(currentSpeed);
         });
         btnBookmark.setOnClickListener(v -> {
-            bookMarksRepository.createBookmark(lessonId,null,new BaseCallback<ApiResponse<BookmarksResponse>>(){
+            bookMarksRepository.createBookmark(lessonId,null,new BaseCallback<ApiResponse<BookmarksModel>>(){
                 @Override
-                public void onSuccess(ApiResponse<BookmarksResponse> data) {
+                public void onSuccess(ApiResponse<BookmarksModel> data) {
                     android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
                     Toast.makeText(requireContext(), "Đã lưu vào danh sách đánh dấu", Toast.LENGTH_SHORT).show();
                 }
@@ -303,9 +302,9 @@ public class DictationFragment extends Fragment {
                 }
             });
             btnBookmark.setOnClickListener(v1 -> {
-                bookMarksRepository.deleteBookmark(lessonId,new BaseCallback<ApiResponse<BookmarksResponse>>(){
+                bookMarksRepository.deleteBookmark(lessonId,new BaseCallback<ApiResponse<BookmarksModel>>(){
                     @Override
-                    public void onSuccess(ApiResponse<BookmarksResponse> data) {
+                    public void onSuccess(ApiResponse<BookmarksModel> data) {
                         android.util.Log.d("DictationFragment", "gửi api bookmark thành công ");
                         Toast.makeText(requireContext(), "Đã xóa khỏi danh sách đánh dấu", Toast.LENGTH_SHORT).show();
                     }

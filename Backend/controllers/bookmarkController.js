@@ -15,11 +15,21 @@ const createBookmark = async (req, res, next) => {
             return errorResponse(res, 400, 'lessonId must be a positive integer');
         }
 
-        const { bookmark, created } = await bookmarkService.createBookmark(userId, lessonId);
+        const transcriptId = parsePositiveInteger(req.body?.transcriptId ?? req.body?.transcript_id);
+        if (!transcriptId) {
+            return errorResponse(res, 400, 'transcriptId must be a positive integer');
+        }
+
+        const { note } = req.body ?? {};
+        const { bookmark, created } = await bookmarkService.createBookmark(userId, lessonId, transcriptId, note);
+        if (!bookmark) {
+            return errorResponse(res, 404, 'Transcript not found for lesson');
+        }
+
         return dataResponse(res, created ? 201 : 200, bookmark);
     } catch (error) {
         if (error.code === '23503') {
-            return errorResponse(res, 404, 'Lesson or user not found');
+            return errorResponse(res, 404, 'Lesson, transcript, or user not found');
         }
         next(error);
     }
@@ -33,7 +43,15 @@ const removeBookmark = async (req, res, next) => {
             return errorResponse(res, 400, 'lessonId must be a positive integer');
         }
 
-        const removed = await bookmarkService.removeBookmark(userId, lessonId);
+        const transcriptId = parsePositiveInteger(req.query.transcriptId
+            ?? req.query.transcript_id
+            ?? req.body?.transcriptId
+            ?? req.body?.transcript_id);
+        if (!transcriptId) {
+            return errorResponse(res, 400, 'transcriptId must be a positive integer');
+        }
+
+        const removed = await bookmarkService.removeBookmark(userId, lessonId, transcriptId);
         if (!removed) {
             return errorResponse(res, 404, 'Bookmark not found');
         }

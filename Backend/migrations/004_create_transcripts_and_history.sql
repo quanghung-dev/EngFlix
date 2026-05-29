@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     user_id    VARCHAR(255) NOT NULL REFERENCES users (uid) ON DELETE CASCADE,
     lesson_id  INTEGER      NOT NULL REFERENCES lessons (id) ON DELETE CASCADE,
     created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (user_id, lesson_id)
+    transcript_id INTEGER NOT NULL REFERENCES transcripts(id) ON DELETE CASCADE,
+    note TEXT,
+    UNIQUE (user_id, transcript_id)
 );
 
 CREATE TABLE IF NOT EXISTS transcript_bookmarks (
