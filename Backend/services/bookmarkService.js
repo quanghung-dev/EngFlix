@@ -64,6 +64,7 @@ const getBookmarks = async (userId, lessonId, limit, offset) => {
     const whereClause = 'WHERE ' + conditions.join(' AND ');
     const dataQuery = `
         SELECT b.lesson_id,
+               l.title AS lesson_title,
                JSON_AGG(
                    JSON_BUILD_OBJECT(
                        'transcript_id', b.transcript_id,
@@ -79,7 +80,7 @@ const getBookmarks = async (userId, lessonId, limit, offset) => {
         JOIN lessons l ON b.lesson_id = l.id
         JOIN transcripts t ON b.transcript_id = t.id
         ${whereClause}
-        GROUP BY b.lesson_id
+        GROUP BY b.lesson_id, l.title
         ORDER BY MAX(b.created_at) DESC
         LIMIT $${paramIndex++} OFFSET $${paramIndex++}
     `;

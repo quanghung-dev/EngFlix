@@ -69,6 +69,7 @@ router.use(verifyToken);
  *             example:
  *               data:
  *                 - lesson_id: 1
+ *                   lesson_title: "Basic Greetings"
  *                   transcripts:
  *                     - transcript_id: 12
  *                       content: "Hello, how are you?"

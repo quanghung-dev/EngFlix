@@ -18,7 +18,7 @@ import retrofit2.http.Query;
 public interface BookMarksApi {
     @GET("bookmarks")
     Call<ApiResponse<List<BookmarksModel>>>
-    getBookmarks(@Query("lessonId") String lessonId,
+    getBookmarks(
                  @Query("limit") String limit,
                  @Query("page") String page);
 

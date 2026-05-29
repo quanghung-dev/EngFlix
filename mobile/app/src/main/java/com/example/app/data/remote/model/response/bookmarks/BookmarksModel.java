@@ -5,11 +5,13 @@ import java.util.List;
 public class BookmarksModel {
     @SerializedName("lesson_id")
     private int lessonId;
+    @SerializedName("lesson_title")
+    private String lessonTitle;
 
     @SerializedName("transcripts")
-    private List<Transcript> transcripts;
+    private List<noteResponse> transcripts;
 
-    public BookmarksModel(int lessonId, List<Transcript> transcripts) {
+    public BookmarksModel(int lessonId, List<noteResponse> transcripts) {
         this.lessonId = lessonId;
         this.transcripts = transcripts;
     }
@@ -17,8 +19,11 @@ public class BookmarksModel {
     public int getLessonId() {
         return lessonId;
     }
+    public String getLessonTitle() {
+        return lessonTitle;
+    }
 
-    public List<Transcript> getTranscripts() {
+    public List<noteResponse> getTranscripts() {
         return transcripts;
     }
 
@@ -42,21 +47,6 @@ public class BookmarksModel {
         @SerializedName("created_at")
         private String createdAt;
 
-        public Transcript(
-                int transcriptId,
-                String content,
-                String phonetic,
-                String vietnamese,
-                String note,
-                String createdAt
-        ) {
-            this.transcriptId = transcriptId;
-            this.content = content;
-            this.phonetic = phonetic;
-            this.vietnamese = vietnamese;
-            this.note = note;
-            this.createdAt = createdAt;
-        }
 
         public int getTranscriptId() {
             return transcriptId;

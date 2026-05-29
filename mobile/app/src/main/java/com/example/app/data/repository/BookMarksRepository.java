@@ -22,8 +22,8 @@ public class BookMarksRepository {
     public BookMarksRepository(Context context) {
         this.bookMarksApi = RetrofitClient.getInstance(context).getBookMarksApi();
     }
-    public void getBookmarks(String lessonId, String limit, String page, BaseCallback<ApiResponse<List<BookmarksModel>>> callback) {
-        bookMarksApi.getBookmarks(lessonId, limit, page).enqueue(new ApiCallWrapper<>(callback));
+    public void getBookmarks( String limit, String page, BaseCallback<ApiResponse<List<BookmarksModel>>> callback) {
+        bookMarksApi.getBookmarks( limit, page).enqueue(new ApiCallWrapper<>(callback));
     }
     public void getBookmarkByLessonId(int lessonId, int page, int limit, BaseCallback<ApiResponse<BookmarksModel>> callback) {
         bookMarksApi.getBookmarkByLessonId(lessonId, page, limit).enqueue(new ApiCallWrapper<>(callback));

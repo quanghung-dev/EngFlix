@@ -20,6 +20,7 @@ const options = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT',
+          description: 'Paste only the Firebase idToken. Swagger will add the Bearer prefix automatically.',
         },
       },
       schemas: {
@@ -148,6 +149,9 @@ const options = {
           properties: {
             lesson_id: {
               type: 'integer',
+            },
+            lesson_title: {
+              type: 'string',
             },
             transcripts: {
               type: 'array',

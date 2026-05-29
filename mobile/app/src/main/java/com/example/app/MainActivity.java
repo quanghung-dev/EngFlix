@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
                         || destination.getId() == R.id.LessonsListFragment
                         || destination.getId() == R.id.detailItemsFragment
                         || destination.getId() == R.id.LoginFragment
-                        || destination.getId() == R.id.SignupFragment){
+                        || destination.getId() == R.id.SignupFragment
+                        || destination.getId() == R.id.myNotesFragment){
                     bottomNav.setVisibility(View.GONE);
                 }
                 else{

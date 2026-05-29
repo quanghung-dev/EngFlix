@@ -1,31 +1,97 @@
 package com.example.app.feature.note;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
+import com.example.app.adapter.note.ListNoteAdapter;
+import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
+import com.example.app.data.remote.model.response.bookmarks.BookmarksResponse;
+import com.example.app.data.remote.model.response.bookmarks.noteResponse;
+import com.example.app.data.repository.BookMarksRepository;
+import com.example.app.utils.BaseCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyNoteFragment extends Fragment {
+    private ListNoteAdapter adapter;
+    private List<BookmarksModel> bookmarksModels = new ArrayList<>();
+    private BookMarksRepository bookMarksRepository;
     private Toolbar toolbar;
     private EditText et_search;
     private RecyclerView rv_sections;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_notes, container, false);
+        bookMarksRepository = new BookMarksRepository(requireContext());
         toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
         et_search = view.findViewById(R.id.et_search);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rv_sections = view.findViewById(R.id.rv_sections);
+        rv_sections.setLayoutManager(layoutManager);
+        adapter = new ListNoteAdapter(bookmarksModels, new ListNoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onNoteClick(int position, noteResponse note) {
+
+
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                removeNote(position);
+            }
+        });
+        fetchData();
+        rv_sections.setAdapter(adapter);
         return view;
+    }
+    public void fetchData(){
+        bookMarksRepository.getBookmarks(null, null, new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
+            @Override
+            public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
+                if (data.getData() != null) {
+                    bookmarksModels.clear();
+                    bookmarksModels.addAll(data.getData());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onError(String message) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void removeNote(int position) {
+        bookMarksRepository.deleteBookmark(bookmarksModels.get(position).getLessonId(), new BaseCallback<ApiResponse<BookmarksResponse>>() {
+            @Override
+            public void onSuccess(ApiResponse<BookmarksResponse> data) {
+                Toast.makeText(requireContext(), "Xóa ghi chú thành công", Toast.LENGTH_SHORT).show();
+                bookmarksModels.remove(position);
+                if (adapter != null) {
+                    adapter.notifyItemRemoved(position);
+                    adapter.notifyItemRangeChanged(position, bookmarksModels.size());
+                }
+            }
+            @Override
+            public void onError(String message) {
+                Log.e("Error", message);
+            }
+        });
     }
 }
 

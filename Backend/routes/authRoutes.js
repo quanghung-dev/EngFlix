@@ -12,6 +12,75 @@ const verifyToken = require('../middlewares/auth.js');
 
 /**
  * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Login with Firebase email and password
+ *     description: Returns a Firebase ID token that can be used as a Bearer token for authenticated APIs.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               returnSecureToken:
+ *                 type: boolean
+ *                 default: true
+ *           example:
+ *             email: "admin123@gmail.com"
+ *             password: "123456"
+ *             returnSecureToken: true
+ *     responses:
+ *       200:
+ *         description: Firebase token returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     idToken:
+ *                       type: string
+ *                     refreshToken:
+ *                       type: string
+ *                     expiresIn:
+ *                       type: integer
+ *                       example: 3600
+ *                     uid:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *             example:
+ *               data:
+ *                 idToken: "firebase-id-token"
+ *                 refreshToken: "firebase-refresh-token"
+ *                 expiresIn: 3600
+ *                 uid: "firebase-user-id"
+ *                 email: "admin123@gmail.com"
+ *       400:
+ *         description: Email or password is missing
+ *       401:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Firebase Web API key is not configured
+ */
+router.post('/login', authController.login);
+
+/**
+ * @swagger
  * /api/v1/auth/sync:
  *   post:
  *     summary: Sync authenticated user
