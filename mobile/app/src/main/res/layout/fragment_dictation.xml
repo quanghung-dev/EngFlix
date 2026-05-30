@@ -332,6 +332,7 @@
     <Button
         android:id="@+id/btnStart"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="52dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -341,7 +342,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        android:background="@drawable/bg_btn_primary"
+        android:background="@drawable/bg_btn_blue_fill"
         android:stateListAnimator="@null" />
     <LinearLayout
         android:id="@+id/layoutButtonBottom"
@@ -408,7 +409,7 @@
             android:layout_weight="2"
             android:text="Kiểm tra"
             android:textColor="@color/white"
-            android:background="@drawable/bg_btn_gray_fill"
+            android:background="@drawable/bg_btn_blue_fill"
             android:foreground="?attr/selectableItemBackground"
             android:layout_marginStart="8dp" />
 

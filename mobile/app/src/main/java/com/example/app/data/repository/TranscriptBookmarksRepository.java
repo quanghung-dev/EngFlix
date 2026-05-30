@@ -19,8 +19,8 @@ public class TranscriptBookmarksRepository {
     public TranscriptBookmarksRepository(Context context) {
         this.transcriptBookmarksApi = RetrofitClient.getInstance(context).getTranscriptBookmarksApi();
     }
-    public void getTranscriptBookmarks(int transcriptId, BaseCallback<ApiResponse<List<TranscriptBookmarksResponse>>> callback) {
-        transcriptBookmarksApi.getTranscriptBookmarks(transcriptId).enqueue(new ApiCallWrapper<>(callback));
+    public void getTranscriptBookmarks(int lessonId, BaseCallback<ApiResponse<List<TranscriptBookmarksResponse>>> callback) {
+        transcriptBookmarksApi.getTranscriptBookmarks(lessonId).enqueue(new ApiCallWrapper<>(callback));
     }
     public void createTranscriptBookmark(CreateTransBookmarksRequest request, BaseCallback<ApiResponse<TranscriptBookmarksResponse>> callback) {
         transcriptBookmarksApi.createTranscriptBookmark(request).enqueue(new ApiCallWrapper<>(callback));

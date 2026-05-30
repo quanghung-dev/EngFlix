@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,10 +26,13 @@ import com.example.app.adapter.dictation.WorkCardModel;
 import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
+import com.example.app.data.remote.model.response.bookmarks.noteResponse;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
+import com.example.app.data.remote.model.response.transcriptBookmarks.TranscriptBookmarksResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
 import com.example.app.data.repository.BookMarksRepository;
 import com.example.app.data.repository.ProgressRepository;
+import com.example.app.data.repository.TranscriptBookmarksRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.diaglog.SpoilerWarning;
 import com.example.app.utils.BaseCallback;
@@ -41,7 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DictationFragment extends Fragment {
+    private boolean isCurrentSentenceBookmarked = false;
     private BookMarksRepository bookMarksRepository;
+    private TranscriptBookmarksRepository transcriptBookmarksRepository;
     private Button btnKiemTra;
     private ImageButton btnBookmark;
     private YouTubeWebViewManager youTubeWebViewManager;
@@ -94,8 +100,8 @@ public class DictationFragment extends Fragment {
     ) {
 
         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
-
         bookMarksRepository = new BookMarksRepository(requireContext());
+        transcriptBookmarksRepository = new TranscriptBookmarksRepository(requireContext());
         transcriptsRepository = new TranscriptsRepository(requireContext());
         progressRepository = new ProgressRepository(requireContext());
         layoutButtonBottom = view.findViewById(R.id.layoutButtonBottom);
@@ -234,6 +240,7 @@ public class DictationFragment extends Fragment {
         if (rvSentenceNumbers != null) {
             rvSentenceNumbers.smoothScrollToPosition(currentSentenceIndex);
         }
+        checkBookmarkState();
     }
 
 
@@ -481,6 +488,45 @@ public class DictationFragment extends Fragment {
     public void cancelAutoStop(){
         if (autoStopHandler != null && autoStopRunnable != null) {
             autoStopHandler.removeCallbacks(autoStopRunnable);
+        }
+    }
+    private void checkBookmarkState(){
+        if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
+            return;
+        }
+        int currentTranscriptId = listTranscripts.get(currentSentenceIndex).getId();
+        bookMarksRepository.getBookmarks(lessonId, null, null,new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
+            @Override
+            public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
+                isCurrentSentenceBookmarked = false;
+                if (data != null && data.getData() != null) {
+                    for (BookmarksModel model : data.getData()) {
+                        if (model.getTranscripts() != null) {
+                            for (noteResponse note : model.getTranscripts()) {
+                                if (note.getTranscriptId() == currentTranscriptId) {
+                                    isCurrentSentenceBookmarked = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isCurrentSentenceBookmarked) break;
+                    }
+                }
+                updateBookmarkButtonUI();
+            }
+
+            @Override
+            public void onError(String message) {
+                isCurrentSentenceBookmarked = false;
+                updateBookmarkButtonUI();
+            }
+        });
+    }
+    private void updateBookmarkButtonUI(){
+        if (isCurrentSentenceBookmarked) {
+            btnBookmark.setImageResource(R.drawable.ic_bookmark_filled_yellow);
+        } else {
+            btnBookmark.setImageResource(R.drawable.ic_bookmark);
         }
     }
 }

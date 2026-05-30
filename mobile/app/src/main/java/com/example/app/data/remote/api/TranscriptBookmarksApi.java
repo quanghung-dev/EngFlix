@@ -17,9 +17,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface TranscriptBookmarksApi {
-    @GET("transcript-bookmarks")
+    @GET("transcript-bookmarks/{lessonId}")
     Call<ApiResponse<List<TranscriptBookmarksResponse>>> getTranscriptBookmarks(
-            @Query("transcript_id") int transcriptId
+            @Path("lessonId") int lessonId
     );
 
     @POST("transcript-bookmarks")

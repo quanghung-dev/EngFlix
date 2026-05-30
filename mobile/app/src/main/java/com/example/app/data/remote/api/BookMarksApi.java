@@ -21,6 +21,7 @@ public interface BookMarksApi {
     @GET("bookmarks")
     Call<ApiResponse<List<BookmarksModel>>>
     getBookmarks(
+            @Query("lessonId") Integer lessonId,
                  @Query("limit") String limit,
                  @Query("page") String page);
 

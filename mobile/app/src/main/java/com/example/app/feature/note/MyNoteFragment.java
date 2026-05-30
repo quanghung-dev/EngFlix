@@ -67,7 +67,7 @@ public class MyNoteFragment extends Fragment {
         return view;
     }
     public void fetchData(){
-        bookMarksRepository.getBookmarks(null, null, new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
+        bookMarksRepository.getBookmarks(null,null, null, new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
             @Override
             public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
                 if (data.getData() != null) {
