@@ -48,7 +48,13 @@ public class MyNoteFragment extends Fragment {
         adapter = new ListNoteAdapter(bookmarksModels, new ListNoteAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(int lessonPosition, int notePosition, noteResponse note) {
-
+                Bundle bundle = new Bundle();
+                bundle.putInt("transcriptId", note.getTranscriptId());
+                bundle.putString("note", note.getNote());
+                bundle.putString("content", note.getContent());
+                bundle.putString("phonetic", note.getPhonetic());
+                bundle.putString("vietnamese", note.getVietnamese());
+                Navigation.findNavController(view).navigate(R.id.action_DictationFragment_to_editNoteFragment, bundle);
             }
 
             @Override

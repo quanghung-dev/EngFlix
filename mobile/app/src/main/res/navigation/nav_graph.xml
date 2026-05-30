@@ -108,7 +108,13 @@
         android:id="@+id/myNotesFragment"
         android:name="com.example.app.feature.note.MyNoteFragment"
         android:label="Quản lý note" >
-
+        <action
+            android:id="@+id/action_DictationFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
 </fragment>
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.example.app.feature.note.EditNoteFragment"
+        android:label="Sửa note" />
 
 </navigation>
