@@ -23,6 +23,7 @@ import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
 import com.example.app.data.remote.model.response.bookmarks.BookmarksResponse;
 import com.example.app.data.remote.model.response.bookmarks.noteResponse;
 import com.example.app.data.repository.BookMarksRepository;
+import com.example.app.data.repository.TranscriptBookmarksRepository;
 import com.example.app.utils.BaseCallback;
 
 import java.util.ArrayList;
@@ -46,14 +47,13 @@ public class MyNoteFragment extends Fragment {
         rv_sections.setLayoutManager(layoutManager);
         adapter = new ListNoteAdapter(bookmarksModels, new ListNoteAdapter.OnNoteClickListener() {
             @Override
-            public void onNoteClick(int position, noteResponse note) {
-
+            public void onNoteClick(int lessonPosition, int notePosition, noteResponse note) {
 
             }
 
             @Override
-            public void onDeleteClick(int position) {
-                removeNote(position);
+            public void onDeleteClick(int lessonPosition, int notePosition, noteResponse note) {
+                removeNote(lessonPosition, notePosition, note);
             }
         });
         fetchData();
@@ -76,20 +76,31 @@ public class MyNoteFragment extends Fragment {
             }
         });
     }
-    public void removeNote(int position) {
-        bookMarksRepository.deleteBookmark(bookmarksModels.get(position).getLessonId(), new BaseCallback<ApiResponse<BookmarksResponse>>() {
+    public void removeNote(int lessonPosition, int notePosition, noteResponse note) {
+        bookMarksRepository.deleteBookmark(note.getTranscriptId(), new BaseCallback<ApiResponse<BookmarksResponse>>() {
             @Override
             public void onSuccess(ApiResponse<BookmarksResponse> data) {
                 Toast.makeText(requireContext(), "Xóa ghi chú thành công", Toast.LENGTH_SHORT).show();
-                bookmarksModels.remove(position);
-                if (adapter != null) {
-                    adapter.notifyItemRemoved(position);
-                    adapter.notifyItemRangeChanged(position, bookmarksModels.size());
+                if (lessonPosition >= 0 && lessonPosition < bookmarksModels.size()) {
+                    BookmarksModel lesson = bookmarksModels.get(lessonPosition);
+                    if (lesson.getTranscripts() != null && notePosition >= 0
+                            && notePosition < lesson.getTranscripts().size()) {
+                        lesson.getTranscripts().remove(notePosition);
+                        if (lesson.getTranscripts().isEmpty()) {
+                            bookmarksModels.remove(lessonPosition);
+                            adapter.notifyItemRemoved(lessonPosition);
+                            adapter.notifyItemRangeChanged(lessonPosition, bookmarksModels.size());
+                        } else {
+                            adapter.notifyItemChanged(lessonPosition);
+                        }
+                    }
                 }
             }
+
             @Override
             public void onError(String message) {
                 Log.e("Error", message);
+                Toast.makeText(requireContext(), "Lỗi xóa ghi chú", Toast.LENGTH_SHORT).show();
             }
         });
     }

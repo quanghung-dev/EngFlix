@@ -31,8 +31,8 @@ public interface BookMarksApi {
     createBookmark(@Path("lessonId") int lessonId,
                    @Body CreateBookMarksRequest request);
 
-    @DELETE("bookmarks/{lessonId}")
+    @DELETE("bookmarks/{transcriptId}")
     Call<ApiResponse<BookmarksResponse>>
-    deleteBookmark(@Path("lessonId") int lessonId);
+    deleteBookmark(@Path("transcriptId") int transcriptId);
 
 }

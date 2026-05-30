@@ -31,7 +31,7 @@ public class BookMarksRepository {
     public void createBookmark(int lessonId, CreateBookMarksRequest request, BaseCallback<ApiResponse<BookmarksResponse>> callback) {
         bookMarksApi.createBookmark(lessonId, request).enqueue(new ApiCallWrapper<>(callback));
     }
-    public void deleteBookmark(int lessonId, BaseCallback<ApiResponse<BookmarksResponse>> callback) {
-        bookMarksApi.deleteBookmark(lessonId).enqueue(new ApiCallWrapper<>(callback));
+    public void deleteBookmark(int transcriptId, BaseCallback<ApiResponse<BookmarksResponse>> callback) {
+        bookMarksApi.deleteBookmark(transcriptId).enqueue(new ApiCallWrapper<>(callback));
     }
 }

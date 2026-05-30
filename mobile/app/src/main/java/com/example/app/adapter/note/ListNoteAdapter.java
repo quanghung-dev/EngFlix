@@ -21,8 +21,8 @@ public class ListNoteAdapter extends RecyclerView.Adapter<ListNoteAdapter.ListNo
     private OnNoteClickListener listener;
 
     public interface OnNoteClickListener {
-        void onNoteClick(int position, noteResponse note);
-        void onDeleteClick(int position);
+        void onNoteClick(int lessonPosition, int notePosition, noteResponse note);
+        void onDeleteClick(int lessonPosition, int notePosition, noteResponse note);
     }
 
     public ListNoteAdapter(List<BookmarksModel> bookmarksModels, OnNoteClickListener listener) {
@@ -45,16 +45,16 @@ public class ListNoteAdapter extends RecyclerView.Adapter<ListNoteAdapter.ListNo
         holder.tv_badge.setText(String.valueOf(currentBookmark.getTranscripts().size()));
         ItemNoteAdapter itemNoteAdapter = new ItemNoteAdapter(currentBookmark.getTranscripts(),new ItemNoteAdapter.OnNoteClickListener () {
             @Override
-            public void onNoteClick(int position, noteResponse note) {
+            public void onNoteClick(int notePosition, noteResponse note) {
                 if (listener != null) {
-                    listener.onNoteClick(position, note);
+                    listener.onNoteClick(holder.getBindingAdapterPosition(), notePosition, note);
                 }
             }
 
             @Override
-            public void onDeleteClick(int position, noteResponse note) {
+            public void onDeleteClick(int notePosition, noteResponse note) {
                 if (listener != null) {
-                    listener.onDeleteClick(position);
+                    listener.onDeleteClick(holder.getBindingAdapterPosition(), notePosition, note);
                 }
             }
         });
