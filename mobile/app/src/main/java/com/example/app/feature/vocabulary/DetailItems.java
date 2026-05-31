@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class DetailItems extends Fragment {
     private TextView tvHeaderTitle;
     private TextView tvCardCount;
     private RecyclerView rvWordList;
+    private Button btnStartLearning;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_detail, container, false);
@@ -44,6 +46,7 @@ public class DetailItems extends Fragment {
         tvHeaderTitle = view.findViewById(R.id.tvHeaderTitle);
         tvCardCount = view.findViewById(R.id.tvCardCount);
         rvWordList = view.findViewById(R.id.rvWordList);
+        btnStartLearning = view.findViewById(R.id.btnStartLearning);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         rvWordList.setLayoutManager(layoutManager);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -67,10 +70,29 @@ public class DetailItems extends Fragment {
             @Override
             public void onClick(int position, VocaItemsResponse vocaItem) {
                 Log.d("DetailItems", "Clicked word: " + vocaItem.getPhrase());
+                navigateToLearning(vocaItem);
             }
         });
         rvWordList.setAdapter(adapter);
+        btnStartLearning.setOnClickListener(v -> {
+            if (vocaItems.isEmpty()) {
+                Toast.makeText(requireContext(), "Chưa có từ vựng để học", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            navigateToLearning(vocaItems.get(0));
+        });
         return view;
+    }
+
+    private void navigateToLearning(VocaItemsResponse vocaItem) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("vocaItemId", vocaItem.getId());
+        bundle.putString("vocaItemPhrase", vocaItem.getPhrase());
+        bundle.putString("vocaItemMeaning", vocaItem.getMeaning());
+        bundle.putString("vocaItemExample", vocaItem.getExample_sentence());
+        bundle.putString("vocaItemNote", vocaItem.getNote());
+        bundle.putString("vocaItemCategory", categoryName);
+        Navigation.findNavController(requireView()).navigate(R.id.action_detailItemsFragment_to_learningFragment, bundle);
     }
 
     private void fetchDeckDetails() {

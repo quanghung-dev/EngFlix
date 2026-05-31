@@ -105,7 +105,13 @@
     <fragment
         android:id="@+id/detailItemsFragment"
         android:name="com.example.app.feature.vocabulary.DetailItems"
-        android:label="Chi tiết từ vựng" />
+        android:label="Chi tiết từ vựng" >
+        <action
+            android:id="@+id/action_detailItemsFragment_to_learningFragment"
+            app:destination="@id/learningFragment" />
+
+
+</fragment>
 
     <fragment
         android:id="@+id/myNotesFragment"
@@ -119,5 +125,11 @@
         android:id="@+id/editNoteFragment"
         android:name="com.example.app.feature.note.EditNoteFragment"
         android:label="Sửa note" />
+    <fragment
+        android:id="@+id/learningFragment"
+        android:name="com.example.app.feature.vocabulary.LearningFragment"
+        android:label="Học từ vựng" >
+
+    </fragment>
 
 </navigation>

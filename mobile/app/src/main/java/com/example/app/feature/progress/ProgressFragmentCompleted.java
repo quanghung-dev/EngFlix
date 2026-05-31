@@ -29,7 +29,9 @@ import com.example.app.diaglog.ChooseModeBottomSheet;
 import com.example.app.utils.BaseCallback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProgressFragmentCompleted extends Fragment {
     private LessonsRepository lessonsRepository ;
@@ -93,11 +95,18 @@ public class ProgressFragmentCompleted extends Fragment {
                 rvInProgress.setVisibility(View.VISIBLE);
                 layout_empty.setVisibility(View.GONE);
                 lessonsResponseList.clear();
+                Set<Integer> requestedLessonIds = new HashSet<>();
                 for (ProgressResponse progress : data.getData()) {
                     int lessonId = progress.getLessonId();
+                    if (!requestedLessonIds.add(lessonId)) {
+                        continue;
+                    }
                     lessonsRepository.getLessonsDetail(lessonId, new LessonsRepository.lessonsCallback<LessonsResponse>() {
                         @Override
                         public void onSuccess(LessonsResponse data) {
+                            if (containsLesson(data.getId())) {
+                                return;
+                            }
                             lessonsResponseList.add(data);
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
@@ -113,5 +122,14 @@ public class ProgressFragmentCompleted extends Fragment {
                 ;
             }
         });
+    }
+
+    private boolean containsLesson(int lessonId) {
+        for (LessonsResponse lesson : lessonsResponseList) {
+            if (lesson.getId() == lessonId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

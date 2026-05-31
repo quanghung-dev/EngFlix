@@ -46,12 +46,16 @@ const getHistoryByLesson = async (userId, lessonId) => {
 const getHistories = async (userId, limit, offset) => {
     const dataQuery = `
         SELECT *
-        FROM learning_history
-        WHERE user_id = $1
+        FROM (
+            SELECT DISTINCT ON (lesson_id) *
+            FROM learning_history
+            WHERE user_id = $1
+            ORDER BY lesson_id, created_at DESC, id DESC
+        ) latest_history
         ORDER BY created_at DESC, id DESC
         LIMIT $2 OFFSET $3
     `;
-    const countQuery = 'SELECT COUNT(*) FROM learning_history WHERE user_id = $1';
+    const countQuery = 'SELECT COUNT(DISTINCT lesson_id) FROM learning_history WHERE user_id = $1';
     const [historiesResult, totalCountResult] = await Promise.all([
         pool.query(dataQuery, [userId, limit, offset]),
         pool.query(countQuery, [userId])
@@ -62,13 +66,33 @@ const getHistories = async (userId, limit, offset) => {
     };
 };
 const getLearningHistoryFinished = async (userId) => {
-    const query = `SELECT * FROM learning_history WHERE user_id = $1 AND completed = true ORDER BY created_at DESC, id DESC`
+    const query = `
+        SELECT *
+        FROM (
+            SELECT DISTINCT ON (lesson_id) *
+            FROM learning_history
+            WHERE user_id = $1
+            ORDER BY lesson_id, created_at DESC, id DESC
+        ) latest_history
+        WHERE completed = true
+        ORDER BY created_at DESC, id DESC
+    `
     const result = await pool.query(query,[userId])
     return result.rows
 };
 
 const getLearningHistoryUnfinished = async (userId) => {
-    const query = `SELECT * FROM learning_history WHERE user_id = $1 AND completed = false ORDER BY created_at DESC, id DESC`
+    const query = `
+        SELECT *
+        FROM (
+            SELECT DISTINCT ON (lesson_id) *
+            FROM learning_history
+            WHERE user_id = $1
+            ORDER BY lesson_id, created_at DESC, id DESC
+        ) latest_history
+        WHERE completed = false
+        ORDER BY created_at DESC, id DESC
+    `
     const result = await pool.query(query,[userId])
     return result.rows
 };
@@ -78,8 +102,12 @@ const getLearningHistorySummary = async (userId) => {
         SELECT
             COUNT(*) FILTER (WHERE completed = true) AS completed_count,
             COUNT(*) FILTER (WHERE completed = false) AS unfinished_count
-        FROM learning_history
-        WHERE user_id = $1
+        FROM (
+            SELECT DISTINCT ON (lesson_id) *
+            FROM learning_history
+            WHERE user_id = $1
+            ORDER BY lesson_id, created_at DESC, id DESC
+        ) latest_history
     `;
     const result = await pool.query(query, [userId]);
     return {
@@ -105,7 +133,15 @@ const getLearningHistorySummaryByLesson = async (userId, lessonId) => {
 };
 
 const testGetgetLearningHistory = async () => {
-    const query = `SELECT * FROM learning_history ORDER BY created_at DESC `
+    const query = `
+        SELECT *
+        FROM (
+            SELECT DISTINCT ON (user_id, lesson_id) *
+            FROM learning_history
+            ORDER BY user_id, lesson_id, created_at DESC, id DESC
+        ) latest_history
+        ORDER BY created_at DESC, id DESC
+    `
     const result = await pool.query(query)
     return result.rows
 }
