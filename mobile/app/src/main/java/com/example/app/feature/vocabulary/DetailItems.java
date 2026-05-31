@@ -55,6 +55,7 @@ public class DetailItems extends Fragment {
         if(getArguments() != null){
             deckId = getArguments().getInt("deckId",-1);
             deckName = getArguments().getString("deckName","");
+            categoryName = getArguments().getString("categoryName","");
             Log.d("DetailItems", "Đã nhận Deck - ID: " + deckId + ", Name: " + deckName);
             tvTopicTitle.setText(categoryName);
             tvHeaderTitle.setText(deckName);

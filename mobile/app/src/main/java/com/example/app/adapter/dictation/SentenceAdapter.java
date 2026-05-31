@@ -16,8 +16,10 @@ import java.util.List;
 
 public class SentenceAdapter extends RecyclerView.Adapter<SentenceAdapter.SentenceViewHolder> {
 
-    List<TranscriptsResponse> list = new ArrayList<>();
+    private List<TranscriptsResponse> list = new ArrayList<>();
+    private List<Integer> completedTranscriptIds = new ArrayList<>();
     private int selectedPosition = 0;
+
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -37,7 +39,16 @@ public class SentenceAdapter extends RecyclerView.Adapter<SentenceAdapter.Senten
         this.list = newList;
         notifyDataSetChanged();
     }
-
+    public void setCompletedTranscripts(List<Integer> completedIds){
+        this.completedTranscriptIds = completedIds;
+        notifyDataSetChanged();
+    }
+    public void addCompletedTranscript(int transcriptId) {
+        if (!completedTranscriptIds.contains(transcriptId)) {
+            completedTranscriptIds.add(transcriptId);
+            notifyDataSetChanged();
+        }
+    }
 
     @NonNull
     @Override
@@ -55,6 +66,9 @@ public class SentenceAdapter extends RecyclerView.Adapter<SentenceAdapter.Senten
         if (selectedPosition == position) {
             holder.tvSentence.setBackgroundResource(R.drawable.bg_icon_circle_blue);
             holder.tvSentence.setTextColor(android.graphics.Color.WHITE);
+        } else if (completedTranscriptIds.contains(currentSentence.getId())) {
+            holder.tvSentence.setBackgroundResource(R.drawable.bg_icon_circle_green);
+            holder.tvSentence.setTextColor(android.graphics.Color.WHITE);
         } else {
             holder.tvSentence.setBackgroundResource(R.drawable.bg_circle_white);
             holder.tvSentence.setTextColor(android.graphics.Color.parseColor("#1A1A1A"));
@@ -64,7 +78,6 @@ public class SentenceAdapter extends RecyclerView.Adapter<SentenceAdapter.Senten
                 listener.onItemClick(position);
             }
         });
-
     }
 
     @Override

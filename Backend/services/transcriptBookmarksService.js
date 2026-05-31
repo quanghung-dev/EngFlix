@@ -22,28 +22,47 @@ const createTranscriptBookmark = async (user_id, transcript_id, note) => {
     const result = await pool.query(query, values);
     return result.rows[0];
 };
-const getTranscriptBookmarksByUserId = async (user_id, limit, offset) => {
-    const query = `SELECT * FROM transcript_bookmarks WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
-    const countQuery = `SELECT COUNT(*) FROM transcript_bookmarks WHERE user_id = $1`;
-    const values = [user_id, limit, offset];
+const getTranscriptBookmarksByUserId = async (user_id, lessonId, limit, offset) => {
+    const query = `
+        SELECT tb.id,
+               tb.user_id,
+               tb.transcript_id,
+               t.lesson_id,
+               tb.note,
+               tb.created_at
+        FROM transcript_bookmarks tb
+        JOIN transcripts t ON tb.transcript_id = t.id
+        WHERE tb.user_id = $1
+          AND t.lesson_id = $2
+        ORDER BY tb.created_at DESC
+        LIMIT $3 OFFSET $4
+    `;
+    const countQuery = `
+        SELECT COUNT(*) AS count
+        FROM transcript_bookmarks tb
+        JOIN transcripts t ON tb.transcript_id = t.id
+        WHERE tb.user_id = $1
+          AND t.lesson_id = $2
+    `;
     const [dataResult, countResult] = await Promise.all([
-        pool.query(query, values),
-        pool.query(countQuery, [user_id])
+        pool.query(query, [user_id, lessonId, limit, offset]),
+        pool.query(countQuery, [user_id, lessonId])
     ]);
     return {
         bookmarks: dataResult.rows,
         totalCount: parseInt(countResult.rows[0].count, 10)
     };
-}
-const  updateTranscriptBookmark = async (user_id,id, note) => {
+};
+
+const updateTranscriptBookmark = async (user_id, id, note) => {
     const query = `UPDATE transcript_bookmarks SET note = $1 WHERE id = $2 AND user_id = $3 RETURNING *`;
     const result = await pool.query(query, [note, id, user_id]);
     return result.rows[0];
 };
 
-const deleteTranscriptBookmark = async (user_id,id) => {
+const deleteTranscriptBookmark = async (user_id, id) => {
     const query = `DELETE FROM transcript_bookmarks WHERE user_id = $1 AND id = $2 RETURNING *`;
-    const result = await pool.query(query, [user_id,id]);
+    const result = await pool.query(query, [user_id, id]);
     return result.rows[0];
 };
 module.exports = {

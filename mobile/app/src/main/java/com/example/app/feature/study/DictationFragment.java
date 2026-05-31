@@ -72,6 +72,7 @@ public class DictationFragment extends Fragment {
     private TextView toolbarProgress;
     private TextView timer;
     private WebView webViewYoutube;
+    private noteResponse currentNoteResponse = null;
     private ImageButton btnClose ;
     private TextView vietnamese;
     private EditText etInput;
@@ -190,6 +191,7 @@ public class DictationFragment extends Fragment {
                     android.util.Log.d("DictationFragment", "Gọi API thành công! Số lượng câu: " + data.size());
                     listTranscripts = data;
                     sentenceAdapter.setData(listTranscripts);
+                    fetchTranscriptProgress(lessonId);
                     currentSentenceIndex = 0;
                     prepareCurrentSentence();
                 } else {
@@ -251,6 +253,15 @@ public class DictationFragment extends Fragment {
         transcriptProgressRepository.getTranscriptProgress(lessonId, new BaseCallback<ApiResponse<List<TranscriptProgressResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<TranscriptProgressResponse>> data) {
+                if (data != null && data.getData() != null) {
+                    List<Integer> completedIds = new ArrayList<>();
+                    for (TranscriptProgressResponse response : data.getData()) {
+                        completedIds.add(response.getTranscriptId());
+                    }
+                    if (sentenceAdapter != null) {
+                        sentenceAdapter.setCompletedTranscripts(completedIds);
+                    }
+                }
 
             }
             @Override
@@ -319,23 +330,30 @@ public class DictationFragment extends Fragment {
             }
             TranscriptsResponse currentTranscript = listTranscripts.get(currentSentenceIndex);
             Bundle bundle = new Bundle();
-            bundle.putInt("lessonId", lessonId);
-            bundle.putInt("transcriptId", currentTranscript.getId());
-            bundle.putString("sentenceEn", currentTranscript.getContent());
-            bundle.putString("sentenceVi", currentTranscript.getVietnamese());
-            if (youTubeWebViewManager != null) {
-                youTubeWebViewManager.pauseVideo();
-            }
-            try{
-                Navigation.findNavController(v).navigate(R.id.action_DictationFragment_to_addNoteFragment, bundle);
+            if(isCurrentSentenceBookmarked && currentNoteResponse != null){
+                bundle.putString("content", currentNoteResponse.getContent());
+                bundle.putString("phonetic", currentNoteResponse.getPhonetic() != null ? currentNoteResponse.getPhonetic() : "");
+                bundle.putString("note", currentNoteResponse.getNote());
+                bundle.putInt("transcriptId", currentTranscript.getId());
 
-            }catch (IllegalArgumentException e){
-                android.util.Log.e("DictationFragment", "Chưa cấu hình action chuyển màn hình trong nav_graph: " + e.getMessage());
-                Toast.makeText(requireContext(), "Lỗi chuyển màn hình ghi chú!", Toast.LENGTH_SHORT).show();
-            }
+                try{
+                    Navigation.findNavController(v).navigate(R.id.action_DictationFragment_to_editNoteFragment, bundle);
+                }catch (IllegalArgumentException e){
+                    android.util.Log.e("DictationFragment", "Lỗi chuyển màn hình Edit: " + e.getMessage());
+                }
 
+            } else {
+                bundle.putInt("lessonId", lessonId);
+                bundle.putInt("transcriptId", currentTranscript.getId());
+                bundle.putString("sentenceEn", currentTranscript.getContent());
+                bundle.putString("sentenceVi", currentTranscript.getVietnamese());
+                try{
+                    Navigation.findNavController(v).navigate(R.id.action_DictationFragment_to_addNoteFragment, bundle);
+                }catch (IllegalArgumentException e){
+                    android.util.Log.e("DictationFragment", "Lỗi chuyển màn hình Add: " + e.getMessage());
+                }
+            }
         });
-
         btnReplay.setOnClickListener(v -> {
             replayCurrentSentence();
             btnPlaysentenceState = true;
@@ -409,6 +427,9 @@ public class DictationFragment extends Fragment {
                     @Override
                     public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
                         Log.d("DictationFragment", "gửi api progress thành công ");
+                        if (sentenceAdapter != null) {
+                            sentenceAdapter.addCompletedTranscript(listTranscripts.get(currentSentenceIndex).getId());
+                        }
                     }
 
                     @Override
@@ -420,7 +441,9 @@ public class DictationFragment extends Fragment {
                      currentSentenceIndex++;
                      prepareCurrentSentence();
                      replayCurrentSentence();
-                     progressRepository.createProgress(new CreateProgressRequest(lessonId,(int) elapsedSeconds,Boolean.FALSE),new BaseCallback<ApiResponse<ProgressResponse>>(){
+                    btnKiemTra.setText("Kiểm tra");
+                    btnKiemTra.setOnClickListener(view -> checkAnswer(etInput.getText().toString()));
+                    progressRepository.createProgress(new CreateProgressRequest(lessonId,(int) elapsedSeconds,Boolean.FALSE),new BaseCallback<ApiResponse<ProgressResponse>>(){
                          @Override
                          public void onSuccess(ApiResponse<ProgressResponse> data) {
                              android.util.Log.d("DictationFragment", "gửi api progress thành công ");
@@ -526,12 +549,14 @@ public class DictationFragment extends Fragment {
             @Override
             public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
                 isCurrentSentenceBookmarked = false;
+                currentNoteResponse = null;
                 if (data != null && data.getData() != null) {
                     for (BookmarksModel model : data.getData()) {
                         if (model.getTranscripts() != null) {
                             for (noteResponse note : model.getTranscripts()) {
                                 if (note.getTranscriptId() == currentTranscriptId) {
                                     isCurrentSentenceBookmarked = true;
+                                    currentNoteResponse = note;
                                     break;
                                 }
                             }
@@ -545,6 +570,7 @@ public class DictationFragment extends Fragment {
             @Override
             public void onError(String message) {
                 isCurrentSentenceBookmarked = false;
+                currentNoteResponse = null;
                 updateBookmarkButtonUI();
             }
         });

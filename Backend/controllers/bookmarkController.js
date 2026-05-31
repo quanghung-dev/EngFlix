@@ -38,25 +38,40 @@ const createBookmark = async (req, res, next) => {
 const removeBookmark = async (req, res, next) => {
     try {
         const userId = req.user.uid;
-        const lessonId = parsePositiveInteger(req.params.lessonId);
-        if (!lessonId) {
-            return errorResponse(res, 400, 'lessonId must be a positive integer');
-        }
-
-        const transcriptId = parsePositiveInteger(req.query.transcriptId
-            ?? req.query.transcript_id
-            ?? req.body?.transcriptId
-            ?? req.body?.transcript_id);
+        const transcriptId = parsePositiveInteger(req.params.transcriptId);
         if (!transcriptId) {
             return errorResponse(res, 400, 'transcriptId must be a positive integer');
         }
 
-        const removed = await bookmarkService.removeBookmark(userId, lessonId, transcriptId);
+        const removed = await bookmarkService.removeBookmark(userId, transcriptId);
         if (!removed) {
             return errorResponse(res, 404, 'Bookmark not found');
         }
 
         return dataResponse(res, 200, removed);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateBookmarks = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const transcriptId = parsePositiveInteger(req.params.transcriptId);
+        if (!transcriptId) {
+            return errorResponse(res, 400, 'transcriptId must be a positive integer');
+        }
+
+        if (!req.body || !Object.prototype.hasOwnProperty.call(req.body, 'note')) {
+            return errorResponse(res, 400, 'note is required');
+        }
+
+        const result = await bookmarkService.updateBookmarks(userId, transcriptId, req.body.note);
+        if (!result) {
+            return errorResponse(res, 404, 'Bookmark not found');
+        }
+
+        return dataResponse(res, 200, result);
     } catch (error) {
         next(error);
     }
@@ -86,5 +101,6 @@ const getBookmarks = async (req, res, next) => {
 module.exports = {
     createBookmark,
     removeBookmark,
-    getBookmarks
+    getBookmarks,
+    updateBookmarks
 };

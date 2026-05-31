@@ -88,6 +88,22 @@ const getLearningHistorySummary = async (userId) => {
     };
 };
 
+const getLearningHistorySummaryByLesson = async (userId, lessonId) => {
+    const query = `
+        SELECT
+            COUNT(*) FILTER (WHERE completed = true) AS completed,
+            COUNT(*) FILTER (WHERE completed = false) AS uncompleted
+        FROM learning_history
+        WHERE user_id = $1
+          AND lesson_id = $2
+    `;
+    const result = await pool.query(query, [userId, lessonId]);
+    return {
+        completed: parseInt(result.rows[0].completed, 10),
+        uncompleted: parseInt(result.rows[0].uncompleted, 10)
+    };
+};
+
 const testGetgetLearningHistory = async () => {
     const query = `SELECT * FROM learning_history ORDER BY created_at DESC `
     const result = await pool.query(query)
@@ -101,5 +117,6 @@ module.exports = {
     getLearningHistoryFinished,
     getLearningHistoryUnfinished,
     getLearningHistorySummary,
+    getLearningHistorySummaryByLesson,
     testGetgetLearningHistory
 };

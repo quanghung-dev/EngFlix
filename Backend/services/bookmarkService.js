@@ -39,16 +39,27 @@ const createBookmark = async (userId, lessonId, transcriptId, note) => {
     return { bookmark, created };
 };
 
-const removeBookmark = async (userId, lessonId, transcriptId) => {
+const removeBookmark = async (userId, transcriptId) => {
     const query = `
         DELETE FROM bookmarks
         WHERE user_id = $1
-          AND lesson_id = $2
+          AND transcript_id = $2
+        RETURNING lesson_id, transcript_id, note, created_at
+    `;
+    const result = await pool.query(query, [userId, transcriptId]);
+    return result.rows[0];
+};
+
+const updateBookmarks = async (userId, transcriptId, note) => {
+    const query = `
+        UPDATE bookmarks
+        SET note = $1
+        WHERE user_id = $2
           AND transcript_id = $3
         RETURNING lesson_id, transcript_id, note, created_at
     `;
-    const result = await pool.query(query, [userId, lessonId, transcriptId]);
-    return result.rows[0]
+    const result = await pool.query(query, [note, userId, transcriptId]);
+    return result.rows[0];
 };
 
 const getBookmarks = async (userId, lessonId, limit, offset) => {
@@ -102,5 +113,6 @@ const getBookmarks = async (userId, lessonId, limit, offset) => {
 module.exports = {
     createBookmark,
     removeBookmark,
-    getBookmarks
+    getBookmarks,
+    updateBookmarks
 };

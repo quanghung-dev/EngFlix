@@ -32,6 +32,18 @@ CREATE TABLE IF NOT EXISTS transcript_bookmarks (
 CREATE INDEX IF NOT EXISTS idx_transcript_bookmarks_user_id
     ON transcript_bookmarks (user_id);
 
+CREATE TABLE IF NOT EXISTS transcript_progress (
+    user_id       VARCHAR(255) NOT NULL REFERENCES users (uid) ON DELETE CASCADE,
+    transcript_id INTEGER      NOT NULL REFERENCES transcripts (id) ON DELETE CASCADE,
+    lesson_id     INTEGER      NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
+    completed_at  TIMESTAMP    NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (user_id, transcript_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_transcript_progress_user_lesson
+    ON transcript_progress (user_id, lesson_id);
+
 
 CREATE TABLE IF NOT EXISTS learning_history (
     id SERIAL PRIMARY KEY,

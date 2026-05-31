@@ -168,35 +168,79 @@ router.post('/:lessonId', bookmarkController.createBookmark);
 
 /**
  * @swagger
- * /api/v1/bookmarks/{lessonId}:
- *   delete:
- *     summary: Remove bookmark
- *     description: Removes one transcript bookmark in a lesson.
+ * /api/v1/bookmarks/{transcriptId}:
+ *   patch:
+ *     summary: Update bookmark note
+ *     description: Updates the note for one transcript bookmark by transcript ID for the authenticated user. Send null to clear the note.
  *     tags: [Bookmarks]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: lessonId
+ *         name: transcriptId
  *         required: true
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: Lesson ID
- *       - in: query
+ *         description: Transcript ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - note
+ *             properties:
+ *               note:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Updated bookmark note. Use null to clear the note.
+ *           example:
+ *             note: "Review this sentence again"
+ *     responses:
+ *       200:
+ *         description: Bookmark note updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookmarkMutationResponse'
+ *             example:
+ *               data:
+ *                 lesson_id: 1
+ *                 transcript_id: 12
+ *                 note: "Review this sentence again"
+ *                 created_at: "2026-05-15T00:00:00.000Z"
+ *       400:
+ *         description: Invalid transcript ID or request body
+ *       401:
+ *         description: Missing or invalid bearer token
+ *       403:
+ *         description: Token verification failed
+ *       404:
+ *         description: Bookmark not found
+ *       500:
+ *         description: Internal server error
+ */
+router.patch('/:transcriptId', bookmarkController.updateBookmarks);
+
+/**
+ * @swagger
+ * /api/v1/bookmarks/{transcriptId}:
+ *   delete:
+ *     summary: Remove bookmark
+ *     description: Removes one transcript bookmark by transcript ID for the authenticated user.
+ *     tags: [Bookmarks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
  *         name: transcriptId
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: Transcript ID. The API also accepts transcript_id.
- *       - in: query
- *         name: transcript_id
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *         description: Snake_case alias for transcriptId.
+ *         description: Transcript ID
  *     responses:
  *       200:
  *         description: Bookmark removed successfully
@@ -211,7 +255,7 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *                 note: "Review this sentence"
  *                 created_at: "2026-05-15T00:00:00.000Z"
  *       400:
- *         description: Invalid lesson ID or transcript ID
+ *         description: Invalid transcript ID
  *       401:
  *         description: Missing or invalid bearer token
  *       403:
@@ -221,6 +265,6 @@ router.post('/:lessonId', bookmarkController.createBookmark);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:lessonId', bookmarkController.removeBookmark);
+router.delete('/:transcriptId', bookmarkController.removeBookmark);
 
 module.exports = router;

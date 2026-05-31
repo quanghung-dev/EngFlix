@@ -19,12 +19,16 @@ import com.example.app.adapter.study.ListLessonsAdapter;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.lessons.LessonsResponse;
 import com.example.app.data.repository.LessonsRepository;
+import com.example.app.data.repository.ProgressRepository;
 import com.example.app.diaglog.ChooseModeBottomSheet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LessonsListFragment extends Fragment {
+    private ProgressRepository progressRepository;
+    private int countDone;
+    private int countLearning;
     Toolbar toolbar;
     private String currentCategoryName;
     private int currentCategoryId = -1;
@@ -32,11 +36,15 @@ public class LessonsListFragment extends Fragment {
     private ListLessonsAdapter adapter;
     private LessonsRepository repository;
     private TextView CountNotStarted;
+    private TextView CountLearning;
+    private TextView CountDone;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.rvLessons);
+        CountDone = view.findViewById(R.id.tvCountDone);
+        CountLearning = view.findViewById(R.id.tvCountLearning);
         CountNotStarted = view.findViewById(R.id.tvCountNotStarted);
         toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> {
@@ -85,7 +93,7 @@ public class LessonsListFragment extends Fragment {
                     public void onError(String message) {
                         Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, android.widget.Toast.LENGTH_SHORT).show();
                     }
-                });
+        });
     }
 
     public void showBottomSheet(LessonsResponse lesson){

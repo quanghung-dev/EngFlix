@@ -8,6 +8,7 @@ import com.example.app.data.remote.model.request.progress.CreateProgressRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
 import com.example.app.data.remote.model.response.progress.ProgressSumaryResponse;
+import com.example.app.data.remote.model.response.progress.ProgressSumarysResponse;
 import com.example.app.utils.ApiCallWrapper;
 import com.example.app.utils.BaseCallback;
 
@@ -34,6 +35,9 @@ public class ProgressRepository {
     }
     public void getProgressSummary(BaseCallback<ApiResponse<ProgressSumaryResponse>> callback) {
         progressApi.getProgressSummary().enqueue(new ApiCallWrapper<>(callback));
+    }
+    public void getProgressSumarys(int lessonId, BaseCallback<ApiResponse<List<ProgressSumarysResponse>>> callback) {
+        progressApi.getProgressSumarys(lessonId).enqueue(new ApiCallWrapper<>(callback));
     }
 
 }

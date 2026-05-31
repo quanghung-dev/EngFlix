@@ -14,14 +14,21 @@ router.use(verifyToken);
 
 /**
  * @swagger
- * /api/v1/transcript-bookmarks:
+ * /api/v1/transcript-bookmarks/{lessonId}:
  *   get:
  *     summary: Get current user's transcript bookmarks
- *     description: Returns the authenticated user's transcript bookmarks ordered by bookmarked time.
+ *     description: Returns the authenticated user's transcript bookmarks in one lesson ordered by bookmarked time.
  *     tags: [Transcript Bookmarks]
  *     security:
  *       - bearerAuth: []
  *     parameters:
+ *       - in: path
+ *         name: lessonId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Lesson ID
  *       - in: query
  *         name: page
  *         required: false
@@ -57,6 +64,8 @@ router.use(verifyToken);
  *                         type: string
  *                       transcript_id:
  *                         type: integer
+ *                       lesson_id:
+ *                         type: integer
  *                       note:
  *                         type: string
  *                         nullable: true
@@ -79,6 +88,7 @@ router.use(verifyToken);
  *                 - id: 1
  *                   user_id: "firebase-user-id"
  *                   transcript_id: 12
+ *                   lesson_id: 1
  *                   note: "Practice pronunciation for this sentence"
  *                   created_at: "2026-05-26T08:00:00.000Z"
  *               meta:
@@ -91,7 +101,7 @@ router.use(verifyToken);
  *       500:
  *         description: Internal server error
  */
-router.get('/', transcriptBookmarksController.getTranscriptBookmarksByUserId);
+router.get('/:lessonId', transcriptBookmarksController.getTranscriptBookmarksByUserId);
 
 /**
  * @swagger
@@ -221,11 +231,13 @@ router.post('/', transcriptBookmarksController.createTranscriptBookmark);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - note
  *             properties:
  *               note:
  *                 type: string
  *                 nullable: true
- *                 description: Updated bookmark note
+ *                 description: Updated bookmark note. Use null to clear the note.
  *           example:
  *             note: "Review this line before shadowing practice"
  *     responses:

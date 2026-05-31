@@ -121,6 +121,21 @@ const getLearningHistorySummary = async (req, res, next) => {
     }
 };
 
+const getLearningHistorySummaryByLesson = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const lessonId = parsePositiveInteger(req.params.lessonId);
+        if (!lessonId) {
+            return errorResponse(res, 400, 'lessonId must be a positive integer');
+        }
+
+        const result = await learningHistoryService.getLearningHistorySummaryByLesson(userId, lessonId);
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const testGetgetLearningHistory = async (req, res, next) => {
     try {
         const result = await learningHistoryService.testGetgetLearningHistory();
@@ -137,5 +152,6 @@ module.exports = {
     getLearningHistoryFinished,
     getLearningHistoryUnfinished,
     getLearningHistorySummary,
+    getLearningHistorySummaryByLesson,
     testGetgetLearningHistory
 };
