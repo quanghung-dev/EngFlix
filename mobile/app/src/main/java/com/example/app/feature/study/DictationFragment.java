@@ -2,6 +2,7 @@ package com.example.app.feature.study;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,12 @@ import com.example.app.data.remote.model.response.bookmarks.BookmarksModel;
 import com.example.app.data.remote.model.response.bookmarks.noteResponse;
 import com.example.app.data.remote.model.response.progress.ProgressResponse;
 import com.example.app.data.remote.model.response.transcriptBookmarks.TranscriptBookmarksResponse;
+import com.example.app.data.remote.model.response.transcriptProgress.TranscriptProgressResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
 import com.example.app.data.repository.BookMarksRepository;
 import com.example.app.data.repository.ProgressRepository;
 import com.example.app.data.repository.TranscriptBookmarksRepository;
+import com.example.app.data.repository.TranscriptProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.diaglog.SpoilerWarning;
 import com.example.app.utils.BaseCallback;
@@ -45,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DictationFragment extends Fragment {
+    private TranscriptProgressRepository transcriptProgressRepository;
     private boolean isCurrentSentenceBookmarked = false;
     private BookMarksRepository bookMarksRepository;
     private TranscriptBookmarksRepository transcriptBookmarksRepository;
@@ -100,6 +104,7 @@ public class DictationFragment extends Fragment {
     ) {
 
         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
+        transcriptProgressRepository = new TranscriptProgressRepository(requireContext());
         bookMarksRepository = new BookMarksRepository(requireContext());
         transcriptBookmarksRepository = new TranscriptBookmarksRepository(requireContext());
         transcriptsRepository = new TranscriptsRepository(requireContext());
@@ -242,7 +247,18 @@ public class DictationFragment extends Fragment {
         }
         checkBookmarkState();
     }
+    public void fetchTranscriptProgress(int lessonId){
+        transcriptProgressRepository.getTranscriptProgress(lessonId, new BaseCallback<ApiResponse<List<TranscriptProgressResponse>>>() {
+            @Override
+            public void onSuccess(ApiResponse<List<TranscriptProgressResponse>> data) {
 
+            }
+            @Override
+            public void onError(String message) {
+                Log.e("DictationFragment", "Lỗi tải dữ liệu: " + message);
+            }
+        });
+    }
 
     @Override
     public void onDestroyView() {
@@ -389,6 +405,17 @@ public class DictationFragment extends Fragment {
             etInput.setEnabled(false);
             if( currentSentenceIndex != listTranscripts.size() - 1){
                 btnKiemTra.setText("Chính xác!");
+                transcriptProgressRepository.createTranscriptProgress(lessonId, listTranscripts.get(currentSentenceIndex).getId(), new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
+                    @Override
+                    public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
+                        Log.d("DictationFragment", "gửi api progress thành công ");
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("DictationFragment", "Lỗi tải dữ liệu: " + message);
+                    }
+                });
                 btnKiemTra.setOnClickListener(v -> {
                      currentSentenceIndex++;
                      prepareCurrentSentence();

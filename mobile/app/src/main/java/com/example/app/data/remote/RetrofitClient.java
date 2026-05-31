@@ -11,6 +11,7 @@ import com.example.app.data.remote.api.CategoryApi;
 import com.example.app.data.remote.api.LessonsApi;
 import com.example.app.data.remote.api.ProgressApi;
 import com.example.app.data.remote.api.TranscriptBookmarksApi;
+import com.example.app.data.remote.api.TranscriptProgressApi;
 import com.example.app.data.remote.api.TranscriptsApi;
 import com.example.app.data.remote.api.UserApi;
 import com.example.app.data.remote.api.VocabularyApi;
@@ -68,5 +69,6 @@ public class RetrofitClient {
     public TranscriptBookmarksApi getTranscriptBookmarksApi(){return retrofit.create(TranscriptBookmarksApi.class);}
     public ProgressApi getProgressApi(){return retrofit.create(ProgressApi.class);}
     public BookMarksApi getBookMarksApi(){return retrofit.create(BookMarksApi.class);}
+    public TranscriptProgressApi getTranscriptProgressApi(){return retrofit.create(TranscriptProgressApi.class);}
 
 }
