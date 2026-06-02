@@ -416,8 +416,12 @@ public class DictationFragment extends Fragment {
         };
 
         String correctAnswer = listTranscripts.get(currentSentenceIndex).getContent();
-        String normalizedInput = userInput.replaceAll("\\s+", " ");
-        String normalizedTarget = correctAnswer.replaceAll("\\s+", " ");
+        String normalizedInput = normalizeSentence(userInput);
+        String normalizedTarget = normalizeSentence(correctAnswer);
+        int correctPrefixCount = countCorrectPrefixWords(normalizedInput, normalizedTarget);
+        if (wordCardAdapter != null) {
+            wordCardAdapter.revealCorrectPrefixWords(correctPrefixCount);
+        }
 
         if(normalizedInput.equalsIgnoreCase(normalizedTarget)){
             etInput.setEnabled(false);
@@ -485,6 +489,31 @@ public class DictationFragment extends Fragment {
         else {
             btnKiemTra.setText("Sai! Thử lại");
         }
+    }
+
+    private String normalizeSentence(String sentence) {
+        if (sentence == null) {
+            return "";
+        }
+        return sentence.trim().replaceAll("\\s+", " ");
+    }
+
+    private int countCorrectPrefixWords(String normalizedInput, String normalizedTarget) {
+        if (normalizedInput.isEmpty() || normalizedTarget.isEmpty()) {
+            return 0;
+        }
+
+        String[] inputWords = normalizedInput.split("\\s+");
+        String[] targetWords = normalizedTarget.split("\\s+");
+        int correctPrefixCount = 0;
+        int maxComparableWords = Math.min(inputWords.length, targetWords.length);
+        for (int i = 0; i < maxComparableWords; i++) {
+            if (!inputWords[i].equalsIgnoreCase(targetWords[i])) {
+                break;
+            }
+            correctPrefixCount++;
+        }
+        return correctPrefixCount;
     }
 
     public void seekVideoTo(float seconds) {

@@ -33,8 +33,23 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
     public void revealWord(int position) {
         if (position >= 0 && position < list.size()) {
             list.get(position).setSelected(true);
+            list.get(position).setCorrect(false);
             notifyItemChanged(position);
         }
+    }
+
+    public void revealCorrectPrefixWords(int correctPrefixCount) {
+        for (int i = 0; i < list.size(); i++) {
+            WorkCardModel word = list.get(i);
+            if (i < correctPrefixCount) {
+                word.setSelected(true);
+                word.setCorrect(true);
+            } else if (word.isCorrect()) {
+                word.setSelected(false);
+                word.setCorrect(false);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -49,9 +64,14 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
     public void onBindViewHolder(@NonNull WordCardViewHolder holder, int position) {
         WorkCardModel currentWord = list.get(position);
             if (currentWord.isSelected()) {
-                holder.tvWord.setBackgroundResource(R.drawable.bg_card_white);
+                if (currentWord.isCorrect()) {
+                    holder.tvWord.setBackgroundResource(R.drawable.bg_word_correct);
+                    holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
+                } else {
+                    holder.tvWord.setBackgroundResource(R.drawable.bg_card_white);
+                    holder.tvWord.setTextColor(android.graphics.Color.parseColor("#1A1A1A"));
+                }
                 holder.tvWord.setText(currentWord.getWord());
-                holder.tvWord.setTextColor(android.graphics.Color.parseColor("#1A1A1A"));
             }
             else{
                 holder.tvWord.setBackgroundResource(R.drawable.bg_word_hidden);
