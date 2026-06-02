@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const vocabularyDecksController = require('../controllers/vocabularyDecksController.js');
 const vocabularyItemsController = require('../controllers/vocabularyItemsController.js');
+const verifyToken = require('../middlewares/auth.js');
 
 /**
  * @swagger
@@ -113,6 +114,7 @@ const vocabularyItemsController = require('../controllers/vocabularyItemsControl
  *         description: Internal server error
  */
 router.get('/', vocabularyDecksController.getVocabularyDecks);
+router.get('/mine', verifyToken, vocabularyDecksController.getMyVocabularyDecks);
 
 /**
  * @swagger
@@ -425,7 +427,7 @@ router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabula
  *       500:
  *         description: Internal server error
  */
-router.post('/', vocabularyDecksController.createVocabularyDecks);
+router.post('/', verifyToken, vocabularyDecksController.createVocabularyDecks);
 
 /**
  * @swagger

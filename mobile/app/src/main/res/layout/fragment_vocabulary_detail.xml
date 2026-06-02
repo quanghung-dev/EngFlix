@@ -51,6 +51,19 @@
                 android:textStyle="bold"
                 tools:text="Family" />
 
+            <ImageButton
+                android:id="@+id/btnCreateWord"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_circle_white"
+                android:contentDescription="Create vocabulary"
+                android:padding="@dimen/spacing_10"
+                android:src="@drawable/ic_create"
+                android:visibility="gone"
+                app:tint="@color/primary_blue" />
+
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 

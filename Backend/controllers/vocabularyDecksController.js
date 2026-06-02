@@ -16,13 +16,25 @@ const getVocabularyDecks = async (req, res, next) => {
     }
 };
 
+const getMyVocabularyDecks = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const { page, limit, offset } = getPagination(req.query);
+        const { result, totalCount } = await vocabularyDecksService.getVocabularyDecksByUserId(userId, limit, offset);
+        return dataResponse(res, 200, result, buildPaginationMeta(page, limit, totalCount));
+    } catch (error) {
+        next(error);
+    }
+};
+
 const createVocabularyDecks = async (req, res, next) => {
     try {
+        const userId = req.user.uid;
         const { category_id, name, description, level, thumbnail_url } = req.body;
         if (!name) {
             return errorResponse(res, 400, 'name la bat buoc');
         }
-        const result = await vocabularyDecksService.createVocabularyDecks(category_id, name, description, level, thumbnail_url);
+        const result = await vocabularyDecksService.createVocabularyDecks(userId, category_id, name, description, level, thumbnail_url);
         return dataResponse(res, 201, result);
     } catch (error) {
         if (error.code === '23503') {
@@ -76,6 +88,7 @@ const deleteVocabularyDecks = async (req, res, next) => {
 
 module.exports = {
     getVocabularyDecks,
+    getMyVocabularyDecks,
     createVocabularyDecks,
     updateVocabularyDecks,
     deleteVocabularyDecks,

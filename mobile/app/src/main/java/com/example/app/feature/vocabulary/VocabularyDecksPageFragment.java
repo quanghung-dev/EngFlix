@@ -31,14 +31,15 @@ import java.util.Map;
 
 public abstract class VocabularyDecksPageFragment extends Fragment {
     private static final String TAG = "VocabularyDecksPage";
+    protected static final String REQUEST_REFRESH_USER_DECKS = "refresh_user_vocabulary_decks";
 
-    private final List<VocaCategoryResponse> categoryList = new ArrayList<>();
-    private final List<VocaCategoryResponse> visibleCategoryList = new ArrayList<>();
-    private final Map<Integer, List<VocaDecksResponse>> decksMap = new HashMap<>();
+    protected final List<VocaCategoryResponse> categoryList = new ArrayList<>();
+    protected final List<VocaCategoryResponse> visibleCategoryList = new ArrayList<>();
+    protected final Map<Integer, List<VocaDecksResponse>> decksMap = new HashMap<>();
     private RecyclerView rvVocabularySections;
     private TextView tvEmptyState;
-    private VocabularySectionAdapter sectionAdapter;
-    private VocabularyRepository vocabularyRepository;
+    protected VocabularySectionAdapter sectionAdapter;
+    protected VocabularyRepository vocabularyRepository;
 
     protected abstract boolean shouldShowDeck(boolean isDefaultDeck);
 
@@ -58,6 +59,7 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putInt("deckId", deck.getId());
             bundle.putString("deckName", deck.getName());
+            bundle.putBoolean("isUserDeck", !deck.isDefault());
             if (position >= 0 && position < visibleCategoryList.size()) {
                 bundle.putString("categoryName", visibleCategoryList.get(position).getName());
             }
@@ -65,11 +67,15 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
                     .navigate(R.id.action_vocabularyFragment_to_detailItems, bundle);
         });
         rvVocabularySections.setAdapter(sectionAdapter);
-        fetchCategories();
+        loadData();
         return view;
     }
 
-    private void fetchCategories() {
+    protected void loadData() {
+        fetchCategories();
+    }
+
+    protected void fetchCategories() {
         vocabularyRepository.getVocabularyCategories(new BaseCallback<ApiResponse<List<VocaCategoryResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<VocaCategoryResponse>> response) {
@@ -124,7 +130,23 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
         }
     }
 
-    private void updateDisplayedSections() {
+    protected void showDecksInSingleSection(String sectionName, List<VocaDecksResponse> decks) {
+        int sectionId = 0;
+        categoryList.clear();
+        visibleCategoryList.clear();
+        decksMap.clear();
+
+        VocaCategoryResponse category = new VocaCategoryResponse(sectionId, sectionName, null);
+        categoryList.add(category);
+        if (decks != null && !decks.isEmpty()) {
+            visibleCategoryList.add(category);
+            decksMap.put(sectionId, decks);
+        }
+        sectionAdapter.setData(visibleCategoryList, decksMap);
+        updateEmptyState();
+    }
+
+    protected void updateDisplayedSections() {
         visibleCategoryList.clear();
         for (VocaCategoryResponse category : categoryList) {
             List<VocaDecksResponse> decks = decksMap.get(category.getId());

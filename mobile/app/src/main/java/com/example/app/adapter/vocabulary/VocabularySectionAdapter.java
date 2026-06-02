@@ -60,6 +60,7 @@ public class VocabularySectionAdapter extends RecyclerView.Adapter<VocabularySec
         holder.tv_category_count.setText(String.valueOf(decks.size()));
 
         final int sectionPosition = position;
+        boolean folderMode = vocaCategory.getId() == 0;
         VocabularyCardAdapter cardAdapter = new VocabularyCardAdapter(decks, new VocabularyCardAdapter.OnClickListener() {
             @Override
             public void onClick(int position, VocaDecksResponse vocaCategory) {
@@ -67,7 +68,7 @@ public class VocabularySectionAdapter extends RecyclerView.Adapter<VocabularySec
                     cardListener.onClick(sectionPosition, vocaCategory);
                 }
             }
-        });
+        }, folderMode);
         holder.rv_vocab_cards.setAdapter(cardAdapter);
         
         holder.itemView.setOnClickListener(v -> {

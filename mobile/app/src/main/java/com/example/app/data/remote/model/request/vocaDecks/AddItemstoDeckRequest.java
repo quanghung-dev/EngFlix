@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class AddItemsToDeckRequest {
     @SerializedName("lesson_id")
-    private int lessonId;
+    private Integer lessonId;
 
     @SerializedName("transcript_id")
-    private int transcriptId;
+    private Integer transcriptId;
 
     @SerializedName("phrase")
     private String phrase;
@@ -24,7 +24,7 @@ public class AddItemsToDeckRequest {
     @SerializedName("note")
     private String note;
 
-    public AddItemsToDeckRequest(int lessonId, int transcriptId, String phrase,
+    public AddItemsToDeckRequest(Integer lessonId, Integer transcriptId, String phrase,
                          String normalizedPhrase, String meaning,
                          String exampleSentence, String note) {
         this.lessonId = lessonId;

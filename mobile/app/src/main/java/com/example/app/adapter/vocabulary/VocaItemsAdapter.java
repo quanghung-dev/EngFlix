@@ -38,9 +38,13 @@ public class VocaItemsAdapter extends RecyclerView.Adapter<VocaItemsAdapter.Voca
     public void onBindViewHolder(@NonNull VocaItemsViewHolder holder, int position) {
         VocaItemsResponse vocaItem = vocaItems.get(position);
         holder.tvWord.setText(vocaItem.getPhrase());
-        holder.tvWordTag.setText(vocaItem.getMeaning());
+        holder.tvWordTag.setText("Từ mới");
         holder.tvIPA.setText(vocaItem.getNormalized_phrase());
-        holder.tvMeaning.setText(vocaItem.getExample_sentence());
+        String meaningText = vocaItem.getMeaning();
+        if (meaningText == null || meaningText.trim().isEmpty()) {
+            meaningText = vocaItem.getExample_sentence();
+        }
+        holder.tvMeaning.setText(meaningText);
         holder.itemView.setOnClickListener(v -> {
             int currentPosition = holder.getBindingAdapterPosition();
             if (currentPosition != RecyclerView.NO_POSITION) {

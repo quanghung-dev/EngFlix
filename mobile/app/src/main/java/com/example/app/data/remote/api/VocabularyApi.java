@@ -29,6 +29,9 @@ public interface VocabularyApi {
             @Query("category_id") int categoryId
     );
 
+    @GET("vocabulary-decks/mine")
+    Call<ApiResponse<List<VocaDecksResponse>>> getMyVocaDecks();
+
     @POST("vocabulary-decks")
     Call<ApiResponse<VocaDecksResponse>> createVocaDeck(
             @Body CreateVocaDeckRequest request

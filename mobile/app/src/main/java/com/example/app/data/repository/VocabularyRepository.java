@@ -32,6 +32,10 @@ public class VocabularyRepository {
         vocabularyApi.getVocaDecks(categoryId).enqueue(new ApiCallWrapper<>(callback));
     }
 
+    public void getMyVocabularyDecks(BaseCallback<ApiResponse<List<VocaDecksResponse>>> callback) {
+        vocabularyApi.getMyVocaDecks().enqueue(new ApiCallWrapper<>(callback));
+    }
+
     public void createVocaDeck(CreateVocaDeckRequest request, BaseCallback<ApiResponse<VocaDecksResponse>> callback) {
         vocabularyApi.createVocaDeck(request).enqueue(new ApiCallWrapper<>(callback));
     }

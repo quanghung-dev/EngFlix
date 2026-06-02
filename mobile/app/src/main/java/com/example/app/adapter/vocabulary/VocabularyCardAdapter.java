@@ -17,6 +17,7 @@ import java.util.List;
 
 public class VocabularyCardAdapter extends RecyclerView.Adapter<VocabularyCardAdapter.VocabularyCardViewHolder> {
     private List<VocaDecksResponse> vocaCategories = new ArrayList<>();
+    private boolean folderMode;
     public interface OnClickListener{
         void onClick(int position, VocaDecksResponse vocaCategory);
     }
@@ -28,14 +29,20 @@ public class VocabularyCardAdapter extends RecyclerView.Adapter<VocabularyCardAd
     }
 
     public VocabularyCardAdapter(List<VocaDecksResponse> vocaCategories, OnClickListener listener) {
+        this(vocaCategories, listener, false);
+    }
+
+    public VocabularyCardAdapter(List<VocaDecksResponse> vocaCategories, OnClickListener listener, boolean folderMode) {
         this.vocaCategories = vocaCategories;
         this.listener = listener;
+        this.folderMode = folderMode;
     }
 
     @NonNull
     @Override
     public VocabularyCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_vocabulary_card, parent, false);
+        int layoutId = folderMode ? R.layout.item_vocabulary_folder : R.layout.item_vocabulary_card;
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
         return new VocabularyCardViewHolder(view);
     }
 
@@ -43,7 +50,11 @@ public class VocabularyCardAdapter extends RecyclerView.Adapter<VocabularyCardAd
     public void onBindViewHolder(@NonNull VocabularyCardViewHolder holder, int position) {
         VocaDecksResponse vocaCategory = vocaCategories.get(position);
         holder.cardTitle.setText(vocaCategory.getName());
-        holder.cardWordCount.setText(vocaCategory.getDescription());
+        if (folderMode) {
+            holder.cardWordCount.setText("Thư mục cá nhân");
+        } else {
+            holder.cardWordCount.setText(vocaCategory.getDescription());
+        }
         holder.itemView.setOnClickListener(v -> {
             int currentPosition = holder.getBindingAdapterPosition();
             if (currentPosition != RecyclerView.NO_POSITION) {

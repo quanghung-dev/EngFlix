@@ -109,6 +109,9 @@
         <action
             android:id="@+id/action_detailItemsFragment_to_learningFragment"
             app:destination="@id/learningFragment" />
+        <action
+            android:id="@+id/action_detailItemsFragment_to_addVocabularyItemFragment"
+            app:destination="@id/addVocabularyItemFragment" />
 
 
 </fragment>
@@ -131,5 +134,10 @@
         android:label="Học từ vựng" >
 
     </fragment>
+
+    <fragment
+        android:id="@+id/addVocabularyItemFragment"
+        android:name="com.example.app.feature.vocabulary.AddVocabularyItemFragment"
+        android:label="Tạo từ vựng" />
 
 </navigation>

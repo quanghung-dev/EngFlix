@@ -29,9 +29,40 @@ const getVocabularyDecks = async (category_id, limit, offset) => {
     };
 };
 
-const createVocabularyDecks = async (category_id, name, description, level, thumbnail_url) => {
-    const query = 'INSERT INTO vocabulary_decks (category_id, name, description, level, thumbnail_url) VALUES ($1,$2,$3,$4,$5) RETURNING *'
-    const result = await pool.query(query,[category_id || null, name, description, level, thumbnail_url])
+const getVocabularyDecksByUserId = async (userId, limit, offset) => {
+    const dataQuery = `
+        SELECT *
+        FROM vocabulary_decks
+        WHERE user_id = $1
+          AND is_default = false
+        ORDER BY id ASC
+        LIMIT $2 OFFSET $3
+    `;
+    const countQuery = `
+        SELECT COUNT(*)
+        FROM vocabulary_decks
+        WHERE user_id = $1
+          AND is_default = false
+    `;
+
+    const [dataResult, countResult] = await Promise.all([
+        pool.query(dataQuery, [userId, limit, offset]),
+        pool.query(countQuery, [userId])
+    ]);
+
+    return {
+        result: dataResult.rows,
+        totalCount: parseInt(countResult.rows[0].count)
+    };
+};
+
+const createVocabularyDecks = async (userId, category_id, name, description, level, thumbnail_url) => {
+    const query = `
+        INSERT INTO vocabulary_decks (user_id, category_id, name, description, level, thumbnail_url, is_default)
+        VALUES ($1,$2,$3,$4,$5,$6,false)
+        RETURNING *
+    `
+    const result = await pool.query(query,[userId, category_id || null, name, description, level, thumbnail_url])
     return result.rows[0];
 };
 
@@ -57,6 +88,7 @@ const deleteVocabularyDecks = async (id) => {
 };
 module.exports = {
 getVocabularyDecks,
+getVocabularyDecksByUserId,
 createVocabularyDecks,
 updateVocabularyDecks,
 deleteVocabularyDecks

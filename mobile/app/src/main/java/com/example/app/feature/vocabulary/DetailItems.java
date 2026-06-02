@@ -26,13 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailItems extends Fragment {
-    VocaItemsAdapter adapter;
-    private List<VocaItemsResponse> vocaItems = new ArrayList<>();
+    private static final String TAG = "DetailItems";
+
+    private final List<VocaItemsResponse> vocaItems = new ArrayList<>();
+    private VocaItemsAdapter adapter;
     private VocabularyRepository vocabularyRepository;
     private int deckId;
     private String deckName;
     private String categoryName;
-    private ImageButton btnBack;
+    private boolean isUserDeck;
+    private ImageButton btnCreateWord;
     private TextView tvTopicTitle;
     private TextView tvHeaderTitle;
     private TextView tvCardCount;
@@ -41,39 +44,30 @@ public class DetailItems extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vocabulary_detail, container, false);
-        btnBack = view.findViewById(R.id.btnBack);
+        ImageButton btnBack = view.findViewById(R.id.btnBack);
+        btnCreateWord = view.findViewById(R.id.btnCreateWord);
         tvTopicTitle = view.findViewById(R.id.tvTopicTitle);
         tvHeaderTitle = view.findViewById(R.id.tvHeaderTitle);
         tvCardCount = view.findViewById(R.id.tvCardCount);
         rvWordList = view.findViewById(R.id.rvWordList);
         btnStartLearning = view.findViewById(R.id.btnStartLearning);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
-        rvWordList.setLayoutManager(layoutManager);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).popBackStack();
-            }
-        });
-        if(getArguments() != null){
-            deckId = getArguments().getInt("deckId",-1);
-            deckName = getArguments().getString("deckName","");
-            categoryName = getArguments().getString("categoryName","");
-            Log.d("DetailItems", "Đã nhận Deck - ID: " + deckId + ", Name: " + deckName);
-            tvTopicTitle.setText(categoryName);
-            tvHeaderTitle.setText(deckName);
-            if (deckId != -1) {
-                fetchDeckDetails();
-            }
-        }
-        adapter = new VocaItemsAdapter(vocaItems, new VocaItemsAdapter.OnClickCardListener(){
-            @Override
-            public void onClick(int position, VocaItemsResponse vocaItem) {
-                Log.d("DetailItems", "Clicked word: " + vocaItem.getPhrase());
-                navigateToLearning(vocaItem);
-            }
+        vocabularyRepository = new VocabularyRepository(requireContext());
+
+        rvWordList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new VocaItemsAdapter(vocaItems, (position, vocaItem) -> {
+            Log.d(TAG, "Clicked word: " + vocaItem.getPhrase());
+            navigateToLearning(vocaItem);
         });
         rvWordList.setAdapter(adapter);
+
+        getParentFragmentManager().setFragmentResultListener(
+                AddVocabularyItemFragment.REQUEST_VOCABULARY_ITEM_CREATED,
+                getViewLifecycleOwner(),
+                (requestKey, result) -> fetchDeckDetails()
+        );
+
+        btnBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+        btnCreateWord.setOnClickListener(v -> navigateToAddVocabularyItem());
         btnStartLearning.setOnClickListener(v -> {
             if (vocaItems.isEmpty()) {
                 Toast.makeText(requireContext(), "Chưa có từ vựng để học", Toast.LENGTH_SHORT).show();
@@ -81,7 +75,28 @@ public class DetailItems extends Fragment {
             }
             navigateToLearning(vocaItems.get(0));
         });
+
+        if (getArguments() != null) {
+            deckId = getArguments().getInt("deckId", -1);
+            deckName = getArguments().getString("deckName", "");
+            categoryName = getArguments().getString("categoryName", "");
+            isUserDeck = getArguments().getBoolean("isUserDeck", false);
+        }
+        tvTopicTitle.setText(categoryName);
+        tvHeaderTitle.setText(deckName);
+        btnCreateWord.setVisibility(isUserDeck ? View.VISIBLE : View.GONE);
+        if (deckId != -1) {
+            fetchDeckDetails();
+        }
         return view;
+    }
+
+    private void navigateToAddVocabularyItem() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("deckId", deckId);
+        bundle.putString("deckName", deckName);
+        bundle.putString("categoryName", categoryName);
+        Navigation.findNavController(requireView()).navigate(R.id.action_detailItemsFragment_to_addVocabularyItemFragment, bundle);
     }
 
     private void navigateToLearning(VocaItemsResponse vocaItem) {
@@ -96,17 +111,15 @@ public class DetailItems extends Fragment {
     }
 
     private void fetchDeckDetails() {
-        vocabularyRepository = new VocabularyRepository(requireContext());
-        vocabularyRepository.getVocabularyItemsByDeckId(deckId, new BaseCallback<ApiResponse<List<VocaItemsResponse>>>(){
+        vocabularyRepository.getVocabularyItemsByDeckId(deckId, new BaseCallback<ApiResponse<List<VocaItemsResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<VocaItemsResponse>> data) {
-                if(data != null && data.getData() != null){
-                    vocaItems.clear();
+                vocaItems.clear();
+                if (data != null && data.getData() != null) {
                     vocaItems.addAll(data.getData());
-                    adapter.notifyDataSetChanged();
-                    tvCardCount.setText("Thẻ mới • 0/" + vocaItems.size());
-
                 }
+                adapter.notifyDataSetChanged();
+                tvCardCount.setText("Thẻ mới • 0/" + vocaItems.size());
             }
 
             @Override
@@ -114,6 +127,5 @@ public class DetailItems extends Fragment {
                 Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }
