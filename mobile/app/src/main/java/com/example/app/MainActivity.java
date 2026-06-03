@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
                         || destination.getId() == R.id.detailItemsFragment
                         || destination.getId() == R.id.LoginFragment
                         || destination.getId() == R.id.SignupFragment
-                        || destination.getId() == R.id.myNotesFragment){
+                        || destination.getId() == R.id.myNotesFragment
+                        || destination.getId() == R.id.ListeningFragment){
                     bottomNav.setVisibility(View.GONE);
                 }
                 else{

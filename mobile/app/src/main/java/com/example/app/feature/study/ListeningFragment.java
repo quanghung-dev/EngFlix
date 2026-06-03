@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
 import com.example.app.adapter.dictation.SentenceAdapter;
+import com.example.app.adapter.pronunciation.ItemPronunciationAdapter;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
 import com.example.app.data.repository.TranscriptProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
@@ -28,14 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListeningFragment extends Fragment {
+    ItemPronunciationAdapter itemPronunciationAdapter;
     private SentenceAdapter sentenceAdapter;
     private YouTubeWebViewManager youTubeWebViewManager;
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
     private TranscriptsRepository transcriptsRepository;
     private int lessonId = -1;
     private String lessonTitle;
-    private String lessonDescription;
-    private String lessonThumbnailUrl;
     private String lessonVideoUrl;
     private int lessonDuration;
     private String lessonLevel;
@@ -45,14 +45,8 @@ public class ListeningFragment extends Fragment {
     private TextView tvTimer;
     private WebView webViewYoutube;
     private RecyclerView rvSentenceNumbers;
-    private ImageButton ivnumerical;
-    private ImageButton btnPlaySentence;
-    private ImageButton btnReplay;
-    private ImageButton btnBookmark;
-    private ImageButton btnFlag;
-    private RecyclerView rvWordCards;
-    private TextView vietnamese;
-    private Button btnStart;
+    private RecyclerView rvItemCard;
+
 
     @Nullable
     @Override
@@ -70,27 +64,26 @@ public class ListeningFragment extends Fragment {
         tvTimer = view.findViewById(R.id.tvTimer);
         webViewYoutube = view.findViewById(R.id.webViewYoutube);
         rvSentenceNumbers = view.findViewById(R.id.rvSentenceNumbers);
-        ivnumerical = view.findViewById(R.id.ivnumerical);
-        btnPlaySentence = view.findViewById(R.id.btnPlaySentence);
-        btnReplay = view.findViewById(R.id.btnReplay);
-        btnBookmark = view.findViewById(R.id.btnBookmark);
-        btnFlag = view.findViewById(R.id.btnFlag);
-        rvWordCards = view.findViewById(R.id.rvWordCards);
-        vietnamese = view.findViewById(R.id.vietnamese);
-        btnStart = view.findViewById(R.id.btnStart);
         youTubeWebViewManager = new YouTubeWebViewManager(webViewYoutube);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvItemCard = view.findViewById(R.id.rvItemCard);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         sentenceAdapter = new SentenceAdapter(listTranscripts, new SentenceAdapter.OnItemClickListener(){
             @Override
             public void onItemClick(int position) {
 
             }
         });
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        rvItemCard.setLayoutManager(layoutManager2);
+        itemPronunciationAdapter = new ItemPronunciationAdapter(listTranscripts, new ItemPronunciationAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(int position) {
+                Log.d("DictationFragment", "Bấm vào câu: " + (position + 1));
+            }
+        });
         if(getArguments() != null){
             lessonId = getArguments().getInt("lessonId");
             lessonTitle = getArguments().getString("lessonTitle");
-            lessonDescription = getArguments().getString("lessonDescription");
-            lessonThumbnailUrl = getArguments().getString("lessonThumbnailUrl");
             lessonVideoUrl = getArguments().getString("lessonVideoUrl");
             lessonDuration = getArguments().getInt("lessonDuration");
             lessonLevel = getArguments().getString("lessonLevel");
@@ -105,8 +98,9 @@ public class ListeningFragment extends Fragment {
             }
             youTubeWebViewManager.setupYoutubeWebView(requireContext(),lessonVideoUrl);
         }
-        rvSentenceNumbers.setLayoutManager(layoutManager);
+        rvSentenceNumbers.setLayoutManager(layoutManager1);
         rvSentenceNumbers.setAdapter(sentenceAdapter);
+        rvItemCard.setAdapter(itemPronunciationAdapter);
         return view;
     }
     public void fetchTranscripts(int lessonId){
@@ -116,6 +110,7 @@ public class ListeningFragment extends Fragment {
                 listTranscripts.clear();
                 listTranscripts.addAll(data);
                 sentenceAdapter.notifyDataSetChanged();
+                itemPronunciationAdapter.notifyDataSetChanged();
             }
             @Override
             public void onError(String message) {
