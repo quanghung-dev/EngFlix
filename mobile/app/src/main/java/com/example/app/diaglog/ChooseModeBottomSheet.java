@@ -5,17 +5,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.app.R;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 
 
 public class ChooseModeBottomSheet extends DialogFragment {
+    private LinearLayout cardLuyenNoi;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +57,16 @@ public class ChooseModeBottomSheet extends DialogFragment {
                     .navigate(R.id.DictationFragment, dictationBundle);
             dismiss();
                 });
+
+        View cardLuyenNoi = view.findViewById(R.id.cardLuyenNoi);
+        cardLuyenNoi.setOnClickListener(v -> {
+           Bundle listeningBundle = new Bundle();
+            if (getArguments() != null) {
+                listeningBundle.putAll(getArguments());
+            }
+            androidx.navigation.Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.ListeningFragment, listeningBundle);
+        });
 
     }
 

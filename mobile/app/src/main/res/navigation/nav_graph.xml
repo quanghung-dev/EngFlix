@@ -139,5 +139,9 @@
         android:id="@+id/addVocabularyItemFragment"
         android:name="com.example.app.feature.vocabulary.AddVocabularyItemFragment"
         android:label="Tạo từ vựng" />
+    <fragment
+        android:id="@+id/ListeningFragment"
+        android:name="com.example.app.feature.study.ListeningFragment"
+        android:label="Học nghe " />
 
 </navigation>
