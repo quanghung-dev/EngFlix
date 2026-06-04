@@ -7,7 +7,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
@@ -21,6 +20,8 @@ import java.util.List;
 public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronunciationAdapter.ItemPronunciationViewHolder>  {
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
     private OnItemClickListener listener;
+    private int selectedPosition = 0;
+
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
@@ -28,6 +29,18 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
     public ItemPronunciationAdapter(List<TranscriptsResponse> listTranscripts, OnItemClickListener listener) {
         this.listTranscripts = listTranscripts;
         this.listener = listener;
+    }
+
+    public void setSelectedPosition(int position) {
+        int previousPosition = selectedPosition;
+        selectedPosition = position;
+
+        if (previousPosition >= 0 && previousPosition < getItemCount()) {
+            notifyItemChanged(previousPosition);
+        }
+        if (selectedPosition >= 0 && selectedPosition < getItemCount()) {
+            notifyItemChanged(selectedPosition);
+        }
     }
 
     @NonNull
@@ -44,6 +57,14 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
         holder.tvPhonetic.setText(transcript.getPhonetic());
         holder.tvVietnameseMeaning.setText(transcript.getVietnamese());
         holder.btnSentenceNumber.setText(String.valueOf(position + 1));
+
+        if (selectedPosition == position) {
+            holder.cardPronunciation.setStrokeColor(0xFF2196F3);
+            holder.cardPronunciation.setStrokeWidth(dpToPx(holder.itemView, 2));
+        } else {
+            holder.cardPronunciation.setStrokeWidth(0);
+        }
+
         holder.cardPronunciation.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(position);
@@ -58,6 +79,10 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
             return listTranscripts.size();
         }
         return 0;
+    }
+
+    private int dpToPx(View view, int dp) {
+        return (int) (dp * view.getResources().getDisplayMetrics().density + 0.5f);
     }
 
     public class ItemPronunciationViewHolder extends RecyclerView.ViewHolder {

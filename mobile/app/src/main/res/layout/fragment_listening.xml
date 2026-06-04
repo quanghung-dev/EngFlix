@@ -220,7 +220,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvItemCard"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -255,68 +256,49 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:padding="8dp"
-        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:gravity="center"
         android:background="@color/white">
 
         <!-- Button Trước (Previous) -->
         <ImageButton
             android:id="@+id/btnPrevious"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:src="@drawable/ic_arrow_back"
-            android:background="@drawable/bg_btn_gray_outline"
+            android:background="@drawable/bg_btn_circle_gray"
             android:foreground="?attr/selectableItemBackground"
             android:contentDescription="Previous" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <!-- Button Mic -->
+        <ImageButton
+            android:id="@+id/btnMic"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_mic"
+            android:background="@drawable/bg_icon_circle_blue"
+            android:foreground="?attr/selectableItemBackground"
+            android:contentDescription="Record" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <!-- Button Sau (Next) -->
         <ImageButton
             android:id="@+id/btnNext"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:src="@drawable/ic_arrow_forward"
-            android:background="@drawable/bg_btn_gray_outline"
+            android:background="@drawable/bg_btn_circle_gray"
             android:foreground="?attr/selectableItemBackground"
-            android:layout_marginStart="8dp"
             android:contentDescription="Next" />
-
-        <!-- Button Replay -->
-        <ImageButton
-            android:id="@+id/btnReplay2"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_replay"
-            android:background="@drawable/bg_btn_blue_outline"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_marginStart="8dp"
-            android:contentDescription="Replay" />
-
-        <!-- Button Play -->
-        <ImageButton
-            android:id="@+id/btnPlay"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_play_arrow"
-            android:background="@drawable/bg_btn_blue_fill"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_marginStart="8dp"
-            android:contentDescription="Play" />
-
-        <!-- Button Kiểm tra -->
-        <Button
-            android:id="@+id/btnKiemTra"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="2"
-            android:text="Kiểm tra"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_btn_blue_fill"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 
