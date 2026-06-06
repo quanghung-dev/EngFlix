@@ -23,6 +23,10 @@ public class PronunciationProgressResponse {
 
     @SerializedName("updated_at")
     private String updatedAt;
+    private String feedback;
+    public String getFeedback() {
+        return feedback;
+    }
 
     public String getUserId() {
         return userId;

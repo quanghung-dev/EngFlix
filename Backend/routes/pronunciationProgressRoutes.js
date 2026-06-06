@@ -68,6 +68,9 @@ router.use(verifyToken);
  *                         nullable: true
  *                       best_score:
  *                         type: number
+ *                       feedback:
+ *                         type: string
+ *                         nullable: true
  *                       created_at:
  *                         type: string
  *                         format: date-time
@@ -92,6 +95,7 @@ router.use(verifyToken);
  *                   transcript_id: 45
  *                   best_attempt_id: 101
  *                   best_score: 82.20
+ *                   feedback: "Ban phat am kha tot. Ngu dieu con hoi deu, can nhan nha tu nhien hon."
  *                   created_at: "2026-06-06T10:30:00.000Z"
  *                   updated_at: "2026-06-06T11:55:00.000Z"
  *               meta:
@@ -105,7 +109,7 @@ router.use(verifyToken);
  *         description: Missing or invalid Firebase bearer token
  *       500:
  *         description: Internal server error
- */
+ * */
 router.get('/progress/:lessonId', pronunciationProgressController.getPronunciationProgress);
 
 /**
@@ -146,6 +150,9 @@ router.get('/progress/:lessonId', pronunciationProgressController.getPronunciati
  *                       nullable: true
  *                     best_score:
  *                       type: number
+ *                     feedback:
+ *                       type: string
+ *                       nullable: true
  *                     created_at:
  *                       type: string
  *                       format: date-time
@@ -159,6 +166,7 @@ router.get('/progress/:lessonId', pronunciationProgressController.getPronunciati
  *                 transcript_id: 45
  *                 best_attempt_id: 101
  *                 best_score: 82.20
+ *                 feedback: "Ban phat am kha tot. Ngu dieu con hoi deu, can nhan nha tu nhien hon."
  *                 created_at: "2026-06-06T10:30:00.000Z"
  *                 updated_at: "2026-06-06T11:55:00.000Z"
  *       400:

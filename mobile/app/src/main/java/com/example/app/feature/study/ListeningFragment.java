@@ -40,6 +40,7 @@ import com.example.app.data.repository.PronunciationProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.utils.BaseCallback;
 import com.example.app.utils.YouTubeWebViewManager;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -125,7 +126,6 @@ public class ListeningFragment extends Fragment {
                 return;
             }
             if (listTranscripts == null || listTranscripts.isEmpty()) {
-                Toast.makeText(requireContext(), "Chưa có dữ liệu câu", Toast.LENGTH_SHORT).show();
                 return;
             }
             TranscriptsResponse transcript = listTranscripts.get(currentSentenceIndex);
@@ -151,6 +151,7 @@ public class ListeningFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 selectSentence(position);
+
             }
         });
         if(getArguments() != null){
@@ -185,11 +186,33 @@ public class ListeningFragment extends Fragment {
                 sentenceAdapter.setSelectedPosition(currentSentenceIndex);
                 itemPronunciationAdapter.notifyDataSetChanged();
                 itemPronunciationAdapter.setSelectedPosition(currentSentenceIndex);
+                fetchPronunciationProgress(lessonId);
                 selectSentence(0);
             }
             @Override
             public void onError(String message) {
                 Log.e("DictationFragment", "Lỗi tải dữ liệu: " + message);
+            }
+        });
+    }
+    public void fetchPronunciationProgress(int lessonId){
+        pronunciationProgressRepository.getPronunciationProgress(lessonId, new BaseCallback<ApiResponse<List<PronunciationProgressResponse>>>() {
+            @Override
+            public void onSuccess(ApiResponse<List<PronunciationProgressResponse>> data) {
+                if (data != null && data.getData() != null) {
+                    itemPronunciationAdapter.setPronunciationProgressList(data.getData());
+
+                    List<Integer> completedIds = new ArrayList<>();
+                    for (PronunciationProgressResponse response : data.getData()) {
+                        completedIds.add(response.getTranscriptId());
+                    }
+                    sentenceAdapter.setCompletedTranscripts(completedIds);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("ListeningFragment", "Lỗi tải pronunciation progress: " + message);
             }
         });
     }
@@ -234,8 +257,6 @@ public class ListeningFragment extends Fragment {
 
         recordingThread = new Thread(() -> writeWavFile(recordedAudioFile, bufferSize));
         recordingThread.start();
-
-        Toast.makeText(requireContext(), "Bắt đầu ghi âm", Toast.LENGTH_SHORT).show();
     }
     private void stopRecording() {
         isRecording = false;
@@ -262,11 +283,6 @@ public class ListeningFragment extends Fragment {
         long recordedFileSize = recordedAudioFile != null ? recordedAudioFile.length() : 0;
         int recordedMaxAmplitude = recordedAudioFile != null ? calculateMaxAmplitude(recordedAudioFile) : 0;
         Log.i("DictationFragment", "Recorded WAV fileSize=" + recordedFileSize + ", maxAmplitude=" + recordedMaxAmplitude);
-        Toast.makeText(
-                requireContext(),
-                "Đã lưu file: " + recordedAudioFile.getName(),
-                Toast.LENGTH_SHORT
-        ).show();
         TranscriptsResponse transcript = listTranscripts.get(currentSentenceIndex);
         String referenceText = transcript.getContent();
         pronunciationAttemptsRepository.assessPronunciation(recordedAudioFile.getAbsoluteFile(),referenceText,lessonId,transcript.getId(),new BaseCallback<ApiResponse<PronunciationResponse>>() {
@@ -274,11 +290,17 @@ public class ListeningFragment extends Fragment {
             public void onSuccess(ApiResponse<PronunciationResponse> data) {
                 sentenceAdapter.notifyItemChanged(currentSentenceIndex);
                 itemPronunciationAdapter.notifyItemChanged(currentSentenceIndex);
+                Log.d("DictationFragment", "Score: " + new Gson().toJson(data));
                 Log.d("DictationFragment", "Đã nhận phản hồi từ server");
                 pronunciationProgressRepository.updatePronunciationProgress(transcript.getId(), new BaseCallback<ApiResponse<PronunciationProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<PronunciationProgressResponse> data) {
-                        Log.d("DictationFragment", "Đã update dữ liệu");
+                        Log.d("DictationFragment", "Data: " + new Gson().toJson(data));
+                        if (data != null && data.getData() != null) {
+                            itemPronunciationAdapter.updatePronunciationProgress(data.getData());
+                            sentenceAdapter.addCompletedTranscript(data.getData().getTranscriptId());
+                        }
+
                         Log.d("DictationFragment", "Đã upadte dữ liệu");
                     }
 

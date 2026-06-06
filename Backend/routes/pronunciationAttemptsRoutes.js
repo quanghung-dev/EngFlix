@@ -260,6 +260,9 @@ router.post('/', upload.single('audio'), pronunciationAttemptsController.assessP
  *                     prosody_score:
  *                       type: number
  *                       example: 66.40
+ *                     feedback:
+ *                       type: string
+ *                       example: "Ban phat am kha tot. Ngu dieu con hoi deu, can nhan nha tu nhien hon."
  *                     created_at:
  *                       type: string
  *                       format: date-time

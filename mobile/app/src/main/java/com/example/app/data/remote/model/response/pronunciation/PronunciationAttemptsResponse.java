@@ -35,6 +35,11 @@ public class PronunciationAttemptsResponse {
 
     @SerializedName("created_at")
     private String createdAt;
+    private String feedback;
+
+    public String getFeedback() {
+        return feedback;
+    }
 
     public int getId() {
         return id;

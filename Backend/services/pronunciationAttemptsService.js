@@ -19,6 +19,7 @@ const buildAttemptValues = ({ userId, lessonId, transcriptId, referenceText, ass
   assessment.scores?.fluency ?? 0,
   assessment.scores?.completeness ?? 0,
   assessment.scores?.prosody ?? 0,
+  assessment.feedback ?? "",
 ];
 
 const assessPronunciation = async (filePath, referenceText) => {
@@ -86,9 +87,9 @@ const savePronunciationAttempt = async (payload) => {
     INSERT INTO pronunciation_attempts (
       user_id, lesson_id, transcript_id, reference_text,
       overall_score, accuracy_score, fluency_score, completeness_score,
-      prosody_score
+      prosody_score, feedback
     )
-    SELECT $1, lesson_id, id, $4, $5, $6, $7, $8, $9
+    SELECT $1, lesson_id, id, $4, $5, $6, $7, $8, $9, $10
     FROM target_transcript
     RETURNING *
   `;

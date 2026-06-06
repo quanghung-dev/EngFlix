@@ -1,5 +1,7 @@
 package com.example.app.adapter.pronunciation;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +12,52 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
+import com.example.app.data.remote.model.response.pronunciation.PronunciationProgressResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronunciationAdapter.ItemPronunciationViewHolder>  {
     private List<TranscriptsResponse> listTranscripts = new ArrayList<>();
+    private Map<Integer, PronunciationProgressResponse> pronunciationProgressMap = new HashMap<>();
+    private String vietnameseText = "";
+    private double score = -1;
+    private String feedback = "";
     private OnItemClickListener listener;
     private int selectedPosition = 0;
+    public void setVietNamese(String vietnameseText) {
+     this.vietnameseText = vietnameseText;
+     notifyDataSetChanged();
+    }
+    public void setSore(double score) {
+     this.score = score;
+     notifyDataSetChanged();
+    }
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+        notifyDataSetChanged();
+    }
+    public void setPronunciationProgressList(List<PronunciationProgressResponse> progressList) {
+        pronunciationProgressMap.clear();
+        if (progressList != null) {
+            for (PronunciationProgressResponse progress : progressList) {
+                pronunciationProgressMap.put(progress.getTranscriptId(), progress);
+            }
+        }
+        notifyDataSetChanged();
+    }
+    public void updatePronunciationProgress(PronunciationProgressResponse progress) {
+        if (progress == null) {
+            return;
+        }
+        pronunciationProgressMap.put(progress.getTranscriptId(), progress);
+        notifyDataSetChanged();
+    }
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -30,6 +67,7 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
         this.listTranscripts = listTranscripts;
         this.listener = listener;
     }
+
 
     public void setSelectedPosition(int position) {
         int previousPosition = selectedPosition;
@@ -55,7 +93,41 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
         TranscriptsResponse transcript = listTranscripts.get(position);
         holder.tvEnglishSentence.setText(transcript.getContent());
         holder.tvPhonetic.setText(transcript.getPhonetic());
-        holder.tvVietnameseMeaning.setText(transcript.getVietnamese());
+
+        PronunciationProgressResponse progress = pronunciationProgressMap.get(transcript.getId());
+
+        if (progress != null && transcript.getVietnamese() != null && !transcript.getVietnamese().trim().isEmpty()) {
+            holder.tvVietnameseMeaning.setText(transcript.getVietnamese());
+            holder.tvVietnameseMeaning.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvVietnameseMeaning.setText("");
+            holder.tvVietnameseMeaning.setVisibility(View.GONE);
+        }
+
+        if (progress != null && progress.getFeedback() != null && !progress.getFeedback().trim().isEmpty()) {
+            holder.tvFeedBack.setText(progress.getFeedback());
+            holder.tvFeedBack.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvFeedBack.setText("");
+            holder.tvFeedBack.setVisibility(View.GONE);
+        }
+
+        if (progress != null && progress.getBestScore() != null) {
+            double bestScore = progress.getBestScore();
+            holder.btnScore.setText(String.format("%.0f", bestScore) + "%");
+            if (bestScore < 50) {
+                holder.btnScore.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FBE4E8")));
+                holder.btnScore.setTextColor(Color.parseColor("#F04452"));
+            } else {
+                holder.btnScore.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E6F4EA")));
+                holder.btnScore.setTextColor(Color.parseColor("#34A853"));
+            }
+            holder.btnScore.setVisibility(View.VISIBLE);
+        }else {
+            holder.btnScore.setVisibility(View.GONE);
+        }
+
+
         holder.btnSentenceNumber.setText(String.valueOf(position + 1));
 
         if (selectedPosition == position) {
@@ -92,12 +164,12 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
             btnSentenceNumber = itemView.findViewById(R.id.btnSentenceNumber);
             btnPause = itemView.findViewById(R.id.btnPause);
             btnScore = itemView.findViewById(R.id.btnScore);
-            btnFlag = itemView.findViewById(R.id.btnFlag);
             btnUserRecording = itemView.findViewById(R.id.btnUserRecording);
             btnReplay = itemView.findViewById(R.id.btnReplay);
             btnBookmark = itemView.findViewById(R.id.btnBookmark);
             tvEnglishSentence = itemView.findViewById(R.id.tvEnglishSentence);
             tvPhonetic = itemView.findViewById(R.id.tvPhonetic);
+            tvFeedBack = itemView.findViewById(R.id.tvFeedBack);
             tvVietnameseMeaning = itemView.findViewById(R.id.tvVietnameseMeaning);
             divider = itemView.findViewById(R.id.divider);
         }
@@ -106,7 +178,6 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
         MaterialButton btnSentenceNumber;
         MaterialButton btnPause;
         MaterialButton btnScore;
-        MaterialButton btnFlag;
         MaterialButton btnUserRecording;
 
         ImageButton btnReplay;
@@ -114,6 +185,7 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
 
         TextView tvEnglishSentence;
         TextView tvPhonetic;
+        TextView tvFeedBack;
         TextView tvVietnameseMeaning;
 
         View divider;

@@ -23,7 +23,7 @@ const updatePronunciationProgress = async (userId, transcriptId) => {
             GROUP BY user_id, lesson_id, transcript_id
         ),
         best_attempt AS (
-            SELECT id
+            SELECT id, feedback
             FROM pronunciation_attempts
             WHERE user_id = $1 AND transcript_id = $2
             ORDER BY overall_score DESC, created_at DESC, id DESC
@@ -35,6 +35,7 @@ const updatePronunciationProgress = async (userId, transcriptId) => {
             transcript_id,
             best_attempt_id,
             best_score,
+            feedback,
             created_at,
             updated_at
         )
@@ -44,6 +45,7 @@ const updatePronunciationProgress = async (userId, transcriptId) => {
             summary.transcript_id,
             best_attempt.id,
             summary.best_score,
+            best_attempt.feedback,
             NOW(),
             NOW()
         FROM summary
@@ -53,6 +55,7 @@ const updatePronunciationProgress = async (userId, transcriptId) => {
             lesson_id = EXCLUDED.lesson_id,
             best_attempt_id = EXCLUDED.best_attempt_id,
             best_score = EXCLUDED.best_score,
+            feedback = EXCLUDED.feedback,
             updated_at = NOW()
         RETURNING *
     `;
