@@ -31,10 +31,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.app.R;
 import com.example.app.adapter.dictation.SentenceAdapter;
 import com.example.app.adapter.pronunciation.ItemPronunciationAdapter;
+import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.pronunciation.PronunciationProgressResponse;
+import com.example.app.data.remote.model.response.pronunciation.PronunciationResponse;
 import com.example.app.data.remote.model.response.transcripts.TranscriptsResponse;
-import com.example.app.data.repository.PronunciationRepository;
-import com.example.app.data.repository.TranscriptProgressRepository;
+import com.example.app.data.repository.PronunciationAttemptsRepository;
+import com.example.app.data.repository.PronunciationProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
+import com.example.app.utils.BaseCallback;
 import com.example.app.utils.YouTubeWebViewManager;
 
 import java.io.File;
@@ -44,19 +48,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListeningFragment extends Fragment {
+    private PronunciationAttemptsRepository pronunciationAttemptsRepository;
+    private PronunciationProgressRepository pronunciationProgressRepository;
     private AudioRecord audioRecord;
     private Thread recordingThread;
     private AnimatorSet micPulseAnimator;
     private boolean isRecording = false;
     private File recordedAudioFile;
-
     private static final int SAMPLE_RATE = 16000;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private ImageButton btnPrevious;
     private ImageButton btnNext;
     private ImageButton btnMic;
-    private PronunciationRepository pronunciationRepository;
     private ItemPronunciationAdapter itemPronunciationAdapter;
     private SentenceAdapter sentenceAdapter;
     private YouTubeWebViewManager youTubeWebViewManager;
@@ -84,10 +88,12 @@ public class ListeningFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_listening, container, false);
+        pronunciationAttemptsRepository = new PronunciationAttemptsRepository(requireContext());
+        pronunciationProgressRepository = new PronunciationProgressRepository(requireContext());
         btnPrevious = view.findViewById(R.id.btnPrevious);
         btnNext = view.findViewById(R.id.btnNext);
         btnMic = view.findViewById(R.id.btnMic);
-        pronunciationRepository = new PronunciationRepository(requireContext());
+        pronunciationAttemptsRepository = new PronunciationAttemptsRepository(requireContext());
         transcriptsRepository =new TranscriptsRepository(requireContext());
         btnClose = view.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> {
@@ -253,12 +259,41 @@ public class ListeningFragment extends Fragment {
         }
 
         recordingThread = null;
-        Log.d("ListeningFragment", "Đã lưu file: " + recordedAudioFile.getName());
+        long recordedFileSize = recordedAudioFile != null ? recordedAudioFile.length() : 0;
+        int recordedMaxAmplitude = recordedAudioFile != null ? calculateMaxAmplitude(recordedAudioFile) : 0;
+        Log.i("DictationFragment", "Recorded WAV fileSize=" + recordedFileSize + ", maxAmplitude=" + recordedMaxAmplitude);
         Toast.makeText(
                 requireContext(),
                 "Đã lưu file: " + recordedAudioFile.getName(),
                 Toast.LENGTH_SHORT
         ).show();
+        TranscriptsResponse transcript = listTranscripts.get(currentSentenceIndex);
+        String referenceText = transcript.getContent();
+        pronunciationAttemptsRepository.assessPronunciation(recordedAudioFile.getAbsoluteFile(),referenceText,lessonId,transcript.getId(),new BaseCallback<ApiResponse<PronunciationResponse>>() {
+            @Override
+            public void onSuccess(ApiResponse<PronunciationResponse> data) {
+                sentenceAdapter.notifyItemChanged(currentSentenceIndex);
+                itemPronunciationAdapter.notifyItemChanged(currentSentenceIndex);
+                Log.d("DictationFragment", "Đã nhận phản hồi từ server");
+                pronunciationProgressRepository.updatePronunciationProgress(transcript.getId(), new BaseCallback<ApiResponse<PronunciationProgressResponse>>() {
+                    @Override
+                    public void onSuccess(ApiResponse<PronunciationProgressResponse> data) {
+                        Log.d("DictationFragment", "Đã update dữ liệu");
+                        Log.d("DictationFragment", "Đã upadte dữ liệu");
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("DictationFragment", "Lỗi tải dữ liệu: " + message);
+                    }
+                });
+            }
+            @Override
+            public void onError(String message) {
+                Log.e("DictationFragment", "Lỗi nhận phản hồi từ server: " + message);
+            }
+        });
+
     }
 
     private void setMicRecordingState(boolean recording) {
@@ -301,6 +336,7 @@ public class ListeningFragment extends Fragment {
     private void writeWavFile(File file, int bufferSize) {
         byte[] buffer = new byte[bufferSize];
         int totalAudioLen = 0;
+        int maxAmplitude = 0;
 
         try (RandomAccessFile wavFile = new RandomAccessFile(file, "rw")) {
             writeWavHeader(wavFile, 0);
@@ -308,19 +344,50 @@ public class ListeningFragment extends Fragment {
             while (isRecording && audioRecord != null) {
                 int read = audioRecord.read(buffer, 0, buffer.length);
                 if (read > 0) {
+                    for (int i = 0; i < read - 1; i += 2) {
+                        short sample = (short) ((buffer[i] & 0xff) | (buffer[i + 1] << 8));
+                        maxAmplitude = Math.max(maxAmplitude, Math.abs(sample));
+                    }
                     wavFile.write(buffer, 0, read);
                     totalAudioLen += read;
+                } else if (read < 0) {
+                    Log.e("DictationFragment", "AudioRecord read error: " + read);
                 }
             }
 
             wavFile.seek(0);
             writeWavHeader(wavFile, totalAudioLen);
+            Log.d("DictationFragment", "WAV bytes=" + totalAudioLen + ", maxAmplitude=" + maxAmplitude);
 
         } catch (IOException e) {
             Log.e("ListeningFragment", "Lỗi ghi file WAV: " + e.getMessage());
         }
 
     }
+    private int calculateMaxAmplitude(File file) {
+        int maxAmplitude = 0;
+        byte[] buffer = new byte[4096];
+
+        try (RandomAccessFile wavFile = new RandomAccessFile(file, "r")) {
+            if (wavFile.length() <= 44) {
+                return 0;
+            }
+
+            wavFile.seek(44);
+            int read;
+            while ((read = wavFile.read(buffer)) > 0) {
+                for (int i = 0; i < read - 1; i += 2) {
+                    short sample = (short) ((buffer[i] & 0xff) | (buffer[i + 1] << 8));
+                    maxAmplitude = Math.max(maxAmplitude, Math.abs(sample));
+                }
+            }
+        } catch (IOException e) {
+            Log.e("DictationFragment", "Failed to analyze WAV amplitude: " + e.getMessage());
+        }
+
+        return maxAmplitude;
+    }
+
     private void writeWavHeader(RandomAccessFile file, int audioLen) throws IOException {
         int channels = 1;
         int byteRate = SAMPLE_RATE * channels * 16 / 8;

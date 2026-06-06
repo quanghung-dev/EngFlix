@@ -8,6 +8,11 @@ public class PronunciationResponse {
     private Scores scores;
     private String feedback;
     private List<Words> words;
+    private Attempts attempt;
+
+    public Attempts getAttempt() {
+        return attempt;
+    }
 
     public String getText() {
         return text;
@@ -27,6 +32,33 @@ public class PronunciationResponse {
 
     public List<Words> getWords() {
         return words;
+    }
+    public static class Attempts {
+        private int id;
+        private String userId;
+        private int lessonId;
+        private int transcriptId;
+        private String createdAt;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public int getTranscriptId() {
+            return transcriptId;
+        }
+
+        public String getCreatedAt() {
+            return createdAt;
+        }
     }
 
     public static class Words{

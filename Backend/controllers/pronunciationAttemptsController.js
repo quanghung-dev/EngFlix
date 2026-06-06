@@ -7,10 +7,10 @@ const parsePositiveInteger = (value) => {
     return Number.isInteger(number) && number > 0 ? number : null;
 };
 
-const createPronunciationAttempt = async (req, res, next) => {
+const assessPronunciationAttempt = async (req, res, next) => {
     const file = req.file;
     try {
-        const user_id = req.user?.uid;
+        const user_id = req.user.uid;
         const { referenceText } = req.body;
         const lessonId = parsePositiveInteger(req.body.lessonId);
         const transcriptId = parsePositiveInteger(req.body.transcriptId);
@@ -31,7 +31,7 @@ const createPronunciationAttempt = async (req, res, next) => {
             return errorResponse(res, 400, 'transcriptId must be a positive integer');
         }
 
-        const result = await pronunciationAttemptsService.createPronunciationAttempt({
+        const result = await pronunciationAttemptsService.assessPronunciationAttempt({
             filePath: file.path,
             referenceText,
             user_id,
@@ -52,20 +52,35 @@ const createPronunciationAttempt = async (req, res, next) => {
     }
 };
 
-const getPronunciationAttempts = async (req, res, next) => {
-
-};
-const getPronunciationAttemptById = async (req, res, next) => {
-
-};
 const deletePronunciationAttempt = async (req, res, next) => {
+    const user_id = req.user.uid;
+    const attemptId = parsePositiveInteger(req.params.attemptId);
 
+    if (!user_id) {
+        return errorResponse(res, 400, 'User not found');
+    }
+    if (!attemptId) {
+        return errorResponse(res, 400, 'attemptId must be a positive integer');
+    }
+
+    try {
+        const result = await pronunciationAttemptsService.deletePronunciationAttempt({
+            userId: user_id,
+            attemptId
+        });
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        if (error.statusCode) {
+            return errorResponse(res, error.statusCode, error.message);
+        }
+        if (error.code === '23503') {
+            return errorResponse(res, 404, 'User or attempt not found');
+        }
+        next(error);
+    }
 };
 
 module.exports = {
-    createPronunciationAttempt,
-    assessPronunciation: createPronunciationAttempt,
-    getPronunciationAttempts,
-    getPronunciationAttemptById,
+    assessPronunciationAttempt,
     deletePronunciationAttempt
 };

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.app.data.remote.RetrofitClient;
 import com.example.app.data.remote.api.PronunciationApi;
 import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.pronunciation.PronunciationAttemptsResponse;
 import com.example.app.data.remote.model.response.pronunciation.PronunciationResponse;
 import com.example.app.utils.ApiCallWrapper;
 import com.example.app.utils.BaseCallback;
@@ -15,16 +16,18 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class PronunciationRepository {
+public class PronunciationAttemptsRepository {
     private final PronunciationApi pronunciationApi;
 
-    public PronunciationRepository(Context context) {
+    public PronunciationAttemptsRepository(Context context) {
         this.pronunciationApi = RetrofitClient.getInstance(context).getPronunciationApi();
     }
 
     public void assessPronunciation(
             File audioFile,
             String referenceText,
+            int lessonId,
+            int transcriptId,
             BaseCallback<ApiResponse<PronunciationResponse>> callback
     ) {
         if (audioFile == null || !audioFile.exists()) {
@@ -46,8 +49,21 @@ public class PronunciationRepository {
                 MediaType.parse("text/plain"),
                 referenceText.trim()
         );
+        RequestBody lessonIdBody = RequestBody.create(
+                MediaType.parse("text/plain"),
+                String.valueOf(lessonId)
+        );
+        RequestBody transcriptIdBody = RequestBody.create(
+                MediaType.parse("text/plain"),
+                String.valueOf(transcriptId)
+        );
 
-        pronunciationApi.createPronunciation(audioPart, referenceTextBody)
+        pronunciationApi.assessPronunciation(audioPart, referenceTextBody,lessonIdBody,transcriptIdBody)
                 .enqueue(new ApiCallWrapper<>(callback));
     }
+
+    public void deletePronunciationAttempt(int attemptId, BaseCallback<ApiResponse<PronunciationAttemptsResponse>> callback) {
+        pronunciationApi.deletePronunciationAttempt(attemptId).enqueue(new ApiCallWrapper<>(callback));
+    };
+
 }

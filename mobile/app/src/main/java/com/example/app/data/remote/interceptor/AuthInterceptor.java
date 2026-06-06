@@ -34,7 +34,6 @@ public class AuthInterceptor implements Interceptor {
         }
         Request newRequest = originalRequest.newBuilder()
                 .header("Authorization", "Bearer " + token)
-                .header("Content-Type", "application/json")
                 .build();
         Log.d("TokenCheck", "Token hiện tại là: " + token);
         return chain.proceed(newRequest);

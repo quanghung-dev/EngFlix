@@ -200,6 +200,79 @@ router.use(verifyToken);
  *       500:
  *         description: Internal server error
  */
-router.post('/', upload.single('audio'), pronunciationAttemptsController.createPronunciationAttempt);
+router.post('/', upload.single('audio'), pronunciationAttemptsController.assessPronunciationAttempt);
+
+/**
+ * @swagger
+ * /api/v1/pronunciation/attempts/{attemptId}:
+ *   delete:
+ *     summary: Delete a pronunciation attempt
+ *     description: Delete a specific pronunciation attempt for the current user and return the deleted attempt's details.
+ *     tags: [Pronunciation Attempts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: attemptId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Pronunciation attempt ID
+ *     responses:
+ *       200:
+ *         description: Pronunciation attempt deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 101
+ *                     user_id:
+ *                       type: string
+ *                       example: "firebase-user-uid"
+ *                     lesson_id:
+ *                       type: integer
+ *                       example: 12
+ *                     transcript_id:
+ *                       type: integer
+ *                       example: 45
+ *                     reference_text:
+ *                       type: string
+ *                       example: "No problem. You're welcome. Don't worry about it."
+ *                     overall_score:
+ *                       type: number
+ *                       example: 82.20
+ *                     accuracy_score:
+ *                       type: number
+ *                       example: 97.00
+ *                     fluency_score:
+ *                       type: number
+ *                       example: 81.00
+ *                     completeness_score:
+ *                       type: number
+ *                       example: 100.00
+ *                     prosody_score:
+ *                       type: number
+ *                       example: 66.40
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2026-06-06T10:30:00.000Z"
+ *       400:
+ *         description: Missing or invalid parameter
+ *       401:
+ *         description: Missing or invalid Firebase bearer token
+ *       404:
+ *         description: Attempt not found
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/attempts/:attemptId', pronunciationAttemptsController.deletePronunciationAttempt);
 
 module.exports = router;

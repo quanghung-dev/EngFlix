@@ -12,8 +12,6 @@ CREATE TABLE IF NOT EXISTS pronunciation_attempts (
     completeness_score  NUMERIC(5,2) NOT NULL DEFAULT 0,
     prosody_score       NUMERIC(5,2) NOT NULL DEFAULT 0,
 
-    words_json          JSONB        NOT NULL DEFAULT '[]'::jsonb,
-
     created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
 
     CONSTRAINT chk_pronunciation_attempts_scores
@@ -42,11 +40,6 @@ CREATE TABLE IF NOT EXISTS pronunciation_progress (
 
     best_attempt_id  INTEGER REFERENCES pronunciation_attempts (id) ON DELETE SET NULL,
     best_score       NUMERIC(5,2) NOT NULL DEFAULT 0,
-    attempts_count   INTEGER      NOT NULL DEFAULT 0,
-
-    completed        BOOLEAN      NOT NULL DEFAULT false,
-    completed_at     TIMESTAMP,
-    last_attempt_at  TIMESTAMP,
 
     created_at       TIMESTAMP    NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMP    NOT NULL DEFAULT NOW(),
@@ -60,5 +53,3 @@ CREATE TABLE IF NOT EXISTS pronunciation_progress (
 CREATE INDEX IF NOT EXISTS idx_pronunciation_progress_user_lesson
     ON pronunciation_progress (user_id, lesson_id);
 
-CREATE INDEX IF NOT EXISTS idx_pronunciation_progress_completed
-    ON pronunciation_progress (user_id, lesson_id, completed);

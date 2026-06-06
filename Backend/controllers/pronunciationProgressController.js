@@ -15,7 +15,7 @@ const getPronunciationProgress = async (req, res, next) => {
         if (!userId) {
             return errorResponse(res, 400, 'userId is required');
         }
-        if(!lessonId) {
+        if (!lessonId) {
             return errorResponse(res, 400, 'not a valid lessonId');
         }
         const { progress, total } = await pronunciationProgressService.getPronunciationProgress(userId, lessonId, limit, offset);
@@ -25,7 +25,7 @@ const getPronunciationProgress = async (req, res, next) => {
     }
 };
 
-const refreshPronunciationProgress = async (req, res, next) => {
+const updatePronunciationProgress = async (req, res, next) => {
     try {
         const userId = req.user?.uid;
         const transcriptId = parsePositiveInteger(req.params.transcriptId);
@@ -36,7 +36,7 @@ const refreshPronunciationProgress = async (req, res, next) => {
             return errorResponse(res, 400, 'not a valid transcriptId');
         }
 
-        const result = await pronunciationProgressService.refreshPronunciationProgress(userId, transcriptId);
+        const result = await pronunciationProgressService.updatePronunciationProgress(userId, transcriptId);
         if (!result) {
             return errorResponse(res, 404, 'Pronunciation attempts not found');
         }
@@ -53,5 +53,5 @@ const refreshPronunciationProgress = async (req, res, next) => {
 
 module.exports = {
     getPronunciationProgress,
-    refreshPronunciationProgress
+    updatePronunciationProgress
 };

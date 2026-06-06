@@ -19,7 +19,6 @@ const buildAttemptValues = ({ userId, lessonId, transcriptId, referenceText, ass
   assessment.scores?.fluency ?? 0,
   assessment.scores?.completeness ?? 0,
   assessment.scores?.prosody ?? 0,
-  JSON.stringify(assessment.words ?? []),
 ];
 
 const assessPronunciation = async (filePath, referenceText) => {
@@ -87,9 +86,9 @@ const savePronunciationAttempt = async (payload) => {
     INSERT INTO pronunciation_attempts (
       user_id, lesson_id, transcript_id, reference_text,
       overall_score, accuracy_score, fluency_score, completeness_score,
-      prosody_score, words_json
+      prosody_score
     )
-    SELECT $1, lesson_id, id, $4, $5, $6, $7, $8, $9, $10::jsonb
+    SELECT $1, lesson_id, id, $4, $5, $6, $7, $8, $9
     FROM target_transcript
     RETURNING *
   `;
@@ -101,7 +100,7 @@ const savePronunciationAttempt = async (payload) => {
   return result.rows[0];
 };
 
-const createPronunciationAttempt = async ({
+const assessPronunciationAttempt = async ({
   filePath,
   referenceText,
   user_id,
@@ -129,6 +128,18 @@ const createPronunciationAttempt = async ({
   };
 };
 
+const deletePronunciationAttempt = async ({ userId, attemptId }) => {
+  const result = await pool.query(
+    "DELETE FROM pronunciation_attempts WHERE user_id = $1 AND id = $2 RETURNING *",
+    [userId, attemptId]
+  );
+  if (!result.rows[0]) {
+    throw createHttpError("Attempt not found for this user", 404);
+  }
+  return result.rows[0];
+};
+
 module.exports = {
-  createPronunciationAttempt,
+  assessPronunciationAttempt,
+  deletePronunciationAttempt
 };
