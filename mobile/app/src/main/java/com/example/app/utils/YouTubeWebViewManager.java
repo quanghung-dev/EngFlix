@@ -1,6 +1,8 @@
 package com.example.app.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -8,6 +10,8 @@ import android.webkit.WebViewClient;
 
 public class YouTubeWebViewManager {
     private final WebView webView;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable stopSegmentRunnable;
 
     public YouTubeWebViewManager(WebView webView) {
         this.webView = webView;
@@ -87,11 +91,35 @@ public class YouTubeWebViewManager {
         callYouTubeCommand("playVideo", "");
     }
 
+    public void playFromTo(float startTime, float endTime) {
+        if (webView == null) return;
+        if (endTime <= startTime) return;
+
+        cancelSegmentPlayback();
+
+        float safeStartTime = Math.max(0, startTime);
+        long durationMs = (long) ((endTime - safeStartTime) * 1000);
+
+        seekTo(safeStartTime);
+        playVideo();
+
+        stopSegmentRunnable = () -> pauseVideo();
+        handler.postDelayed(stopSegmentRunnable, durationMs);
+    }
+
+    public void cancelSegmentPlayback() {
+        if (stopSegmentRunnable != null) {
+            handler.removeCallbacks(stopSegmentRunnable);
+            stopSegmentRunnable = null;
+        }
+    }
+
     public void pauseVideo() {
         callYouTubeCommand("pauseVideo", "");
     }
 
     public void stopVideo() {
+        cancelSegmentPlayback();
         if (webView != null) {
             webView.loadUrl("about:blank");
             webView.onPause();
@@ -99,6 +127,7 @@ public class YouTubeWebViewManager {
     }
 
     public void destroy() {
+        cancelSegmentPlayback();
         if (webView != null) {
             webView.loadUrl("about:blank");
             webView.onPause();

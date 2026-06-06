@@ -18,7 +18,7 @@ const dictationStatusRoutes = require('./routes/dictationStatusRoutes.js');
 const shadowingStatusRoutes = require('./routes/shadowingStatusRoutes.js');
 const vocabularyRoutes = require('./routes/vocabularyRoutes.js');
 const vocabularyDecksRoutes = require('./routes/vocabularyDecksRoutes.js');
-const pronunciationRoutes = require('./routes/pronunciationRoutes.js');
+const pronunciationAttemptsRoutes = require('./routes/pronunciationRoutes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -37,7 +37,8 @@ app.use('/api/v1/dictation-status', dictationStatusRoutes);
 app.use('/api/v1/shadowing-status', shadowingStatusRoutes);
 app.use('/api/v1/vocabulary-categories', vocabularyRoutes);
 app.use('/api/v1/vocabulary-decks', vocabularyDecksRoutes);
-app.use('/api/v1/pronunciation', pronunciationRoutes);
+app.use('/api/v1/pronunciation-attempts', pronunciationAttemptsRoutes);
+app.use('/api/v1/pronunciation', pronunciationAttemptsRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

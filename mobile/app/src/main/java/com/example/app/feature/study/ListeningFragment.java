@@ -1,17 +1,28 @@
 package com.example.app.feature.study;
 
+import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,10 +37,22 @@ import com.example.app.data.repository.TranscriptProgressRepository;
 import com.example.app.data.repository.TranscriptsRepository;
 import com.example.app.utils.YouTubeWebViewManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListeningFragment extends Fragment {
+    private AudioRecord audioRecord;
+    private Thread recordingThread;
+    private AnimatorSet micPulseAnimator;
+    private boolean isRecording = false;
+    private File recordedAudioFile;
+
+    private static final int SAMPLE_RATE = 16000;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private ImageButton btnPrevious;
     private ImageButton btnNext;
     private ImageButton btnMic;
@@ -88,6 +111,25 @@ public class ListeningFragment extends Fragment {
         });
         btnNext.setOnClickListener(v -> {
             selectSentence(currentSentenceIndex + 1);
+        });
+        btnMic.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1001);
+                return;
+            }
+            if (listTranscripts == null || listTranscripts.isEmpty()) {
+                Toast.makeText(requireContext(), "Chưa có dữ liệu câu", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            TranscriptsResponse transcript = listTranscripts.get(currentSentenceIndex);
+            String referenceText = transcript.getContent();
+            if(isRecording){
+                stopRecording();
+            }else {
+                startRecording();
+            }
+
         });
 
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -154,8 +196,153 @@ public class ListeningFragment extends Fragment {
         itemPronunciationAdapter.setSelectedPosition(position);
         rvSentenceNumbers.smoothScrollToPosition(position);
         rvItemCard.smoothScrollToPosition(position);
+        TranscriptsResponse transcript = listTranscripts.get(position);
+        Float startTime = transcript.getStartTimestamp();
+        Float endTime = transcript.getEndTimestamp();
+        youTubeWebViewManager.playFromTo(startTime,endTime);
+    }
+    @SuppressLint("MissingPermission")
+    private void startRecording() {
+        int bufferSize = AudioRecord.getMinBufferSize(
+                SAMPLE_RATE,
+                CHANNEL_CONFIG,
+                AUDIO_FORMAT
+        );
+
+        recordedAudioFile = new File(
+                requireContext().getCacheDir(),
+                "recording_" + System.currentTimeMillis() + ".wav"
+        );
+
+        audioRecord = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                CHANNEL_CONFIG,
+                AUDIO_FORMAT,
+                bufferSize
+        );
+
+        isRecording = true;
+        audioRecord.startRecording();
+        setMicRecordingState(true);
+
+        recordingThread = new Thread(() -> writeWavFile(recordedAudioFile, bufferSize));
+        recordingThread.start();
+
+        Toast.makeText(requireContext(), "Bắt đầu ghi âm", Toast.LENGTH_SHORT).show();
+    }
+    private void stopRecording() {
+        isRecording = false;
+        setMicRecordingState(false);
+
+        if (audioRecord != null) {
+            audioRecord.stop();
+        }
+
+        try {
+            if (recordingThread != null) {
+                recordingThread.join();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (audioRecord != null) {
+            audioRecord.release();
+            audioRecord = null;
+        }
+
+        recordingThread = null;
+        Log.d("ListeningFragment", "Đã lưu file: " + recordedAudioFile.getName());
+        Toast.makeText(
+                requireContext(),
+                "Đã lưu file: " + recordedAudioFile.getName(),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
+    private void setMicRecordingState(boolean recording) {
+        if (btnMic == null) return;
 
+        if (recording) {
+            btnMic.setBackgroundResource(R.drawable.bg_icon_circle_recording);
+            btnMic.setAlpha(1f);
+
+            if (micPulseAnimator != null) {
+                micPulseAnimator.cancel();
+            }
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(btnMic, View.SCALE_X, 1f, 1.14f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(btnMic, View.SCALE_Y, 1f, 1.14f);
+            scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+            scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+            scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+            scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+            micPulseAnimator = new AnimatorSet();
+            micPulseAnimator.playTogether(scaleX, scaleY);
+            micPulseAnimator.setDuration(550);
+            micPulseAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            micPulseAnimator.start();
+        } else {
+            if (micPulseAnimator != null) {
+                micPulseAnimator.cancel();
+                micPulseAnimator = null;
+            }
+
+            btnMic.animate().cancel();
+            btnMic.setScaleX(1f);
+            btnMic.setScaleY(1f);
+            btnMic.setAlpha(1f);
+            btnMic.setBackgroundResource(R.drawable.bg_icon_circle_blue);
+        }
+    }
+
+    private void writeWavFile(File file, int bufferSize) {
+        byte[] buffer = new byte[bufferSize];
+        int totalAudioLen = 0;
+
+        try (RandomAccessFile wavFile = new RandomAccessFile(file, "rw")) {
+            writeWavHeader(wavFile, 0);
+
+            while (isRecording && audioRecord != null) {
+                int read = audioRecord.read(buffer, 0, buffer.length);
+                if (read > 0) {
+                    wavFile.write(buffer, 0, read);
+                    totalAudioLen += read;
+                }
+            }
+
+            wavFile.seek(0);
+            writeWavHeader(wavFile, totalAudioLen);
+
+        } catch (IOException e) {
+            Log.e("ListeningFragment", "Lỗi ghi file WAV: " + e.getMessage());
+        }
+
+    }
+    private void writeWavHeader(RandomAccessFile file, int audioLen) throws IOException {
+        int channels = 1;
+        int byteRate = SAMPLE_RATE * channels * 16 / 8;
+        int totalDataLen = audioLen + 36;
+
+        file.writeBytes("RIFF");
+        file.writeInt(Integer.reverseBytes(totalDataLen));
+        file.writeBytes("WAVE");
+        file.writeBytes("fmt ");
+        file.writeInt(Integer.reverseBytes(16));
+        file.writeShort(Short.reverseBytes((short) 1));
+        file.writeShort(Short.reverseBytes((short) channels));
+        file.writeInt(Integer.reverseBytes(SAMPLE_RATE));
+        file.writeInt(Integer.reverseBytes(byteRate));
+        file.writeShort(Short.reverseBytes((short) (channels * 16 / 8)));
+        file.writeShort(Short.reverseBytes((short) 16));
+        file.writeBytes("data");
+        file.writeInt(Integer.reverseBytes(audioLen));
+    }
 
 }
+
+
+
+
