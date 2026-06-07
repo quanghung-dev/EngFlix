@@ -43,7 +43,7 @@ const ROLES = require('../constants/roles.js');
  *                     activeNow:
  *                       type: integer
  *             example:
- *               message: "Welcome to the admin dashboard"
+ *               message: "Chào mừng bạn đến với dashboard của admin!"
  *               stats:
  *                 totalUsers: 100
  *                 activeNow: 5

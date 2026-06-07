@@ -114,6 +114,89 @@ const verifyToken = require('../middlewares/auth.js');
  *         description: Internal server error
  */
 router.get('/', vocabularyDecksController.getVocabularyDecks);
+
+/**
+ * @swagger
+ * /api/v1/vocabulary-decks/mine:
+ *   get:
+ *     summary: Get current user's custom vocabulary decks
+ *     description: Returns vocabulary decks created by the authenticated user (excluding default decks).
+ *     tags: [Vocabulary Decks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Current page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Number of vocabulary decks per page
+ *     responses:
+ *       200:
+ *         description: User's vocabulary decks returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       user_id:
+ *                         type: string
+ *                         nullable: true
+ *                       category_id:
+ *                         type: integer
+ *                         nullable: true
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                         nullable: true
+ *                       thumbnail_url:
+ *                         type: string
+ *                         nullable: true
+ *                       level:
+ *                         type: string
+ *                         nullable: true
+ *                       is_default:
+ *                         type: boolean
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                       updated_at:
+ *                         type: string
+ *                         format: date-time
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     total_pages:
+ *                       type: integer
+ *       401:
+ *         description: Missing or invalid bearer token
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/mine', verifyToken, vocabularyDecksController.getMyVocabularyDecks);
 
 /**
@@ -393,6 +476,8 @@ router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabula
  *   post:
  *     summary: Create vocabulary deck
  *     tags: [Vocabulary Decks]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -402,6 +487,10 @@ router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabula
  *             required:
  *               - name
  *             properties:
+ *               category_id:
+ *                 type: integer
+ *                 nullable: true
+ *                 description: Optional vocabulary category ID
  *               name:
  *                 type: string
  *               description:
@@ -422,8 +511,45 @@ router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabula
  *     responses:
  *       201:
  *         description: Vocabulary deck created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     user_id:
+ *                       type: string
+ *                       nullable: true
+ *                     category_id:
+ *                       type: integer
+ *                       nullable: true
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                       nullable: true
+ *                     thumbnail_url:
+ *                       type: string
+ *                       nullable: true
+ *                     level:
+ *                       type: string
+ *                       nullable: true
+ *                     is_default:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
  *         description: Vocabulary deck name is required or category_id is invalid
+ *       401:
+ *         description: Missing or invalid bearer token
  *       500:
  *         description: Internal server error
  */
@@ -470,6 +596,41 @@ router.post('/', verifyToken, vocabularyDecksController.createVocabularyDecks);
  *     responses:
  *       200:
  *         description: Vocabulary deck updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     user_id:
+ *                       type: string
+ *                       nullable: true
+ *                     category_id:
+ *                       type: integer
+ *                       nullable: true
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                       nullable: true
+ *                     thumbnail_url:
+ *                       type: string
+ *                       nullable: true
+ *                     level:
+ *                       type: string
+ *                       nullable: true
+ *                     is_default:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
  *         description: Vocabulary deck ID or name is invalid
  *       404:
@@ -495,6 +656,41 @@ router.put('/:id', vocabularyDecksController.updateVocabularyDecks);
  *     responses:
  *       200:
  *         description: Vocabulary deck deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     user_id:
+ *                       type: string
+ *                       nullable: true
+ *                     category_id:
+ *                       type: integer
+ *                       nullable: true
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                       nullable: true
+ *                     thumbnail_url:
+ *                       type: string
+ *                       nullable: true
+ *                     level:
+ *                       type: string
+ *                       nullable: true
+ *                     is_default:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
  *         description: Vocabulary deck ID is required
  *       404:
