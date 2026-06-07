@@ -95,6 +95,9 @@ public class DictationFragment extends Fragment {
     private Runnable timerRunnable;
     private Runnable autoStopRunnable;
     private ProgressRepository progressRepository;
+    private int quantityTranscripts = 0;
+    private List<Integer> completedIds = new ArrayList<>();
+    private boolean dictationCompletedSent = false;
 
     @Nullable
     @Override
@@ -190,6 +193,7 @@ public class DictationFragment extends Fragment {
                 if (data != null && !data.isEmpty()) {
                     android.util.Log.d("DictationFragment", "Gọi API thành công! Số lượng câu: " + data.size());
                     listTranscripts = data;
+                    quantityTranscripts = data.size();
                     sentenceAdapter.setData(listTranscripts);
                     fetchTranscriptProgress(lessonId);
                     currentSentenceIndex = 0;
@@ -254,13 +258,16 @@ public class DictationFragment extends Fragment {
             @Override
             public void onSuccess(ApiResponse<List<TranscriptProgressResponse>> data) {
                 if (data != null && data.getData() != null) {
-                    List<Integer> completedIds = new ArrayList<>();
+                    completedIds.clear();
                     for (TranscriptProgressResponse response : data.getData()) {
-                        completedIds.add(response.getTranscriptId());
+                        if (!completedIds.contains(response.getTranscriptId())) {
+                            completedIds.add(response.getTranscriptId());
+                        }
                     }
                     if (sentenceAdapter != null) {
                         sentenceAdapter.setCompletedTranscripts(completedIds);
                     }
+                    sendDictationCompletedIfNeeded();
                 }
 
             }
@@ -425,15 +432,17 @@ public class DictationFragment extends Fragment {
 
         if(normalizedInput.equalsIgnoreCase(normalizedTarget)){
             etInput.setEnabled(false);
+            int completedTranscriptId = listTranscripts.get(currentSentenceIndex).getId();
             if( currentSentenceIndex != listTranscripts.size() - 1){
                 btnKiemTra.setText("Chính xác!");
-                transcriptProgressRepository.createTranscriptProgress(lessonId, listTranscripts.get(currentSentenceIndex).getId(), new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
+                transcriptProgressRepository.createTranscriptProgress(lessonId, completedTranscriptId, new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
                         Log.d("DictationFragment", "gửi api progress thành công ");
                         if (sentenceAdapter != null) {
-                            sentenceAdapter.addCompletedTranscript(listTranscripts.get(currentSentenceIndex).getId());
+                            sentenceAdapter.addCompletedTranscript(completedTranscriptId);
                         }
+                        addCompletedTranscriptAndCheck(completedTranscriptId);
                     }
 
                     @Override
@@ -447,32 +456,25 @@ public class DictationFragment extends Fragment {
                      replayCurrentSentence();
                     btnKiemTra.setText("Kiểm tra");
                     btnKiemTra.setOnClickListener(view -> checkAnswer(etInput.getText().toString()));
-                    progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.FALSE, null),new BaseCallback<ApiResponse<ProgressResponse>>(){
-                         @Override
-                         public void onSuccess(ApiResponse<ProgressResponse> data) {
-                             android.util.Log.d("DictationFragment", "gửi api progress thành công ");
-                         }
-
-                         @Override
-                         public void onError(String message) {
-                             android.util.Log.d("DictationFragment", "gửi api progress thất bại ");
-                         }
-                     });
                 });
 
             }
             else {
                 btnKiemTra.setText("Hoàn thành!");
                 stopStudyTime();
-                progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.TRUE, null),new BaseCallback<ApiResponse<ProgressResponse>>() {
+                transcriptProgressRepository.createTranscriptProgress(lessonId, completedTranscriptId, new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
                     @Override
-                    public void onSuccess(ApiResponse<ProgressResponse> data) {
-                        android.util.Log.d("DictationFragment", "gửi api progress thành công ");
+                    public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
+                        Log.d("DictationFragment", "gui api progress thanh cong");
+                        if (sentenceAdapter != null) {
+                            sentenceAdapter.addCompletedTranscript(completedTranscriptId);
+                        }
+                        addCompletedTranscriptAndCheck(completedTranscriptId);
                     }
 
                     @Override
                     public void onError(String message) {
-                        android.util.Log.d("DictationFragment", "gửi api progress thất bại ");
+                        Log.e("DictationFragment", "Loi tai du lieu: " + message);
                     }
                 });
                 btnKiemTra.setOnClickListener(v -> {
@@ -488,6 +490,33 @@ public class DictationFragment extends Fragment {
         else {
             btnKiemTra.setText("Sai! Thử lại");
         }
+    }
+
+    private void addCompletedTranscriptAndCheck(int transcriptId) {
+        if (!completedIds.contains(transcriptId)) {
+            completedIds.add(transcriptId);
+        }
+        sendDictationCompletedIfNeeded();
+    }
+
+    private void sendDictationCompletedIfNeeded() {
+        if (dictationCompletedSent || quantityTranscripts <= 0 || completedIds.size() < quantityTranscripts) {
+            return;
+        }
+
+        dictationCompletedSent = true;
+        progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.TRUE, null), new BaseCallback<ApiResponse<ProgressResponse>>() {
+            @Override
+            public void onSuccess(ApiResponse<ProgressResponse> data) {
+                Log.d("DictationFragment", "Da gui hoan thanh dictation");
+            }
+
+            @Override
+            public void onError(String message) {
+                dictationCompletedSent = false;
+                Log.e("DictationFragment", "Loi gui hoan thanh dictation: " + message);
+            }
+        });
     }
 
     private String normalizeSentence(String sentence) {
