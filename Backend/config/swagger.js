@@ -221,15 +221,18 @@ const options = {
             lesson_id: {
               type: 'integer',
             },
-            duration_watched: {
-              type: 'number',
-              nullable: true,
+            completed_dictation: {
+              type: 'boolean',
             },
-            completed: {
+            completed_pronunciation: {
               type: 'boolean',
               nullable: true,
             },
             created_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+            updated_at: {
               type: 'string',
               format: 'date-time',
             },

@@ -447,7 +447,7 @@ public class DictationFragment extends Fragment {
                      replayCurrentSentence();
                     btnKiemTra.setText("Kiểm tra");
                     btnKiemTra.setOnClickListener(view -> checkAnswer(etInput.getText().toString()));
-                    progressRepository.createProgress(new CreateProgressRequest(lessonId,(int) elapsedSeconds,Boolean.FALSE),new BaseCallback<ApiResponse<ProgressResponse>>(){
+                    progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.FALSE, null),new BaseCallback<ApiResponse<ProgressResponse>>(){
                          @Override
                          public void onSuccess(ApiResponse<ProgressResponse> data) {
                              android.util.Log.d("DictationFragment", "gửi api progress thành công ");
@@ -464,8 +464,7 @@ public class DictationFragment extends Fragment {
             else {
                 btnKiemTra.setText("Hoàn thành!");
                 stopStudyTime();
-                int duration = (int) elapsedSeconds;
-                progressRepository.createProgress(new CreateProgressRequest(lessonId,duration,Boolean.TRUE),new BaseCallback<ApiResponse<ProgressResponse>>() {
+                progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.TRUE, null),new BaseCallback<ApiResponse<ProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<ProgressResponse> data) {
                         android.util.Log.d("DictationFragment", "gửi api progress thành công ");

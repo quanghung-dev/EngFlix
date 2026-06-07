@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS pronunciation_attempts (
     completeness_score  NUMERIC(5,2) NOT NULL DEFAULT 0,
     prosody_score       NUMERIC(5,2) NOT NULL DEFAULT 0,
 
+    feedback            TEXT,
+
     created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
 
     CONSTRAINT chk_pronunciation_attempts_scores
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS pronunciation_progress (
 
     best_attempt_id  INTEGER REFERENCES pronunciation_attempts (id) ON DELETE SET NULL,
     best_score       NUMERIC(5,2) NOT NULL DEFAULT 0,
+    feedback         TEXT,
 
     created_at       TIMESTAMP    NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMP    NOT NULL DEFAULT NOW(),

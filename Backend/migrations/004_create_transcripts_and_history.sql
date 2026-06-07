@@ -49,7 +49,9 @@ CREATE TABLE IF NOT EXISTS learning_history (
     id SERIAL PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL REFERENCES users (uid) ON DELETE CASCADE,
     lesson_id INTEGER NOT NULL REFERENCES lessons (id) ON DELETE CASCADE,
-    duration_watched DOUBLE PRECISION DEFAULT 0,
-    completed BOOLEAN DEFAULT false,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    completed_dictation BOOLEAN DEFAULT false,       
+    completed_pronunciation BOOLEAN DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    UNIQUE (user_id, lesson_id)
 );

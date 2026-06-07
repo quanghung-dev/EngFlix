@@ -184,14 +184,6 @@
                 </LinearLayout>
 
                 <!-- Settings -->
-                <ImageButton
-                    android:id="@+id/btnSettings"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_settings"
-                    android:background="@drawable/bg_btn_circle_gray"
-                    android:contentDescription="settings"
-                    android:layout_marginEnd="8dp" />
 
                 <!-- List/transcript -->
                 <ImageButton
@@ -272,14 +264,6 @@
                             android:background="@android:color/transparent"
                             android:contentDescription="bookmark"
                             android:layout_marginEnd="4dp" />
-
-                        <ImageButton
-                            android:id="@+id/btnFlag"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_flag"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="flag" />
 
                     </LinearLayout>
 

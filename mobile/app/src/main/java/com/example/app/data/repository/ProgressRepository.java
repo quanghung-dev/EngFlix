@@ -36,7 +36,7 @@ public class ProgressRepository {
     public void getProgressSummary(BaseCallback<ApiResponse<ProgressSumaryResponse>> callback) {
         progressApi.getProgressSummary().enqueue(new ApiCallWrapper<>(callback));
     }
-    public void getProgressSumarys(int lessonId, BaseCallback<ApiResponse<List<ProgressSumarysResponse>>> callback) {
+    public void getProgressSumarys(int lessonId, BaseCallback<ApiResponse<ProgressSumarysResponse>> callback) {
         progressApi.getProgressSumarys(lessonId).enqueue(new ApiCallWrapper<>(callback));
     }
 

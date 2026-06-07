@@ -1,31 +1,21 @@
 const pool = require('../db/index');
 
-const recordHistory = async (userId, lessonId, durationWatched, completed) => {
+const recordHistory = async (userId, lessonId, completedDictation, completedPronunciation) => {
     const query = `
-        WITH updated AS (
-            UPDATE learning_history
-            SET
-                duration_watched = $3,
-                completed = $4
-            WHERE user_id = $1
-              AND lesson_id = $2
-            RETURNING *
-        ),
-        inserted AS (
-            INSERT INTO learning_history (user_id, lesson_id, duration_watched, completed, created_at)
-            SELECT $1, $2, $3, $4, NOW()
-            WHERE NOT EXISTS (SELECT 1 FROM updated)
-            RETURNING *
-        )
-        SELECT * FROM updated
-        UNION ALL
-        SELECT * FROM inserted
-        ORDER BY created_at DESC, id DESC
-        LIMIT 1;
+        INSERT INTO learning_history (user_id, lesson_id, completed_dictation, completed_pronunciation, updated_at)
+        VALUES ($1, $2, COALESCE($3, false), $4, NOW())
+        ON CONFLICT (user_id, lesson_id)
+        DO UPDATE SET
+            completed_dictation = COALESCE($3, learning_history.completed_dictation),
+            completed_pronunciation = COALESCE($4, learning_history.completed_pronunciation),
+            updated_at = NOW()
+        RETURNING *
     `;
-    const result = await pool.query(query, [userId, lessonId, durationWatched, completed]);
+    const result = await pool.query(query, [userId, lessonId, completedDictation, completedPronunciation]);
     return result.rows[0];
 };
+
+
 
 const getHistoryByLesson = async (userId, lessonId) => {
     const query = `
@@ -33,8 +23,6 @@ const getHistoryByLesson = async (userId, lessonId) => {
         FROM learning_history
         WHERE user_id = $1
           AND lesson_id = $2
-        ORDER BY created_at DESC, id DESC
-        LIMIT 1
     `;
     const result = await pool.query(query, [userId, lessonId]);
     if (result.rows.length === 0) {
@@ -46,16 +34,12 @@ const getHistoryByLesson = async (userId, lessonId) => {
 const getHistories = async (userId, limit, offset) => {
     const dataQuery = `
         SELECT *
-        FROM (
-            SELECT DISTINCT ON (lesson_id) *
-            FROM learning_history
-            WHERE user_id = $1
-            ORDER BY lesson_id, created_at DESC, id DESC
-        ) latest_history
-        ORDER BY created_at DESC, id DESC
+        FROM learning_history
+        WHERE user_id = $1
+        ORDER BY updated_at DESC, id DESC
         LIMIT $2 OFFSET $3
     `;
-    const countQuery = 'SELECT COUNT(DISTINCT lesson_id) FROM learning_history WHERE user_id = $1';
+    const countQuery = 'SELECT COUNT(*) FROM learning_history WHERE user_id = $1';
     const [historiesResult, totalCountResult] = await Promise.all([
         pool.query(dataQuery, [userId, limit, offset]),
         pool.query(countQuery, [userId])
@@ -65,49 +49,50 @@ const getHistories = async (userId, limit, offset) => {
         totalCount: parseInt(totalCountResult.rows[0].count)
     };
 };
+
 const getLearningHistoryFinished = async (userId) => {
     const query = `
         SELECT *
-        FROM (
-            SELECT DISTINCT ON (lesson_id) *
-            FROM learning_history
-            WHERE user_id = $1
-            ORDER BY lesson_id, created_at DESC, id DESC
-        ) latest_history
-        WHERE completed = true
-        ORDER BY created_at DESC, id DESC
-    `
-    const result = await pool.query(query,[userId])
-    return result.rows
+        FROM learning_history
+        WHERE user_id = $1
+          AND completed_dictation IS TRUE
+          AND completed_pronunciation IS TRUE
+        ORDER BY updated_at DESC, id DESC
+    `;
+    const result = await pool.query(query, [userId]);
+    return result.rows;
 };
 
 const getLearningHistoryUnfinished = async (userId) => {
     const query = `
         SELECT *
-        FROM (
-            SELECT DISTINCT ON (lesson_id) *
-            FROM learning_history
-            WHERE user_id = $1
-            ORDER BY lesson_id, created_at DESC, id DESC
-        ) latest_history
-        WHERE completed = false
-        ORDER BY created_at DESC, id DESC
-    `
-    const result = await pool.query(query,[userId])
-    return result.rows
+        FROM learning_history
+        WHERE user_id = $1
+          AND NOT (
+              completed_dictation IS TRUE
+              AND completed_pronunciation IS TRUE
+          )
+        ORDER BY updated_at DESC, id DESC
+    `;
+    const result = await pool.query(query, [userId]);
+    return result.rows;
 };
 
 const getLearningHistorySummary = async (userId) => {
     const query = `
         SELECT
-            COUNT(*) FILTER (WHERE completed = true) AS completed_count,
-            COUNT(*) FILTER (WHERE completed = false) AS unfinished_count
-        FROM (
-            SELECT DISTINCT ON (lesson_id) *
-            FROM learning_history
-            WHERE user_id = $1
-            ORDER BY lesson_id, created_at DESC, id DESC
-        ) latest_history
+            COUNT(*) FILTER (
+                WHERE completed_dictation IS TRUE
+                  AND completed_pronunciation IS TRUE
+            ) AS completed_count,
+            COUNT(*) FILTER (
+                WHERE NOT (
+                    completed_dictation IS TRUE
+                    AND completed_pronunciation IS TRUE
+                )
+            ) AS unfinished_count
+        FROM learning_history
+        WHERE user_id = $1
     `;
     const result = await pool.query(query, [userId]);
     return {
@@ -119,8 +104,16 @@ const getLearningHistorySummary = async (userId) => {
 const getLearningHistorySummaryByLesson = async (userId, lessonId) => {
     const query = `
         SELECT
-            COUNT(*) FILTER (WHERE completed = true) AS completed,
-            COUNT(*) FILTER (WHERE completed = false) AS uncompleted
+            COUNT(*) FILTER (
+                WHERE completed_dictation IS TRUE
+                  AND completed_pronunciation IS TRUE
+            ) AS completed,
+            COUNT(*) FILTER (
+                WHERE NOT (
+                    completed_dictation IS TRUE
+                    AND completed_pronunciation IS TRUE
+                )
+            ) AS uncompleted
         FROM learning_history
         WHERE user_id = $1
           AND lesson_id = $2
@@ -135,16 +128,12 @@ const getLearningHistorySummaryByLesson = async (userId, lessonId) => {
 const testGetgetLearningHistory = async () => {
     const query = `
         SELECT *
-        FROM (
-            SELECT DISTINCT ON (user_id, lesson_id) *
-            FROM learning_history
-            ORDER BY user_id, lesson_id, created_at DESC, id DESC
-        ) latest_history
-        ORDER BY created_at DESC, id DESC
-    `
-    const result = await pool.query(query)
-    return result.rows
-}
+        FROM learning_history
+        ORDER BY updated_at DESC, id DESC
+    `;
+    const result = await pool.query(query);
+    return result.rows;
+};
 
 module.exports = {
     recordHistory,

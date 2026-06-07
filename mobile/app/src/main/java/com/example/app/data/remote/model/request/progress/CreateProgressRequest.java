@@ -6,15 +6,15 @@ public class CreateProgressRequest {
     @SerializedName("lesson_id")
     private int lessonId;
 
-    @SerializedName("duration_watched")
-    private int durationWatched;
+    @SerializedName("completed_dictation")
+    private Boolean completedDictation;
 
-    @SerializedName("completed")
-    private boolean completed;
+    @SerializedName("completed_pronunciation")
+    private Boolean completedPronunciation;
 
-    public CreateProgressRequest(int lessonId, int durationWatched, boolean completed) {
+    public CreateProgressRequest(int lessonId, Boolean completedDictation, Boolean completedPronunciation) {
         this.lessonId = lessonId;
-        this.durationWatched = durationWatched;
-        this.completed = completed;
+        this.completedDictation = completedDictation;
+        this.completedPronunciation = completedPronunciation;
     }
 }

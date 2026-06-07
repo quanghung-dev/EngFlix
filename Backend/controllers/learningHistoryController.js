@@ -7,9 +7,9 @@ const parsePositiveInteger = (value) => {
     return Number.isInteger(number) && number > 0 ? number : null;
 };
 
-const parseOptionalBoolean = (value) => {
-    if (value === undefined || value === null || value === '') {
-        return false;
+const parseTriStateBoolean = (value) => {
+    if (value === undefined || value === null || value === '' || value === 'null') {
+        return null;
     }
     if (typeof value === 'boolean') {
         return value;
@@ -37,10 +37,10 @@ const getLearningHistory = async (req, res, next) => {
 const recordLearningHistory = async (req, res, next) => {
     try {
         const userId = req.user.uid;
-        const { completed, duration_watched, lesson_id } = req.body;
+        const { completed_dictation, completed_pronunciation, lesson_id } = req.body;
 
-        if (!lesson_id || duration_watched === undefined || duration_watched === null) {
-            return errorResponse(res, 400, 'lesson_id and duration_watched are required');
+        if (!lesson_id) {
+            return errorResponse(res, 400, 'lesson_id is required');
         }
 
         const lessonId = parsePositiveInteger(lesson_id);
@@ -48,21 +48,14 @@ const recordLearningHistory = async (req, res, next) => {
             return errorResponse(res, 400, 'lesson_id must be a positive integer');
         }
 
-        const durationWatchedNum = Number(duration_watched);
-        if (!Number.isFinite(durationWatchedNum) || durationWatchedNum < 0) {
-            return errorResponse(res, 400, 'duration_watched must be a non-negative number');
-        }
-
-        const completedValue = parseOptionalBoolean(completed);
-        if (completedValue === null) {
-            return errorResponse(res, 400, 'completed must be a boolean');
-        }
+        const completedDictationValue = parseTriStateBoolean(completed_dictation);
+        const completedPronunciationValue = parseTriStateBoolean(completed_pronunciation);
 
         const history = await learningHistoryService.recordHistory(
             userId,
             lessonId,
-            durationWatchedNum,
-            completedValue
+            completedDictationValue,
+            completedPronunciationValue
         );
         return dataResponse(res, 200, history);
     } catch (error) {
@@ -101,6 +94,7 @@ const getLearningHistoryFinished = async (req, res, next) => {
         next(error);
     }
 };
+
 const getLearningHistoryUnfinished = async (req, res, next) => {
     try {
         const userId = req.user.uid;

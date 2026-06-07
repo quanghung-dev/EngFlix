@@ -34,9 +34,10 @@ const learningHistoryController = require('../controllers/learningHistoryControl
  *                 - id: 1
  *                   user_id: "firebase-user-id"
  *                   lesson_id: 1
- *                   duration_watched: 120
- *                   completed: false
+ *                   completed_dictation: false
+ *                   completed_pronunciation: null
  *                   created_at: "2026-05-15T00:00:00.000Z"
+ *                   updated_at: "2026-05-15T00:00:00.000Z"
  *       500:
  *         description: Internal server error
  */
@@ -98,9 +99,10 @@ router.use(verifyToken);
  *                 - id: 1
  *                   user_id: "firebase-user-id"
  *                   lesson_id: 1
- *                   duration_watched: 120
- *                   completed: false
+ *                   completed_dictation: false
+ *                   completed_pronunciation: null
  *                   created_at: "2026-05-15T00:00:00.000Z"
+ *                   updated_at: "2026-05-15T00:00:00.000Z"
  *               meta:
  *                 page: 1
  *                 limit: 10
@@ -132,24 +134,24 @@ router.get('/', learningHistoryController.getLearningHistory);
  *             type: object
  *             required:
  *               - lesson_id
- *               - duration_watched
  *             properties:
  *               lesson_id:
  *                 type: integer
  *                 minimum: 1
  *                 description: Lesson ID
- *               duration_watched:
- *                 type: number
- *                 minimum: 0
- *                 description: Watched duration in seconds
- *               completed:
+ *               completed_dictation:
  *                 type: boolean
  *                 default: false
- *                 description: Whether the lesson has been completed
+ *                 description: Whether the dictation has been completed
+ *               completed_pronunciation:
+ *                 type: boolean
+ *                 nullable: true
+ *                 default: null
+ *                 description: Whether the pronunciation has been completed
  *           example:
  *             lesson_id: 1
- *             duration_watched: 120
- *             completed: false
+ *             completed_dictation: false
+ *             completed_pronunciation: null
  *     responses:
  *       200:
  *         description: Learning history recorded successfully
@@ -165,9 +167,10 @@ router.get('/', learningHistoryController.getLearningHistory);
  *                 id: 1
  *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
- *                 duration_watched: 120
- *                 completed: false
+ *                 completed_dictation: false
+ *                 completed_pronunciation: null
  *                 created_at: "2026-05-15T00:00:00.000Z"
+ *                 updated_at: "2026-05-15T00:00:00.000Z"
  *       400:
  *         description: Invalid request body
  *       401:
@@ -207,9 +210,10 @@ router.post('/', learningHistoryController.recordLearningHistory);
  *                 - id: 1
  *                   user_id: "firebase-user-id"
  *                   lesson_id: 1
- *                   duration_watched: 300
- *                   completed: true
+ *                   completed_dictation: true
+ *                   completed_pronunciation: true
  *                   created_at: "2026-05-15T00:00:00.000Z"
+ *                   updated_at: "2026-05-15T00:00:00.000Z"
  *       401:
  *         description: Missing or invalid bearer token
  *       403:
@@ -245,9 +249,10 @@ router.get('/finished', learningHistoryController.getLearningHistoryFinished);
  *                 - id: 2
  *                   user_id: "firebase-user-id"
  *                   lesson_id: 2
- *                   duration_watched: 120
- *                   completed: false
+ *                   completed_dictation: false
+ *                   completed_pronunciation: null
  *                   created_at: "2026-05-16T00:00:00.000Z"
+ *                   updated_at: "2026-05-16T00:00:00.000Z"
  *       401:
  *         description: Missing or invalid bearer token
  *       403:
@@ -373,9 +378,10 @@ router.get('/lessons/:lessonId/summary', learningHistoryController.getLearningHi
  *                 id: 1
  *                 user_id: "firebase-user-id"
  *                 lesson_id: 1
- *                 duration_watched: 120
- *                 completed: false
+ *                 completed_dictation: false
+ *                 completed_pronunciation: null
  *                 created_at: "2026-05-15T00:00:00.000Z"
+ *                 updated_at: "2026-05-15T00:00:00.000Z"
  *       400:
  *         description: Invalid lesson ID
  *       401:
