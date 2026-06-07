@@ -90,7 +90,7 @@ public class ListeningFragment extends Fragment {
     private ProgressRepository progressRepository;
     private List<Integer> completedIds = new ArrayList<>();
     private boolean pronunciationCompletedSent = false;
-
+    private double progress = 0;
 
     @Nullable
     @Override
@@ -144,7 +144,6 @@ public class ListeningFragment extends Fragment {
             }else {
                 startRecording();
             }
-
         });
 
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -170,7 +169,7 @@ public class ListeningFragment extends Fragment {
             lessonDuration = getArguments().getInt("lessonDuration");
             lessonLevel = getArguments().getString("lessonLevel");
             tvToolbarTitle.setText(lessonTitle);
-            tvProgress.setText("0% hoàn thành");
+
 
             if(lessonId != -1){
              fetchTranscripts(lessonId);
@@ -215,6 +214,8 @@ public class ListeningFragment extends Fragment {
                     for (PronunciationProgressResponse response : data.getData()) {
                         if (!completedIds.contains(response.getTranscriptId())) {
                             completedIds.add(response.getTranscriptId());
+                            progress = completedIds.size()*100 / quantityTranscripts;
+                            tvProgress.setText(String.format("%.2f", progress) + "% hoàn thành");
                         }
                     }
                     sentenceAdapter.setCompletedTranscripts(completedIds);
@@ -313,6 +314,8 @@ public class ListeningFragment extends Fragment {
                             if (!completedIds.contains(transcriptId)) {
                                 completedIds.add(transcriptId);
                             }
+                            progress = completedIds.size()*100 / quantityTranscripts;
+                            tvProgress.setText(String.format("%.2f", progress) + "% hoàn thành");
                             sendPronunciationStatusAfterTranscript();
                         }
 

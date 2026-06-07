@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.app.R;
 import com.example.app.data.remote.model.response.vocabulary.VocaDecksResponse;
 
@@ -54,6 +55,11 @@ public class VocabularyCardAdapter extends RecyclerView.Adapter<VocabularyCardAd
             holder.cardWordCount.setText("Thư mục cá nhân");
         } else {
             holder.cardWordCount.setText(vocaCategory.getDescription());
+            Glide.with(holder.itemView.getContext())
+                    .load(vocaCategory.getThumbnailUrl())
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_error)
+                    .into(holder.cardThumbnail);
         }
         holder.itemView.setOnClickListener(v -> {
             int currentPosition = holder.getBindingAdapterPosition();

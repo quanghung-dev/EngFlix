@@ -1,9 +1,13 @@
 package com.example.app.feature.vocabulary;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,32 +70,35 @@ public class VocabularyFragment extends Fragment {
     }
 
     private void showCreatePersonalFolderDialog() {
-        EditText inputFolderName = new EditText(requireContext());
-        inputFolderName.setHint("Tên thư mục");
-        inputFolderName.setSingleLine(true);
-        int horizontalPadding = (int) (20 * getResources().getDisplayMetrics().density);
-        inputFolderName.setPadding(horizontalPadding, 0, horizontalPadding, 0);
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_create_vocabulary_folder, null);
+        EditText inputFolderName = dialogView.findViewById(R.id.etFolderName);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancelCreateFolder);
+        Button btnCreate = dialogView.findViewById(R.id.btnConfirmCreateFolder);
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle("Tạo thư mục cá nhân")
-                .setView(inputFolderName)
-                .setPositiveButton("Create", null)
-                .setNegativeButton("Huỷ", (dialogInterface, which) -> dialogInterface.dismiss())
+                .setView(dialogView)
                 .create();
 
-        dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnCreate.setOnClickListener(v -> {
             String folderName = inputFolderName.getText().toString().trim();
             if (folderName.isEmpty()) {
                 inputFolderName.setError("Vui lòng nhập tên thư mục");
                 return;
             }
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-            createPersonalFolder(folderName, dialog);
-        }));
+            btnCreate.setEnabled(false);
+            createPersonalFolder(folderName, dialog, btnCreate);
+        });
+
         dialog.show();
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
-    private void createPersonalFolder(String folderName, AlertDialog dialog) {
+    private void createPersonalFolder(String folderName, AlertDialog dialog, Button btnCreate) {
         CreateVocaDeckRequest request = new CreateVocaDeckRequest(
                 0,
                 folderName,
@@ -113,7 +120,7 @@ public class VocabularyFragment extends Fragment {
 
             @Override
             public void onError(String message) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                btnCreate.setEnabled(true);
                 Toast.makeText(requireContext(), "Lỗi tạo thư mục: " + message, Toast.LENGTH_SHORT).show();
             }
         });
