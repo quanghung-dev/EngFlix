@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
                         || destination.getId() == R.id.LoginFragment
                         || destination.getId() == R.id.SignupFragment
                         || destination.getId() == R.id.myNotesFragment
-                        || destination.getId() == R.id.ListeningFragment){
+                        || destination.getId() == R.id.ListeningFragment
+                        || destination.getId() == R.id.addVocabularyItemFragment){
                     bottomNav.setVisibility(View.GONE);
                 }
                 else{

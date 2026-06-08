@@ -75,12 +75,9 @@ public class ListeningFragment extends Fragment {
     private int lessonId = -1;
     private String lessonTitle;
     private String lessonVideoUrl;
-    private int lessonDuration;
-    private String lessonLevel;
     private ImageButton btnClose;
     private TextView tvToolbarTitle;
     private TextView tvProgress;
-    private TextView tvTimer;
     private WebView webViewYoutube;
     private RecyclerView rvSentenceNumbers;
     private RecyclerView rvItemCard;
@@ -111,7 +108,6 @@ public class ListeningFragment extends Fragment {
         });
         tvToolbarTitle = view.findViewById(R.id.tvToolbarTitle);
         tvProgress = view.findViewById(R.id.tvProgress);
-        tvTimer = view.findViewById(R.id.tvTimer);
         webViewYoutube = view.findViewById(R.id.webViewYoutube);
         rvSentenceNumbers = view.findViewById(R.id.rvSentenceNumbers);
         youTubeWebViewManager = new YouTubeWebViewManager(webViewYoutube);
@@ -151,6 +147,8 @@ public class ListeningFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 selectSentence(position);
+                btnStart.setVisibility(View.GONE);
+                layoutButtonBottom.setVisibility(View.VISIBLE);
             }
         });
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
@@ -159,6 +157,8 @@ public class ListeningFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 selectSentence(position);
+                btnStart.setVisibility(View.GONE);
+                layoutButtonBottom.setVisibility(View.VISIBLE);
 
             }
         });
@@ -166,8 +166,6 @@ public class ListeningFragment extends Fragment {
             lessonId = getArguments().getInt("lessonId");
             lessonTitle = getArguments().getString("lessonTitle");
             lessonVideoUrl = getArguments().getString("lessonVideoUrl");
-            lessonDuration = getArguments().getInt("lessonDuration");
-            lessonLevel = getArguments().getString("lessonLevel");
             tvToolbarTitle.setText(lessonTitle);
 
 

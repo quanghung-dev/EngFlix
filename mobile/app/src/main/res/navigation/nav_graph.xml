@@ -1,91 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
     app:startDestination="@id/StudyFragment">
 
+    <!-- Auth -->
     <fragment
         android:id="@+id/SignupFragment"
         android:name="com.example.app.feature.auth.SignupFragment"
-        android:label="Signup" >
-        <action android:id="@+id/action_signupFragment_to_loginFragment"
+        android:label="Signup">
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
             app:destination="@id/LoginFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/LoginFragment"
         android:name="com.example.app.feature.auth.LoginFragment"
-        android:label="Login" >
-        <action android:id="@+id/action_LoginFragment_to_signupFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_LoginFragment_to_signupFragment"
             app:destination="@id/SignupFragment" />
         <action
             android:id="@+id/action_LoginFragment_to_StudyFragment"
             app:destination="@id/StudyFragment" />
     </fragment>
 
+    <!-- Study -->
     <fragment
         android:id="@+id/StudyFragment"
         android:name="com.example.app.feature.study.StudyFragment"
-        android:label="Học tập" >
+        android:label="Học tập">
         <action
             android:id="@+id/action_StudyFragment_to_LessonsListFragment"
             app:destination="@id/LessonsListFragment" />
         <action
             android:id="@+id/action_StudyFragment_to_DictationFragment"
             app:destination="@id/DictationFragment" />
-
     </fragment>
 
     <fragment
         android:id="@+id/LessonsListFragment"
         android:name="com.example.app.feature.study.LessonsListFragment"
-        android:label="Tiến độ" >
-
+        android:label="Tiến độ">
         <action
             android:id="@+id/action_LessonsListFragment_to_DictationFragment"
             app:destination="@id/DictationFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/vocabularyFragment"
-        android:name="com.example.app.feature.vocabulary.VocabularyFragment"
-        android:label="Từ vựng" >
-        <action
-            android:id="@+id/action_vocabularyFragment_to_detailItems"
-            app:destination="@id/detailItemsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/reviewFragment"
-        android:name="com.example.app.feature.review.fragment_review"
-        android:label="Ôn tập" />
-
-    <fragment
-        android:id="@+id/progressFragment"
-        android:name="com.example.app.feature.progress.ProgressFragment"
-        android:label="Tiến độ" >
-        <action
-            android:id="@+id/action_ProgressFragment_to_studyFragment"
-            app:destination="@id/StudyFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.app.feature.setting.SettingsFragment"
-        android:label="Cài đặt" >
-        <action
-            android:id="@+id/action_settingsFragment_to_loginFragment"
-            app:destination="@id/LoginFragment" >
-        </action>
-        <action
-            android:id="@+id/action_settingsFragment_to_myNotesFragment"
-            app:destination="@id/myNotesFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/DictationFragment"
         android:name="com.example.app.feature.study.DictationFragment"
-        android:label="Học Chính Tả" >
+        android:label="Học Chính Tả">
         <action
             android:id="@+id/action_DictationFragment_to_progressFragment"
             app:destination="@id/progressFragment" />
@@ -95,53 +61,90 @@
         <action
             android:id="@+id/action_DictationFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment" />
-
     </fragment>
+
     <fragment
-        android:id="@+id/addNoteFragment"
-        android:name="com.example.app.feature.note.AddNoteFragment"
-        android:label="Thêm note" />
+        android:id="@+id/ListeningFragment"
+        android:name="com.example.app.feature.study.ListeningFragment"
+        android:label="Học nghe " />
+
+    <!-- Vocabulary -->
+    <fragment
+        android:id="@+id/vocabularyFragment"
+        android:name="com.example.app.feature.vocabulary.VocabularyFragment"
+        android:label="Từ vựng">
+        <action
+            android:id="@+id/action_vocabularyFragment_to_detailItems"
+            app:destination="@id/detailItemsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/detailItemsFragment"
         android:name="com.example.app.feature.vocabulary.DetailItems"
-        android:label="Chi tiết từ vựng" >
+        android:label="Chi tiết từ vựng">
         <action
             android:id="@+id/action_detailItemsFragment_to_learningFragment"
             app:destination="@id/learningFragment" />
         <action
             android:id="@+id/action_detailItemsFragment_to_addVocabularyItemFragment"
             app:destination="@id/addVocabularyItemFragment" />
+    </fragment>
 
-
-</fragment>
-
-    <fragment
-        android:id="@+id/myNotesFragment"
-        android:name="com.example.app.feature.note.MyNoteFragment"
-        android:label="Quản lý note" >
-        <action
-            android:id="@+id/action_DictationFragment_to_editNoteFragment"
-            app:destination="@id/editNoteFragment" />
-</fragment>
-    <fragment
-        android:id="@+id/editNoteFragment"
-        android:name="com.example.app.feature.note.EditNoteFragment"
-        android:label="Sửa note" />
     <fragment
         android:id="@+id/learningFragment"
         android:name="com.example.app.feature.vocabulary.LearningFragment"
-        android:label="Học từ vựng" >
-
-    </fragment>
+        android:label="Học từ vựng" />
 
     <fragment
         android:id="@+id/addVocabularyItemFragment"
         android:name="com.example.app.feature.vocabulary.AddVocabularyItemFragment"
         android:label="Tạo từ vựng" />
+
+    <!-- Notes -->
     <fragment
-        android:id="@+id/ListeningFragment"
-        android:name="com.example.app.feature.study.ListeningFragment"
-        android:label="Học nghe " />
+        android:id="@+id/addNoteFragment"
+        android:name="com.example.app.feature.note.AddNoteFragment"
+        android:label="Thêm note" />
+
+    <fragment
+        android:id="@+id/myNotesFragment"
+        android:name="com.example.app.feature.note.MyNoteFragment"
+        android:label="Quản lý note">
+        <action
+            android:id="@+id/action_DictationFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.example.app.feature.note.EditNoteFragment"
+        android:label="Sửa note" />
+
+    <!-- Main tabs and settings -->
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.example.app.feature.review.fragment_review"
+        android:label="Ôn tập" />
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.example.app.feature.progress.ProgressFragment"
+        android:label="Tiến độ">
+        <action
+            android:id="@+id/action_ProgressFragment_to_studyFragment"
+            app:destination="@id/StudyFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.app.feature.setting.SettingsFragment"
+        android:label="Cài đặt">
+        <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_myNotesFragment"
+            app:destination="@id/myNotesFragment" />
+    </fragment>
 
 </navigation>
