@@ -34,6 +34,7 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
         if (position >= 0 && position < list.size()) {
             list.get(position).setSelected(true);
             list.get(position).setCorrect(false);
+            list.get(position).setIncorrect(false);
             notifyItemChanged(position);
         }
     }
@@ -44,9 +45,11 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
             if (i < correctPrefixCount) {
                 word.setSelected(true);
                 word.setCorrect(true);
-            } else if (word.isCorrect()) {
+                word.setIncorrect(false);
+            } else {
                 word.setSelected(false);
                 word.setCorrect(false);
+                word.setIncorrect(true);
             }
         }
         notifyDataSetChanged();
@@ -63,7 +66,12 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
     @Override
     public void onBindViewHolder(@NonNull WordCardViewHolder holder, int position) {
         WorkCardModel currentWord = list.get(position);
-            if (currentWord.isSelected()) {
+            if (currentWord.isIncorrect()) {
+                holder.tvWord.setBackgroundResource(R.drawable.bg_word_incorrect);
+                String hiddenText = currentWord.getWord().replaceAll("[a-zA-Z0-9]", "*");
+                holder.tvWord.setText(hiddenText);
+                holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
+            } else if (currentWord.isSelected()) {
                 if (currentWord.isCorrect()) {
                     holder.tvWord.setBackgroundResource(R.drawable.bg_word_correct);
                     holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));

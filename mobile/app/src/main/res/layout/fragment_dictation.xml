@@ -275,9 +275,11 @@
                         android:nestedScrollingEnabled="false"
                         tools:listitem="@layout/item_word_card" />
                     <TextView
-                        android:id="@+id/vietnamese"
+                        android:id="@+id/tvvietnamese"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="Việt Nam"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

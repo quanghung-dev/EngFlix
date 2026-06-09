@@ -69,7 +69,7 @@ public class DictationFragment extends Fragment {
     private List<WorkCardModel> listWordCards = new ArrayList<>();
     private boolean showdiaglogwarning = false;
     private TextView toolbarTitle;
-    private TextView toolbarProgress;
+    private TextView tvProgress;
     private TextView timer;
     private WebView webViewYoutube;
     private noteResponse currentNoteResponse = null;
@@ -120,9 +120,9 @@ public class DictationFragment extends Fragment {
         btnReplay2 = view.findViewById(R.id.btnReplay2);
         btnPlay = view.findViewById(R.id.btnPlay);
         btnKiemTra = view.findViewById(R.id.btnKiemTra);
-        vietnamese = view.findViewById(R.id.vietnamese);
+        vietnamese = view.findViewById(R.id.tvvietnamese);
         toolbarTitle = view.findViewById(R.id.tvToolbarTitle);
-        toolbarProgress = view.findViewById(R.id.tvProgress);
+        tvProgress = view.findViewById(R.id.tvProgress);
         timer = view.findViewById(R.id.tvTimer);
         webViewYoutube = view.findViewById(R.id.webViewYoutube);
         youTubeWebViewManager = new YouTubeWebViewManager(webViewYoutube);
@@ -173,7 +173,7 @@ public class DictationFragment extends Fragment {
             int lessonDuration = getArguments().getInt("lessonDuration");
             lessonId = getArguments().getInt("lessonId",-1);
             toolbarTitle.setText(lessonTitle);
-            toolbarProgress.setText("0% hoàn thành");
+            tvProgress.setText("0% hoàn thành");
 
             youTubeWebViewManager.setupYoutubeWebView(requireContext(), lessonVideoUrl);
             if (lessonId != -1) {
@@ -246,8 +246,8 @@ public class DictationFragment extends Fragment {
         }
         etInput.setText("");
         etInput.setBackgroundResource(R.drawable.bg_input_box);
-        int progress = (currentSentenceIndex * 100) / listTranscripts.size();
-        toolbarProgress.setText(progress + "% hoàn thành");
+        vietnamese.setVisibility(View.GONE);
+        vietnamese.setText("");
         if (rvSentenceNumbers != null) {
             rvSentenceNumbers.smoothScrollToPosition(currentSentenceIndex);
         }
@@ -267,6 +267,7 @@ public class DictationFragment extends Fragment {
                     if (sentenceAdapter != null) {
                         sentenceAdapter.setCompletedTranscripts(completedIds);
                     }
+                    updateProgressText();
                     sendDictationCompletedIfNeeded();
                 }
 
@@ -329,6 +330,14 @@ public class DictationFragment extends Fragment {
             currentSpeed = SPEED_LEVELS[speedIndex];
             tvSpeed.setText(currentSpeed + "x");
             changeVideoSpeed(currentSpeed);
+        });
+        switchAutoStop.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                replayCurrentSentence();
+            } else {
+                cancelAutoStop();
+                youTubeWebViewManager.playVideo();
+            }
         });
         btnBookmark.setOnClickListener(v -> {
             if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
@@ -396,17 +405,42 @@ public class DictationFragment extends Fragment {
         }
         cancelAutoStop();
 
-        float startTimestamp = listTranscripts.get(currentSentenceIndex).getStartTimestamp();
+        TranscriptsResponse currentTranscript = listTranscripts.get(currentSentenceIndex);
+        float startTimestamp = currentTranscript.getStartTimestamp();
 
-        youTubeWebViewManager.seekTo(startTimestamp);
-        youTubeWebViewManager.playVideo();
+        if (switchAutoStop.isChecked()) {
+            float endTimestamp = currentTranscript.getEndTimestamp();
+            youTubeWebViewManager.playFromTo(startTimestamp, endTimestamp);
+            scheduleAutoStopStateReset(startTimestamp, endTimestamp);
+        } else {
+            youTubeWebViewManager.seekTo(startTimestamp);
+            youTubeWebViewManager.playVideo();
+        }
+    }
+
+    private void scheduleAutoStopStateReset(float startTimestamp, float endTimestamp) {
+        if (endTimestamp <= startTimestamp) {
+            return;
+        }
+
+        autoStopRunnable = () -> {
+            btnPlaysentenceState = false;
+            btnPlaySentence.setImageResource(R.drawable.ic_play_filled);
+        };
+        long durationMs = (long) ((endTimestamp - Math.max(0, startTimestamp)) * 1000);
+        autoStopHandler.postDelayed(autoStopRunnable, durationMs);
     }
 
     private void toggleVideoPlayback() {
         if (btnPlaysentenceState) {
             youTubeWebViewManager.pauseVideo();
+            cancelAutoStop();
         } else {
-            youTubeWebViewManager.playVideo();
+            if (switchAutoStop.isChecked()) {
+                replayCurrentSentence();
+            } else {
+                youTubeWebViewManager.playVideo();
+            }
         }
 
         btnPlaysentenceState = !btnPlaysentenceState;
@@ -422,7 +456,8 @@ public class DictationFragment extends Fragment {
             return;
         };
 
-        String correctAnswer = listTranscripts.get(currentSentenceIndex).getContent();
+        TranscriptsResponse currentTranscript = listTranscripts.get(currentSentenceIndex);
+        String correctAnswer = currentTranscript.getContent();
         String normalizedInput = normalizeSentence(userInput);
         String normalizedTarget = normalizeSentence(correctAnswer);
         int correctPrefixCount = countCorrectPrefixWords(normalizedInput, normalizedTarget);
@@ -431,8 +466,10 @@ public class DictationFragment extends Fragment {
         }
 
         if(normalizedInput.equalsIgnoreCase(normalizedTarget)){
+            vietnamese.setText(currentTranscript.getVietnamese());
+            vietnamese.setVisibility(View.VISIBLE);
             etInput.setEnabled(false);
-            int completedTranscriptId = listTranscripts.get(currentSentenceIndex).getId();
+            int completedTranscriptId = currentTranscript.getId();
             if( currentSentenceIndex != listTranscripts.size() - 1){
                 btnKiemTra.setText("Chính xác!");
                 transcriptProgressRepository.createTranscriptProgress(lessonId, completedTranscriptId, new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
@@ -486,17 +523,28 @@ public class DictationFragment extends Fragment {
             isWaitingForNext = true;
             etInput.setEnabled(false);
 
-        }
-        else {
+        } else {
             btnKiemTra.setText("Sai! Thử lại");
         }
+
     }
 
     private void addCompletedTranscriptAndCheck(int transcriptId) {
         if (!completedIds.contains(transcriptId)) {
             completedIds.add(transcriptId);
         }
+        updateProgressText();
         sendDictationCompletedIfNeeded();
+    }
+
+    private void updateProgressText() {
+        if (quantityTranscripts <= 0) {
+            tvProgress.setText("0% hoàn thành");
+            return;
+        }
+
+        int progress = completedIds.size() * 100 / quantityTranscripts;
+        tvProgress.setText(String.format("%.2f", (float) progress) + "% hoàn thành");
     }
 
     private void sendDictationCompletedIfNeeded() {
@@ -593,6 +641,9 @@ public class DictationFragment extends Fragment {
     }
 
     public void cancelAutoStop(){
+        if (youTubeWebViewManager != null) {
+            youTubeWebViewManager.cancelSegmentPlayback();
+        }
         if (autoStopHandler != null && autoStopRunnable != null) {
             autoStopHandler.removeCallbacks(autoStopRunnable);
         }

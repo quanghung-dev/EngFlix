@@ -4,11 +4,13 @@ public class WorkCardModel {
     private String word;
     private boolean isSelected;
     private boolean isCorrect;
+    private boolean isIncorrect;
 
     public WorkCardModel(String word, boolean isSelected) {
         this.word = word;
         this.isSelected = isSelected;
         this.isCorrect = false;
+        this.isIncorrect = false;
     }
 
     public String getWord() {
@@ -23,6 +25,10 @@ public class WorkCardModel {
         return isCorrect;
     }
 
+    public boolean isIncorrect() {
+        return isIncorrect;
+    }
+
     public void setWord(String word) {
         this.word = word;
     }
@@ -33,5 +39,9 @@ public class WorkCardModel {
 
     public void setCorrect(boolean correct) {
         isCorrect = correct;
+    }
+
+    public void setIncorrect(boolean incorrect) {
+        isIncorrect = incorrect;
     }
 }
