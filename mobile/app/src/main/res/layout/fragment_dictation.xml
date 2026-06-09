@@ -153,15 +153,14 @@
                 <!-- Speed button -->
                 <LinearLayout
                     android:id="@+id/btnSpeed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="92dp"
+                    android:layout_height="36dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="@drawable/bg_pill_gray"
-                    android:paddingStart="10dp"
+                    android:background="@drawable/bg_speed_button"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:paddingStart="12dp"
                     android:paddingEnd="10dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
                     android:layout_marginEnd="8dp"
                     android:clickable="true"
                     android:focusable="true">
@@ -170,16 +169,25 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_speed"
-                        android:layout_marginEnd="4dp"
+                        android:tint="#2877C9"
+                        android:layout_marginEnd="6dp"
                         android:contentDescription="speed" />
 
                     <TextView
                         android:id="@+id/tvSpeed"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="1.0x"
                         android:textSize="13sp"
-                        android:textColor="#1A1A1A" />
+                        android:textStyle="bold"
+                        android:textColor="#164F86" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_chevron_down"
+                        android:contentDescription="open speed options" />
 
                 </LinearLayout>
 
@@ -329,6 +337,8 @@
         android:textStyle="bold"
         android:textColor="@android:color/white"
         android:background="@drawable/bg_btn_blue_fill"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         android:stateListAnimator="@null" />
     <LinearLayout
         android:id="@+id/layoutButtonBottom"
@@ -397,6 +407,8 @@
             android:textColor="@color/white"
             android:background="@drawable/bg_btn_blue_fill"
             android:foreground="?attr/selectableItemBackground"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>

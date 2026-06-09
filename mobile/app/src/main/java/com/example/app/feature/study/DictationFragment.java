@@ -1,8 +1,11 @@
 package com.example.app.feature.study;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -325,12 +329,7 @@ public class DictationFragment extends Fragment {
             }
         });
 
-        btnSpeed.setOnClickListener(v -> {
-            speedIndex = (speedIndex + 1) % SPEED_LEVELS.length;
-            currentSpeed = SPEED_LEVELS[speedIndex];
-            tvSpeed.setText(currentSpeed + "x");
-            changeVideoSpeed(currentSpeed);
-        });
+        btnSpeed.setOnClickListener(v -> showSpeedDropdown());
         switchAutoStop.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 replayCurrentSentence();
@@ -397,6 +396,59 @@ public class DictationFragment extends Fragment {
 
     public void changeVideoSpeed(float speed) {
         youTubeWebViewManager.changeSpeed(speed);
+    }
+
+    private void showSpeedDropdown() {
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setBackgroundResource(R.drawable.bg_speed_dropdown);
+        container.setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6));
+
+        PopupWindow popupWindow = new PopupWindow(
+                container,
+                dpToPx(112),
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(dpToPx(8));
+
+        for (int i = 0; i < SPEED_LEVELS.length; i++) {
+            final int selectedIndex = i;
+            TextView item = new TextView(requireContext());
+            item.setText(formatSpeed(SPEED_LEVELS[i]));
+            item.setTextSize(14);
+            item.setGravity(Gravity.CENTER_VERTICAL);
+            item.setPadding(dpToPx(12), dpToPx(9), dpToPx(12), dpToPx(9));
+            item.setTextColor(Color.parseColor("#164F86"));
+            if (selectedIndex == speedIndex) {
+                item.setTextColor(Color.parseColor("#0B63B6"));
+                item.setBackgroundResource(R.drawable.bg_speed_option_selected);
+                item.setTypeface(item.getTypeface(), android.graphics.Typeface.BOLD);
+            }
+            item.setOnClickListener(v -> {
+                setPlaybackSpeed(selectedIndex);
+                popupWindow.dismiss();
+            });
+            container.addView(item, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+        }
+
+        popupWindow.showAsDropDown(btnSpeed, 0, dpToPx(4));
+    }
+
+    private void setPlaybackSpeed(int selectedIndex) {
+        speedIndex = selectedIndex;
+        currentSpeed = SPEED_LEVELS[speedIndex];
+        tvSpeed.setText(formatSpeed(currentSpeed));
+        changeVideoSpeed(currentSpeed);
+    }
+
+    private String formatSpeed(float speed) {
+        return speed + "x";
     }
 
     public void replayCurrentSentence() {

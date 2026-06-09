@@ -69,14 +69,6 @@
                 android:insetTop="0dp" />
 
             <!-- Nút nghe lại -->
-            <ImageButton
-                android:id="@+id/btnReplay"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_replay"
-                android:background="@drawable/bg_btn_circle_gray"
-                android:contentDescription="replay" />
 
             <Space
                 android:layout_width="0dp"

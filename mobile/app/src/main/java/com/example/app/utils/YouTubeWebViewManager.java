@@ -49,7 +49,16 @@ public class YouTubeWebViewManager {
         embedUrl = embedUrl.replace("youtube.com", "youtube-nocookie.com");
 
         String appOrigin = "https://" + context.getPackageName();
-        String youtubeParams = "controls=1&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=" + appOrigin;
+        String youtubeParams = "controls=0"
+                + "&disablekb=1"
+                + "&fs=0"
+                + "&iv_load_policy=3"
+                + "&cc_load_policy=0"
+                + "&modestbranding=1"
+                + "&rel=0"
+                + "&playsinline=1"
+                + "&enablejsapi=1"
+                + "&origin=" + appOrigin;
 
         if (embedUrl.contains("?")) {
             embedUrl += "&" + youtubeParams;
@@ -61,7 +70,7 @@ public class YouTubeWebViewManager {
                 "<html style='margin:0;padding:0;height:100%;'>" +
                 "<body style='margin:0;padding:0;height:100%;background:#000;'>" +
                 "<iframe width='100%' height='100%' style='display:block;' src='" + embedUrl + "' " +
-                "allow='autoplay; encrypted-media; fullscreen' referrerpolicy='strict-origin-when-cross-origin' frameborder='0' allowfullscreen>" +
+                "allow='autoplay; encrypted-media' referrerpolicy='strict-origin-when-cross-origin' frameborder='0'>" +
                 "</iframe>" +
                 "</body></html>";
 

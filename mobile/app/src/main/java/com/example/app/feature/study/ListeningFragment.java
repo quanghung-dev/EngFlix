@@ -5,11 +5,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +20,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -60,6 +66,7 @@ public class ListeningFragment extends Fragment {
     private Thread recordingThread;
     private AnimatorSet micPulseAnimator;
     private boolean isRecording = false;
+    private SwitchCompat switchAutoStop;
     private File recordedAudioFile;
     private static final int SAMPLE_RATE = 16000;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
@@ -82,12 +89,17 @@ public class ListeningFragment extends Fragment {
     private RecyclerView rvSentenceNumbers;
     private RecyclerView rvItemCard;
     private Button btnStart;
+    private LinearLayout btnSpeed;
+    private TextView tvSpeed;
     private View layoutButtonBottom;
     private int currentSentenceIndex = 0;
     private ProgressRepository progressRepository;
     private List<Integer> completedIds = new ArrayList<>();
     private boolean pronunciationCompletedSent = false;
     private double progress = 0;
+    private static final float[] SPEED_LEVELS = {0.25f, 0.5f, 0.75f, 1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
+    private int speedIndex = 3;
+    private float currentSpeed = 1.0f;
 
     @Nullable
     @Override
@@ -100,11 +112,14 @@ public class ListeningFragment extends Fragment {
         btnPrevious = view.findViewById(R.id.btnPrevious);
         btnNext = view.findViewById(R.id.btnNext);
         btnMic = view.findViewById(R.id.btnMic);
+        switchAutoStop = view.findViewById(R.id.switchAutoStop);
         pronunciationAttemptsRepository = new PronunciationAttemptsRepository(requireContext());
         transcriptsRepository =new TranscriptsRepository(requireContext());
         btnClose = view.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> {
+            youTubeWebViewManager.stopVideo();
             Navigation.findNavController(v).popBackStack();
+
         });
         tvToolbarTitle = view.findViewById(R.id.tvToolbarTitle);
         tvProgress = view.findViewById(R.id.tvProgress);
@@ -113,7 +128,19 @@ public class ListeningFragment extends Fragment {
         youTubeWebViewManager = new YouTubeWebViewManager(webViewYoutube);
         rvItemCard = view.findViewById(R.id.rvItemCard);
         btnStart = view.findViewById(R.id.btnStart);
+        btnSpeed = view.findViewById(R.id.btnSpeed);
+        tvSpeed = view.findViewById(R.id.tvSpeed);
         layoutButtonBottom = view.findViewById(R.id.layoutButtonBottom);
+        switchAutoStop.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectSentence(currentSentenceIndex);
+            } else {
+                youTubeWebViewManager.cancelSegmentPlayback();
+                youTubeWebViewManager.playVideo();
+            }
+        });
+        btnSpeed.setOnClickListener(v -> showSpeedDropdown());
+
         btnStart.setOnClickListener(v -> {
             btnStart.setVisibility(View.GONE);
             layoutButtonBottom.setVisibility(View.VISIBLE);
@@ -238,8 +265,78 @@ public class ListeningFragment extends Fragment {
         TranscriptsResponse transcript = listTranscripts.get(position);
         Float startTime = transcript.getStartTimestamp();
         Float endTime = transcript.getEndTimestamp();
-        youTubeWebViewManager.playFromTo(startTime,endTime);
+        if (switchAutoStop.isChecked()){
+            youTubeWebViewManager.playFromTo(startTime,endTime);
+        } else {
+            youTubeWebViewManager.cancelSegmentPlayback();
+            youTubeWebViewManager.seekTo(startTime);
+            youTubeWebViewManager.playVideo();
+        }
+
     }
+
+    public void changeVideoSpeed(float speed) {
+        youTubeWebViewManager.changeSpeed(speed);
+    }
+
+    private void showSpeedDropdown() {
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setBackgroundResource(R.drawable.bg_speed_dropdown);
+        container.setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6));
+
+        PopupWindow popupWindow = new PopupWindow(
+                container,
+                dpToPx(112),
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(dpToPx(8));
+
+        for (int i = 0; i < SPEED_LEVELS.length; i++) {
+            final int selectedIndex = i;
+            TextView item = new TextView(requireContext());
+            item.setText(formatSpeed(SPEED_LEVELS[i]));
+            item.setTextSize(14);
+            item.setGravity(Gravity.CENTER_VERTICAL);
+            item.setPadding(dpToPx(12), dpToPx(9), dpToPx(12), dpToPx(9));
+            item.setTextColor(Color.parseColor("#164F86"));
+            if (selectedIndex == speedIndex) {
+                item.setTextColor(Color.parseColor("#0B63B6"));
+                item.setBackgroundResource(R.drawable.bg_speed_option_selected);
+                item.setTypeface(item.getTypeface(), android.graphics.Typeface.BOLD);
+            }
+            item.setOnClickListener(v -> {
+                setPlaybackSpeed(selectedIndex);
+                popupWindow.dismiss();
+            });
+            container.addView(item, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+        }
+
+        popupWindow.showAsDropDown(btnSpeed, 0, dpToPx(4));
+    }
+
+    private void setPlaybackSpeed(int selectedIndex) {
+        speedIndex = selectedIndex;
+        currentSpeed = SPEED_LEVELS[speedIndex];
+        tvSpeed.setText(formatSpeed(currentSpeed));
+        changeVideoSpeed(currentSpeed);
+    }
+
+    private String formatSpeed(float speed) {
+        return speed + "x";
+    }
+
+    public int dpToPx(int dp) {
+        float density = requireContext().getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
+
     @SuppressLint("MissingPermission")
     private void startRecording() {
         int bufferSize = AudioRecord.getMinBufferSize(
