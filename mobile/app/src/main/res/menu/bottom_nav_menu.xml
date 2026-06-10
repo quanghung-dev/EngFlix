@@ -12,9 +12,9 @@
         android:title="Từ vựng" />
 
     <item
-        android:id="@+id/reviewFragment"
+        android:id="@+id/SnapWordsFragment"
         android:icon="@drawable/ic_review"
-        android:title="Ôn tập" />
+        android:title="SnapWords" />
 
     <item
         android:id="@+id/progressFragment"

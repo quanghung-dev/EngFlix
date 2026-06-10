@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_shutter_button.xml -->
+<!-- Nút chụp: vòng ngoài màu cam, bên trong trắng -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Vòng ngoài màu cam (border) -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#FFB51F" />
+            <!-- Màu cam/vàng cam giống ảnh: #E8A020 cũng được -->
+        </shape>
+    </item>
+
+    <!-- Vòng trắng bên trong (inset để tạo viền) -->
+    <item
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp">
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+
+</layer-list>

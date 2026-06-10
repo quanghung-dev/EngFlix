@@ -95,8 +95,13 @@ public class StudyFragment extends Fragment {
                         lessonsRepo.getLessons(10, 1, null, categoryId, null, new LessonsRepository.lessonsCallback<ApiResponse<List<LessonsResponse>>>() {
                             @Override
                             public void onSuccess(ApiResponse<List<LessonsResponse>> lessonResponse) {
+                                if (!isAdded() || getView() == null) {
+                                    return;
+                                }
                                 if (lessonResponse != null && lessonResponse.getData() != null) {
-                                    int totalLessons = lessonResponse.getMeta().getTotal();
+                                    int totalLessons = lessonResponse.getMeta() != null
+                                            ? lessonResponse.getMeta().getTotal()
+                                            : lessonResponse.getData().size();
                                     LessonSection newSection = new LessonSection(
                                             categoryId,
                                             category.getName(),
@@ -109,7 +114,9 @@ public class StudyFragment extends Fragment {
                             }
                             @Override
                             public void onError(String message) {
-                                Toast.makeText(getContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                                if (isAdded()) {
+                                    Toast.makeText(requireContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
 
@@ -120,7 +127,9 @@ public class StudyFragment extends Fragment {
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

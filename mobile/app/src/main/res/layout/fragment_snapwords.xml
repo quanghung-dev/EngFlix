@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SnapWords"
+            android:textColor="#1A1A2E"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardCameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginBottom="72dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#171717"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="12dp"
+        app:cardUseCompatPadding="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/cameraPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_camera_preview"
+                app:implementationMode="compatible"
+                tools:background="#8A8070" />
+
+            <ImageButton
+                android:id="@+id/btnFlash"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start|top"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_camera_overlay_button"
+                android:contentDescription="Flash"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_flash_off"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tvZoomLevel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/bg_camera_overlay_button"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="1x"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </FrameLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/layoutBottomControls"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="48dp"
+        android:paddingBottom="40dp">
+
+        <ImageView
+            android:id="@+id/ivLastPhoto"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_thumbnail"
+            android:clipToOutline="true"
+            android:contentDescription="Last photo"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_placeholder_thumbnail" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnShutter"
+            android:layout_width="106dp"
+            android:layout_height="106dp"
+            android:background="@drawable/bg_shutter_button"
+            android:contentDescription="Capture"
+            android:padding="0dp"
+            android:src="@null" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnFlipCamera"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Flip camera"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_flip_camera"
+            app:tint="#1A1A2E" />
+
+    </LinearLayout>
+
+</LinearLayout>

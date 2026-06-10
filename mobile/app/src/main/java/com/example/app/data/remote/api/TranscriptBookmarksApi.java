@@ -11,10 +11,9 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit2.http.PUT;
 
 public interface TranscriptBookmarksApi {
     @GET("transcript-bookmarks/{lessonId}")
@@ -27,7 +26,7 @@ public interface TranscriptBookmarksApi {
             @Body CreateTransBookmarksRequest request
     );
 
-    @PATCH("transcript-bookmarks/{id}")
+    @PUT("transcript-bookmarks/{id}")
     Call<ApiResponse<TranscriptBookmarksResponse>> updateTranscriptBookmark(
             @Path("id") int id,
             @Body UpdateTransBookmarksRequest request

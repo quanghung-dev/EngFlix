@@ -54,7 +54,17 @@ public class AuthRepository {
                                         if (tokenTask.isSuccessful()) {
                                             String idToken = tokenTask.getResult().getToken();
                                             tokenManager.saveToken(idToken, "");
-                                            callback.onSuccess("Đăng ký thành công");
+                                            syncCurrentUser(new authCallBack<UserResponse>() {
+                                                @Override
+                                                public void onSuccess(UserResponse data) {
+                                                    callback.onSuccess("Đăng ký thành công");
+                                                }
+
+                                                @Override
+                                                public void onError(String message) {
+                                                    callback.onError(message);
+                                                }
+                                            });
                                         } else {
                                             callback.onError("Lỗi lấy Token sau đăng ký");
                                         }
@@ -63,6 +73,8 @@ public class AuthRepository {
                                     callback.onError("Lỗi cập nhật hồ sơ");
                                 }
                             });
+                        } else {
+                            callback.onError("Không tìm thấy người dùng Firebase sau đăng ký");
                         }
                     } else {
                         String errorMsg = task.getException() != null ? task.getException().getMessage() : "Lỗi đăng ký Firebase";
@@ -86,37 +98,44 @@ public class AuthRepository {
                                     String idToken = tokenTask.getResult().getToken();
                                     tokenManager.saveToken(idToken, "");
 
-                                    authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
-                                        @Override
-                                        public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
-                                            if (response.isSuccessful() && response.body() != null) {
-                                                UserResponse userResponse = response.body().getData();
-                                                tokenManager.saveUserInfo(
-                                                        userResponse.getUid(),
-                                                        userResponse.getEmail(),
-                                                        userResponse.getName(),
-                                                        userResponse.getAvatarUrl()
-                                                );
-                                                callback.onSuccess(userResponse);
-                                            } else {
-                                                callback.onError("Lỗi đồng bộ server: Code " + response.code());
-                                            }
-                                        }
-                                        @Override
-                                        public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
-                                            callback.onError("Lỗi đồng bộ server: Code " + t.getMessage());
-                                        }
-                                    });
+                                    syncCurrentUser(callback);
 
                                 } else {
                                     callback.onError("Lỗi xác thực Token");
                                 }
                             });
+                        } else {
+                            callback.onError("Không tìm thấy người dùng Firebase sau đăng nhập");
                         }
                     } else {
                         String errorMsg = task.getException() != null ? task.getException().getMessage() : "Sai tài khoản hoặc mật khẩu";
                         callback.onError(errorMsg);
                     }
                 });
+    }
+
+    private void syncCurrentUser(authCallBack<UserResponse> callback) {
+        authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    UserResponse userResponse = response.body().getData();
+                    tokenManager.saveUserInfo(
+                            userResponse.getUid(),
+                            userResponse.getEmail(),
+                            userResponse.getName(),
+                            userResponse.getAvatarUrl()
+                    );
+                    callback.onSuccess(userResponse);
+                } else {
+                    callback.onError("Lỗi đồng bộ server: Code " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
+                callback.onError("Lỗi đồng bộ server: Code " + t.getMessage());
+            }
+        });
     }
 }

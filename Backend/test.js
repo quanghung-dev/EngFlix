@@ -1,47 +1,73 @@
-const sdk = require("microsoft-cognitiveservices-speech-sdk");
-require("dotenv").config();
+// Import các thư viện cần thiết
+const { AzureKeyCredential } = require("@azure/core-auth");
+const createClient = require("@azure-rest/ai-vision-image-analysis").default;
+const { isUnexpected } = require("@azure-rest/ai-vision-image-analysis");
+
 const fs = require("fs");
+const path = require("path");
 
-const speechConfig =
-    sdk.SpeechConfig.fromSubscription(
-        process.env.AZURE_SPEECH_KEY,
-        process.env.AZURE_SPEECH_REGION
-    );
+// Load the .env file if it exists
+require("dotenv").config();
 
-    const referenceText ="No problem. You're welcome. Don't worry about it.";
+const endpoint = process.env['AZURE_VISION_ENDPOINT'];
+const key = process.env['AZURE_VISION_KEY'];
 
-speechConfig.speechRecognitionLanguage = "en-US";
-const audioBuffer = fs.readFileSync("test.wav");
+const credential = new AzureKeyCredential(key);
+const client = createClient(endpoint, credential);
+const imagePath = path.join(__dirname, "image.png");
+const features = [
+    'Caption',
+    'DenseCaptions',
+    'Objects',
+    'People',
+    'Read',
+    'SmartCrops',
+    'Tags'
+];
 
-const audioConfig =sdk.AudioConfig.fromWavFileInput(audioBuffer);
+// Bọc code chạy vào hàm async để sử dụng được await
+async function main() {
+    try {
+        const imageBuffer = fs.readFileSync(imagePath);
+        const result = await client.path('/imageanalysis:analyze').post({
+            body: imageBuffer,
+            queryParameters: {
+                features: features,
+                'language': 'en',
+                'gender-neutral-captions': 'true',
+                'smartCrops-aspect-ratios': [0.9, 1.33]
+            },
+            contentType: 'application/octet-stream'
+        });
 
-const recognizer =
-    new sdk.SpeechRecognizer(
-        speechConfig,
-        audioConfig
-    );
+        // Kiểm tra lỗi từ Azure REST client
+        if (isUnexpected(result)) {
+            const error = result.body.error;
+            console.error(`Error: ${error.code} - ${error.message}`);
+            return;
+        }
 
-const pronunciationConfig =
-    new sdk.PronunciationAssessmentConfig(
-        referenceText,
-        sdk.PronunciationAssessmentGradingSystem.HundredMark,
-        sdk.PronunciationAssessmentGranularity.Phoneme,
-        true
-    );
+        const iaResult = result.body;
 
-pronunciationConfig.applyTo(recognizer);
+        const objects = iaResult.objectsResult?.values || [];
 
-recognizer.recognizeOnceAsync(result => {
+        const formattedObjects = objects.map((obj) => {
+            const tag = obj.tags?.[0];
 
-    const assessment =
-        sdk.PronunciationAssessmentResult.fromResult(result);
+            return {
+                name: tag?.name,
+                confidence: tag?.confidence,
+                x: obj.boundingBox.x,
+                y: obj.boundingBox.y,
+                width: obj.boundingBox.w,
+                height: obj.boundingBox.h,
+            };
+        });
 
-    console.log({
-        accuracy: assessment.accuracyScore,
-        fluency: assessment.fluencyScore,
-        completeness: assessment.completenessScore,
-        pronunciation: assessment.pronunciationScore
-    });
+        console.log(JSON.stringify(formattedObjects, null, 2));
+    } catch (err) {
+        console.error("An unexpected error occurred:", err);
+    }
+}
 
-    recognizer.close();
-});
+main();

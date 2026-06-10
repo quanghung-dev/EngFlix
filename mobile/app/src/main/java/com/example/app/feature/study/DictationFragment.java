@@ -101,6 +101,7 @@ public class DictationFragment extends Fragment {
     private ProgressRepository progressRepository;
     private int quantityTranscripts = 0;
     private List<Integer> completedIds = new ArrayList<>();
+    private boolean dictationStartedSent = false;
     private boolean dictationCompletedSent = false;
 
     @Nullable
@@ -194,6 +195,9 @@ public class DictationFragment extends Fragment {
         transcriptsRepository.getTranscripts(lessonId, new TranscriptsRepository.TranscriptsCallback() {
             @Override
             public void onSuccess(List<TranscriptsResponse> data) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 if (data != null && !data.isEmpty()) {
                     android.util.Log.d("DictationFragment", "Gọi API thành công! Số lượng câu: " + data.size());
                     listTranscripts = data;
@@ -210,12 +214,15 @@ public class DictationFragment extends Fragment {
             @Override
             public void onError(String message) {
                 android.util.Log.e("DictationFragment", "Lỗi API tải transcript: " + message);
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }
     public  void prepareCurrentSentence(){
-        if(listTranscripts != null && !listTranscripts.isEmpty() && currentSentenceIndex >= listTranscripts.size()){
+        if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
             return;
         }
         showdiaglogwarning = false;
@@ -261,6 +268,9 @@ public class DictationFragment extends Fragment {
         transcriptProgressRepository.getTranscriptProgress(lessonId, new BaseCallback<ApiResponse<List<TranscriptProgressResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<TranscriptProgressResponse>> data) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 if (data != null && data.getData() != null) {
                     completedIds.clear();
                     for (TranscriptProgressResponse response : data.getData()) {
@@ -309,6 +319,7 @@ public class DictationFragment extends Fragment {
             btnStart.setVisibility(View.GONE);
             layoutButtonBottom.setVisibility(View.VISIBLE);
             etInput.setEnabled(true);
+            sendDictationInProgressIfNeeded();
         });
 
         btnPrevious.setOnClickListener(v -> {
@@ -504,7 +515,7 @@ public class DictationFragment extends Fragment {
     }
 
     public void checkAnswer(String userInput) {
-        if (listTranscripts == null || currentSentenceIndex >= listTranscripts.size()) {
+        if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
             return;
         };
 
@@ -527,6 +538,9 @@ public class DictationFragment extends Fragment {
                 transcriptProgressRepository.createTranscriptProgress(lessonId, completedTranscriptId, new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
+                        if (!isAdded() || getView() == null) {
+                            return;
+                        }
                         Log.d("DictationFragment", "gửi api progress thành công ");
                         if (sentenceAdapter != null) {
                             sentenceAdapter.addCompletedTranscript(completedTranscriptId);
@@ -554,6 +568,9 @@ public class DictationFragment extends Fragment {
                 transcriptProgressRepository.createTranscriptProgress(lessonId, completedTranscriptId, new BaseCallback<ApiResponse<TranscriptProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<TranscriptProgressResponse> data) {
+                        if (!isAdded() || getView() == null) {
+                            return;
+                        }
                         Log.d("DictationFragment", "gui api progress thanh cong");
                         if (sentenceAdapter != null) {
                             sentenceAdapter.addCompletedTranscript(completedTranscriptId);
@@ -586,7 +603,11 @@ public class DictationFragment extends Fragment {
             completedIds.add(transcriptId);
         }
         updateProgressText();
-        sendDictationCompletedIfNeeded();
+        if (quantityTranscripts > 0 && completedIds.size() >= quantityTranscripts) {
+            sendDictationCompletedIfNeeded();
+        } else {
+            sendDictationInProgressIfNeeded();
+        }
     }
 
     private void updateProgressText() {
@@ -615,6 +636,26 @@ public class DictationFragment extends Fragment {
             public void onError(String message) {
                 dictationCompletedSent = false;
                 Log.e("DictationFragment", "Loi gui hoan thanh dictation: " + message);
+            }
+        });
+    }
+
+    private void sendDictationInProgressIfNeeded() {
+        if (dictationStartedSent || dictationCompletedSent || lessonId <= 0) {
+            return;
+        }
+
+        dictationStartedSent = true;
+        progressRepository.createProgress(new CreateProgressRequest(lessonId, Boolean.FALSE, null), new BaseCallback<ApiResponse<ProgressResponse>>() {
+            @Override
+            public void onSuccess(ApiResponse<ProgressResponse> data) {
+                Log.d("DictationFragment", "Da gui dictation dang hoc");
+            }
+
+            @Override
+            public void onError(String message) {
+                dictationStartedSent = false;
+                Log.e("DictationFragment", "Loi gui dictation dang hoc: " + message);
             }
         });
     }
@@ -708,6 +749,9 @@ public class DictationFragment extends Fragment {
         bookMarksRepository.getBookmarks(lessonId, null, null,new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
             @Override
             public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 isCurrentSentenceBookmarked = false;
                 currentNoteResponse = null;
                 if (data != null && data.getData() != null) {
@@ -729,6 +773,9 @@ public class DictationFragment extends Fragment {
 
             @Override
             public void onError(String message) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 isCurrentSentenceBookmarked = false;
                 currentNoteResponse = null;
                 updateBookmarkButtonUI();

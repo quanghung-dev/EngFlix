@@ -25,7 +25,6 @@
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
 
-
     </LinearLayout>
 
     <!-- Tab buttons -->
