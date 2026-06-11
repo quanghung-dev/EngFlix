@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    item_vocabulary_word.xml
-    Item từng từ vựng trong RecyclerView
-    Gồm: icon sparkle tròn | từ + IPA + nghĩa | icon âm thanh | chevron
-    Đã được chuyển sang cấu trúc LinearLayout.
--->
+
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,7 +15,7 @@
     app:cardElevation="@dimen/card_elevation"
     app:cardUseCompatPadding="false">
 
-    <!-- Outer Horizontal LinearLayout -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +24,7 @@
         android:paddingHorizontal="@dimen/card_padding"
         android:gravity="center_vertical">
 
-        <!-- Icon sparkle tròn -->
+        
         <ImageView
             android:id="@+id/ivWordStatus"
             android:layout_width="@dimen/icon_circle_size"
@@ -40,7 +35,7 @@
             android:src="@drawable/ic_sparkle"
             app:tint="@color/primary_blue" />
 
-        <!-- Middle Vertical LinearLayout (chứa Text) -->
+        
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -80,7 +75,7 @@
 
             </LinearLayout>
 
-            <!-- Dòng 2: IPA -->
+            
             <TextView
                 android:id="@+id/tvIPA"
                 android:layout_width="wrap_content"
@@ -91,7 +86,7 @@
                 android:textSize="@dimen/ipa_text_size"
                 android:text="ABC" />
 
-            <!-- Dòng 3: Nghĩa -->
+            
             <TextView
                 android:id="@+id/tvMeaning"
                 android:layout_width="wrap_content"
@@ -113,7 +108,7 @@
             android:src="@drawable/ic_volume_up"
             app:tint="@color/primary_blue" />
 
-        <!-- Chevron > -->
+        
         <ImageView
             android:id="@+id/ivChevron"
             android:layout_width="18dp"

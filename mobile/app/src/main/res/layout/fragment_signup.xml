@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#0D0D0D">
 
-    <!-- Background gradient (reuse) -->
+    
     <View
         android:id="@+id/bgGradient"
         android:layout_width="0dp"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Decorative circle top-right (reuse) -->
+    
     <View
         android:id="@+id/circleTopRight"
         android:layout_width="220dp"
@@ -29,7 +29,7 @@
         android:layout_marginTop="-60dp"
         android:layout_marginEnd="-60dp" />
 
-    <!-- Decorative circle bottom-left (reuse) -->
+    
     <View
         android:id="@+id/circleBottomLeft"
         android:layout_width="160dp"
@@ -41,7 +41,7 @@
         android:layout_marginBottom="-40dp"
         android:layout_marginStart="-40dp" />
 
-    <!-- Scrollable content -->
+    
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -62,7 +62,7 @@
             android:paddingBottom="48dp"
             android:gravity="center_horizontal">
 
-            <!-- Logo -->
+            
             <FrameLayout
                 android:layout_width="80dp"
                 android:layout_height="80dp">
@@ -81,12 +81,12 @@
                     android:contentDescription="Logo" />
             </FrameLayout>
 
-            <!-- Title -->
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Tạo tài khoản"
+                android:text="Táº¡o tÃ i khoáº£n"
                 android:textColor="#FFFFFF"
                 android:textSize="28sp"
                 android:textStyle="bold"
@@ -97,12 +97,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Đăng ký để bắt đầu hành trình"
+                android:text="ÄÄƒng kÃ½ Ä‘á»ƒ báº¯t Ä‘áº§u hÃ nh trÃ¬nh"
                 android:textColor="#9E9E9E"
                 android:textSize="15sp"
                 android:fontFamily="sans-serif" />
 
-            <!-- Card form (reuse bg_card style) -->
+            
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,11 +117,11 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <!-- Họ và tên -->
+                    
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Họ và tên"
+                        android:text="Há» vÃ  tÃªn"
                         android:textColor="#BDBDBD"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -153,7 +153,7 @@
                             android:layout_height="56dp"
                             android:background="@android:color/transparent"
                             android:fontFamily="sans-serif"
-                            android:hint="Nhập họ và tên"
+                            android:hint="Nháº­p há» vÃ  tÃªn"
                             android:imeOptions="actionNext"
                             android:inputType="textPersonName"
                             android:paddingStart="52dp"
@@ -164,12 +164,12 @@
                             android:textSize="15sp" />
                     </FrameLayout>
 
-                    <!-- Tên tài khoản -->
+                    
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:text="Tài khoản"
+                        android:text="TÃ i khoáº£n"
                         android:textColor="#BDBDBD"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -201,7 +201,7 @@
                             android:layout_height="56dp"
                             android:paddingStart="52dp"
                             android:paddingEnd="16dp"
-                            android:hint="Nhập tên tài khoản"
+                            android:hint="Nháº­p tÃªn tÃ i khoáº£n"
                             android:textColorHint="#616161"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
@@ -212,12 +212,12 @@
                             android:imeOptions="actionNext" />
                     </FrameLayout>
 
-                    <!-- Mật khẩu -->
+                    
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:text="Mật khẩu"
+                        android:text="Máº­t kháº©u"
                         android:textColor="#BDBDBD"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -249,7 +249,7 @@
                             android:layout_height="56dp"
                             android:paddingStart="52dp"
                             android:paddingEnd="52dp"
-                            android:hint="Nhập mật khẩu"
+                            android:hint="Nháº­p máº­t kháº©u"
                             android:textColorHint="#616161"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
@@ -272,12 +272,12 @@
                             android:focusable="true" />
                     </FrameLayout>
 
-                    <!-- Xác nhận mật khẩu -->
+                    
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:text="Xác nhận mật khẩu"
+                        android:text="XÃ¡c nháº­n máº­t kháº©u"
                         android:textColor="#BDBDBD"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -309,7 +309,7 @@
                             android:layout_height="56dp"
                             android:paddingStart="52dp"
                             android:paddingEnd="52dp"
-                            android:hint="Nhập lại mật khẩu"
+                            android:hint="Nháº­p láº¡i máº­t kháº©u"
                             android:textColorHint="#616161"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
@@ -332,12 +332,12 @@
                             android:focusable="true" />
                     </FrameLayout>
 
-                    <!-- Terms & Conditions -->
+                    
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Register Button (reuse bg_btn_primary) -->
+            
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -351,7 +351,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:gravity="center"
-                    android:text="ĐĂNG KÝ"
+                    android:text="ÄÄ‚NG KÃ"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -362,7 +362,7 @@
                     android:background="@drawable/bg_btn_primary" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Divider -->
+            
 
 
             <LinearLayout
@@ -375,7 +375,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đã có tài khoản? "
+                    android:text="ÄÃ£ cÃ³ tÃ i khoáº£n? "
                     android:textColor="#9E9E9E"
                     android:textSize="14sp"
                     android:fontFamily="sans-serif" />
@@ -384,7 +384,7 @@
                     android:id="@+id/tvLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng nhập"
+                    android:text="ÄÄƒng nháº­p"
                     android:textColor="#6C63FF"
                     android:textSize="14sp"
                     android:textStyle="bold"

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/bg_btn_start_gradient.xml
-     Button "Bắt đầu học" gradient xanh, bo tròn hoàn toàn -->
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient

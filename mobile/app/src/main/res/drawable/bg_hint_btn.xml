@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/bg_hint_btn.xml
-     Nút bóng đèn gợi ý nền vàng nhạt -->
+
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#33F5A623">
     <item>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flashcard_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+
+    
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_front"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="#FFFFFF"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            
+            <TextView
+                android:id="@+id/tv_front_word"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="permanent"
+                android:textSize="28sp"
+                android:textColor="#1A1A3E"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:gravity="center"
+                android:paddingHorizontal="24dp" />
+
+            
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_fullscreen"
+                android:contentDescription="Fullscreen" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="#FFFFFF"
+        android:visibility="gone"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_margin="16dp"
+                android:text="NghÄ©a"
+                android:textSize="12sp"
+                android:textColor="#9090A8"
+                android:fontFamily="sans-serif-medium" />
+
+            
+            <TextView
+                android:id="@+id/tv_back_meaning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="vÄ©nh viá»…n; cá»‘ Ä‘á»‹nh; lÃ¢u dÃ i"
+                android:textSize="22sp"
+                android:textColor="#1A1A3E"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:paddingHorizontal="24dp" />
+
+            
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_fullscreen"
+                android:contentDescription="Fullscreen" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

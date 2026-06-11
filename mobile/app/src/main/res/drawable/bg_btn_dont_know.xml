@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/bg_btn_dont_know.xml
-     Button "Không biết" đỏ cam, bo tròn -->
+
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#33FFFFFF">
     <item>

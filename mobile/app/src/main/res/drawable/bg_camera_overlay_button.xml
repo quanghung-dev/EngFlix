@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- bg_camera_overlay_button.xml -->
-<!-- Nút nhỏ semi-transparent tròn overlay trên camera (flash, zoom) -->
+
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 

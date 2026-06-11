@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/bg_btn_check_disabled.xml
-     Button "Kiểm tra đáp án" - trạng thái disabled xám -->
+
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
         <shape android:shape="rectangle">

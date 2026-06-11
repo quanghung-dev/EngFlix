@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEF0F5"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp">
+
+        
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_circle_button"
+            android:src="@drawable/ic_back"
+            android:padding="10dp"
+            android:contentDescription="Back"
+            android:elevation="3dp" />
+
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_top_action_pill"
+            android:paddingHorizontal="12dp"
+            android:elevation="3dp">
+
+            <ImageView
+                android:id="@+id/btn_more"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_pencil"
+                app:tint="#4A4A6A"
+                android:contentDescription="Edit lesson" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager_flashcards"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:paddingHorizontal="20dp"
+        android:clipToPadding="false"
+        android:clipChildren="false" />
+
+    
+    <LinearLayout
+        android:id="@+id/dot_indicator_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp">
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/bg_dot_active"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:layout_marginHorizontal="3dp" />
+
+    </LinearLayout>
+
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp">
+
+        
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="16/5"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A3E"
+            android:fontFamily="sans-serif-black" />
+
+        
+        <ImageView
+            android:id="@+id/btn_download"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_download_circle"
+            android:src="@drawable/ic_download"
+            android:padding="10dp"
+            android:contentDescription="Download" />
+
+    </LinearLayout>
+
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="14dp">
+
+        
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:background="@drawable/bg_avatar_circle"
+            android:scaleType="centerCrop"
+            android:contentDescription="Avatar"
+            android:layout_marginEnd="8dp" />
+
+        
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nrhzrrikzb5640"
+            android:textSize="13sp"
+            android:textColor="#1A1A3E"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginEnd="6dp" />
+
+        
+        <TextView
+            android:id="@+id/tv_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="#4A4A6A"
+            android:background="@drawable/bg_badge_teacher"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:layout_marginEnd="8dp" />
+
+        
+        <View
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:background="#C0C0D0"
+            android:layout_marginEnd="8dp" />
+
+        
+        <TextView
+            android:id="@+id/tv_term_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="19 thuáº­t ngá»¯"
+            android:textSize="13sp"
+            android:textColor="#4A4A6A"
+            android:fontFamily="sans-serif" />
+
+    </LinearLayout>
+
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp">
+
+            
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mode_flashcard"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_mode_flashcard"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="Flashcard icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Flashcard"
+                        android:textSize="15sp"
+                        android:textColor="#1A1A3E"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mode_review"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_mode_review"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="Review icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="CÃ¢u há»i Ã´n táº­p"
+                        android:textSize="15sp"
+                        android:textColor="#1A1A3E"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mode_test"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_mode_test"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="Test icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Äá» thi thá»­"
+                        android:textSize="15sp"
+                        android:textColor="#1A1A3E"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mode_match"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_mode_match"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="Match icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ná»‘i 2 máº·t tháº»"
+                        android:textSize="15sp"
+                        android:textColor="#1A1A3E"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_vocabulary_words"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
+
+    </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

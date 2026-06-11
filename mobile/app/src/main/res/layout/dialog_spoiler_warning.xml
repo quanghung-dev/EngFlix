@@ -15,36 +15,36 @@
         android:orientation="vertical"
         android:padding="28dp">
 
-        <!-- Title -->
+        
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Cảnh báo tiết lộ từ"
+            android:text="Cáº£nh bÃ¡o tiáº¿t lá»™ tá»«"
             android:textColor="#1A1A1A"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Message -->
+        
         <TextView
             android:id="@+id/tvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="28dp"
             android:lineSpacingMultiplier="1.4"
-            android:text="Các từ được tiết lộ sẽ được tính là lỗi và sẽ ảnh hưởng đến điểm số của bạn."
+            android:text="CÃ¡c tá»« Ä‘Æ°á»£c tiáº¿t lá»™ sáº½ Ä‘Æ°á»£c tÃ­nh lÃ  lá»—i vÃ  sáº½ áº£nh hÆ°á»Ÿng Ä‘áº¿n Ä‘iá»ƒm sá»‘ cá»§a báº¡n."
             android:textColor="#6B6B6B"
             android:textSize="15sp" />
 
-        <!-- Buttons Row -->
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <!-- Hủy -->
+            
             <Button
                 android:id="@+id/btnCancel"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
@@ -54,13 +54,13 @@
                 android:layout_weight="1"
                 android:backgroundTint="#EBEBEB"
                 android:stateListAnimator="@null"
-                android:text="Hủy"
+                android:text="Há»§y"
                 android:textColor="#3D9BF0"
                 android:textSize="16sp"
                 android:textStyle="normal"
                 app:cornerRadius="26dp" />
 
-            <!-- Tiếp tục -->
+            
             <Button
                 android:id="@+id/btnContinue"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#EBEBEB"
                 android:stateListAnimator="@null"
-                android:text="Tiếp tục"
+                android:text="Tiáº¿p tá»¥c"
                 android:textColor="#3D9BF0"
                 android:textSize="16sp"
                 android:textStyle="normal"

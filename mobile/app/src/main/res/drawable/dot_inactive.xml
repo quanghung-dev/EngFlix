@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/dot_inactive.xml - dot indicator inactive (xám nhạt hơn, tròn) -->
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
     <solid android:color="@color/dot_inactive" />

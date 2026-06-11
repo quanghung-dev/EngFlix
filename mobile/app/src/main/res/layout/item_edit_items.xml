@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="24dp">
+
+        
+
+        
+        <EditText
+            android:id="@+id/edtTerm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="sans-serif"
+            android:hint=""
+            android:inputType="text"
+            android:padding="0dp"
+            android:paddingBottom="6dp"
+            android:text=""
+            android:textColor="#1F2433"
+            android:textColorHint="#C5CACD"
+            android:textSize="18sp" />
+
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#1F2433" />
+
+        
+        <TextView
+            android:id="@+id/tvTermLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="sans-serif"
+            android:text="Thuáº­t ngá»¯"
+            android:textColor="#9AA3A8"
+            android:textSize="13sp" />
+
+        
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        
+
+        
+        <EditText
+            android:id="@+id/edtDefinition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="sans-serif"
+            android:hint=""
+            android:inputType="text"
+            android:padding="0dp"
+            android:paddingBottom="6dp"
+            android:text=""
+            android:textColor="#1F2433"
+            android:textColorHint="#C5CACD"
+            android:textSize="18sp" />
+
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#1F2433" />
+
+        
+        <TextView
+            android:id="@+id/tvDefinitionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="sans-serif"
+            android:text="Äá»‹nh nghÄ©a"
+            android:textColor="#9AA3A8"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

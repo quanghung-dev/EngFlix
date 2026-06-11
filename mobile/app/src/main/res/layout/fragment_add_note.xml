@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#F2F2F7">
 
-    <!-- Toolbar -->
+    
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -14,11 +14,11 @@
         android:background="@android:color/transparent"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="#1A1A2E"
-        app:title="Thêm ghi chú"
+        app:title="ThÃªm ghi chÃº"
         app:titleTextColor="#1A1A2E"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
 
-    <!-- Card: Câu -->
+    
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSentence"
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Header Câu -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="≡"
+                        android:text="â‰¡"
                         android:textSize="18sp"
                         android:textColor="#4A90D9" />
 
@@ -63,14 +63,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Câu"
+                    android:text="CÃ¢u"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A1A" />
 
             </LinearLayout>
 
-            <!-- Sentence Text (English) -->
+            
             <TextView
                 android:id="@+id/tvSentenceEn"
                 android:layout_width="match_parent"
@@ -83,9 +83,9 @@
                 android:padding="12dp"
                 android:layout_marginBottom="10dp" />
 
-            <!-- Phonetic (To match Edit page, though not originally in Add page, we can leave it out or add placeholder. I will skip it to keep Add simple, or add it to be fully in sync. The prompt said "đồng bộ", let's include it but hidden or empty? No, original had no phonetic. I will just align the Vietnamese part.) -->
+            
 
-            <!-- Sentence Text (Vietnamese) -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🌐"
+                    android:text="ðŸŒ"
                     android:textSize="13sp"
                     android:layout_marginEnd="6dp" />
 
@@ -104,7 +104,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bạn đã bao giờ nhận thấy thứ gì đó bơi trong tầm nhìn của mình chưa?"
+                    android:text="Báº¡n Ä‘Ã£ bao giá» nháº­n tháº¥y thá»© gÃ¬ Ä‘Ã³ bÆ¡i trong táº§m nhÃ¬n cá»§a mÃ¬nh chÆ°a?"
                     android:textSize="13sp"
                     android:textColor="#888888" />
 
@@ -113,7 +113,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Card: Ghi chú -->
+    
     <androidx.cardview.widget.CardView
         android:id="@+id/cardNote"
         android:layout_width="match_parent"
@@ -131,7 +131,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Header Ghi chú -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -149,7 +149,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="✏"
+                        android:text="âœ"
                         android:textSize="16sp"
                         android:textColor="#9B59B6" />
 
@@ -158,19 +158,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ghi chú của bạn"
+                    android:text="Ghi chÃº cá»§a báº¡n"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A1A" />
 
             </LinearLayout>
 
-            <!-- Note Input -->
+            
             <EditText
                 android:id="@+id/etNote"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:hint="Viết ghi chú của bạn về câu này..."
+                android:hint="Viáº¿t ghi chÃº cá»§a báº¡n vá» cÃ¢u nÃ y..."
                 android:textColorHint="#C7C7CC"
                 android:textSize="15sp"
                 android:textColor="#1A1A1A"
@@ -183,7 +183,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Button: Tạo ghi chú -->
+    
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
             android:id="@+id/btnCreateNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="✔  Tạo ghi chú"
+            android:text="âœ”  Táº¡o ghi chÃº"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"

@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cài Đặt"
+            android:text="CÃ i Äáº·t"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
@@ -78,7 +78,7 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng nhập"
+                    android:text="ÄÄƒng nháº­p"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:maxLines="2"
-                    android:text="Đồng bộ tiến độ của bạn trên các thiết bị"
+                    android:text="Äá»“ng bá»™ tiáº¿n Ä‘á»™ cá»§a báº¡n trÃªn cÃ¡c thiáº¿t bá»‹"
                     android:textColor="#E6E5FF"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -120,7 +120,7 @@
             android:orientation="vertical"
             android:paddingVertical="8dp">
 
-            <!-- NOTES -->
+            
             <LinearLayout
                 android:id="@+id/rowNotes"
                 android:layout_width="match_parent"
@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Ghi chú của tôi"
+                    android:text="Ghi chÃº cá»§a tÃ´i"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-medium" />
@@ -175,7 +175,7 @@
                 android:layout_marginEnd="20dp"
                 android:background="#F0F0F0" />
 
-            <!-- PROGRESS -->
+            
             <LinearLayout
                 android:id="@+id/rowProgress"
                 android:layout_width="match_parent"
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Tiến độ bài học"
+                    android:text="Tiáº¿n Ä‘á»™ bÃ i há»c"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-medium" />
@@ -230,7 +230,7 @@
                 android:layout_marginEnd="20dp"
                 android:background="#F0F0F0" />
 
-            <!-- LEADERBOARD -->
+            
             <LinearLayout
                 android:id="@+id/rowLeaderboard"
                 android:layout_width="match_parent"
@@ -265,7 +265,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Bảng Xếp Hạng"
+                    android:text="Báº£ng Xáº¿p Háº¡ng"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-medium" />
@@ -325,7 +325,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
-                android:text="Đăng xuất"
+                android:text="ÄÄƒng xuáº¥t"
                 android:textColor="#FF3B30"
                 android:textSize="16sp"
                 android:textStyle="bold" />

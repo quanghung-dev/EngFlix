@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@android:color/white">
 
-    <!-- Title -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,14 +20,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiến độ"
+            android:text="Tiáº¿n Ä‘á»™"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
 
     </LinearLayout>
 
-    <!-- Tab buttons -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="12dp">
 
-        <!-- Tab Đang học -->
+        
         <LinearLayout
             android:id="@+id/tab_uncompleted"
             android:layout_width="0dp"
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🕐"
+                    android:text="ðŸ•"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -80,7 +80,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đang học"
+                    android:text="Äang há»c"
                     android:textSize="12sp"
                     android:textColor="#888888" />
 
@@ -88,7 +88,7 @@
 
         </LinearLayout>
 
-        <!-- Tab Đã hoàn thành -->
+        
         <LinearLayout
             android:id="@+id/tab_completed"
             android:layout_width="0dp"
@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="✅"
+                    android:text="âœ…"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -131,7 +131,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đã hoàn thành"
+                    android:text="ÄÃ£ hoÃ n thÃ nh"
                     android:textSize="12sp"
                     android:textColor="#888888" />
 
@@ -141,7 +141,7 @@
 
     </LinearLayout>
 
-    <!-- ViewPager2: swipe mượt giữa 2 tab -->
+    
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

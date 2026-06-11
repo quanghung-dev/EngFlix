@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Auth colors -->
+    
     <color name="auth_purple_primary">#9B5CFF</color>
     <color name="auth_purple_light">#C8AAFF</color>
     <color name="auth_purple_dark">#7B3FF0</color>

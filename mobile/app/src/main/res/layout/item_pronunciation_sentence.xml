@@ -23,14 +23,14 @@
         android:paddingEnd="15dp"
         android:paddingBottom="16dp">
 
-        <!-- Hàng nút chức năng phía trên -->
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Số thứ tự câu -->
+            
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSentenceNumber"
                 android:layout_width="36dp"
@@ -49,7 +49,7 @@
                 android:insetBottom="0dp"
                 android:insetTop="0dp" />
 
-            <!-- Nút dừng / pause -->
+            
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPause"
                 android:layout_width="36dp"
@@ -58,7 +58,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:padding="0dp"
-                android:text="Ⅱ"
+                android:text="â…¡"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="19sp"
@@ -68,14 +68,14 @@
                 android:insetBottom="0dp"
                 android:insetTop="0dp" />
 
-            <!-- Nút nghe lại -->
+            
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <!-- Điểm phát âm -->
+            
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnScore"
                 android:layout_width="82dp"
@@ -86,7 +86,7 @@
                 android:minHeight="0dp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:text="🎙 57%"
+                android:text="ðŸŽ™ 57%"
                 android:textAllCaps="false"
                 android:textColor="#F04452"
                 android:textSize="14sp"
@@ -96,13 +96,13 @@
                 android:insetBottom="0dp"
                 android:insetTop="0dp" />
 
-            <!-- Bookmark -->
+            
 
-            <!-- Báo lỗi / đánh dấu -->
+            
 
         </LinearLayout>
 
-        <!-- Câu tiếng Anh -->
+        
         <TextView
             android:id="@+id/tvEnglishSentence"
             android:layout_width="match_parent"
@@ -114,7 +114,7 @@
             android:text="And  come  back  a  failure?"
             android:textStyle="normal" />
 
-        <!-- Phiên âm -->
+        
         <TextView
             android:id="@+id/tvPhonetic"
             android:layout_width="match_parent"
@@ -123,7 +123,7 @@
             android:fontFamily="sans"
             android:textColor="#A7A8AE"
             android:textSize="16sp"
-            tools:text="ænd kʌm bæk ə ˈfeɪljə" />
+            tools:text="Ã¦nd kÊŒm bÃ¦k É™ ËˆfeÉªljÉ™" />
         <TextView
             android:id="@+id/tvVietnameseMeaning"
             android:layout_width="match_parent"
@@ -134,9 +134,9 @@
             android:textSize="16sp"
             android:textStyle="italic"
             android:visibility="gone"
-            tools:text="Và trở về trong thất bại sao" />
+            tools:text="VÃ  trá»Ÿ vá» trong tháº¥t báº¡i sao" />
 
-        <!-- Đường phân cách -->
+        
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -144,7 +144,7 @@
             android:layout_marginTop="14dp"
             android:background="#E6E7EB" />
 
-        <!-- Nghĩa tiếng Việt -->
+        
         <TextView
             android:id="@+id/tvFeedBack"
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
 
 
 
-        <!-- Nút nghe ghi âm của người dùng -->
+        
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnUserRecording"
             android:layout_width="wrap_content"
@@ -170,7 +170,7 @@
             android:minHeight="0dp"
             android:paddingStart="14dp"
             android:paddingEnd="16dp"
-            android:text="▶  Ghi âm của bạn"
+            android:text="â–¶  Ghi Ã¢m cá»§a báº¡n"
             android:textAllCaps="false"
             android:textColor="#1499F2"
             android:textStyle="bold"
@@ -179,7 +179,7 @@
             android:insetBottom="0dp"
             android:insetTop="0dp" />
 
-        <!-- Nội dung app nhận diện từ giọng nói người dùng -->
+        
 
     </LinearLayout>
 

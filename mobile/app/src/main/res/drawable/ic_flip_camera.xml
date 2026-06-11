@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ic_flip_camera.xml -->
-<!-- Icon xoay camera (2 mũi tên tròn) màu trắng -->
+
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="28dp"
     android:height="28dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- Mũi tên trên (nửa trên vòng tròn, chiều phải) -->
+    
     <path
         android:strokeColor="#FFFFFF"
         android:strokeWidth="2"
         android:strokeLineCap="round"
         android:fillColor="@android:color/transparent"
         android:pathData="M12,4 A8,8 0 0,1 19.9,8.4" />
-    <!-- Mũi tên đầu -->
+    
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M18.5,5.5 L21.5,9.5 L17,9.5 Z" />
 
-    <!-- Mũi tên dưới (nửa dưới vòng tròn, chiều trái) -->
+    
     <path
         android:strokeColor="#FFFFFF"
         android:strokeWidth="2"
         android:strokeLineCap="round"
         android:fillColor="@android:color/transparent"
         android:pathData="M12,20 A8,8 0 0,1 4.1,15.6" />
-    <!-- Mũi tên đầu -->
+    
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M5.5,18.5 L2.5,14.5 L7,14.5 Z" />

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="#F2F3F7">
 
-    <!-- TOOLBAR -->
+    
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         app:titleTextColor="#1A1A2E"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
 
-    <!-- STATS CARD - light theme -->
+    
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:padding="16dp"
             android:weightSum="3">
 
-            <!-- Hoàn thành -->
+            
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -73,19 +73,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hoàn thành"
+                    android:text="HoÃ n thÃ nh"
                     android:textSize="11sp"
                     android:textColor="#8E8E93" />
             </LinearLayout>
 
-            <!-- Divider -->
+            
             <View
                 android:layout_width="1dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:background="#E0E0E0" />
 
-            <!-- Đang học -->
+            
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -120,19 +120,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đang học"
+                    android:text="Äang há»c"
                     android:textSize="11sp"
                     android:textColor="#8E8E93" />
             </LinearLayout>
 
-            <!-- Divider -->
+            
             <View
                 android:layout_width="1dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:background="#E0E0E0" />
 
-            <!-- Chưa bắt đầu -->
+            
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chưa bắt đầu"
+                    android:text="ChÆ°a báº¯t Ä‘áº§u"
                     android:textSize="11sp"
                     android:textColor="#8E8E93" />
             </LinearLayout>

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    activity_learning.xml
-    Màn hình học tập flashcard (Image 1 - "Học tập")
-    Gồm: toolbar (X, tiêu đề, icons), progress, flashcard to, dot indicator + hint, 2 nút bottom
--->
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +9,7 @@
     android:background="@color/bg_screen"
     tools:context=".LearningActivity">
 
-    <!-- ======================== TOOLBAR ======================== -->
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -25,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Nút X tròn -->
+        
         <ImageButton
             android:id="@+id/btnClose"
             android:layout_width="36dp"
@@ -39,13 +35,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/text_primary" />
 
-        <!-- Tiêu đề "Học tập" -->
+        
         <TextView
             android:id="@+id/tvToolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Học tập"
+            android:text="Há»c táº­p"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_lg"
             android:textStyle="bold"
@@ -54,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Nhóm icon bên phải -->
+        
         <LinearLayout
             android:id="@+id/layoutToolbarIcons"
             android:layout_width="wrap_content"
@@ -66,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Icon bàn phím -->
+            
             <ImageButton
                 android:id="@+id/btnKeyboard"
                 android:layout_width="36dp"
@@ -78,7 +74,7 @@
                 android:src="@drawable/ic_keyboard"
                 app:tint="@color/primary_blue" />
 
-            <!-- Icon cờ -->
+            
             <ImageButton
                 android:id="@+id/btnFlag"
                 android:layout_width="36dp"
@@ -90,7 +86,7 @@
                 android:src="@drawable/ic_flag"
                 app:tint="@color/btn_dont_know" />
 
-            <!-- Icon cài đặt -->
+            
             <ImageButton
                 android:id="@+id/btnSettings"
                 android:layout_width="36dp"
@@ -105,7 +101,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ======================== PROGRESS ROW (% + counter chip) ======================== -->
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutProgressRow"
         android:layout_width="0dp"
@@ -118,7 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <!-- Label % hoàn thành -->
+        
         <TextView
             android:id="@+id/tvProgressLabel"
             android:layout_width="wrap_content"
@@ -128,9 +124,9 @@
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="0% hoàn thành" />
+            tools:text="0% hoÃ n thÃ nh" />
 
-        <!-- Counter chip (0/49) -->
+        
         <LinearLayout
             android:id="@+id/layoutCounter"
             android:layout_width="wrap_content"
@@ -164,7 +160,7 @@
 
         </LinearLayout>
 
-        <!-- Progress bar mảnh -->
+        
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -181,7 +177,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ======================== FLASHCARD CHÍNH ======================== -->
+    
     <androidx.cardview.widget.CardView
         android:id="@+id/cardFlashcard"
         android:layout_width="0dp"
@@ -203,7 +199,7 @@
             android:layout_height="match_parent"
             android:padding="@dimen/flashcard_padding">
 
-            <!-- Ảnh minh họa (vuông bo góc, ở giữa trên) -->
+            
             <ImageView
                 android:id="@+id/ivWordImage"
                 android:layout_width="100dp"
@@ -216,7 +212,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
 
-            <!-- Label danh mục nhỏ dưới ảnh -->
+            
             <TextView
                 android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
@@ -229,7 +225,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ivWordImage"
                 tools:text="people" />
 
-            <!-- Từ tiếng Anh lớn + tag Noun cạnh nhau -->
+            
             <TextView
                 android:id="@+id/tvFlashWord"
                 android:layout_width="wrap_content"
@@ -243,7 +239,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvCategory"
-                tools:text="Cha mẹ" />
+                tools:text="Cha máº¹" />
 
             <TextView
                 android:id="@+id/tvFlashTag"
@@ -262,7 +258,7 @@
                 app:layout_constraintStart_toEndOf="@id/tvFlashWord"
                 tools:text="Noun" />
 
-            <!-- Định nghĩa / mô tả tiếng Việt -->
+            
             <TextView
                 android:id="@+id/tvDefinition"
                 android:layout_width="0dp"
@@ -275,9 +271,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvFlashWord"
-                tools:text="Mẹ và cha của một người. Những người nuôi dưỡng một đứa trẻ." />
+                tools:text="Máº¹ vÃ  cha cá»§a má»™t ngÆ°á»i. Nhá»¯ng ngÆ°á»i nuÃ´i dÆ°á»¡ng má»™t Ä‘á»©a tráº»." />
 
-            <!-- Hộp ví dụ -->
+            
             <LinearLayout
                 android:id="@+id/layoutExample"
                 android:layout_width="0dp"
@@ -290,7 +286,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvDefinition">
 
-                <!-- Header "VÍ DỤ" với icon -->
+                
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -309,14 +305,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_4"
                         android:fontFamily="sans-serif-medium"
-                        android:text="VÍ DỤ"
+                        android:text="VÃ Dá»¤"
                         android:textColor="@color/text_example_orange"
                         android:textSize="@dimen/text_xs"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Câu ví dụ tiếng Anh (từ cần điền bị che) -->
+                
                 <TextView
                     android:id="@+id/tvExampleEn"
                     android:layout_width="match_parent"
@@ -329,7 +325,7 @@
                     android:textStyle="italic"
                     tools:text='My ******* taught me to be kind.' />
 
-                <!-- Mũi tên + dịch nghĩa -->
+                
                 <TextView
                     android:id="@+id/tvExampleVi"
                     android:layout_width="match_parent"
@@ -340,11 +336,11 @@
                     android:textColor="@color/text_translation"
                     android:textSize="@dimen/text_sm"
                     app:drawableTint="@color/text_hint"
-                    tools:text="Cha mẹ tôi đã dạy tôi phải từ tế." />
+                    tools:text="Cha máº¹ tÃ´i Ä‘Ã£ dáº¡y tÃ´i pháº£i tá»« táº¿." />
 
             </LinearLayout>
 
-            <!-- Spacer để đẩy content lên giữa card -->
+            
             <View
                 android:id="@+id/spacerBottom"
                 android:layout_width="0dp"
@@ -358,7 +354,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- ======================== BOTTOM CONTROLS (dot + hint + 2 nút) ======================== -->
+    
     <LinearLayout
         android:id="@+id/layoutBottomControls"
         android:layout_width="0dp"
@@ -371,7 +367,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Row: Dot indicators + Hint button -->
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -379,7 +375,7 @@
             android:orientation="horizontal"
             android:layout_marginBottom="@dimen/spacing_10">
 
-            <!-- Dot indicators container (LinearLayout, điền programmatically) -->
+            
             <LinearLayout
                 android:id="@+id/layoutDotIndicator"
                 android:layout_width="0dp"
@@ -393,7 +389,7 @@
                 android:layout_marginEnd="@dimen/spacing_8"
                 app:cardCornerRadius="@dimen/card_corner_radius_small">
 
-                <!-- Dots sẽ được thêm programmatically hoặc dùng View cố định -->
+                
                 <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
                     android:background="@drawable/dot_active" android:layout_marginEnd="@dimen/dot_spacing"/>
                 <View android:layout_width="@dimen/dot_size" android:layout_height="@dimen/dot_size"
@@ -419,7 +415,7 @@
 
             </LinearLayout>
 
-            <!-- Nút gợi ý bóng đèn -->
+            
             <ImageButton
                 android:id="@+id/btnHint"
                 android:layout_width="@dimen/btn_hint_size"
@@ -432,14 +428,14 @@
 
         </LinearLayout>
 
-        <!-- Row: 2 nút "Không biết" + "Kiểm tra đáp án" -->
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Nút "Không biết" -->
+            
             <Button
                 android:id="@+id/btnDontKnow"
                 android:layout_width="0dp"
@@ -451,12 +447,12 @@
                 android:drawablePadding="@dimen/spacing_6"
                 android:fontFamily="sans-serif-medium"
                 android:stateListAnimator="@null"
-                android:text="Không biết"
+                android:text="KhÃ´ng biáº¿t"
                 android:textColor="@color/bg_card_white"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
-            <!-- Nút "Kiểm tra đáp án" (disabled mặc định) -->
+            
             <Button
                 android:id="@+id/btnCheckAnswer"
                 android:layout_width="0dp"
@@ -468,7 +464,7 @@
                 android:enabled="false"
                 android:fontFamily="sans-serif-medium"
                 android:stateListAnimator="@null"
-                android:text="Kiểm tra đáp án"
+                android:text="Kiá»ƒm tra Ä‘Ã¡p Ã¡n"
                 android:textColor="@color/bg_card_white"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold" />

@@ -59,12 +59,15 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putInt("deckId", deck.getId());
             bundle.putString("deckName", deck.getName());
+            bundle.putString("deckDescription", deck.getDescription());
+            bundle.putString("deckLevel", deck.getLevel());
+            bundle.putString("deckThumbnailUrl", deck.getThumbnailUrl());
             bundle.putBoolean("isUserDeck", !deck.isDefault());
             if (position >= 0 && position < visibleCategoryList.size()) {
                 bundle.putString("categoryName", visibleCategoryList.get(position).getName());
             }
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                    .navigate(R.id.action_vocabularyFragment_to_detailItems, bundle);
+                    .navigate(R.id.action_vocabularyFragment_to_flashcardFragment, bundle);
         });
         rvVocabularySections.setAdapter(sectionAdapter);
         loadData();

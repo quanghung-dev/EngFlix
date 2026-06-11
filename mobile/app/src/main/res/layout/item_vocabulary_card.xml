@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Thumbnail ảnh bìa -->
+        
         <ImageView
             android:id="@+id/iv_card_thumbnail"
             android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background" />
 
-        <!-- Thông tin bên dưới thumbnail -->
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,14 +35,14 @@
                 android:id="@+id/tv_card_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tên bộ từ vựng"
+                android:text="TÃªn bá»™ tá»« vá»±ng"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:maxLines="2"
                 android:ellipsize="end" />
 
-            <!-- Số lượng từ (icon + số) -->
+            
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,12 +50,12 @@
                 android:gravity="center_vertical"
                 android:layout_marginTop="6dp">
 
-                <!-- Icon stack (dùng drawable hoặc icon thư viện) -->
+                
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_layers"
-                    android:contentDescription="Số từ" />
+                    android:contentDescription="Sá»‘ tá»«" />
 
                 <TextView
                     android:id="@+id/tv_card_word_count"

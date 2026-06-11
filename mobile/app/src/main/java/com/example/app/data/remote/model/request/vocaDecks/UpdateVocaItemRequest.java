@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class UpdateVocaItemRequest {
     @SerializedName("lesson_id")
-    private int lessonId;
+    private Integer lessonId;
 
     @SerializedName("transcript_id")
-    private int transcriptId;
+    private Integer transcriptId;
 
     @SerializedName("phrase")
     private String phrase;
@@ -24,8 +24,8 @@ public class UpdateVocaItemRequest {
     @SerializedName("note")
     private String note;
 
-    public UpdateVocaItemRequest(int lessonId,
-                                  int transcriptId,
+    public UpdateVocaItemRequest(Integer lessonId,
+                                  Integer transcriptId,
                                   String phrase,
                                   String normalizedPhrase,
                                   String meaning,

@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                 if(destination.getId() == R.id.DictationFragment
                         || destination.getId() == R.id.LessonsListFragment
                         || destination.getId() == R.id.detailItemsFragment
+                        || destination.getId() == R.id.flashcardFragment
+                        || destination.getId() == R.id.editItemsFragment
                         || destination.getId() == R.id.LoginFragment
                         || destination.getId() == R.id.SignupFragment
                         || destination.getId() == R.id.myNotesFragment
