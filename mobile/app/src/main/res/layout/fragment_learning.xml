@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Há»c táº­p"
+            android:text="Học tập"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_lg"
             android:textStyle="bold"
@@ -124,7 +124,7 @@
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="0% hoÃ n thÃ nh" />
+            tools:text="0% hoàn thành" />
 
         
         <LinearLayout
@@ -239,7 +239,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvCategory"
-                tools:text="Cha máº¹" />
+                tools:text="Cha mẹ" />
 
             <TextView
                 android:id="@+id/tvFlashTag"
@@ -271,7 +271,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvFlashWord"
-                tools:text="Máº¹ vÃ  cha cá»§a má»™t ngÆ°á»i. Nhá»¯ng ngÆ°á»i nuÃ´i dÆ°á»¡ng má»™t Ä‘á»©a tráº»." />
+                tools:text="Mẹ và cha của một người. Những người nuôi dưỡng một đứa trẻ." />
 
             
             <LinearLayout
@@ -305,7 +305,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_4"
                         android:fontFamily="sans-serif-medium"
-                        android:text="VÃ Dá»¤"
+                        android:text="VÍ DỤ"
                         android:textColor="@color/text_example_orange"
                         android:textSize="@dimen/text_xs"
                         android:textStyle="bold" />
@@ -336,7 +336,7 @@
                     android:textColor="@color/text_translation"
                     android:textSize="@dimen/text_sm"
                     app:drawableTint="@color/text_hint"
-                    tools:text="Cha máº¹ tÃ´i Ä‘Ã£ dáº¡y tÃ´i pháº£i tá»« táº¿." />
+                    tools:text="Cha mẹ tôi đã dạy tôi phải từ tế." />
 
             </LinearLayout>
 
@@ -447,7 +447,7 @@
                 android:drawablePadding="@dimen/spacing_6"
                 android:fontFamily="sans-serif-medium"
                 android:stateListAnimator="@null"
-                android:text="KhÃ´ng biáº¿t"
+                android:text="Không biết"
                 android:textColor="@color/bg_card_white"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
@@ -464,7 +464,7 @@
                 android:enabled="false"
                 android:fontFamily="sans-serif-medium"
                 android:stateListAnimator="@null"
-                android:text="Kiá»ƒm tra Ä‘Ã¡p Ã¡n"
+                android:text="Kiểm tra đáp án"
                 android:textColor="@color/bg_card_white"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold" />

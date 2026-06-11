@@ -34,7 +34,7 @@
                 android:id="@+id/tvLessonCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(141 bÃ i há»c)"
+                android:text="(141 bài học)"
                 android:textSize="12sp"
                 android:textColor="#8E8E93" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/tvSeeAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xem táº¥t cáº£ â€º"
+            android:text="Xem tất cả ›"
             android:textSize="14sp"
             android:textColor="#4AABF0"
             android:background="@drawable/bg_see_all_pill"

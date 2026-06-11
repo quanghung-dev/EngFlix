@@ -216,7 +216,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="19 thuáº­t ngá»¯"
+            android:text="19 thuật ngữ"
             android:textSize="13sp"
             android:textColor="#4A4A6A"
             android:fontFamily="sans-serif" />
@@ -295,7 +295,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="CÃ¢u há»i Ã´n táº­p"
+                        android:text="Câu hỏi ôn tập"
                         android:textSize="15sp"
                         android:textColor="#1A1A3E"
                         android:fontFamily="sans-serif-medium" />
@@ -331,7 +331,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Äá» thi thá»­"
+                        android:text="Đề thi thử"
                         android:textSize="15sp"
                         android:textColor="#1A1A3E"
                         android:fontFamily="sans-serif-medium" />
@@ -367,7 +367,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ná»‘i 2 máº·t tháº»"
+                        android:text="Nối 2 mặt thẻ"
                         android:textSize="15sp"
                         android:textColor="#1A1A3E"
                         android:fontFamily="sans-serif-medium" />

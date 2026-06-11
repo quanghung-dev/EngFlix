@@ -30,7 +30,7 @@
     <fragment
         android:id="@+id/StudyFragment"
         android:name="com.example.app.feature.study.StudyFragment"
-        android:label="Há»c táº­p">
+        android:label="Học tập">
         <action
             android:id="@+id/action_StudyFragment_to_LessonsListFragment"
             app:destination="@id/LessonsListFragment" />
@@ -42,7 +42,7 @@
     <fragment
         android:id="@+id/LessonsListFragment"
         android:name="com.example.app.feature.study.LessonsListFragment"
-        android:label="Tiáº¿n Ä‘á»™">
+        android:label="Tiến độ">
         <action
             android:id="@+id/action_LessonsListFragment_to_DictationFragment"
             app:destination="@id/DictationFragment" />
@@ -51,7 +51,7 @@
     <fragment
         android:id="@+id/DictationFragment"
         android:name="com.example.app.feature.study.DictationFragment"
-        android:label="Há»c ChÃ­nh Táº£">
+        android:label="Học Chính Tả">
         <action
             android:id="@+id/action_DictationFragment_to_progressFragment"
             app:destination="@id/progressFragment" />
@@ -66,13 +66,13 @@
     <fragment
         android:id="@+id/ListeningFragment"
         android:name="com.example.app.feature.study.ListeningFragment"
-        android:label="Há»c nghe " />
+        android:label="Học nghe " />
 
     
     <fragment
         android:id="@+id/vocabularyFragment"
         android:name="com.example.app.feature.vocabulary.VocabularyFragment"
-        android:label="Tá»« vá»±ng">
+        android:label="Từ vựng">
         <action
             android:id="@+id/action_vocabularyFragment_to_detailItems"
             app:destination="@id/detailItemsFragment" />
@@ -84,7 +84,7 @@
     <fragment
         android:id="@+id/detailItemsFragment"
         android:name="com.example.app.feature.vocabulary.DetailItems"
-        android:label="Chi tiáº¿t tá»« vá»±ng">
+        android:label="Chi tiết từ vựng">
         <action
             android:id="@+id/action_detailItemsFragment_to_learningFragment"
             app:destination="@id/learningFragment" />
@@ -96,7 +96,7 @@
     <fragment
         android:id="@+id/learningFragment"
         android:name="com.example.app.feature.vocabulary.LearningFragment"
-        android:label="Há»c tá»« vá»±ng" />
+        android:label="Học từ vựng" />
 
     <fragment
         android:id="@+id/flashcardFragment"
@@ -110,23 +110,23 @@
     <fragment
         android:id="@+id/editItemsFragment"
         android:name="com.example.app.feature.vocabulary.EditItemsFragment"
-        android:label="Sá»­a há»c pháº§n" />
+        android:label="Sửa học phần" />
 
     <fragment
         android:id="@+id/addVocabularyItemFragment"
         android:name="com.example.app.feature.vocabulary.AddVocabularyItemFragment"
-        android:label="Táº¡o tá»« vá»±ng" />
+        android:label="Tạo từ vựng" />
 
     
     <fragment
         android:id="@+id/addNoteFragment"
         android:name="com.example.app.feature.note.AddNoteFragment"
-        android:label="ThÃªm note" />
+        android:label="Thêm note" />
 
     <fragment
         android:id="@+id/myNotesFragment"
         android:name="com.example.app.feature.note.MyNoteFragment"
-        android:label="Quáº£n lÃ½ note">
+        android:label="Quản lý note">
         <action
             android:id="@+id/action_DictationFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment" />
@@ -135,7 +135,7 @@
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="com.example.app.feature.note.EditNoteFragment"
-        android:label="Sá»­a note" />
+        android:label="Sửa note" />
 
     
     <fragment
@@ -146,7 +146,7 @@
     <fragment
         android:id="@+id/progressFragment"
         android:name="com.example.app.feature.progress.ProgressFragment"
-        android:label="Tiáº¿n Ä‘á»™">
+        android:label="Tiến độ">
         <action
             android:id="@+id/action_ProgressFragment_to_studyFragment"
             app:destination="@id/StudyFragment" />
@@ -155,7 +155,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.app.feature.setting.SettingsFragment"
-        android:label="CÃ i Ä‘áº·t">
+        android:label="Cài đặt">
         <action
             android:id="@+id/action_settingsFragment_to_loginFragment"
             app:destination="@id/LoginFragment" />

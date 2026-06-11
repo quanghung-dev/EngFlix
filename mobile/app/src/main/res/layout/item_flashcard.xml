@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
                 android:layout_margin="16dp"
-                android:text="NghÄ©a"
+                android:text="Nghĩa"
                 android:textSize="12sp"
                 android:textColor="#9090A8"
                 android:fontFamily="sans-serif-medium" />
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="vÄ©nh viá»…n; cá»‘ Ä‘á»‹nh; lÃ¢u dÃ i"
+                android:text="vĩnh viễn; cố định; lâu dài"
                 android:textSize="22sp"
                 android:textColor="#1A1A3E"
                 android:fontFamily="sans-serif"

@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiáº¿n Ä‘á»™"
+            android:text="Tiến độ"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ðŸ•"
+                    android:text="🕐"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -80,7 +80,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Äang há»c"
+                    android:text="Đang học"
                     android:textSize="12sp"
                     android:textColor="#888888" />
 
@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="âœ…"
+                    android:text="✅"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -131,7 +131,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ÄÃ£ hoÃ n thÃ nh"
+                    android:text="Đã hoàn thành"
                     android:textSize="12sp"
                     android:textColor="#888888" />
 

@@ -52,7 +52,7 @@
                 android:id="@+id/tvProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0% hoÃ n thÃ nh"
+                android:text="0% hoàn thành"
                 android:textSize="12sp"
                 android:textColor="#888888" />
 
@@ -135,7 +135,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dá»«ng tá»± Ä‘á»™ng"
+                    android:text="Dừng tự động"
                     android:textSize="13sp"
                     android:textColor="#1A1A1A"
                     android:layout_marginEnd="8dp" />
@@ -286,7 +286,7 @@
                         android:id="@+id/tvvietnamese"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Viá»‡t Nam"
+                        android:text="Việt Nam"
                         android:visibility="gone"/>
 
                 </LinearLayout>
@@ -296,7 +296,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GÃµ nhá»¯ng gÃ¬ báº¡n nghe Ä‘Æ°á»£c:"
+                android:text="Gõ những gì bạn nghe được:"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#1A1A1A"
@@ -332,7 +332,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
-        android:text="Báº¯t Ä‘áº§u"
+        android:text="Bắt đầu"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
@@ -403,7 +403,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="2"
-            android:text="Kiá»ƒm tra"
+            android:text="Kiểm tra"
             android:textColor="@color/white"
             android:background="@drawable/bg_btn_blue_fill"
             android:foreground="?attr/selectableItemBackground"

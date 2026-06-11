@@ -35,7 +35,7 @@
                 android:id="@+id/tv_card_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TÃªn bá»™ tá»« vá»±ng"
+                android:text="Tên bộ từ vựng"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
@@ -55,7 +55,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_layers"
-                    android:contentDescription="Sá»‘ tá»«" />
+                    android:contentDescription="Số từ" />
 
                 <TextView
                     android:id="@+id/tv_card_word_count"

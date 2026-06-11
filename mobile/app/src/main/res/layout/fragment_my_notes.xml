@@ -14,7 +14,7 @@
         android:background="@android:color/transparent"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="#1A1A2E"
-        app:title="Ghi chÃº cá»§a tÃ´i"
+        app:title="Ghi chú của tôi"
         app:titleTextColor="#1A1A2E"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -43,7 +43,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ðŸ”"
+            android:text="🔍"
             android:textSize="15sp"
             android:layout_marginEnd="8dp" />
 
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="TÃ¬m kiáº¿m ghi chÃº..."
+            android:hint="Tìm kiếm ghi chú..."
             android:textSize="14sp"
             android:textColor="#1A1A1A"
             android:textColorHint="#AAAAAA"

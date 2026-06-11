@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Cáº£nh bÃ¡o tiáº¿t lá»™ tá»«"
+            android:text="Cảnh báo tiết lộ từ"
             android:textColor="#1A1A1A"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="28dp"
             android:lineSpacingMultiplier="1.4"
-            android:text="CÃ¡c tá»« Ä‘Æ°á»£c tiáº¿t lá»™ sáº½ Ä‘Æ°á»£c tÃ­nh lÃ  lá»—i vÃ  sáº½ áº£nh hÆ°á»Ÿng Ä‘áº¿n Ä‘iá»ƒm sá»‘ cá»§a báº¡n."
+            android:text="Các từ được tiết lộ sẽ được tính là lỗi và sẽ ảnh hưởng đến điểm số của bạn."
             android:textColor="#6B6B6B"
             android:textSize="15sp" />
 
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#EBEBEB"
                 android:stateListAnimator="@null"
-                android:text="Há»§y"
+                android:text="Hủy"
                 android:textColor="#3D9BF0"
                 android:textSize="16sp"
                 android:textStyle="normal"
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#EBEBEB"
                 android:stateListAnimator="@null"
-                android:text="Tiáº¿p tá»¥c"
+                android:text="Tiếp tục"
                 android:textColor="#3D9BF0"
                 android:textSize="16sp"
                 android:textStyle="normal"

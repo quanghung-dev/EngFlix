@@ -146,7 +146,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ChÃ­nh táº£"
+                            android:text="Chính tả"
                             android:textSize="10sp"
                             android:textColor="#444444" />
 
@@ -175,7 +175,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Luyá»‡n nÃ³i"
+                            android:text="Luyện nói"
                             android:textSize="10sp"
                             android:textColor="#444444" />
 

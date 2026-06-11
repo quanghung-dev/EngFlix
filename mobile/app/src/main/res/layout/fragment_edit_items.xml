@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="sans-serif-medium"
-                android:text="Sá»­a há»c pháº§n"
+                android:text="Sửa học phần"
                 android:textColor="#1F2433"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:fontFamily="sans-serif"
-                android:hint="TiÃªu Ä‘á»"
+                android:hint="Tiêu đề"
                 android:inputType="text"
                 android:padding="0dp"
                 android:paddingBottom="8dp"
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="TiÃªu Ä‘á»"
+                android:text="Tiêu đề"
                 android:textColor="#9AA3A8"
                 android:textSize="12sp" />
 

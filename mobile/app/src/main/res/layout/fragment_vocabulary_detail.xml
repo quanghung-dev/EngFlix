@@ -140,7 +140,7 @@
                                 android:layout_marginTop="@dimen/spacing_2"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="@dimen/text_sm"
-                                tools:text="Tháº» má»›i â€¢ 0/49" />
+                                tools:text="Thẻ mới • 0/49" />
 
                             <LinearLayout
                                 android:id="@+id/layoutProgress"
@@ -164,7 +164,7 @@
                                     android:layout_marginStart="@dimen/spacing_4"
                                     android:textColor="@color/counter_text"
                                     android:textSize="@dimen/text_sm"
-                                    tools:text="0% Ä‘Ã£ hoÃ n thÃ nh" />
+                                    tools:text="0% đã hoàn thành" />
 
                             </LinearLayout>
 
@@ -223,7 +223,7 @@
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.02"
             android:stateListAnimator="@null"
-            android:text="Báº¯t Ä‘áº§u há»c"
+            android:text="Bắt đầu học"
             android:textColor="@color/bg_card_white"
             android:textSize="@dimen/text_md"
             android:textStyle="bold" />
