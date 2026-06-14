@@ -148,15 +148,6 @@
             android:textColor="#1A1A3E"
             android:fontFamily="sans-serif-black" />
 
-        
-        <ImageView
-            android:id="@+id/btn_download"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_download_circle"
-            android:src="@drawable/ic_download"
-            android:padding="10dp"
-            android:contentDescription="Download" />
 
     </LinearLayout>
 
@@ -179,8 +170,6 @@
             android:scaleType="centerCrop"
             android:contentDescription="Avatar"
             android:layout_marginEnd="8dp" />
-
-        
         <TextView
             android:id="@+id/tv_username"
             android:layout_width="wrap_content"
@@ -222,168 +211,12 @@
             android:fontFamily="sans-serif" />
 
     </LinearLayout>
-
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="8dp">
-
-            
-            <androidx.cardview.widget.CardView
-                android:id="@+id/mode_flashcard"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_mode_flashcard"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="Flashcard icon" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Flashcard"
-                        android:textSize="15sp"
-                        android:textColor="#1A1A3E"
-                        android:fontFamily="sans-serif-medium" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            
-            <androidx.cardview.widget.CardView
-                android:id="@+id/mode_review"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_mode_review"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="Review icon" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Câu hỏi ôn tập"
-                        android:textSize="15sp"
-                        android:textColor="#1A1A3E"
-                        android:fontFamily="sans-serif-medium" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            
-            <androidx.cardview.widget.CardView
-                android:id="@+id/mode_test"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_mode_test"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="Test icon" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Đề thi thử"
-                        android:textSize="15sp"
-                        android:textColor="#1A1A3E"
-                        android:fontFamily="sans-serif-medium" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            
-            <androidx.cardview.widget.CardView
-                android:id="@+id/mode_match"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_mode_match"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="Match icon" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Nối 2 mặt thẻ"
-                        android:textSize="15sp"
-                        android:textColor="#1A1A3E"
-                        android:fontFamily="sans-serif-medium" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_vocabulary_words"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
-
-    </LinearLayout>
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

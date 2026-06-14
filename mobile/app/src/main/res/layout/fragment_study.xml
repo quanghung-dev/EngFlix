@@ -24,15 +24,6 @@
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
 
-            <ImageView
-                android:id="@+id/ivSearch"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_search_bar"
-                android:src="@drawable/ic_search"
-                android:padding="10dp"
-                android:contentDescription="Search" />
-
 
     </LinearLayout>
 
