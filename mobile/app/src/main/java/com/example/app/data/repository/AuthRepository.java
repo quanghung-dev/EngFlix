@@ -54,17 +54,7 @@ public class AuthRepository {
                                         if (tokenTask.isSuccessful()) {
                                             String idToken = tokenTask.getResult().getToken();
                                             tokenManager.saveToken(idToken, "");
-                                            syncCurrentUser(new authCallBack<UserResponse>() {
-                                                @Override
-                                                public void onSuccess(UserResponse data) {
-                                                    callback.onSuccess("Đăng ký thành công");
-                                                }
-
-                                                @Override
-                                                public void onError(String message) {
-                                                    callback.onError(message);
-                                                }
-                                            });
+                                            callback.onSuccess("Đăng ký thành công");
                                         } else {
                                             callback.onError("Lỗi lấy Token sau đăng ký");
                                         }
@@ -98,7 +88,28 @@ public class AuthRepository {
                                     String idToken = tokenTask.getResult().getToken();
                                     tokenManager.saveToken(idToken, "");
 
-                                    syncCurrentUser(callback);
+                                    authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
+                                        @Override
+                                        public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                UserResponse userResponse = response.body().getData();
+                                                tokenManager.saveUserInfo(
+                                                        userResponse.getUid(),
+                                                        userResponse.getEmail(),
+                                                        userResponse.getName(),
+                                                        userResponse.getAvatarUrl(),
+                                                        userResponse.getUserRole()
+                                                );
+                                                callback.onSuccess(userResponse);
+                                            } else {
+                                                callback.onError("Lỗi đồng bộ server: Code " + response.code());
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
+                                            callback.onError("Lỗi đồng bộ server: Code " + t.getMessage());
+                                        }
+                                    });
 
                                 } else {
                                     callback.onError("Lỗi xác thực Token");
@@ -114,28 +125,5 @@ public class AuthRepository {
                 });
     }
 
-    private void syncCurrentUser(authCallBack<UserResponse> callback) {
-        authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    UserResponse userResponse = response.body().getData();
-                    tokenManager.saveUserInfo(
-                            userResponse.getUid(),
-                            userResponse.getEmail(),
-                            userResponse.getName(),
-                            userResponse.getAvatarUrl()
-                    );
-                    callback.onSuccess(userResponse);
-                } else {
-                    callback.onError("Lỗi đồng bộ server: Code " + response.code());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
-                callback.onError("Lỗi đồng bộ server: Code " + t.getMessage());
-            }
-        });
-    }
 }

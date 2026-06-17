@@ -17,7 +17,16 @@
         app:navigationIconTint="#1A1A2E"
         app:title="Movie Short Clips"
         app:titleTextColor="#1A1A2E"
-        app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" />
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Title" >
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete"
+            android:visibility="visible"/>
+    </androidx.appcompat.widget.Toolbar>
 
     
 

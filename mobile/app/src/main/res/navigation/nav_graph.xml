@@ -138,10 +138,6 @@
         android:label="Sửa note" />
 
     
-    <fragment
-        android:id="@+id/SnapWordsFragment"
-        android:name="com.example.app.feature.snapwords.SnapWordsFragment"
-        android:label="Detect image" />
 
     <fragment
         android:id="@+id/progressFragment"

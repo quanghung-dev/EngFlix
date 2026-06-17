@@ -1,9 +1,12 @@
 package com.example.app.feature.study;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -16,8 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.R;
 import com.example.app.adapter.study.ListLessonsAdapter;
+import com.example.app.data.local.TokenManager;
 import com.example.app.data.remote.model.response.ApiResponse;
+import com.example.app.data.remote.model.response.categories.CategoryResponse;
 import com.example.app.data.remote.model.response.lessons.LessonsResponse;
+import com.example.app.data.repository.CategoriesRepository;
 import com.example.app.data.repository.LessonsRepository;
 import com.example.app.data.repository.ProgressRepository;
 import com.example.app.diaglog.ChooseModeBottomSheet;
@@ -27,6 +33,8 @@ import java.util.List;
 
 public class LessonsListFragment extends Fragment {
     private ProgressRepository progressRepository;
+    private CategoriesRepository categoriesRepository;
+
     private int countDone;
     private int countLearning;
     Toolbar toolbar;
@@ -38,15 +46,49 @@ public class LessonsListFragment extends Fragment {
     private TextView CountNotStarted;
     private TextView CountLearning;
     private TextView CountDone;
+    private ImageButton btnDelete;
+    private String userRole;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.rvLessons);
+        categoriesRepository = new CategoriesRepository(requireContext());
+        TokenManager tokenManager = TokenManager.getInstance(requireContext());
+        userRole = tokenManager.getUserRole();
+        Log.d("userRole", String.valueOf(userRole));
+        if (userRole.equals("admin")) {
+            view.findViewById(R.id.btnDelete).setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.btnDelete).setVisibility(View.GONE);
+        }
         CountDone = view.findViewById(R.id.tvCountDone);
         CountLearning = view.findViewById(R.id.tvCountLearning);
         CountNotStarted = view.findViewById(R.id.tvCountNotStarted);
         toolbar = view.findViewById(R.id.toolbar);
+        btnDelete = view.findViewById(R.id.btnDelete);
+        btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Xác nhận")
+                    .setMessage("Bạn có muốn xóa không?")
+                    .setPositiveButton("Xóa", (dialog, which) -> {
+                        categoriesRepository.deleteCategory(currentCategoryId, new CategoriesRepository.categoryCallback<ApiResponse<CategoryResponse>>() {
+                            @Override
+                            public void onSuccess(ApiResponse<CategoryResponse> data) {
+                                Toast.makeText(requireContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(requireView()).popBackStack();
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                Toast.makeText(requireContext(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    })
+                    .setNegativeButton("Hủy", null)
+                    .show();
+        });
+
         toolbar.setNavigationOnClickListener(v -> {
             Navigation.findNavController(v).popBackStack();
         });

@@ -23,6 +23,14 @@
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
+        <ImageButton
+            android:id="@+id/btnCreate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_add"
+            android:visibility="visible"/>
 
 
     </LinearLayout>

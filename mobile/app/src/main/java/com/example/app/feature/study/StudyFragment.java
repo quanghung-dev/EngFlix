@@ -1,9 +1,11 @@
 package com.example.app.feature.study;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +40,7 @@ public class StudyFragment extends Fragment {
     UserRepository userApi;
 
     TextView UserName ;
-
+    private ImageButton btnCreate;
     private RecyclerView rvLessonSections;
     private TokenManager tokenManager;
     private LessonSectionAdapter sectionAdapter;
@@ -47,7 +49,10 @@ public class StudyFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_study, container, false);
+        btnCreate = view.findViewById(R.id.btnCreate);
+        btnCreate.setOnClickListener(v -> {
 
+        });
         tokenManager = TokenManager.getInstance(requireContext());
         String name = tokenManager.getUserName();
         UserName = view.findViewById(R.id.tvUserName);
