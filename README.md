@@ -8,39 +8,8 @@ Dự án bao gồm hai thành phần chính:
 
 ---
 
-## 1. Kiến Trúc Tổng Quan Hệ Thống
 
-Hệ thống hoạt động theo mô hình Client-Server. Ứng dụng di động (Client) tương tác trực tiếp với Backend API Server để thực hiện các nghiệp vụ học tập, quản lý từ vựng, lưu trữ tiến độ và gửi tệp ghi âm giọng nói để phân tích phát âm.
-
-```mermaid
-graph TD
-    subgraph Client (Mobile App)
-        Android[Android App - Java]
-        YTPlayer[YouTube Player - WebView]
-        AudioRec[Audio Recorder - AudioRecord]
-    end
-
-    subgraph Authentication & External Services
-        Firebase[Firebase Auth]
-        AzureSpeech[Azure Speech Services]
-    end
-
-    subgraph Backend Services
-        API[Express API Server]
-        PostgreSQL[(PostgreSQL Database)]
-    end
-
-    %% Interactions
-    Android -->|1. Authenticate| Firebase
-    Android -->|2. API Requests| API
-    API -->|3. Query Data| PostgreSQL
-    API -->|4. Speech Assessment| AzureSpeech
-    API -->|5. Token Verification| Firebase
-```
-
----
-
-## 2. Công Nghệ Sử Dụng
+## 1. Công Nghệ Sử Dụng
 
 ### Backend
 - **Framework**: Node.js, Express.js
@@ -60,7 +29,7 @@ graph TD
 
 ---
 
-## 3. Cấu Trúc Thư Mục Dự Án
+## 2. Cấu Trúc Thư Mục Dự Án
 
 ```
 EngFlex/
@@ -82,17 +51,12 @@ EngFlex/
     │       ├── AndroidManifest.xml
     │       ├── java/com/example/app/  # Toàn bộ mã nguồn Java của app
     │       └── res/                   # Layouts, drawable, navigation graph
-    ├── core/              # Thư mục chứa các file stub (chưa cấu hình thành Gradle module)
-    └── feature/           # Thư mục chứa các file stub (chưa cấu hình thành Gradle module)
+    ├── core/              # Stub classes (chưa cấu hình thành Gradle module)
+    └── feature/           # Stub classes (chưa cấu hình thành Gradle module)
 ```
 
-> [!WARNING]
-> Hai thư mục `mobile/core` và `mobile/feature` hiện tại chỉ chứa các lớp rỗng (stub classes) và **không** được đăng ký trong `settings.gradle.kts`. Toàn bộ mã nguồn ứng dụng thực tế nằm trong module duy nhất là `mobile/app`.
-
----
-
-## 4. Tài Liệu Chi Tiết Các Thành Phần
+## 3. Tài Liệu Chi Tiết Các Thành Phần
 
 Để xem hướng dẫn cài đặt, chạy thử và phân tích sâu hơn từng phần, vui lòng truy cập:
-- Hướng dẫn và Tài liệu Backend: [Backend README](file:///D:/EngFlex/Backend/README.md)
-- Hướng dẫn và Tài liệu Mobile: [Mobile README](file:///D:/EngFlex/mobile/README.md)
+- Hướng dẫn và Tài liệu Backend: [Backend README](./Backend/README.md)
+- Hướng dẫn và Tài liệu Mobile: [Mobile README](./mobile/README.md)

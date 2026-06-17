@@ -32,7 +32,7 @@ graph TD
 
 ## 2. API Endpoints Mapping
 
-Dưới đây là bảng định tuyến đầy đủ được quét trực tiếp từ source code thực tế:
+
 
 ### 2.1. Public Routes (Không yêu cầu đăng nhập)
 
@@ -89,8 +89,7 @@ Dưới đây là bảng định tuyến đầy đủ được quét trực ti�
 | **POST** | `/api/v1/pronunciation/progress/update/:transcriptId` | `pronunciationProgressController.updatePronunciationProgress` | Cập nhật điểm phát âm tốt nhất cho câu |
 
 ### 2.3. Admin Routes (Bảo mật cho quản trị viên)
-> [!WARNING]
-> Hiện tại middleware kiểm tra phân quyền quản trị viên (`verifyToken`, `requireRole(ROLES.Admin)`) đang bị comment out trong `routes/adminRoutes.js` (dòng 57). Điều này có nghĩa là các API này đang hoạt động công khai không có lớp kiểm soát phân quyền cụ thể nếu gọi trực tiếp.
+
 
 | Method | Endpoint | Controller Handler | Description |
 | :--- | :--- | :--- | :--- |
@@ -349,20 +348,3 @@ Dự án đã tích hợp sẵn Docker Compose bao gồm backend server chạy N
 
 ---
 
-## 6. Đánh Giá Chất Lượng Mã Nguồn (Code Quality Review)
-
-### 6.1. Điểm mạnh (Strengths)
-- **Kiến trúc rõ ràng**: Mô hình 3-tier giúp mã nguồn dễ đọc, các chức năng được phân nhỏ và đóng gói vào controller/service riêng biệt.
-- **Tính toán dữ liệu tối ưu**: Tận dụng triệt để cơ chế transaction và các truy vấn phức tạp của PostgreSQL (sử dụng CTE - Common Table Expressions) để thực hiện insert/update tối ưu chỉ trong một lần kết nối cơ sở dữ liệu.
-- **Chuẩn hóa Phản Hồi**: Response trả về client được bọc thống nhất dạng `{ data: ..., meta: ..., error: ... }` giúp phía Client dễ dàng viết các lớp phân tích dữ liệu chung.
-
-### 6.2. Điểm yếu & Lỗ hổng tiềm ẩn (Potential Issues)
-1. **Lỗ hổng bảo mật Admin**: File `routes/adminRoutes.js` hiện tại **bị comment out** dòng middleware check phân quyền Admin (`verifyToken` và `requireRole`). Điều này cho phép bất kỳ ai cũng có thể gọi trực tiếp các API sửa đổi dữ liệu hệ thống (tạo/sửa/xóa bài học, transcripts, từ vựng) nếu họ tìm ra URL.
-2. **Lỗi cú pháp trong script migration**: Trong file `scripts/run-migrations.js` (dòng 37), câu lệnh bắt lỗi `catch` khai báo tham số là `error` nhưng bên trong thân hàm lại gọi `err.message` gây ra lỗi `ReferenceError` nếu quá trình migrate gặp sự cố.
-3. **Mounted trùng lặp**: Trong file `index.js`, route `/api/v1/pronunciation` đang được mount hai lần với hai router khác nhau (`pronunciationAttemptsRoutes` và `pronunciationProgressRoutes`). Mặc dù điều này hoạt động do Express gom các sub-path, nó gây nhầm lẫn khi bảo trì.
-4. **Biến thừa**: Có nhiều khai báo biến import nhưng không sử dụng, ví dụ: thư viện `cors` ở `categoryController.js`, `{ Pool }` trong các vocabulary services.
-
-### 6.3. Đề xuất cải tiến (Refactoring Suggestions)
-- Kích hoạt lại middleware bảo mật quyền Admin bằng cách gỡ bỏ comment ở file `routes/adminRoutes.js`.
-- Sửa lỗi bắt ngoại lệ trong `scripts/run-migrations.js` từ `err.message` thành `error.message`.
-- Hợp nhất các router liên quan đến cùng một thực thể (ví dụ: gộp các endpoint phát âm về một router duy nhất).
