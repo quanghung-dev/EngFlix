@@ -3,6 +3,10 @@ package com.example.app.data.remote.interceptor;
 import androidx.annotation.NonNull;
 
 import com.example.app.data.local.TokenManager;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.io.IOException;
 
@@ -26,7 +30,7 @@ public class AuthInterceptor implements Interceptor {
         if (url.contains("identitytoolkit.googleapis.com")) {
             return chain.proceed(originalRequest);
         }
-        String token = tokenManager.getIdToken();
+        String token = getValidToken();
         if (token == null) {
             return chain.proceed(originalRequest);
         }
@@ -34,6 +38,21 @@ public class AuthInterceptor implements Interceptor {
                 .header("Authorization", "Bearer " + token)
                 .build();
         return chain.proceed(newRequest);
+    }
+    private String getValidToken() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            try {
+                GetTokenResult tokenResult = Tasks.await(user.getIdToken(false));
+                String freshToken = tokenResult.getToken();
+                tokenManager.saveToken(freshToken, "");
+                return freshToken;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return tokenManager.getIdToken();
     }
 
 }
