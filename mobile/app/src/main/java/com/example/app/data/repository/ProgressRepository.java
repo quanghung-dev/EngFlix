@@ -39,5 +39,7 @@ public class ProgressRepository {
     public void getProgressSumarys(int lessonId, BaseCallback<ApiResponse<ProgressSumarysResponse>> callback) {
         progressApi.getProgressSumarys(lessonId).enqueue(new ApiCallWrapper<>(callback));
     }
-
+    public void getProgressByLesson(int lessonId, BaseCallback<ApiResponse<ProgressResponse>> callback) {
+        progressApi.getProgressByLesson(lessonId).enqueue(new ApiCallWrapper<>(callback));
+    }
 }

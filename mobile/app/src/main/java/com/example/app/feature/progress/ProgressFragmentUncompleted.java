@@ -77,6 +77,7 @@ public class ProgressFragmentUncompleted extends Fragment {
         rvInProgress.setAdapter(adapter);
         fetchProgress();
 
+
         return view;
     }
 
@@ -101,6 +102,9 @@ public class ProgressFragmentUncompleted extends Fragment {
                 lessonsResponseList.clear();
                 Set<Integer> requestedLessonIds = new HashSet<>();
                 for (ProgressResponse progress : data.getData()) {
+                    if (Boolean.TRUE.equals(progress.getCompletedDictation()) && Boolean.TRUE.equals(progress.getCompletedPronunciation())) {
+                        continue;
+                    }
                     int lessonId = progress.getLessonId();
                     if (!requestedLessonIds.add(lessonId)) {
                         continue;
@@ -123,9 +127,12 @@ public class ProgressFragmentUncompleted extends Fragment {
                         }
                     });
                 }
-                ;
+                if (requestedLessonIds.isEmpty()) {
+                    rvInProgress.setVisibility(View.GONE);
+                    layout_empty.setVisibility(View.VISIBLE);
+                }
             }
-    });
+        });
     }
 
     private boolean containsLesson(int lessonId) {

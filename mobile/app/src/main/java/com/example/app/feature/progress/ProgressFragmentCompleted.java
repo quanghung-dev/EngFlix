@@ -34,13 +34,14 @@ import java.util.List;
 import java.util.Set;
 
 public class ProgressFragmentCompleted extends Fragment {
-    private LessonsRepository lessonsRepository ;
-    private ProgressRepository progressRepository ;
+    private LessonsRepository lessonsRepository;
+    private ProgressRepository progressRepository;
     private List<LessonsResponse> lessonsResponseList = new ArrayList<>();
     private RecyclerView rvInProgress;
     private ProgressListAdapter adapter;
     private LinearLayout layout_empty;
     private TextView btn_start;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class ProgressFragmentCompleted extends Fragment {
         fetchProgress();
         return view;
     }
+
     public void fetchProgress() {
         progressRepository.getProgressFinished(new BaseCallback<ApiResponse<List<ProgressResponse>>>() {
             @Override
@@ -97,6 +99,9 @@ public class ProgressFragmentCompleted extends Fragment {
                 lessonsResponseList.clear();
                 Set<Integer> requestedLessonIds = new HashSet<>();
                 for (ProgressResponse progress : data.getData()) {
+                    if (!Boolean.TRUE.equals(progress.getCompletedDictation()) || !Boolean.TRUE.equals(progress.getCompletedPronunciation())) {
+                        continue;
+                    }
                     int lessonId = progress.getLessonId();
                     if (!requestedLessonIds.add(lessonId)) {
                         continue;
@@ -119,7 +124,10 @@ public class ProgressFragmentCompleted extends Fragment {
                         }
                     });
                 }
-                ;
+                if (requestedLessonIds.isEmpty()) {
+                    rvInProgress.setVisibility(View.GONE);
+                    layout_empty.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

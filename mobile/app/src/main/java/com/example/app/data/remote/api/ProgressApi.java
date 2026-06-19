@@ -28,4 +28,6 @@ public interface ProgressApi {
     Call<ApiResponse<ProgressSumaryResponse>> getProgressSummary();
     @GET("learning-history/lessons/{lessonId}/summary")
     Call<ApiResponse<ProgressSumarysResponse>> getProgressSumarys(@Path("lessonId") int lessonId);
+    @GET("learning-history/{lessonId}")
+    Call<ApiResponse<ProgressResponse>> getProgressByLesson(@Path("lessonId") int lessonId);
 }
