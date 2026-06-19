@@ -1,5 +1,6 @@
 const { dataResponse, errorResponse } = require('../utils/response');
 const lessonService = require('../services/lessonsService.js');
+const categoryService = require('../services/categoryService.js');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const parseOptionalPositiveInteger = (value, fieldName) => {
@@ -94,10 +95,33 @@ const deleteLesson = async (req, res, next) => {
     }
 };
 
+const createLessonFromYoutube = async (req, res, next) => {
+    try {
+        const { category_id, youtube_url } = req.body;
+        if (!category_id || !youtube_url) {
+            return errorResponse(res, 400, 'category_id va youtube_url la bat buoc');
+        }
+
+        const category = await categoryService.getCategoryById(category_id);
+        if (!category) {
+            return errorResponse(res, 404, 'Category khong ton tai');
+        }
+
+        const newLesson = await lessonService.createLessonFromYoutube(category_id, youtube_url);
+        if (!newLesson) {
+            return errorResponse(res, 500, 'Tao bai hoc tu youtube that bai');
+        }
+        return dataResponse(res, 201, newLesson);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getLessons,
     getLessonById,
     createLesson,
     updateLesson,
-    deleteLesson
+    deleteLesson,
+    createLessonFromYoutube
 };

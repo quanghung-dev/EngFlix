@@ -1,5 +1,8 @@
 const pool = require('../db/index');
 const { AppError } = require('../utils/AppError');
+const { spawn } = require('child_process');
+const path = require('path');
+
 
 
 const getLessons = async (category_id, level, search, limit, offset) => {
@@ -92,6 +95,66 @@ const deleteLesson = async (id) => {
     return true;
 };
 
+const createLessonFromYoutube = async (categoryId, youtubeUrl) => {
+    // 1. Check if the lesson already exists in this category
+    const videoIdMatch = youtubeUrl.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+    if (videoIdMatch) {
+        const videoId = videoIdMatch[1];
+        const checkQuery = 'SELECT * FROM lessons WHERE category_id = $1 AND video_url LIKE $2';
+        const checkResult = await pool.query(checkQuery, [categoryId, `%${videoId}%`]);
+        if (checkResult.rows.length > 0) {
+            return checkResult.rows[0];
+        }
+    } else {
+        const checkQuery = 'SELECT * FROM lessons WHERE category_id = $1 AND video_url = $2';
+        const checkResult = await pool.query(checkQuery, [categoryId, youtubeUrl]);
+        if (checkResult.rows.length > 0) {
+            return checkResult.rows[0];
+        }
+    }
+
+    // 2. If not, spawn Python script
+    return new Promise((resolve, reject) => {
+        const scriptPath = path.join(__dirname, '../utils/FetchTranscripts.py');
+        const pythonProcess = spawn('python', [
+            scriptPath,
+            '--cli',
+            '--category-id',
+            categoryId.toString(),
+            '--url',
+            youtubeUrl
+        ]);
+
+        let stdoutData = '';
+        let stderrData = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            stderrData += data.toString();
+            process.stderr.write(data);
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                return reject(new AppError(`Lỗi xử lý video: ${stderrData.trim() || `Thoát với mã lỗi ${code}`}`, 500));
+            }
+            try {
+                const jsonMatch = stdoutData.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    return reject(new AppError('Không nhận được kết quả JSON từ script Python', 500));
+                }
+                const lesson = JSON.parse(jsonMatch[0]);
+                resolve(lesson);
+            } catch (err) {
+                reject(new AppError(`Lỗi phân tích kết quả từ script Python: ${err.message}`, 500));
+            }
+        });
+    });
+};
+
 module.exports = {
     getLessons,
     getAllLessons,
@@ -99,5 +162,7 @@ module.exports = {
     getLessonById,
     createLesson,
     updateLesson,
-    deleteLesson
+    deleteLesson,
+    createLessonFromYoutube
 };
+

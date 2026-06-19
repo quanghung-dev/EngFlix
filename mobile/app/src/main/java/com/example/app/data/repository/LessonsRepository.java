@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.app.data.remote.RetrofitClient;
 import com.example.app.data.remote.api.LessonsApi;
+import com.example.app.data.remote.model.request.lessons.CreateLessonRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.lessons.LessonsResponse;
 
@@ -66,6 +67,21 @@ public class LessonsRepository {
                     }
                 }
             }
+            @Override
+            public void onFailure(Call<ApiResponse<LessonsResponse>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+    public void createLesson(CreateLessonRequest request, lessonsCallback<ApiResponse<LessonsResponse>> callback) {
+        lessonsApi.createLesson(request).enqueue(new Callback<ApiResponse<LessonsResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<LessonsResponse>> call, Response<ApiResponse<LessonsResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                }
+            }
+
             @Override
             public void onFailure(Call<ApiResponse<LessonsResponse>> call, Throwable t) {
                 callback.onError(t.getMessage());

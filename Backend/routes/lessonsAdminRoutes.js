@@ -249,6 +249,52 @@ router.post('/', lessonController.createLesson);
 
 /**
  * @swagger
+ * /api/v1/admin/lessons/youtube:
+ *   post:
+ *     summary: Create lesson from YouTube
+ *     description: Automatically fetches transcript and info for a YouTube video, translates it, saves it to the database, and returns the created lesson.
+ *     tags: [Admin Lessons]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - category_id
+ *               - youtube_url
+ *             properties:
+ *               category_id:
+ *                 type: integer
+ *               youtube_url:
+ *                 type: string
+ *           example:
+ *             category_id: 1
+ *             youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+ *     responses:
+ *       201:
+ *         description: Lesson created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Lesson'
+ *       400:
+ *         description: Required fields missing
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/youtube', lessonController.createLessonFromYoutube);
+
+
+/**
+ * @swagger
  * /api/v1/admin/lessons/{id}:
  *   put:
  *     summary: Update lesson
