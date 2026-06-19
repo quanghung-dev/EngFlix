@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.app.data.remote.RetrofitClient;
 import com.example.app.data.remote.api.CategoryApi;
+import com.example.app.data.remote.model.request.category.CreateCategoryRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.categories.CategoryDeleteResponse;
 import com.example.app.data.remote.model.response.categories.CategoryResponse;
@@ -52,6 +53,21 @@ public class CategoriesRepository {
     }
     public void deleteCategory(int id, categoryCallback<ApiResponse<CategoryResponse>> callback){
         categoryApi.deleteCategory(id).enqueue(new Callback<ApiResponse<CategoryResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<CategoryResponse>> call, Response<ApiResponse<CategoryResponse>> response) {
+                if (response.isSuccessful() && response.body() != null){
+                    callback.onSuccess(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<CategoryResponse>> call, Throwable t) {
+                callback.onError("Lỗi:" + t.getMessage());
+            }
+        });
+    }
+    public void createCategory(CreateCategoryRequest request, categoryCallback<ApiResponse<CategoryResponse>> callback){
+        categoryApi.createCategory(request).enqueue(new Callback<ApiResponse<CategoryResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<CategoryResponse>> call, Response<ApiResponse<CategoryResponse>> response) {
                 if (response.isSuccessful() && response.body() != null){

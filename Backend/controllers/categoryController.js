@@ -65,7 +65,7 @@ const deleteCategory = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
-        return dataResponse(res, 200, { message: 'Xóa danh mục thành công' });
+        return dataResponse(res, 200, result);
     } catch (error) {
         next(error);
     }

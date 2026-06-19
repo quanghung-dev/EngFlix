@@ -216,40 +216,7 @@
                             android:focusable="true" />
                     </FrameLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="16dp">
 
-                        <CheckBox
-                            android:id="@+id/cbRememberMe"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ghi nhớ đăng nhập"
-                            android:textColor="#9E9E9E"
-                            android:textSize="13sp"
-                            android:buttonTint="#6C63FF"
-                            android:fontFamily="sans-serif" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:id="@+id/tvForgotPassword"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Quên mật khẩu?"
-                            android:textColor="#6C63FF"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:fontFamily="sans-serif-medium" />
-                    </LinearLayout>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -278,116 +245,9 @@
                     android:background="@drawable/bg_btn_primary" />
             </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="28dp">
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#2A2A2A" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="hoặc đăng nhập bằng"
-                    android:textColor="#616161"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#2A2A2A" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="20dp"
-                android:weightSum="2">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="#1A1A1A"
-                    app:cardElevation="0dp">
-
-                    <LinearLayout
-                        android:id="@+id/btnGoogle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:background="@drawable/bg_social_btn"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_google"
-                            android:contentDescription="Google" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Google"
-                            android:textColor="#E0E0E0"
-                            android:textSize="14sp"
-                            android:fontFamily="sans-serif-medium" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="#1A1A1A"
-                    app:cardElevation="0dp">
-
-                    <LinearLayout
-                        android:id="@+id/btnFacebook"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:background="@drawable/bg_social_btn"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_facebook"
-                            android:contentDescription="Facebook" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Facebook"
-                            android:textColor="#E0E0E0"
-                            android:textSize="14sp"
-                            android:fontFamily="sans-serif-medium" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
