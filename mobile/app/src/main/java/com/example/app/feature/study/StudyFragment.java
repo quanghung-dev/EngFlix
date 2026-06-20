@@ -1,5 +1,6 @@
 package com.example.app.feature.study;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StudyFragment extends Fragment {
+    private int currentSessionId = 0;
     private CategoriesRepository categoriesRepository;
     TextView UserName ;
     private ImageButton btnCreate;
@@ -107,55 +109,84 @@ public class StudyFragment extends Fragment {
     }
 
     private void loadDataFromApi() {
+        currentSessionId++;
+        final int sessionId = currentSessionId;
         LessonsRepository lessonsRepo = new LessonsRepository(requireContext());
-        categoriesRepository.getCategory(10,1, new CategoriesRepository.categoryCallback<List<CategoryResponse>>() {
+        categoriesRepository.getCategory(10, 1, new CategoriesRepository.categoryCallback<List<CategoryResponse>>() {
             @Override
             public void onSuccess(List<CategoryResponse> response) {
-                if (response != null ) {
+                if (!isAdded() || sessionId != currentSessionId) {
+                    return;
+                }
+                if (response != null) {
+                    List<LessonSection> tempSections = new ArrayList<>();
+                    for (CategoryResponse category : response) {
+                        tempSections.add(new LessonSection(category.getId(), category.getName(), 0, new ArrayList<>()));
+                    }
+                    sectionList.clear();
+                    sectionList.addAll(tempSections);
+                    sectionAdapter.notifyDataSetChanged();
+
                     for (CategoryResponse category : response) {
                         int categoryId = category.getId();
                         lessonsRepo.getLessons(10, 1, null, categoryId, null, new LessonsRepository.lessonsCallback<ApiResponse<List<LessonsResponse>>>() {
                             @Override
                             public void onSuccess(ApiResponse<List<LessonsResponse>> lessonResponse) {
-                                if (!isAdded() || getView() == null) {
+                                if (!isAdded() || sessionId != currentSessionId) {
                                     return;
                                 }
                                 if (lessonResponse != null && lessonResponse.getData() != null) {
-                                    int totalLessons = lessonResponse.getMeta() != null
-                                            ? lessonResponse.getMeta().getTotal()
-                                            : lessonResponse.getData().size();
-                                    LessonSection newSection = new LessonSection(
-                                            categoryId,
-                                            category.getName(),
-                                            totalLessons,
-                                            lessonResponse.getData()
-                                    );
-                                    sectionList.add(newSection);
-                                    sectionAdapter.notifyDataSetChanged();
+                                    int index = -1;
+                                    for (int i = 0; i < sectionList.size(); i++) {
+                                        if (sectionList.get(i).getIdCategory() == categoryId) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+                                    if (index != -1) {
+                                        int totalLessons = lessonResponse.getMeta() != null
+                                                ? lessonResponse.getMeta().getTotal()
+                                                : lessonResponse.getData().size();
+                                        LessonSection updatedSection = new LessonSection(
+                                                categoryId,
+                                                category.getName(),
+                                                totalLessons,
+                                                lessonResponse.getData()
+                                        );
+                                        sectionList.set(index, updatedSection);
+                                        sectionAdapter.notifyItemChanged(index);
+                                    }
                                 }
                             }
+
                             @Override
                             public void onError(String message) {
-                                if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                                if (!isAdded() || sessionId != currentSessionId) {
+                                    return;
+                                }
+                                Context context = getContext();
+                                if (context != null) {
+                                    Toast.makeText(context, "Lỗi tải bài học: " + message, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-
                     }
-
                 }
             }
 
             @Override
             public void onError(String message) {
-                if (isAdded()) {
-                    Toast.makeText(requireContext(), "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
+                if (!isAdded() || sessionId != currentSessionId) {
+                    return;
+                }
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi tải danh mục: " + message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
+
     private void showCreatePersonalFolderDialog() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_create_vocabulary_folder, null);

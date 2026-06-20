@@ -1,5 +1,6 @@
 package com.example.app.feature.vocabulary;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -114,6 +115,9 @@ public class DetailItems extends Fragment {
         vocabularyRepository.getVocabularyItemsByDeckId(deckId, new BaseCallback<ApiResponse<List<VocaItemsResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<VocaItemsResponse>> data) {
+                if (!isAdded()) {
+                    return;
+                }
                 vocaItems.clear();
                 if (data != null && data.getData() != null) {
                     vocaItems.addAll(data.getData());
@@ -124,7 +128,13 @@ public class DetailItems extends Fragment {
 
             @Override
             public void onError(String message) {
-                Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
+                if (!isAdded()) {
+                    return;
+                }
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

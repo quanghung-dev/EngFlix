@@ -1,5 +1,6 @@
 package com.example.app.feature.vocabulary;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,9 @@ import java.util.Map;
 public abstract class VocabularyDecksPageFragment extends Fragment {
     private static final String TAG = "VocabularyDecksPage";
     protected static final String REQUEST_REFRESH_USER_DECKS = "refresh_user_vocabulary_decks";
+
+    private int currentSessionId = 0;
+    private int completedRequestsCount = 0;
 
     protected final List<VocaCategoryResponse> categoryList = new ArrayList<>();
     protected final List<VocaCategoryResponse> visibleCategoryList = new ArrayList<>();
@@ -79,38 +83,54 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
     }
 
     protected void fetchCategories() {
+        currentSessionId++;
+        final int sessionId = currentSessionId;
         vocabularyRepository.getVocabularyCategories(new BaseCallback<ApiResponse<List<VocaCategoryResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<VocaCategoryResponse>> response) {
+                if (!isAdded() || sessionId != currentSessionId) {
+                    return;
+                }
                 categoryList.clear();
                 if (response != null && response.getData() != null) {
                     categoryList.addAll(response.getData());
                 }
-                fetchDecksForCategories();
+                fetchDecksForCategories(sessionId);
             }
 
             @Override
             public void onError(String message) {
+                if (!isAdded() || sessionId != currentSessionId) {
+                    return;
+                }
                 Log.e(TAG, "Lỗi tải categories: " + message);
-                Toast.makeText(requireContext(), "Lỗi tải dữ liệu danh mục!", Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi tải dữ liệu danh mục!", Toast.LENGTH_SHORT).show();
+                }
                 updateEmptyState();
             }
         });
     }
 
-    private void fetchDecksForCategories() {
+    private void fetchDecksForCategories(final int sessionId) {
         decksMap.clear();
+        completedRequestsCount = 0;
         if (categoryList.isEmpty()) {
             updateDisplayedSections();
             updateEmptyState();
             return;
         }
 
+        final int totalCategories = categoryList.size();
         for (VocaCategoryResponse category : categoryList) {
             final int currentCategoryId = category.getId();
             vocabularyRepository.getVocabularyDecks(currentCategoryId, new BaseCallback<ApiResponse<List<VocaDecksResponse>>>() {
                 @Override
                 public void onSuccess(ApiResponse<List<VocaDecksResponse>> data) {
+                    if (!isAdded() || sessionId != currentSessionId) {
+                        return;
+                    }
                     List<VocaDecksResponse> filteredDecks = new ArrayList<>();
                     if (data != null && data.getData() != null) {
                         for (VocaDecksResponse deck : data.getData()) {
@@ -120,14 +140,23 @@ public abstract class VocabularyDecksPageFragment extends Fragment {
                         }
                     }
                     decksMap.put(currentCategoryId, filteredDecks);
-                    updateDisplayedSections();
+                    completedRequestsCount++;
+                    if (completedRequestsCount == totalCategories) {
+                        updateDisplayedSections();
+                    }
                 }
 
                 @Override
                 public void onError(String message) {
+                    if (!isAdded() || sessionId != currentSessionId) {
+                        return;
+                    }
                     Log.e(TAG, "Lỗi tải deck cho category " + category.getId() + ": " + message);
                     decksMap.put(currentCategoryId, new ArrayList<>());
-                    updateDisplayedSections();
+                    completedRequestsCount++;
+                    if (completedRequestsCount == totalCategories) {
+                        updateDisplayedSections();
+                    }
                 }
             });
         }

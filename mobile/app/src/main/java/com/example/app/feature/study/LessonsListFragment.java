@@ -1,6 +1,7 @@
 package com.example.app.feature.study;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -89,13 +90,23 @@ public class LessonsListFragment extends Fragment {
                         categoriesRepository.deleteCategory(currentCategoryId, new CategoriesRepository.categoryCallback<ApiResponse<CategoryResponse>>() {
                             @Override
                             public void onSuccess(ApiResponse<CategoryResponse> data) {
-                                Toast.makeText(requireContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(requireView()).popBackStack();
+                                if (!isAdded()) return;
+                                Context context = getContext();
+                                if (context != null) {
+                                    Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                }
+                                if (getView() != null) {
+                                    Navigation.findNavController(getView()).popBackStack();
+                                }
                             }
 
                             @Override
                             public void onError(String message) {
-                                Toast.makeText(requireContext(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                                if (!isAdded()) return;
+                                Context context = getContext();
+                                if (context != null) {
+                                    Toast.makeText(context, "Xóa thất bại: " + message, Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     })
@@ -132,6 +143,7 @@ public class LessonsListFragment extends Fragment {
                 new LessonsRepository.lessonsCallback<ApiResponse<List<LessonsResponse>>>(){
                     @Override
                     public void onSuccess(ApiResponse<List<LessonsResponse>> response) {
+                        if (!isAdded()) return;
                         lessonsResponseList.clear();
                         if (response != null && response.getData() != null) {
                             lessonsResponseList.addAll(response.getData());
@@ -143,11 +155,26 @@ public class LessonsListFragment extends Fragment {
                         }
                         int done = 0;
                         int learning = 0;
+                        for (LessonsResponse lesson : lessonsResponseList) {
+                            if (lesson.is_completed() != null) {
+                                if (lesson.is_completed()) {
+                                    done++;
+                                } else {
+                                    learning++;
+                                }
+                            }
+                        }
+                        CountDone.setText(String.valueOf(done));
+                        CountLearning.setText(String.valueOf(learning));
                         CountNotStarted.setText(String.valueOf(totallessons - done - learning));
                     }
                     @Override
                     public void onError(String message) {
-                        Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, android.widget.Toast.LENGTH_SHORT).show();
+                        if (!isAdded()) return;
+                        Context context = getContext();
+                        if (context != null) {
+                            Toast.makeText(context, "Lỗi tải dữ liệu: " + message, android.widget.Toast.LENGTH_SHORT).show();
+                        }
                     }
         });
     }
@@ -190,7 +217,10 @@ public class LessonsListFragment extends Fragment {
             @Override
             public void onSuccess(ApiResponse<LessonsResponse> data) {
                 if (!isAdded()) return;
-                Toast.makeText(requireContext(), "Đã tạo bài học: " + youtubeLink, Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Đã tạo bài học: " + youtubeLink, Toast.LENGTH_SHORT).show();
+                }
                 dialog.dismiss();
                 fetchLessons();
             }
@@ -199,7 +229,10 @@ public class LessonsListFragment extends Fragment {
             public void onError(String message) {
                 if (!isAdded()) return;
                 btnConfirm.setEnabled(true);
-                Toast.makeText(requireContext(), "Lỗi tạo bài học: " + message, Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi tạo bài học: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

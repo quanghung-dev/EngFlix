@@ -1,6 +1,7 @@
 package com.example.app.utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.webkit.WebChromeClient;
@@ -8,10 +9,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.List;
+
 public class YouTubeWebViewManager {
     private final WebView webView;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Runnable stopSegmentRunnable;
+    private float playbackSpeed = 1.0f;
 
     public YouTubeWebViewManager(WebView webView) {
         this.webView = webView;
@@ -35,18 +39,7 @@ public class YouTubeWebViewManager {
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
 
-        String embedUrl = lessonVideoUrl;
-        if (embedUrl.startsWith("http://")) {
-            embedUrl = embedUrl.replaceFirst("http://", "https://");
-        }
-
-        if (embedUrl.contains("watch?v=")) {
-            embedUrl = embedUrl.replace("watch?v=", "embed/");
-        } else if (embedUrl.contains("youtu.be/")) {
-            embedUrl = "https://www.youtube.com/embed/" + embedUrl.substring(embedUrl.lastIndexOf("/") + 1);
-        }
-
-        embedUrl = embedUrl.replace("youtube.com", "youtube-nocookie.com");
+        String embedUrl = buildEmbedUrl(lessonVideoUrl);
 
         String appOrigin = "https://" + context.getPackageName();
         String youtubeParams = "controls=0"
@@ -77,6 +70,44 @@ public class YouTubeWebViewManager {
         webView.loadDataWithBaseURL(appOrigin, html, "text/html", "utf-8", null);
     }
 
+    private String buildEmbedUrl(String lessonVideoUrl) {
+        String url = lessonVideoUrl.trim();
+        if (url.startsWith("http://")) {
+            url = url.replaceFirst("http://", "https://");
+        }
+
+        try {
+            Uri uri = Uri.parse(url);
+            String host = uri.getHost();
+            if (host != null) {
+                String lowerHost = host.toLowerCase();
+                String path = uri.getPath();
+                if (lowerHost.contains("youtube.com") || lowerHost.contains("youtube-nocookie.com")) {
+                    if (path != null && path.startsWith("/embed/")) {
+                        return url.replace("youtube.com", "youtube-nocookie.com");
+                    }
+                    String videoId = uri.getQueryParameter("v");
+                    if (!isBlank(videoId)) {
+                        return "https://www.youtube-nocookie.com/embed/" + videoId;
+                    }
+                } else if (lowerHost.contains("youtu.be")) {
+                    List<String> segments = uri.getPathSegments();
+                    if (segments != null && !segments.isEmpty() && !isBlank(segments.get(0))) {
+                        return "https://www.youtube-nocookie.com/embed/" + segments.get(0);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        return url.replace("watch?v=", "embed/")
+                .replace("youtube.com", "youtube-nocookie.com");
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
     private void callYouTubeCommand(String functionName, String args) {
         if (webView == null) return;
         String jsCommand = "javascript:(function() { " +
@@ -89,6 +120,10 @@ public class YouTubeWebViewManager {
     }
 
     public void changeSpeed(float speed) {
+        if (speed <= 0) {
+            return;
+        }
+        playbackSpeed = speed;
         callYouTubeCommand("setPlaybackRate", String.valueOf(speed));
     }
 
@@ -107,7 +142,7 @@ public class YouTubeWebViewManager {
         cancelSegmentPlayback();
 
         float safeStartTime = Math.max(0, startTime);
-        long durationMs = (long) ((endTime - safeStartTime) * 1000);
+        long durationMs = (long) (((endTime - safeStartTime) * 1000) / Math.max(0.25f, playbackSpeed));
 
         seekTo(safeStartTime);
         playVideo();

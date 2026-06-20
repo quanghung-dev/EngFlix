@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.example.app.R;
 import com.example.app.data.local.TokenManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingsFragment extends Fragment {
 
@@ -35,18 +36,14 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         cardProfile = view.findViewById(R.id.cardProfile);
-        cardProfile.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_settingsFragment_to_ProfileFragment);
-                });
         tokenManager = TokenManager.getInstance(requireContext());
         tvTitle = view.findViewById(R.id.tvTitle);
         tvSubtitle = view.findViewById(R.id.tvSubtitle);
         cardLogin = view.findViewById(R.id.cardLogin);
         cardLogout = view.findViewById(R.id.cardLogout);
         rowNotes = view.findViewById(R.id.rowNotes);
-        rowNotes.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_settingsFragment_to_myNotesFragment);
-                });
+        cardProfile.setOnClickListener(v -> navigateToProfileOrLogin(v));
+        rowNotes.setOnClickListener(v -> navigateToNotesOrLogin(v));
         setupMenuRows(view);
         setupLogout();
 
@@ -101,6 +98,22 @@ public class SettingsFragment extends Fragment {
         cardLogout.setOnClickListener(v -> showLogoutDialog());
     }
 
+    private void navigateToProfileOrLogin(View view) {
+        Navigation.findNavController(view).navigate(
+                tokenManager.hasToken()
+                        ? R.id.action_settingsFragment_to_ProfileFragment
+                        : R.id.action_settingsFragment_to_loginFragment
+        );
+    }
+
+    private void navigateToNotesOrLogin(View view) {
+        Navigation.findNavController(view).navigate(
+                tokenManager.hasToken()
+                        ? R.id.action_settingsFragment_to_myNotesFragment
+                        : R.id.action_settingsFragment_to_loginFragment
+        );
+    }
+
     private void showLogoutDialog() {
         new AlertDialog.Builder(requireActivity())
                 .setTitle("Đăng xuất")
@@ -113,6 +126,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void performLogout() {
+        FirebaseAuth.getInstance().signOut();
         tokenManager.clear();
         updateProfileUI();
     }

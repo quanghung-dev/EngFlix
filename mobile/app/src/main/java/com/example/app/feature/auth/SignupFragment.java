@@ -67,8 +67,8 @@ public class SignupFragment extends Fragment {
                 authRepository.Register(Username,Password,Fullname, new AuthRepository.authCallBack<String>(){
                     @Override
                     public void onSuccess(String data) {
-                        if (isAdded() && getView() != null) {
-                            Toast.makeText(requireContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                        if (isAdded() && getView() != null && getContext() != null) {
+                            Toast.makeText(getContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                             Navigation.findNavController(getView())
                                     .navigate(R.id.action_signupFragment_to_loginFragment);
                         }
@@ -76,8 +76,8 @@ public class SignupFragment extends Fragment {
 
                     @Override
                     public void onError(String message) {
-                        if (isAdded()) {
-                            Toast.makeText(requireContext(), "Lỗi đăng kí " + message, android.widget.Toast.LENGTH_SHORT).show();
+                        if (isAdded() && getContext() != null) {
+                            Toast.makeText(getContext(), "Lỗi đăng kí " + message, android.widget.Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

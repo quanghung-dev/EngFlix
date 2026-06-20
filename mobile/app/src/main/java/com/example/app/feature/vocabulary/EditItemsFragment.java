@@ -1,5 +1,6 @@
 package com.example.app.feature.vocabulary;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +90,10 @@ public class EditItemsFragment extends Fragment {
     private void saveChanges(EditText edtTitle, AppCompatImageButton btnConfirm) {
         String title = edtTitle.getText().toString().trim();
         if (deckId <= 0) {
-            Toast.makeText(requireContext(), "Không tìm thấy bộ từ vựng", Toast.LENGTH_SHORT).show();
+            Context context = getContext();
+            if (isAdded() && context != null) {
+                Toast.makeText(context, "Không tìm thấy bộ từ vựng", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
         if (title.isEmpty()) {
@@ -106,18 +110,24 @@ public class EditItemsFragment extends Fragment {
                 continue;
             }
             if (term.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập thuật ngữ", Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (isAdded() && context != null) {
+                    Toast.makeText(context, "Vui lòng nhập thuật ngữ", Toast.LENGTH_SHORT).show();
+                }
                 return;
             }
             if (definition.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập định nghĩa", Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (isAdded() && context != null) {
+                    Toast.makeText(context, "Vui lòng nhập định nghĩa", Toast.LENGTH_SHORT).show();
+                }
                 return;
             }
             itemsToSave.add(item);
         }
 
         btnConfirm.setEnabled(false);
-        SaveTracker tracker = new SaveTracker(1 + itemsToSave.size(), btnConfirm, title);
+
         UpdateDeckRequest deckRequest = new UpdateDeckRequest(
                 title,
                 emptyToNull(deckDescription),
@@ -127,77 +137,106 @@ public class EditItemsFragment extends Fragment {
         vocabularyRepository.updateDeck(deckId, deckRequest, new BaseCallback<ApiResponse<VocaDecksResponse>>() {
             @Override
             public void onSuccess(ApiResponse<VocaDecksResponse> data) {
-                tracker.markSuccess();
+                if (!isAdded()) return;
+                saveItemSequentially(0, itemsToSave, title, btnConfirm);
             }
 
             @Override
             public void onError(String message) {
-                tracker.markError("Lỗi lưu tiêu đề: " + message);
+                if (!isAdded()) return;
+                btnConfirm.setEnabled(true);
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi lưu tiêu đề: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
 
-        for (EditItemsAdapter.EditableVocabularyItem item : itemsToSave) {
-            if (item.getId() > 0) {
-                updateExistingItem(item, tracker);
-            } else {
-                addNewItem(item, tracker);
+    private void saveItemSequentially(int index, List<EditItemsAdapter.EditableVocabularyItem> itemsToSave, String title, AppCompatImageButton btnConfirm) {
+        if (!isAdded()) return;
+        if (index >= itemsToSave.size()) {
+            Bundle result = new Bundle();
+            result.putString("deckName", title);
+            getParentFragmentManager().setFragmentResult(REQUEST_EDIT_ITEMS_SAVED, result);
+            Context context = getContext();
+            if (context != null) {
+                Toast.makeText(context, "Đã lưu học phần", Toast.LENGTH_SHORT).show();
             }
+            if (getView() != null) {
+                Navigation.findNavController(getView()).popBackStack();
+            }
+            return;
         }
-    }
 
-    private void updateExistingItem(EditItemsAdapter.EditableVocabularyItem item, SaveTracker tracker) {
-        String term = item.getTerm().trim();
-        String definition = item.getDefinition().trim();
-        UpdateVocaItemRequest request = new UpdateVocaItemRequest(
-                item.getLessonId(),
-                item.getTranscriptId(),
-                term,
-                normalize(term),
-                definition,
-                emptyToNull(item.getExampleSentence()),
-                emptyToNull(item.getNote())
-        );
-        vocabularyRepository.updateItem(deckId, item.getId(), request, new BaseCallback<ApiResponse<VocaItemsResponse>>() {
-            @Override
-            public void onSuccess(ApiResponse<VocaItemsResponse> data) {
-                tracker.markSuccess();
-            }
+        EditItemsAdapter.EditableVocabularyItem item = itemsToSave.get(index);
+        if (item.getId() > 0) {
+            String term = item.getTerm().trim();
+            String definition = item.getDefinition().trim();
+            UpdateVocaItemRequest request = new UpdateVocaItemRequest(
+                    item.getLessonId(),
+                    item.getTranscriptId(),
+                    term,
+                    normalize(term),
+                    definition,
+                    emptyToNull(item.getExampleSentence()),
+                    emptyToNull(item.getNote())
+            );
+            vocabularyRepository.updateItem(deckId, item.getId(), request, new BaseCallback<ApiResponse<VocaItemsResponse>>() {
+                @Override
+                public void onSuccess(ApiResponse<VocaItemsResponse> data) {
+                    if (!isAdded()) return;
+                    saveItemSequentially(index + 1, itemsToSave, title, btnConfirm);
+                }
 
-            @Override
-            public void onError(String message) {
-                tracker.markError("Lỗi lưu thuật ngữ: " + message);
-            }
-        });
-    }
+                @Override
+                public void onError(String message) {
+                    if (!isAdded()) return;
+                    btnConfirm.setEnabled(true);
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, "Lỗi lưu thuật ngữ: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            String term = item.getTerm().trim();
+            String definition = item.getDefinition().trim();
+            AddItemsToDeckRequest request = new AddItemsToDeckRequest(
+                    null,
+                    null,
+                    term,
+                    normalize(term),
+                    definition,
+                    definition,
+                    null
+            );
+            vocabularyRepository.addVocaItemToDeck(deckId, request, new BaseCallback<ApiResponse<VocaItemsResponse>>() {
+                @Override
+                public void onSuccess(ApiResponse<VocaItemsResponse> data) {
+                    if (!isAdded()) return;
+                    saveItemSequentially(index + 1, itemsToSave, title, btnConfirm);
+                }
 
-    private void addNewItem(EditItemsAdapter.EditableVocabularyItem item, SaveTracker tracker) {
-        String term = item.getTerm().trim();
-        String definition = item.getDefinition().trim();
-        AddItemsToDeckRequest request = new AddItemsToDeckRequest(
-                null,
-                null,
-                term,
-                normalize(term),
-                definition,
-                definition,
-                null
-        );
-        vocabularyRepository.addVocaItemToDeck(deckId, request, new BaseCallback<ApiResponse<VocaItemsResponse>>() {
-            @Override
-            public void onSuccess(ApiResponse<VocaItemsResponse> data) {
-                tracker.markSuccess();
-            }
-
-            @Override
-            public void onError(String message) {
-                tracker.markError("Lỗi thêm thuật ngữ: " + message);
-            }
-        });
+                @Override
+                public void onError(String message) {
+                    if (!isAdded()) return;
+                    btnConfirm.setEnabled(true);
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, "Lỗi thêm thuật ngữ: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
     private void fetchTerms() {
         if (deckId == -1) {
-            Toast.makeText(requireContext(), "Không tìm thấy bộ từ vựng", Toast.LENGTH_SHORT).show();
+            Context context = getContext();
+            if (context != null) {
+                Toast.makeText(context, "Không tìm thấy bộ từ vựng", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
@@ -215,7 +254,10 @@ public class EditItemsFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Toast.makeText(requireContext(), "Lỗi tải thuật ngữ: " + message, Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi tải thuật ngữ: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -230,42 +272,5 @@ public class EditItemsFragment extends Fragment {
 
     private String emptyToNull(String value) {
         return isBlank(value) ? null : value;
-    }
-
-    private class SaveTracker {
-        private final int total;
-        private final AppCompatImageButton btnConfirm;
-        private final String savedTitle;
-        private int completed = 0;
-        private boolean failed = false;
-
-        SaveTracker(int total, AppCompatImageButton btnConfirm, String savedTitle) {
-            this.total = total;
-            this.btnConfirm = btnConfirm;
-            this.savedTitle = savedTitle;
-        }
-
-        void markSuccess() {
-            if (failed) {
-                return;
-            }
-            completed++;
-            if (completed == total) {
-                Bundle result = new Bundle();
-                result.putString("deckName", savedTitle);
-                getParentFragmentManager().setFragmentResult(REQUEST_EDIT_ITEMS_SAVED, result);
-                Toast.makeText(requireContext(), "Đã lưu học phần", Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(requireView()).popBackStack();
-            }
-        }
-
-        void markError(String message) {
-            if (failed) {
-                return;
-            }
-            failed = true;
-            btnConfirm.setEnabled(true);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-        }
     }
 }

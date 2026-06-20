@@ -108,6 +108,12 @@ public class ProfileFragment extends Fragment {
                 if (!isAdded() || getView() == null) {
                     return;
                 }
+                if (data == null) {
+                    btnSave.setEnabled(true);
+                    btnSave.setText("SAVE");
+                    Toast.makeText(requireContext(), "Server khong tra ve thong tin nguoi dung", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 
                 // Update local token manager
                 tokenManager.saveUserInfo(
@@ -131,7 +137,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onError(String message) {
-                if (!isAdded()) {
+                if (!isAdded() || getView() == null) {
                     return;
                 }
                 btnSave.setEnabled(true);

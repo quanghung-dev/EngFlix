@@ -233,6 +233,9 @@ public class ListeningFragment extends Fragment {
         pronunciationProgressRepository.getPronunciationProgress(lessonId, new BaseCallback<ApiResponse<List<PronunciationProgressResponse>>>() {
             @Override
             public void onSuccess(ApiResponse<List<PronunciationProgressResponse>> data) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 if (data != null && data.getData() != null) {
                     itemPronunciationAdapter.setPronunciationProgressList(data.getData());
                     completedIds.clear();
@@ -333,44 +336,90 @@ public class ListeningFragment extends Fragment {
     }
 
     public int dpToPx(int dp) {
-        float density = requireContext().getResources().getDisplayMetrics().density;
+        if (getContext() == null) {
+            return dp;
+        }
+        float density = getContext().getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
 
     @SuppressLint("MissingPermission")
     private void startRecording() {
+        if (getContext() == null) {
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getContext(), "Ứng dụng chưa được cấp quyền micro!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int bufferSize = AudioRecord.getMinBufferSize(
                 SAMPLE_RATE,
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT
         );
 
+        if (bufferSize <= 0 || bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+            Log.e("ListeningFragment", "Kích thước buffer không hợp lệ: " + bufferSize);
+            Toast.makeText(getContext(), "Không thể khởi tạo micro (Kích thước buffer không hợp lệ)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         recordedAudioFile = new File(
-                requireContext().getCacheDir(),
+                getContext().getCacheDir(),
                 "recording_" + System.currentTimeMillis() + ".wav"
         );
 
-        audioRecord = new AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                bufferSize
-        );
+        try {
+            audioRecord = new AudioRecord(
+                    MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    bufferSize
+            );
+        } catch (IllegalArgumentException e) {
+            Log.e("ListeningFragment", "Lỗi tạo AudioRecord: " + e.getMessage());
+            Toast.makeText(getContext(), "Lỗi cấu hình thiết bị ghi âm!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+            Log.e("ListeningFragment", "AudioRecord chưa được khởi tạo");
+            Toast.makeText(getContext(), "Thiết bị ghi âm không sẵn sàng hoặc bị chiếm dụng!", Toast.LENGTH_SHORT).show();
+            audioRecord.release();
+            audioRecord = null;
+            return;
+        }
+
+        try {
+            audioRecord.startRecording();
+        } catch (IllegalStateException e) {
+            Log.e("ListeningFragment", "Lỗi startRecording: " + e.getMessage());
+            Toast.makeText(getContext(), "Micro có thể đang bị ứng dụng khác chiếm dụng!", Toast.LENGTH_SHORT).show();
+            audioRecord.release();
+            audioRecord = null;
+            return;
+        }
 
         isRecording = true;
-        audioRecord.startRecording();
         setMicRecordingState(true);
 
         recordingThread = new Thread(() -> writeWavFile(recordedAudioFile, bufferSize));
         recordingThread.start();
     }
+
     private void stopRecording() {
         isRecording = false;
         setMicRecordingState(false);
 
         if (audioRecord != null) {
-            audioRecord.stop();
+            try {
+                audioRecord.stop();
+            } catch (Exception e) {
+                Log.e("ListeningFragment", "Error stopping AudioRecord: " + e.getMessage());
+            }
         }
 
         try {
@@ -382,26 +431,46 @@ public class ListeningFragment extends Fragment {
         }
 
         if (audioRecord != null) {
-            audioRecord.release();
+            try {
+                audioRecord.release();
+            } catch (Exception e) {
+                Log.e("ListeningFragment", "Error releasing AudioRecord: " + e.getMessage());
+            }
             audioRecord = null;
         }
 
         recordingThread = null;
-        long recordedFileSize = recordedAudioFile != null ? recordedAudioFile.length() : 0;
-        int recordedMaxAmplitude = recordedAudioFile != null ? calculateMaxAmplitude(recordedAudioFile) : 0;
+        if (recordedAudioFile == null || !recordedAudioFile.exists()) {
+            if (getContext() != null) {
+                Toast.makeText(getContext(), "Ghi âm thất bại (File không tồn tại)", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        long recordedFileSize = recordedAudioFile.length();
+        int recordedMaxAmplitude = calculateMaxAmplitude(recordedAudioFile);
         Log.i("DictationFragment", "Recorded WAV fileSize=" + recordedFileSize + ", maxAmplitude=" + recordedMaxAmplitude);
+        
+        if (listTranscripts == null || listTranscripts.isEmpty() || currentSentenceIndex >= listTranscripts.size()) {
+            return;
+        }
         TranscriptsResponse transcript = listTranscripts.get(currentSentenceIndex);
         String referenceText = transcript.getContent();
-        pronunciationAttemptsRepository.assessPronunciation(recordedAudioFile.getAbsoluteFile(),referenceText,lessonId,transcript.getId(),new BaseCallback<ApiResponse<PronunciationResponse>>() {
+        pronunciationAttemptsRepository.assessPronunciation(recordedAudioFile.getAbsoluteFile(), referenceText, lessonId, transcript.getId(), new BaseCallback<ApiResponse<PronunciationResponse>>() {
             @Override
             public void onSuccess(ApiResponse<PronunciationResponse> data) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 sentenceAdapter.notifyItemChanged(currentSentenceIndex);
                 itemPronunciationAdapter.notifyItemChanged(currentSentenceIndex);
                 Log.d("DictationFragment", "Score: " + new Gson().toJson(data));
                 pronunciationProgressRepository.updatePronunciationProgress(transcript.getId(), new BaseCallback<ApiResponse<PronunciationProgressResponse>>() {
                     @Override
                     public void onSuccess(ApiResponse<PronunciationProgressResponse> data) {
-                        Log.d("DictationFragment", "Data: " + new Gson().toJson(data));
+                        if (!isAdded() || getView() == null) {
+                            return;
+                        }
                         if (data != null && data.getData() != null) {
                             itemPronunciationAdapter.updatePronunciationProgress(data.getData());
                             sentenceAdapter.addCompletedTranscript(data.getData().getTranscriptId());
@@ -409,12 +478,10 @@ public class ListeningFragment extends Fragment {
                             if (!completedIds.contains(transcriptId)) {
                                 completedIds.add(transcriptId);
                             }
-                            progress = completedIds.size()*100 / quantityTranscripts;
+                            progress = completedIds.size() * 100 / quantityTranscripts;
                             tvProgress.setText(String.format("%.2f", progress) + "% hoàn thành");
                             sendPronunciationStatusAfterTranscript();
                         }
-
-
                         Log.d("DictationFragment", "Đã upadte dữ liệu");
                     }
 
@@ -424,12 +491,17 @@ public class ListeningFragment extends Fragment {
                     }
                 });
             }
+
             @Override
             public void onError(String message) {
-                Log.e("DictationFragment", "Lỗi nhận phản hồi từ server: " + message);
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Lỗi nhận phản hồi từ server: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     private void sendPronunciationStatusAfterTranscript() {

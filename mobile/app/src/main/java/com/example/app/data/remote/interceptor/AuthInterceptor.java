@@ -40,14 +40,20 @@ public class AuthInterceptor implements Interceptor {
         return chain.proceed(newRequest);
     }
     private String getValidToken() {
+        if (!tokenManager.hasToken()) {
+            return null;
+        }
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             try {
                 GetTokenResult tokenResult = Tasks.await(user.getIdToken(false));
                 String freshToken = tokenResult.getToken();
-                tokenManager.saveToken(freshToken, "");
-                return freshToken;
+                if (freshToken != null && !freshToken.isEmpty()) {
+                    tokenManager.saveToken(freshToken, "");
+                    return freshToken;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

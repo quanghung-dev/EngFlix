@@ -31,115 +31,175 @@ public class AuthRepository {
 
     public interface authCallBack<T> {
         void onSuccess(T data);
+
         void onError(String message);
     }
 
     public void Register(String email, String password, String name, authCallBack<String> callback) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        // 1. Đăng ký trên Firebase
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            // 2. Cập nhật Tên hiển thị
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(name)
-                                    .build();
+                    if (!task.isSuccessful()) {
+                        String errorMsg = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Loi dang ky Firebase";
+                        callback.onError(errorMsg);
+                        return;
+                    }
 
-                            user.updateProfile(profileUpdates).addOnCompleteListener(updateTask -> {
-                                if (updateTask.isSuccessful()) {
-                                    // 3. Lấy ID Token bảo mật
-                                    user.getIdToken(true).addOnCompleteListener(tokenTask -> {
-                                        if (tokenTask.isSuccessful()) {
-                                            String idToken = tokenTask.getResult().getToken();
-                                            tokenManager.saveToken(idToken, "");
-                                            callback.onSuccess("Đăng ký thành công");
-                                        } else {
-                                            callback.onError("Lỗi lấy Token sau đăng ký");
-                                        }
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user == null) {
+                        callback.onError("Khong tim thay nguoi dung Firebase sau dang ky");
+                        return;
+                    }
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(updateTask -> {
+                        if (!updateTask.isSuccessful()) {
+                            user.delete().addOnCompleteListener(d -> {
+                                clearAuthState();
+                                callback.onError("Loi cap nhat ho so Firebase");
+                            });
+                            return;
+                        }
+
+                        user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                            if (!tokenTask.isSuccessful() || tokenTask.getResult() == null) {
+                                user.delete().addOnCompleteListener(d -> {
+                                    clearAuthState();
+                                    callback.onError("Loi lay token sau dang ky");
+                                });
+                                return;
+                            }
+
+                            tokenManager.saveToken(tokenTask.getResult().getToken(), "");
+                            syncAuthenticatedUser(new authCallBack<UserResponse>() {
+                                @Override
+                                public void onSuccess(UserResponse data) {
+                                    callback.onSuccess("Dang ky thanh cong");
+                                }
+
+                                @Override
+                                public void onError(String message) {
+                                    user.delete().addOnCompleteListener(d -> {
+                                        clearAuthState();
+                                        callback.onError(message);
                                     });
-                                } else {
-                                    callback.onError("Lỗi cập nhật hồ sơ");
                                 }
                             });
-                        } else {
-                            callback.onError("Không tìm thấy người dùng Firebase sau đăng ký");
-                        }
-                    } else {
-                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Lỗi đăng ký Firebase";
-                        callback.onError(errorMsg);
-                    }
+                        });
+                    });
                 });
     }
 
     public void login(String email, String password, authCallBack<UserResponse> callback) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        // 1. Đăng nhập bằng Firebase
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            // 2. Lấy ID Token
-                            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
-                                if (tokenTask.isSuccessful()) {
-                                    String idToken = tokenTask.getResult().getToken();
-                                    tokenManager.saveToken(idToken, "");
-
-                                    authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
-                                        @Override
-                                        public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
-                                            if (response.isSuccessful() && response.body() != null) {
-                                                UserResponse userResponse = response.body().getData();
-                                                tokenManager.saveUserInfo(
-                                                        userResponse.getUid(),
-                                                        userResponse.getEmail(),
-                                                        userResponse.getName(),
-                                                        userResponse.getAvatarUrl(),
-                                                        userResponse.getUserRole(),
-                                                        userResponse.getPhone()
-                                                );
-                                                callback.onSuccess(userResponse);
-                                            } else {
-                                                callback.onError("Lỗi đồng bộ server: Code " + response.code());
-                                            }
-                                        }
-                                        @Override
-                                        public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
-                                            callback.onError("Lỗi đồng bộ server: Code " + t.getMessage());
-                                        }
-                                    });
-
-                                } else {
-                                    callback.onError("Lỗi xác thực Token");
-                                }
-                            });
-                        } else {
-                            callback.onError("Không tìm thấy người dùng Firebase sau đăng nhập");
-                        }
-                    } else {
-                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Sai tài khoản hoặc mật khẩu";
+                    if (!task.isSuccessful()) {
+                        String errorMsg = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Sai tai khoan hoac mat khau";
                         callback.onError(errorMsg);
+                        return;
                     }
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user == null) {
+                        callback.onError("Khong tim thay nguoi dung Firebase sau dang nhap");
+                        return;
+                    }
+
+                    user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                        if (!tokenTask.isSuccessful() || tokenTask.getResult() == null) {
+                            callback.onError("Loi xac thuc token");
+                            return;
+                        }
+
+                        tokenManager.saveToken(tokenTask.getResult().getToken(), "");
+                        syncAuthenticatedUser(new authCallBack<UserResponse>() {
+                            @Override
+                            public void onSuccess(UserResponse data) {
+                                callback.onSuccess(data);
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                clearAuthState();
+                                callback.onError(message);
+                            }
+                        });
+                    });
                 });
     }
+
     public void updateProfile(UpdateProfileRequest request, authCallBack<ApiResponse<UserResponse>> callback) {
         userApi.updateProfile(request).enqueue(new Callback<ApiResponse<UserResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
-                callback.onSuccess(response.body());
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError(getErrorMessage(response));
+                }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
-                callback.onError("Lỗi:" + t.getMessage());
+                callback.onError("Loi: " + t.getMessage());
             }
         });
-
     }
 
+    private void syncAuthenticatedUser(authCallBack<UserResponse> callback) {
+        authApi.auth().enqueue(new Callback<ApiResponse<UserResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    UserResponse userResponse = response.body().getData();
+                    saveUserInfo(userResponse);
+                    callback.onSuccess(userResponse);
+                } else {
+                    callback.onError("Loi dong bo server: " + getErrorMessage(response));
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
+                callback.onError("Loi dong bo server: " + t.getMessage());
+            }
+        });
+    }
+
+    private void saveUserInfo(UserResponse userResponse) {
+        tokenManager.saveUserInfo(
+                userResponse.getUid(),
+                userResponse.getEmail(),
+                userResponse.getName(),
+                userResponse.getAvatarUrl(),
+                userResponse.getUserRole(),
+                userResponse.getPhone()
+        );
+    }
+
+    private void clearAuthState() {
+        FirebaseAuth.getInstance().signOut();
+        tokenManager.clear();
+    }
+
+    private String getErrorMessage(Response<?> response) {
+        try {
+            if (response.errorBody() != null) {
+                return response.errorBody().string();
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return "Code " + response.code();
+    }
 }

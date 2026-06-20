@@ -208,7 +208,9 @@ public class DictationFragment extends Fragment {
                     prepareCurrentSentence();
                 } else {
                     android.util.Log.e("DictationFragment", "API gọi thành công nhưng danh sách Transcript bị NULL hoặc RỖNG!");
-                    Toast.makeText(requireContext(), "Không có dữ liệu bài học (Data rỗng)", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Không có dữ liệu bài học (Data rỗng)", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             @Override
@@ -217,7 +219,9 @@ public class DictationFragment extends Fragment {
                 if (!isAdded() || getView() == null) {
                     return;
                 }
-                Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Lỗi tải dữ liệu: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -298,6 +302,12 @@ public class DictationFragment extends Fragment {
         super.onDestroyView();
         stopStudyTime();
         cancelAutoStop();
+        if (timerHandler != null) {
+            timerHandler.removeCallbacksAndMessages(null);
+        }
+        if (autoStopHandler != null) {
+            autoStopHandler.removeCallbacksAndMessages(null);
+        }
         if (youTubeWebViewManager != null) {
             youTubeWebViewManager.destroy();
         }
@@ -485,10 +495,17 @@ public class DictationFragment extends Fragment {
         if (endTimestamp <= startTimestamp) {
             return;
         }
-
+        if (autoStopRunnable != null) {
+            autoStopHandler.removeCallbacks(autoStopRunnable);
+        }
         autoStopRunnable = () -> {
+            if (!isAdded() || getView() == null) {
+                return;
+            }
             btnPlaysentenceState = false;
-            btnPlaySentence.setImageResource(R.drawable.ic_play_filled);
+            if (btnPlaySentence != null) {
+                btnPlaySentence.setImageResource(R.drawable.ic_play_filled);
+            }
         };
         long durationMs = (long) ((endTimestamp - Math.max(0, startTimestamp)) * 1000);
         autoStopHandler.postDelayed(autoStopRunnable, durationMs);
@@ -584,8 +601,10 @@ public class DictationFragment extends Fragment {
                     }
                 });
                 btnKiemTra.setOnClickListener(v -> {
-                    Navigation.findNavController(requireView())
-                            .navigate(R.id.action_DictationFragment_to_progressFragment);
+                    if (isAdded() && getView() != null) {
+                        Navigation.findNavController(v)
+                                .navigate(R.id.action_DictationFragment_to_progressFragment);
+                    }
                 });
 
             }
@@ -664,7 +683,9 @@ public class DictationFragment extends Fragment {
         if (sentence == null) {
             return "";
         }
-        return sentence.trim().replaceAll("\\s+", " ");
+        String normalized = sentence.toLowerCase(java.util.Locale.ROOT);
+        normalized = normalized.replaceAll("[.,?!\"':;…\\-—]", "");
+        return normalized.trim().replaceAll("\\s+", " ");
     }
 
     private int countCorrectPrefixWords(String normalizedInput, String normalizedTarget) {
@@ -691,7 +712,10 @@ public class DictationFragment extends Fragment {
     }
 
     public int dpToPx(int dp) {
-        float density = requireContext().getResources().getDisplayMetrics().density;
+        if (getContext() == null) {
+            return dp;
+        }
+        float density = getContext().getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
 
@@ -713,24 +737,31 @@ public class DictationFragment extends Fragment {
     }
 
     public void studyTime(){
+        if (timerRunnable != null) {
+            timerHandler.removeCallbacks(timerRunnable);
+        }
         timerRunnable = new Runnable() {
             @Override
             public void run() {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 elapsedSeconds++;
                 int minutes = (int) (elapsedSeconds / 60);
                 int seconds = (int) (elapsedSeconds % 60);
-                timer.setText(String.format("%02d:%02d", minutes, seconds));
-                timerHandler.postDelayed(timerRunnable,1000);
+                if (timer != null) {
+                    timer.setText(String.format("%02d:%02d", minutes, seconds));
+                }
+                timerHandler.postDelayed(timerRunnable, 1000);
             }
-
         };
-        timerHandler.postDelayed(timerRunnable,1000);
+        timerHandler.postDelayed(timerRunnable, 1000);
     }
 
     public void stopStudyTime(){
-        if(timerHandler != null && timerRunnable != null){
-          timerHandler.removeCallbacks(timerRunnable);
-        };
+        if (timerHandler != null && timerRunnable != null){
+            timerHandler.removeCallbacks(timerRunnable);
+        }
     }
 
     public void cancelAutoStop(){

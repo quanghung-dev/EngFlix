@@ -1,5 +1,6 @@
 package com.example.app.feature.note;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +71,10 @@ public class MyNoteFragment extends Fragment {
         bookMarksRepository.getBookmarks(null,null, null, new BaseCallback<ApiResponse<List<BookmarksModel>>>() {
             @Override
             public void onSuccess(ApiResponse<List<BookmarksModel>> data) {
-                if (data.getData() != null) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (data != null && data.getData() != null) {
                     bookmarksModels.clear();
                     bookmarksModels.addAll(data.getData());
                     adapter.notifyDataSetChanged();
@@ -78,7 +82,13 @@ public class MyNoteFragment extends Fragment {
             }
             @Override
             public void onError(String message) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                if (!isAdded()) {
+                    return;
+                }
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -86,7 +96,13 @@ public class MyNoteFragment extends Fragment {
         bookMarksRepository.deleteBookmark(note.getTranscriptId(), new BaseCallback<ApiResponse<BookmarksResponse>>() {
             @Override
             public void onSuccess(ApiResponse<BookmarksResponse> data) {
-                Toast.makeText(requireContext(), "Xóa ghi chú thành công", Toast.LENGTH_SHORT).show();
+                if (!isAdded()) {
+                    return;
+                }
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Xóa ghi chú thành công", Toast.LENGTH_SHORT).show();
+                }
                 if (lessonPosition >= 0 && lessonPosition < bookmarksModels.size()) {
                     BookmarksModel lesson = bookmarksModels.get(lessonPosition);
                     if (lesson.getTranscripts() != null && notePosition >= 0
@@ -105,8 +121,14 @@ public class MyNoteFragment extends Fragment {
 
             @Override
             public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
                 Log.e("Error", message);
-                Toast.makeText(requireContext(), "Lỗi xóa ghi chú", Toast.LENGTH_SHORT).show();
+                Context context = getContext();
+                if (context != null) {
+                    Toast.makeText(context, "Lỗi xóa ghi chú", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
