@@ -63,7 +63,7 @@ public class StudyFragment extends Fragment {
         tokenManager = TokenManager.getInstance(requireContext());
         UserRole = tokenManager.getUserRole();
         categoriesRepository = new CategoriesRepository(requireContext());
-        if (UserRole.equals("admin")) {
+        if ("admin".equals(UserRole)) {
             btnCreate.setVisibility(View.VISIBLE);
         } else {
             btnCreate.setVisibility(View.GONE);

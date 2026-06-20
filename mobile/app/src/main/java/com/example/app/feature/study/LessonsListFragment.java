@@ -65,7 +65,7 @@ public class LessonsListFragment extends Fragment {
         btnCreate = view.findViewById(R.id.btnCreate);
         userRole = tokenManager.getUserRole();
         Log.d("userRole", String.valueOf(userRole));
-        if (userRole.equals("admin")) {
+        if ("admin".equals(userRole)) {
             btnCreate.setVisibility(View.VISIBLE);
             view.findViewById(R.id.btnDelete).setVisibility(View.VISIBLE);
         } else {

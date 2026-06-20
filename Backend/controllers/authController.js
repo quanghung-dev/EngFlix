@@ -19,13 +19,13 @@ const login = async (req, res, next) => {
 
 const syncUser = async (req, res, next) => {
     try {
-        const { uid, email, name, avatarUrl } = req.user;
+        const { uid, email, name, avatarUrl, phone } = req.user;
 
         if (!uid || !email) {
             return errorResponse(res, 400, 'Authenticated Firebase user must have uid and email');
         }
 
-        const user = await authService.syncUser({ uid, email, name, avatarUrl });
+        const user = await authService.syncUser({ uid, email, name, avatarUrl, phone });
         return dataResponse(res, 200, user);
     } catch (error) {
         console.error('Error syncing user:', error);
@@ -33,7 +33,25 @@ const syncUser = async (req, res, next) => {
     }
 };
 
+const updateProfile = async (req, res, next) => {
+    try {
+        const { uid } = req.user;
+        const { name, phone } = req.body;
+
+        if (!uid) {
+            return errorResponse(res, 401, 'Unauthorized');
+        }
+
+        const user = await authService.updateUser(uid, { name, phone });
+        return dataResponse(res, 200, user);
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        next(error);
+    }
+};
+
 module.exports = {
     login,
-    syncUser
+    syncUser,
+    updateProfile
 };  

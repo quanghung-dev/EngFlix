@@ -1,6 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- ===== TOP APP BAR ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <!-- Back button (circle background) -->
+        <FrameLayout
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_gray"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="#1A1A2E" />
+
+        </FrameLayout>
+
+        <!-- Title "Edit Profile" -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Edit Profile"
+            android:textColor="#1A1A2E"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
+
+    </LinearLayout>
+
+    <!-- ===== SCROLLABLE FORM ===== -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- ===== AVATAR SECTION ===== -->
+            <FrameLayout
+                android:id="@+id/layout_avatar"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="24dp">
+
+                <!-- Circular background for avatar -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/img_demo_avatar"
+                    app:civ_border_color="#F0E0D6"
+                    app:civ_border_width="0dp" />
+
+                <!-- Edit icon button (orange circle, bottom-right of avatar) -->
+                <FrameLayout
+                    android:id="@+id/btn_edit_avatar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/bg_circle_orange"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Edit avatar"
+                        android:src="@drawable/ic_pencil"
+                        app:tint="#FFFFFF" />
+
+                </FrameLayout>
+
+            </FrameLayout>
+
+            <!-- ===== FORM FIELDS ===== -->
+
+            <!-- Label: FULL NAME -->
+            <TextView
+                android:id="@+id/lbl_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="FULL NAME"
+                android:textColor="#6B7280"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- EditText: Full Name -->
+            <EditText
+                android:id="@+id/et_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Full Name"
+                android:inputType="textPersonName"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Vishal Khadok"
+                android:textColor="#1A1A2E"
+                android:textColorHint="#9CA3AF"
+                android:textSize="15sp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Label: EMAIL -->
+            <TextView
+                android:id="@+id/lbl_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="EMAIL"
+                android:textColor="#6B7280"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- EditText: Email -->
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="hello@halallab.co"
+                android:textColor="#1A1A2E"
+                android:textColorHint="#9CA3AF"
+                android:textSize="15sp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Label: PHONE NUMBER -->
+            <TextView
+                android:id="@+id/lbl_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="PHONE NUMBER"
+                android:textColor="#6B7280"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- EditText: Phone Number -->
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Phone Number"
+                android:inputType="phone"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="408-841-0926"
+                android:textColor="#1A1A2E"
+                android:textColorHint="#9CA3AF"
+                android:textSize="15sp"
+                android:layout_marginBottom="24dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ===== SAVE BUTTON (FIXED AT BOTTOM) ===== -->
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_button"
+        android:letterSpacing="0.08"
+        android:stateListAnimator="@null"
+        android:text="SAVE"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

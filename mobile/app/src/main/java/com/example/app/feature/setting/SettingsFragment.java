@@ -25,6 +25,7 @@ public class SettingsFragment extends Fragment {
     private CardView cardLogin;
     private CardView cardLogout;
     private LinearLayout rowNotes;
+    private LinearLayout cardProfile;
 
     @Nullable
     @Override
@@ -33,7 +34,10 @@ public class SettingsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        cardProfile = view.findViewById(R.id.cardProfile);
+        cardProfile.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_settingsFragment_to_ProfileFragment);
+                });
         tokenManager = TokenManager.getInstance(requireContext());
         tvTitle = view.findViewById(R.id.tvTitle);
         tvSubtitle = view.findViewById(R.id.tvSubtitle);
@@ -64,8 +68,10 @@ public class SettingsFragment extends Fragment {
                     && !userName.isEmpty() ? userName : "Người dùng");
             tvSubtitle.setText(userEmail != null ? userEmail : "");
 
-            //set kh cho an vao
-            cardLogin.setOnClickListener(null);
+            cardLogin.setOnClickListener(v -> {
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_settingsFragment_to_ProfileFragment);
+            });
             cardLogout.setVisibility(View.VISIBLE);
 
         } else {
@@ -83,11 +89,11 @@ public class SettingsFragment extends Fragment {
 
     private void setupMenuRows(View view) {
         view.findViewById(R.id.rowProgress).setOnClickListener(v -> {
-            // TODO: navigate sang ProgressFragment
+            Navigation.findNavController(v).navigate(R.id.progressFragment);
         });
 
-        view.findViewById(R.id.rowLeaderboard).setOnClickListener(v -> {
-            // TODO: navigate sang LeaderboardFragment
+        view.findViewById(R.id.rowMyVocabulary).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.vocabularyFragment);
         });
     }
 

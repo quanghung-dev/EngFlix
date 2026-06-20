@@ -112,6 +112,9 @@ router.post('/login', authController.login);
  *                     avatar_url:
  *                       type: string
  *                       nullable: true
+ *                     phone:
+ *                       type: string
+ *                       nullable: true
  *                     created_at:
  *                       type: string
  *                       format: date-time
@@ -122,6 +125,7 @@ router.post('/login', authController.login);
  *                 name: "Example User"
  *                 user_role: "User"
  *                 avatar_url: null
+ *                 phone: null
  *                 created_at: "2026-05-19T10:00:00.000Z"
  *       400:
  *         description: Authenticated Firebase user is missing uid or email
@@ -131,5 +135,80 @@ router.post('/login', authController.login);
  *         description: Internal server error
  */
 router.post('/sync', verifyToken, authController.syncUser);
+
+/**
+ * @swagger
+ * /api/v1/auth/profile:
+ *   put:
+ *     summary: Update user profile information
+ *     description: Updates the authenticated user's name and/or phone number. Both fields are optional and can be null.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 nullable: true
+ *               phone:
+ *                 type: string
+ *                 nullable: true
+ *           example:
+ *             name: "Updated Name"
+ *             phone: "0987654321"
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     uid:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                     name:
+ *                       type: string
+ *                       nullable: true
+ *                     user_role:
+ *                       type: string
+ *                     avatar_url:
+ *                       type: string
+ *                       nullable: true
+ *                     phone:
+ *                       type: string
+ *                       nullable: true
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *             example:
+ *               data:
+ *                 uid: "firebase-user-id"
+ *                 email: "user@example.com"
+ *                 name: "Updated Name"
+ *                 user_role: "User"
+ *                 avatar_url: null
+ *                 phone: "0987654321"
+ *                 created_at: "2026-05-19T10:00:00.000Z"
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Missing or expired bearer token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/profile', verifyToken, authController.updateProfile);
 
 module.exports = router;

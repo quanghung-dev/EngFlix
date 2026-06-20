@@ -48,21 +48,23 @@ const signInWithFirebase = async ({ email, password }) => {
     };
 };
 
-const syncUser = async ({ uid, email, name, avatarUrl = null }) => {
+const syncUser = async ({ uid, email, name, avatarUrl = null, phone = null }) => {
     const query = `
-        INSERT INTO users (uid, email, name, user_role, avatar_url)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO users (uid, email, name, user_role, avatar_url, phone)
+        VALUES ($1, $2, $3, $4, $5, $6)
         ON CONFLICT (uid) DO UPDATE
         SET
             email = EXCLUDED.email,
             name = COALESCE(EXCLUDED.name, users.name),
-            avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url)
+            avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+            phone = COALESCE(EXCLUDED.phone, users.phone)
         RETURNING
             uid,
             email,
             name,
             user_role,
             avatar_url,
+            phone,
             created_at
     `;
     const result = await pool.query(query, [
@@ -70,12 +72,58 @@ const syncUser = async ({ uid, email, name, avatarUrl = null }) => {
         email,
         name,
         ROLES.User,
-        avatarUrl
+        avatarUrl,
+        phone
     ]);
+    return result.rows[0];
+};
+
+const updateUser = async (uid, { name, phone }) => {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (name !== undefined) {
+        updates.push(`name = $${paramIndex}`);
+        values.push(name);
+        paramIndex++;
+    }
+
+    if (phone !== undefined) {
+        updates.push(`phone = $${paramIndex}`);
+        values.push(phone);
+        paramIndex++;
+    }
+
+    if (updates.length === 0) {
+        const result = await pool.query('SELECT uid, email, name, user_role, avatar_url, phone, created_at FROM users WHERE uid = $1', [uid]);
+        if (result.rows.length === 0) {
+            const error = new Error('User not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        return result.rows[0];
+    }
+
+    values.push(uid);
+    const query = `
+        UPDATE users
+        SET ${updates.join(', ')}
+        WHERE uid = $${paramIndex}
+        RETURNING uid, email, name, user_role, avatar_url, phone, created_at
+    `;
+
+    const result = await pool.query(query, values);
+    if (result.rows.length === 0) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
     return result.rows[0];
 };
 
 module.exports = {
     signInWithFirebase,
-    syncUser
+    syncUser,
+    updateUser
 };

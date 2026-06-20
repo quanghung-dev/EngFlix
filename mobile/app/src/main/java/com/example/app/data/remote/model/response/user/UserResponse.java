@@ -6,6 +6,7 @@ public class UserResponse {
         private String uid;
         private String email;
         private String name;
+        private String phone;
 
         @SerializedName("user_role")
         private String userRole;
@@ -40,4 +41,7 @@ public class UserResponse {
             return createdAt;
         }
 
+        public String getPhone() {
+        return phone;
+        }
 }

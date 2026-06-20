@@ -158,6 +158,15 @@
         <action
             android:id="@+id/action_settingsFragment_to_myNotesFragment"
             app:destination="@id/myNotesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_ProfileFragment"
+            app:destination="@id/ProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ProfileFragment"
+        android:name="com.example.app.feature.setting.ProfileFragment"
+        android:label="Cá nhân">
     </fragment>
 
 </navigation>

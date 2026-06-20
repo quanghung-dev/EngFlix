@@ -139,7 +139,10 @@ public class ItemPronunciationAdapter extends RecyclerView.Adapter<ItemPronuncia
 
         holder.cardPronunciation.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(position);
+                int adapterPos = holder.getBindingAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(adapterPos);
+                }
             }
         });
 

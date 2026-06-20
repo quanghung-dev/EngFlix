@@ -41,6 +41,7 @@
         app:cardElevation="8dp">
 
         <LinearLayout
+            android:id="@+id/cardProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -232,7 +233,7 @@
 
             
             <LinearLayout
-                android:id="@+id/rowLeaderboard"
+                android:id="@+id/rowMyVocabulary"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:orientation="horizontal"
@@ -265,7 +266,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Bảng Xếp Hạng"
+                    android:text="Từ vựng của tôi"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-medium" />

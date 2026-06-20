@@ -41,6 +41,7 @@ const verifyToken = async (req, res, next) => {
       email: decoded.email,
       name: decoded.name || decoded.email,
       avatarUrl: decoded.picture || null,
+      phone: decoded.phone_number || null,
     };
 
     next();

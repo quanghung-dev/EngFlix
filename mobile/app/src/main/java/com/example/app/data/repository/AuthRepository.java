@@ -6,6 +6,7 @@ import com.example.app.data.local.TokenManager;
 import com.example.app.data.remote.RetrofitClient;
 import com.example.app.data.remote.api.AuthApi;
 import com.example.app.data.remote.api.UserApi;
+import com.example.app.data.remote.model.request.auth.UpdateProfileRequest;
 import com.example.app.data.remote.model.response.ApiResponse;
 import com.example.app.data.remote.model.response.user.UserResponse;
 import com.google.firebase.auth.FirebaseAuth;
@@ -98,7 +99,8 @@ public class AuthRepository {
                                                         userResponse.getEmail(),
                                                         userResponse.getName(),
                                                         userResponse.getAvatarUrl(),
-                                                        userResponse.getUserRole()
+                                                        userResponse.getUserRole(),
+                                                        userResponse.getPhone()
                                                 );
                                                 callback.onSuccess(userResponse);
                                             } else {
@@ -123,6 +125,20 @@ public class AuthRepository {
                         callback.onError(errorMsg);
                     }
                 });
+    }
+    public void updateProfile(UpdateProfileRequest request, authCallBack<ApiResponse<UserResponse>> callback) {
+        userApi.updateProfile(request).enqueue(new Callback<ApiResponse<UserResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
+                callback.onError("Lỗi:" + t.getMessage());
+            }
+        });
+
     }
 
 

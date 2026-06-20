@@ -79,17 +79,18 @@ public class LoginFragment extends Fragment {
         authRepository.login(email, password, new AuthRepository.authCallBack<UserResponse>() {
             @Override
             public void onSuccess(UserResponse data) {
-                requireActivity().runOnUiThread(() -> {
+                if (isAdded() && getView() != null) {
                     Toast.makeText(requireContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(requireView())
+                    Navigation.findNavController(getView())
                             .navigate(R.id.action_LoginFragment_to_StudyFragment);
-                });
+                }
             }
             @Override
             public void onError(String message) {
-                Toast.makeText(requireContext(), "Lỗi đăng nhập "
-                        + message, android.widget.Toast.LENGTH_SHORT).show();
-
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), "Lỗi đăng nhập "
+                            + message, android.widget.Toast.LENGTH_SHORT).show();
+                }
             }
 
         });

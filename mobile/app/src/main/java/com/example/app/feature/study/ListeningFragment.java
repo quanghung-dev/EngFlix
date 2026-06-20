@@ -580,8 +580,47 @@ public class ListeningFragment extends Fragment {
         file.writeInt(Integer.reverseBytes(audioLen));
     }
 
+    private void stopRecordingForCleanup() {
+        isRecording = false;
+        setMicRecordingState(false);
+
+        if (audioRecord != null) {
+            try {
+                audioRecord.stop();
+            } catch (Exception e) {
+                Log.e("ListeningFragment", "Error stopping AudioRecord", e);
+            }
+        }
+
+        try {
+            if (recordingThread != null) {
+                recordingThread.join();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (audioRecord != null) {
+            audioRecord.release();
+            audioRecord = null;
+        }
+
+        recordingThread = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (isRecording) {
+            stopRecordingForCleanup();
+        }
+        if (youTubeWebViewManager != null) {
+            youTubeWebViewManager.destroy();
+        }
+        if (micPulseAnimator != null) {
+            micPulseAnimator.cancel();
+            micPulseAnimator = null;
+        }
+    }
+
 }
-
-
-
-

@@ -66,32 +66,35 @@ public class WordCardAdapter extends RecyclerView.Adapter<WordCardAdapter.WordCa
     @Override
     public void onBindViewHolder(@NonNull WordCardViewHolder holder, int position) {
         WorkCardModel currentWord = list.get(position);
-            if (currentWord.isIncorrect()) {
-                holder.tvWord.setBackgroundResource(R.drawable.bg_word_incorrect);
-                String hiddenText = currentWord.getWord().replaceAll("[a-zA-Z0-9]", "*");
-                holder.tvWord.setText(hiddenText);
+        if (currentWord.isIncorrect()) {
+            holder.tvWord.setBackgroundResource(R.drawable.bg_word_incorrect);
+            String hiddenText = currentWord.getWord().replaceAll("[a-zA-Z0-9]", "*");
+            holder.tvWord.setText(hiddenText);
+            holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
+        } else if (currentWord.isSelected()) {
+            if (currentWord.isCorrect()) {
+                holder.tvWord.setBackgroundResource(R.drawable.bg_word_correct);
                 holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
-            } else if (currentWord.isSelected()) {
-                if (currentWord.isCorrect()) {
-                    holder.tvWord.setBackgroundResource(R.drawable.bg_word_correct);
-                    holder.tvWord.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
-                } else {
-                    holder.tvWord.setBackgroundResource(R.drawable.bg_card_white);
-                    holder.tvWord.setTextColor(android.graphics.Color.parseColor("#1A1A1A"));
-                }
-                holder.tvWord.setText(currentWord.getWord());
+            } else {
+                holder.tvWord.setBackgroundResource(R.drawable.bg_card_white);
+                holder.tvWord.setTextColor(android.graphics.Color.parseColor("#1A1A1A"));
             }
-            else{
-                holder.tvWord.setBackgroundResource(R.drawable.bg_word_hidden);
-                String hiddenText = currentWord.getWord().replaceAll("[a-zA-Z0-9]", "*");
-                holder.tvWord.setText(hiddenText);
-                holder.tvWord.setTextColor(android.graphics.Color.parseColor("#999999"));
-            }
-            holder.tvWord.setOnClickListener(v -> {
-                if(!currentWord.isSelected()){
-                    listener.onWordClick(position,currentWord);
+            holder.tvWord.setText(currentWord.getWord());
+        } else {
+            holder.tvWord.setBackgroundResource(R.drawable.bg_word_hidden);
+            String hiddenText = currentWord.getWord().replaceAll("[a-zA-Z0-9]", "*");
+            holder.tvWord.setText(hiddenText);
+            holder.tvWord.setTextColor(android.graphics.Color.parseColor("#999999"));
+        }
+        holder.tvWord.setOnClickListener(v -> {
+            int adapterPos = holder.getBindingAdapterPosition();
+            if (adapterPos != RecyclerView.NO_POSITION) {
+                WorkCardModel word = list.get(adapterPos);
+                if (!word.isSelected()) {
+                    listener.onWordClick(adapterPos, word);
                 }
-            });
+            }
+        });
     }
 
     @Override
