@@ -44,7 +44,11 @@ app.use('/api/v1/pronunciation', pronunciationProgressRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server EngFlex is running at http://localhost:${PORT}`);
-    console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server EngFlex is running at http://localhost:${PORT}`);
+        console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
+    });
+}
+
+module.exports = app;
