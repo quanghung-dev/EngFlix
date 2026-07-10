@@ -6,7 +6,9 @@ const router = express.Router();
 const verifyToken = require('../middlewares/auth.js');
 const pronunciationAttemptsController = require('../controllers/pronunciationAttemptsController.js');
 
-const uploadDir = path.join(__dirname, '../audio');
+const os = require('os');
+
+const uploadDir = path.join(os.tmpdir(), 'audio');
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const upload = multer({
