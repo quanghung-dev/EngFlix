@@ -101,6 +101,7 @@ router.use(verifyToken);
  *       500:
  *         description: Internal server error
  */
+router.get('/', transcriptBookmarksController.getAllTranscriptBookmarks);
 router.get('/:lessonId', transcriptBookmarksController.getTranscriptBookmarksByUserId);
 
 /**

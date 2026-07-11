@@ -54,6 +54,40 @@ const getTranscriptBookmarksByUserId = async (user_id, lessonId, limit, offset) 
     };
 };
 
+const getAllTranscriptBookmarks = async (user_id, limit, offset) => {
+    const query = `
+        SELECT tb.id,
+               tb.user_id,
+               tb.transcript_id,
+               t.lesson_id,
+               l.title AS lesson_title,
+               t.content AS original_content,
+               t.phonetic AS phonetic_content,
+               t.vietnamese AS vietnamese_content,
+               tb.note,
+               tb.created_at
+        FROM transcript_bookmarks tb
+        JOIN transcripts t ON tb.transcript_id = t.id
+        JOIN lessons l ON t.lesson_id = l.id
+        WHERE tb.user_id = $1
+        ORDER BY tb.created_at DESC
+        LIMIT $2 OFFSET $3
+    `;
+    const countQuery = `
+        SELECT COUNT(*) AS count
+        FROM transcript_bookmarks tb
+        WHERE tb.user_id = $1
+    `;
+    const [dataResult, countResult] = await Promise.all([
+        pool.query(query, [user_id, limit, offset]),
+        pool.query(countQuery, [user_id])
+    ]);
+    return {
+        bookmarks: dataResult.rows,
+        totalCount: parseInt(countResult.rows[0].count, 10)
+    };
+};
+
 const updateTranscriptBookmark = async (user_id, id, note) => {
     const query = `UPDATE transcript_bookmarks SET note = $1 WHERE id = $2 AND user_id = $3 RETURNING *`;
     const result = await pool.query(query, [note, id, user_id]);
@@ -68,6 +102,7 @@ const deleteTranscriptBookmark = async (user_id, id) => {
 module.exports = {
     createTranscriptBookmark,
     getTranscriptBookmarksByUserId,
+    getAllTranscriptBookmarks,
     updateTranscriptBookmark,
     deleteTranscriptBookmark
 };

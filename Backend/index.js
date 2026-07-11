@@ -20,6 +20,9 @@ const vocabularyRoutes = require('./routes/vocabularyRoutes.js');
 const vocabularyDecksRoutes = require('./routes/vocabularyDecksRoutes.js');
 const pronunciationAttemptsRoutes = require('./routes/pronunciationAttemptsRoutes.js');
 const pronunciationProgressRoutes = require('./routes/pronunciationProgressRoutes.js');
+const chatRoutes = require('./routes/chatRoutes.js');
+const friendshipRoutes = require('./routes/friendshipRoutes.js');
+const postRoutes = require('./routes/postRoutes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -41,6 +44,9 @@ app.use('/api/v1/vocabulary-decks', vocabularyDecksRoutes);
 app.use('/api/v1/pronunciation-attempts', pronunciationAttemptsRoutes);
 app.use('/api/v1/pronunciation', pronunciationAttemptsRoutes);
 app.use('/api/v1/pronunciation', pronunciationProgressRoutes);
+app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/friendships', friendshipRoutes);
+app.use('/api/v1/posts', postRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

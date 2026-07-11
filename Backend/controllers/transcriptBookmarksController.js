@@ -88,9 +88,29 @@ const deleteTranscriptBookmark = async (req, res, next) => {
         next(error);
     }
 };
+
+const getAllTranscriptBookmarks = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        if (!userId) {
+            return errorResponse(res, 400, 'userId is required');
+        }
+
+        const { page, limit, offset } = getPagination(req.query);
+        const { bookmarks, totalCount } = await transcriptBookmarksService.getAllTranscriptBookmarks(userId, limit, offset);
+        if (!bookmarks) {
+            return errorResponse(res, 404, 'Transcript bookmarks not found');
+        }
+        return dataResponse(res, 200, bookmarks, buildPaginationMeta(page, limit, totalCount));
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createTranscriptBookmark,
     getTranscriptBookmarksByUserId,
+    getAllTranscriptBookmarks,
     updateTranscriptBookmark,
     deleteTranscriptBookmark
 };
