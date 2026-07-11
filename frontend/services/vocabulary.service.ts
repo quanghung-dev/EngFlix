@@ -187,3 +187,44 @@ export async function deleteVocabularyItem(
     throw error
   }
 }
+
+export interface QuizQuestionType {
+  id: number
+  phrase: string
+  meaning: string
+  note: string
+  example_sentence: string
+  choices: string[]
+}
+
+export interface AITranslationType {
+  phrase: string
+  phonetic: string
+  meaning: string
+  note: string
+  example_sentence: string
+  example_translation: string
+}
+
+// Tải câu hỏi trắc nghiệm từ vựng cá nhân
+export async function getVocabularyQuiz(): Promise<DataResponse<QuizQuestionType[]>> {
+  try {
+    return await apiRequest<DataResponse<QuizQuestionType[]>>("vocabulary-categories/quiz")
+  } catch (error) {
+    console.error("Không thể tải bài trắc nghiệm từ vựng", error)
+    throw error
+  }
+}
+
+// Dịch từ vựng nhanh bằng AI DeepSeek
+export async function translatePhraseAI(text: string): Promise<DataResponse<AITranslationType>> {
+  try {
+    return await apiRequest<DataResponse<AITranslationType>>("vocabulary-categories/translate", {
+      method: "POST",
+      body: JSON.stringify({ text })
+    })
+  } catch (error) {
+    console.error(`Không thể dịch từ "${text}" bằng AI`, error)
+    throw error
+  }
+}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   BookOpen,
   Plus,
@@ -344,14 +345,25 @@ export default function VocabularyPage() {
           </p>
         </div>
 
-        <Button
-          variant="product"
-          size="sm"
-          onClick={() => setShowCreateDeckModal(true)}
-          className="font-mono text-xs uppercase gap-1.5 self-start md:self-auto"
-        >
-          <Plus className="size-4" /> Tạo bộ từ mới
-        </Button>
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+          <Link href="/vocabulary/quiz">
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-mono text-xs uppercase gap-1.5 text-yellow-400 border-yellow-400/30 hover:bg-yellow-400/10 hover:border-yellow-400/50"
+            >
+              <Sparkles className="size-4 text-yellow-400 animate-pulse" /> Trắc nghiệm từ vựng
+            </Button>
+          </Link>
+          <Button
+            variant="product"
+            size="sm"
+            onClick={() => setShowCreateDeckModal(true)}
+            className="font-mono text-xs uppercase gap-1.5"
+          >
+            <Plus className="size-4" /> Tạo bộ từ mới
+          </Button>
+        </div>
       </div>
 
       {/* 2. Menu Điều hướng & Tìm kiếm */}

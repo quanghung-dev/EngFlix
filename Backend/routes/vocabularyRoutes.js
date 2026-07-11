@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../middlewares/auth.js');
 const vocabularyController = require('../controllers/vocabularyController.js');
 
 /**
@@ -98,5 +99,7 @@ const vocabularyController = require('../controllers/vocabularyController.js');
  *         description: Internal server error
  */
 router.get('/', vocabularyController.getVocabulary);
+router.post('/translate', verifyToken, vocabularyController.translatePhrase);
+router.get('/quiz', verifyToken, vocabularyController.getVocabularyQuiz);
 
 module.exports = router;

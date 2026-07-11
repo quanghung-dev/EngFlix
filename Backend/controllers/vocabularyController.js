@@ -1,5 +1,7 @@
 const { errorResponse, dataResponse } = require('../utils/response');
 const vocabularyService = require('../services/vocabularyService.js');
+const vocabularyItemsService = require('../services/vocabularyItemsService.js');
+const translationService = require('../services/translationService.js');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 
 const getVocabulary = async (req, res , next) => {
@@ -88,10 +90,39 @@ const deleteVocabularyCategory = async (req, res, next) => {
     }
 }
 
+const translatePhrase = async (req, res, next) => {
+    try {
+        const { text } = req.body;
+        if (!text || !text.trim()) {
+            return errorResponse(res, 400, 'Text is required');
+        }
+        const translation = await translationService.translateWordWithAI(text.trim());
+        return dataResponse(res, 200, translation);
+    } catch (error) {
+        console.error('Error translating phrase:', error);
+        next(error);
+    }
+};
+
+const getVocabularyQuiz = async (req, res, next) => {
+    try {
+        const userId = req.user?.uid;
+        if (!userId) return errorResponse(res, 401, 'Unauthorized');
+
+        const questions = await vocabularyItemsService.getUserVocabularyForQuiz(userId);
+        return dataResponse(res, 200, questions);
+    } catch (error) {
+        console.error('Error fetching vocabulary quiz:', error);
+        next(error);
+    }
+};
+
 module.exports = {
     getVocabulary,
     createVocabularyCategory,
     getVocabularyCategorybyCategory,
     updateVocabularyCategory,
-    deleteVocabularyCategory
-}
+    deleteVocabularyCategory,
+    translatePhrase,
+    getVocabularyQuiz
+};

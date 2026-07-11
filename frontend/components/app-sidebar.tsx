@@ -22,7 +22,8 @@ import {
   Award,
   Save,
   Users,
-  Globe
+  Globe,
+  BarChart3
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -50,6 +51,7 @@ const navigationItems = [
   { title: "Ghi chú của tôi", url: "/notes", icon: Notebook },
   { title: "Bạn bè", url: "/friends", icon: Users },
   { title: "Cộng đồng", url: "/community", icon: Globe },
+  { title: "Tiến độ học", url: "/progress", icon: BarChart3 },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

@@ -23,6 +23,7 @@ const pronunciationProgressRoutes = require('./routes/pronunciationProgressRoute
 const chatRoutes = require('./routes/chatRoutes.js');
 const friendshipRoutes = require('./routes/friendshipRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
+const progressRoutes = require('./routes/progressRoutes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -47,6 +48,7 @@ app.use('/api/v1/pronunciation', pronunciationProgressRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/friendships', friendshipRoutes);
 app.use('/api/v1/posts', postRoutes);
+app.use('/api/v1/progress', progressRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

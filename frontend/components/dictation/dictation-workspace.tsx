@@ -91,6 +91,62 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
   const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef<any>(null)
 
+  // State dịch từ vựng nhanh
+  const [translateLoading, setTranslateLoading] = useState(false)
+  const [translationResult, setTranslationResult] = useState<any | null>(null)
+  const [savingWord, setSavingWord] = useState(false)
+
+  const handleTranslateWord = async (word: string) => {
+    setTranslateLoading(true)
+    setTranslationResult(null)
+    try {
+      const { translatePhraseAI } = await import("@/services/vocabulary.service")
+      const res = await translatePhraseAI(word)
+      if (res.data) {
+        setTranslationResult(res.data)
+      }
+    } catch (err) {
+      console.error("Lỗi dịch từ vựng:", err)
+    } finally {
+      setTranslateLoading(false)
+    }
+  }
+
+  const handleSaveWord = async () => {
+    if (!translationResult) return
+    setSavingWord(true)
+    try {
+      const { getMyVocabularyDecks, createVocabularyDeck, addVocabularyItem } = await import("@/services/vocabulary.service")
+      const decksRes = await getMyVocabularyDecks()
+      const deckList = decksRes.data || []
+      let defaultDeck = deckList.find((d) => d.is_default) || deckList[0]
+
+      if (!defaultDeck) {
+        const createRes = await createVocabularyDeck({ name: "Từ vựng mặc định" })
+        defaultDeck = createRes.data
+      }
+
+      if (defaultDeck) {
+        await addVocabularyItem(defaultDeck.id, {
+          phrase: translationResult.phrase,
+          normalized_phrase: translationResult.phrase.toLowerCase(),
+          meaning: translationResult.meaning,
+          note: translationResult.note,
+          example_sentence: translationResult.example_sentence,
+          lesson_id: lessonId,
+          transcript_id: activeTranscript?.id
+        })
+        alert(`Đã lưu "${translationResult.phrase}" vào bộ từ "${defaultDeck.name}"!`)
+        setTranslationResult(null)
+      }
+    } catch (err) {
+      console.error("Lỗi lưu từ:", err)
+      alert("Không thể lưu từ vựng.")
+    } finally {
+      setSavingWord(false)
+    }
+  }
+
   // Parse YouTube video ID
   const getYouTubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
@@ -889,6 +945,102 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                 </Button>
               </div>
             </div>
+
+            {/* Khối dịch từ vựng nhanh (Clickable sentence words) */}
+            {activeTranscript && (
+              <div className="flex flex-wrap gap-1.5 items-center justify-center p-3 rounded-control border border-stroke bg-canvas-deep/40 text-center mb-5">
+                <span className="text-[10px] font-mono text-copy-muted block w-full uppercase mb-1">Click vào từ tiếng Anh bất kỳ để dịch nhanh bằng AI:</span>
+                {activeTranscript.content.split(/\s+/).map((word, idx) => {
+                  const cleanWord = word.replace(/^[.,\/#!$%\^&\*;:{}=\-_`~()?"'“]+/g, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'”]+$/g, "")
+                  if (!cleanWord) return <span key={idx} className="text-copy-muted text-xs font-mono">{word}</span>
+                  return (
+                    <span
+                      key={idx}
+                      onClick={() => handleTranslateWord(cleanWord)}
+                      className="text-xs hover:text-brand-cyan hover:underline cursor-pointer transition select-none font-mono text-copy-secondary"
+                    >
+                      {word}
+                    </span>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* POPUP DỊCH NHANH BẰNG AI DEEPSEEK */}
+            {(translateLoading || translationResult) && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div className="w-full max-w-sm rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal mx-4 relative animate-scale-in">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTranslationResult(null)
+                      setTranslateLoading(false)
+                    }}
+                    className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-white transition"
+                  >
+                    <X className="size-4" />
+                  </button>
+
+                  <h3 className="text-xs font-semibold font-mono tracking-wide uppercase text-brand-cyan mb-4 flex items-center gap-2">
+                    <Sparkles className="size-4 text-brand-cyan animate-pulse" /> Dịch thuật thông minh AI
+                  </h3>
+
+                  {translateLoading ? (
+                    <div className="flex flex-col items-center justify-center py-8 gap-3">
+                      <div className="size-6 animate-spin rounded-full border-2 border-brand-cyan border-t-transparent" />
+                      <span className="text-xs text-copy-muted font-mono animate-pulse">DeepSeek đang dịch từ...</span>
+                    </div>
+                  ) : (
+                    translationResult && (
+                      <div className="space-y-4">
+                        <div className="bg-canvas-deep border border-stroke p-3 rounded-card text-center">
+                          <h4 className="text-base font-bold text-white">{translationResult.phrase}</h4>
+                          <p className="text-xs font-mono text-copy-muted mt-1">{translationResult.phonetic}</p>
+                          <span className="inline-block text-[9px] font-mono text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
+                          <p className="text-xs font-semibold text-emerald-400">{translationResult.meaning}</p>
+                        </div>
+
+                        {translationResult.example_sentence && (
+                          <div className="border-t border-stroke/40 pt-3">
+                            <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Ví dụ minh hoạ</span>
+                            <p className="text-xs text-copy-secondary italic leading-relaxed">“{translationResult.example_sentence}”</p>
+                            {translationResult.example_translation && (
+                              <p className="text-xs text-copy-muted italic leading-relaxed mt-1">→ “{translationResult.example_translation}”</p>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="border-t border-stroke/40 pt-4 flex items-center justify-end gap-2">
+                          <Button
+                            variant="glass"
+                            size="sm"
+                            type="button"
+                            onClick={() => setTranslationResult(null)}
+                            className="font-mono text-xs uppercase"
+                          >
+                            Đóng
+                          </Button>
+                          <Button
+                            variant="product"
+                            size="sm"
+                            type="button"
+                            onClick={handleSaveWord}
+                            disabled={savingWord}
+                            className="font-mono text-xs uppercase"
+                          >
+                            {savingWord ? "Đang lưu..." : "Lưu từ"}
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Tiêu đề vùng gõ */}
             <p className="font-mono text-[10px] font-bold tracking-widest text-brand-cyan uppercase mb-3">
