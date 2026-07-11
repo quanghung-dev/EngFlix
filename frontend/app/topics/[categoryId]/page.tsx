@@ -1,34 +1,29 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+
 import LessonDetail from "@/components/topics/lessonDetail"
 
+export const metadata: Metadata = {
+  title: "Bài học theo chủ đề",
+}
+
 interface PageProps {
-    params: Promise<{
-        categoryId: string;
-    }>;
+  params: Promise<{
+    categoryId: string
+  }>
 }
 
 export default async function Page({ params }: PageProps) {
-    const { categoryId } = await params;
-    const parsedId = parseInt(categoryId, 10);
+  const { categoryId } = await params
+  const parsedId = Number(categoryId)
 
-    return (
-        <SidebarProvider
-            style={
-                {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                } as React.CSSProperties
-            }
-        >
-            <AppSidebar variant="inset" />
-            <SidebarInset>
-                <SiteHeader />
-                <div className="p-5">
-                    <LessonDetail categoryId={isNaN(parsedId) ? 1 : parsedId} />
-                </div>
-            </SidebarInset>
-        </SidebarProvider>
-    )
+  if (!Number.isSafeInteger(parsedId) || parsedId <= 0) {
+    notFound()
+  }
+
+  return (
+    <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-16">
+      <LessonDetail categoryId={parsedId} />
+    </div>
+  )
 }

@@ -1,89 +1,138 @@
-import * as React from "react"
 import Image from "next/image"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { PencilLine, Mic, BookOpen } from "lucide-react"
+import { BookOpenIcon, MicIcon, PencilLineIcon } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface StudyModeDialogProps {
   open: boolean
+  lessonTitle?: string
   onOpenChange: (open: boolean) => void
-  onSelectMode?: (mode: "dictation" | "shadowing") => void
+  onSelectMode: (mode: "dictation" | "shadowing") => void
 }
 
 export function StudyModeDialog({
   open,
+  lessonTitle,
   onOpenChange,
   onSelectMode,
 }: StudyModeDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[720px] bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-950 dark:text-zinc-50 p-8 rounded-3xl">
-        <div className="flex flex-col items-center text-center space-y-2 mb-6">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Chọn chế độ học
-          </h2>
-          <p className="text-zinc-500 dark:text-zinc-400 text-[15px] font-medium">
-            Chọn chế độ học phù hợp với bạn nhất
+      <DialogContent className="max-h-[90svh] overflow-y-auto rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal sm:max-w-[720px] sm:rounded-feature sm:p-8">
+        <DialogHeader className="pr-12">
+          <p className="font-mono text-[11px] font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+            Bắt đầu luyện tập
           </p>
-        </div>
+          <DialogTitle className="text-2xl leading-tight font-semibold tracking-tight text-white sm:text-3xl">
+            Chọn chế độ học
+          </DialogTitle>
+          <DialogDescription className="max-w-xl text-sm leading-6 text-copy-muted sm:text-base sm:leading-7">
+            {lessonTitle
+              ? `Bạn muốn luyện “${lessonTitle}” theo cách nào?`
+              : "Chọn cách luyện phù hợp với mục tiêu của bạn."}
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-          {/* Card 1: Nghe - Viết chính tả */}
-          <div
-            onClick={() => onSelectMode?.("dictation")}
-            className="group border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/10 rounded-3xl p-6 flex flex-col items-center justify-between min-h-[300px] cursor-pointer transition-all duration-300 relative overflow-hidden"
-          >
-            {/* Đang học Badge */}
-            <div className="absolute top-4 right-4 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 px-2.5 py-1 text-[11px] font-bold rounded-lg flex items-center gap-1.5 shadow-xs">
-              <BookOpen className="size-3.5" />
-              ĐANG HỌC
-            </div>
-
-            {/* Mascot Image */}
-            <div className="flex-1 flex items-center justify-center py-4 mt-4">
-              <div className="relative w-36 h-36">
-                <Image
-                  src="/owl_writing_white.png"
-                  alt="Dictation Owl"
-                  fill
-                  sizes="144px"
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-            </div>
-
-            {/* Bottom Title */}
-            <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-50 font-bold text-lg uppercase tracking-wide mt-2">
-              <PencilLine className="size-5 text-zinc-500 group-hover:text-amber-500 transition-colors" />
-              <span>Nghe - Viết chính tả</span>
-            </div>
-          </div>
-
-          {/* Card 2: Bắt chước phát âm */}
-          <div
-            onClick={() => onSelectMode?.("shadowing")}
-            className="group border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 rounded-3xl p-6 flex flex-col items-center justify-between min-h-[300px] cursor-pointer transition-all duration-300 relative overflow-hidden"
-          >
-            {/* Mascot Image */}
-            <div className="flex-1 flex items-center justify-center py-4">
-              <div className="relative w-36 h-36">
-                <Image
-                  src="/owl_speaking_white.png"
-                  alt="Shadowing Owl"
-                  fill
-                  sizes="144px"
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-            </div>
-
-            {/* Bottom Title */}
-            <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-50 font-bold text-lg uppercase tracking-wide mt-2">
-              <Mic className="size-5 text-zinc-500 group-hover:text-blue-500 transition-colors" />
-              <span>Bắt chước phát âm</span>
-            </div>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+          <ModeOption
+            mode="dictation"
+            title="Nghe và viết chính tả"
+            description="Nghe từng câu, điền lại nội dung và kiểm tra độ chính xác."
+            image="/owl-writing-cinematic.webp"
+            imageAlt="Cú EngFlex đang luyện viết chính tả"
+            accent="gold"
+            icon={<PencilLineIcon aria-hidden="true" />}
+            onSelect={onSelectMode}
+          />
+          <ModeOption
+            mode="shadowing"
+            title="Nhại giọng phát âm"
+            description="Nghe, lặp lại và rèn nhịp điệu nói tự nhiên theo nhân vật."
+            image="/owl-speaking-cinematic.webp"
+            imageAlt="Cú EngFlex đang luyện nói"
+            accent="violet"
+            icon={<MicIcon aria-hidden="true" />}
+            onSelect={onSelectMode}
+          />
         </div>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function ModeOption({
+  mode,
+  title,
+  description,
+  image,
+  imageAlt,
+  accent,
+  icon,
+  onSelect,
+}: {
+  mode: "dictation" | "shadowing"
+  title: string
+  description: string
+  image: string
+  imageAlt: string
+  accent: "gold" | "violet"
+  icon: React.ReactNode
+  onSelect: (mode: "dictation" | "shadowing") => void
+}) {
+  const isGold = accent === "gold"
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={() => onSelect(mode)}
+      className={`product-focus group h-auto min-h-72 w-full flex-col items-stretch justify-between overflow-hidden rounded-card border bg-surface-inner p-6 text-left whitespace-normal shadow-none transition duration-300 hover:-translate-y-1 hover:bg-surface-inner motion-reduce:transform-none ${
+        isGold
+          ? "border-action-gold/20 hover:border-action-gold/40"
+          : "border-accent-violet/20 hover:border-accent-violet/40"
+      }`}
+    >
+      <span className="flex items-center justify-between gap-3">
+        <Badge variant={isGold ? "attention" : "support"}>
+          {isGold ? "LUYỆN NGHE" : "LUYỆN NÓI"}
+        </Badge>
+        <BookOpenIcon
+          className={isGold ? "text-action-gold" : "text-accent-violet"}
+          aria-hidden="true"
+        />
+      </span>
+
+      <span className="my-4 flex justify-center">
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={144}
+          height={144}
+          className="size-36 rounded-panel object-contain transition-transform duration-300 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transform-none"
+        />
+      </span>
+
+      <span className="flex flex-col gap-2">
+        <span className="flex items-center gap-2 text-lg font-semibold text-white">
+          <span
+            className={isGold ? "text-action-gold" : "text-accent-violet"}
+          >
+            {icon}
+          </span>
+          {title}
+        </span>
+        <span className="text-sm leading-6 font-normal text-copy-muted">
+          {description}
+        </span>
+      </span>
+    </Button>
   )
 }

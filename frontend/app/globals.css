@@ -39,6 +39,29 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-canvas: var(--engflex-canvas);
+  --color-canvas-deep: var(--engflex-canvas-deep);
+  --color-surface-glass: var(--engflex-surface-glass);
+  --color-surface-panel: var(--engflex-surface-panel);
+  --color-surface-inner: var(--engflex-surface-inner);
+  --color-brand-cyan: var(--engflex-brand-cyan);
+  --color-focus: var(--engflex-focus);
+  --color-action-gold: var(--engflex-action-gold);
+  --color-accent-violet: var(--engflex-accent-violet);
+  --color-status-success: var(--engflex-status-success);
+  --color-copy-secondary: var(--engflex-text-secondary);
+  --color-copy-muted: var(--engflex-text-muted);
+  --color-copy-subtle: var(--engflex-text-subtle);
+  --color-stroke-subtle: var(--engflex-border-subtle);
+  --color-stroke: var(--engflex-border-default);
+  --color-stroke-strong: var(--engflex-border-strong);
+  --radius-control: 0.75rem;
+  --radius-nav: 1rem;
+  --radius-panel: 1.5rem;
+  --radius-card: 1.75rem;
+  --radius-feature: 2rem;
+  --shadow-card: var(--engflex-shadow-card);
+  --shadow-modal: var(--engflex-shadow-modal);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,6 +72,31 @@
 }
 
 :root {
+  --engflex-canvas: #050b18;
+  --engflex-canvas-deep: #040b16;
+  --engflex-surface-glass: rgb(13 27 48 / 72%);
+  --engflex-surface-panel: rgb(8 21 34 / 70%);
+  --engflex-surface-inner: rgb(6 17 28 / 74%);
+  --engflex-brand-cyan: #6ee7f2;
+  --engflex-focus: #67e8f9;
+  --engflex-action-gold: #f7c76f;
+  --engflex-accent-violet: #c4b5fd;
+  --engflex-status-success: #9af7c5;
+  --engflex-text-primary: #ffffff;
+  --engflex-text-secondary: #cbd5e1;
+  --engflex-text-muted: #94a3b8;
+  --engflex-text-subtle: #64748b;
+  --engflex-border-subtle: rgb(255 255 255 / 7%);
+  --engflex-border-default: rgb(255 255 255 / 9%);
+  --engflex-border-strong: rgb(255 255 255 / 14%);
+  --engflex-hover-surface: rgb(255 255 255 / 5%);
+  --engflex-cyan-tint: rgb(110 231 242 / 10%);
+  --engflex-gold-tint: rgb(247 199 111 / 10%);
+  --engflex-violet-tint: rgb(196 181 253 / 10%);
+  --engflex-success-tint: rgb(154 247 197 / 10%);
+  --engflex-shadow-card: 0 28px 80px rgb(0 0 0 / 22%), inset 0 1px rgb(255 255 255 / 6%);
+  --engflex-shadow-modal: 0 34px 100px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%);
+  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(110 231 242 / 8%), transparent 34rem);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -81,6 +129,60 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* EngFlex product shell --------------------------------------------------- */
+.product-shell {
+  /* A slightly brighter navy ramp for product pages and their sidebar. */
+  --engflex-canvas: #081426;
+  --engflex-canvas-deep: #061020;
+  --engflex-surface-glass: rgb(20 40 68 / 78%);
+  --engflex-surface-panel: rgb(15 33 55 / 80%);
+  --engflex-surface-inner: rgb(11 27 46 / 86%);
+  --engflex-hover-surface: rgb(255 255 255 / 7%);
+  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(110 231 242 / 11%), transparent 34rem);
+  --background: var(--engflex-canvas);
+  --foreground: var(--engflex-text-primary);
+  --card: var(--engflex-surface-panel);
+  --card-foreground: var(--engflex-text-primary);
+  --popover: var(--engflex-canvas-deep);
+  --popover-foreground: var(--engflex-text-primary);
+  --primary: var(--engflex-brand-cyan);
+  --primary-foreground: var(--engflex-canvas);
+  --secondary: var(--engflex-surface-inner);
+  --secondary-foreground: var(--engflex-text-secondary);
+  --muted: var(--engflex-hover-surface);
+  --muted-foreground: var(--engflex-text-muted);
+  --accent: var(--engflex-hover-surface);
+  --accent-foreground: var(--engflex-text-primary);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: var(--engflex-border-default);
+  --input: var(--engflex-border-strong);
+  --ring: var(--engflex-focus);
+  --sidebar: var(--engflex-canvas-deep);
+  --sidebar-foreground: var(--engflex-text-secondary);
+  --sidebar-primary: var(--engflex-cyan-tint);
+  --sidebar-primary-foreground: var(--engflex-text-primary);
+  --sidebar-accent: var(--engflex-hover-surface);
+  --sidebar-accent-foreground: var(--engflex-text-primary);
+  --sidebar-border: var(--engflex-border-subtle);
+  --sidebar-ring: var(--engflex-focus);
+  background: var(--engflex-atmosphere), var(--background);
+  color-scheme: dark;
+}
+
+.product-shell ::selection {
+  background: rgb(110 231 242 / 28%);
+  color: var(--engflex-text-primary);
+}
+
+.product-focus {
+  outline: none;
+}
+
+.product-focus:focus-visible {
+  outline: 2px solid var(--engflex-focus);
+  outline-offset: 4px;
 }
 
 .dark {
@@ -482,7 +584,10 @@
 
   .landing-shell *,
   .landing-shell *::before,
-  .landing-shell *::after {
+  .landing-shell *::after,
+  .product-shell *,
+  .product-shell *::before,
+  .product-shell *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

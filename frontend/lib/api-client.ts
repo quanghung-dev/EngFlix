@@ -2,6 +2,20 @@ import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
+function normalizeHeaders(headers?: HeadersInit) {
+    const norm = headers
+        ? Object.fromEntries(new Headers(headers).entries())
+        : {};
+        
+    if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+        if (token) {
+            norm["Authorization"] = `Bearer ${token}`;
+        }
+    }
+    return norm;
+}
+
 export const api = axios.create({
     baseURL: BASE_URL,
     headers: {
@@ -21,7 +35,7 @@ export async function apiRequest<T>(
         url: endpoint,
         method: method,
         data: requestData,
-        headers: options?.headers as any,
+        headers: normalizeHeaders(options?.headers),
     });
 
     return response.data;

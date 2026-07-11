@@ -18,6 +18,10 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        product:
+          "product-focus border-brand-cyan bg-brand-cyan text-canvas font-semibold shadow-sm hover:brightness-105 focus-visible:border-focus focus-visible:ring-focus/30",
+        glass:
+          "product-focus border-stroke-strong bg-surface-inner text-foreground font-semibold hover:border-brand-cyan/40 hover:bg-surface-glass focus-visible:border-focus focus-visible:ring-focus/30",
       },
       size: {
         default:
@@ -31,6 +35,8 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        app: "h-12 gap-2 rounded-nav px-6 text-sm font-semibold",
+        "icon-app": "size-11 rounded-control",
       },
     },
     defaultVariants: {
