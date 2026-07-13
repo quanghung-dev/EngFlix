@@ -149,7 +149,7 @@ Dưới đây là mô tả chi tiết các biến cấu hình cần thiết tron
 | `DB_HOST` | Có | Địa chỉ máy chủ PostgreSQL | `localhost` hoặc `db` (khi dùng Docker) |
 | `DB_PORT` | Có | Cổng kết nối PostgreSQL | `5432` |
 | `DB_DATABASE` | Có | Tên cơ sở dữ liệu cần kết nối | `engflix` |
-| `FIREBASE_WEB_API_KEY` | Có | API Key dùng để kết nối với API Firebase Auth REST (phục vụ login bằng email/password) | `AIzaSyCrM7LWwxt3EsVC02INI0McZmoILud5pIo` |
+| `FIREBASE_WEB_API_KEY` | Có | API Key dùng để kết nối với API Firebase Auth REST (phục vụ login bằng email/password) | `your_firebase_api_key` |
 | `AZURE_SPEECH_KEY` | Có | Key truy cập dịch vụ Azure Cognitive Services Speech | `your_azure_speech_subscription_key` |
 | `AZURE_SPEECH_REGION`| Có | Vùng địa lý đăng ký Azure Speech | `southeastasia` |
 | `AZURE_VISION_KEY` | Không | Key của dịch vụ Azure Vision (Chưa được cấu hình sử dụng trực tiếp trong API) | `your_azure_vision_key` |

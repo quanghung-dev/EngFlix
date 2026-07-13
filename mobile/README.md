@@ -124,7 +124,7 @@ mobile/
    Mở hoặc tạo mới file [local.properties](file:///d:/EngFlex/mobile/local.properties) ở thư mục gốc `mobile/` và cấu hình các giá trị môi trường của bạn:
    ```properties
    sdk.dir=C\:\\Users\\Tên_User\\AppData\\Local\\Android\\Sdk
-   FIREBASE_API_KEY=AIzaSyCrM7LWwxt3EsVC02INI0McZmoILud5pIo
+   FIREBASE_API_KEY=your_firebase_api_key
    BASE_URL=http://10.0.2.2:8000/api/v1/
    ```
    *Lưu ý: Thay đổi `sdk.dir` đúng với đường dẫn SDK trên máy của bạn.*
@@ -147,7 +147,7 @@ Các biến môi trường phục vụ việc biên dịch (đọc thông qua t�
 | Biến | Bắt buộc | Mô tả | Ví dụ |
 | :--- | :---: | :--- | :--- |
 | `sdk.dir` | Có | Đường dẫn tuyệt đối đến thư mục chứa bộ cài Android SDK của bạn | `C\:\\Android\\Sdk` |
-| `FIREBASE_API_KEY` | Có | API Key dùng để kết nối với các dịch vụ Firebase trên thiết bị di động | `AIzaSyCr...` |
+| `FIREBASE_API_KEY` | Có | API Key dùng để kết nối với các dịch vụ Firebase trên thiết bị di động | `your_firebase_api_key` |
 | `BASE_URL` | Có | URL của Backend Server API phục vụ cho Retrofit client | `http://10.0.2.2:8000/api/v1/` |
 
 > [!TIP]

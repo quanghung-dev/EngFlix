@@ -138,10 +138,10 @@ Bảng mô tả các biến môi trường cấu hình tại file `.env` của F
 | Biến môi trường | Bắt buộc | Mô tả | Ví dụ mẫu |
 | :--- | :---: | :--- | :--- |
 | `NEXT_PUBLIC_API_URL` | Có | Địa chỉ cổng kết nối API của Backend Server | `http://localhost:8000/api/v1` |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Có | API Key kết nối Firebase Client SDK | `AIzaSyCrM7LWwxt3EsVC02INI0McZmoILud5pIo` |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Có | Tên miền xác thực Firebase | `engflix-app.firebaseapp.com` |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Có | ID của dự án Firebase | `engflix-app` |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`| Có | Thùng chứa dữ liệu Firebase Storage | `engflix-app.appspot.com` |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Có | API Key kết nối Firebase Client SDK | `your_firebase_api_key` |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Có | Tên miền xác thực Firebase | `your-app.firebaseapp.com` |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Có | ID của dự án Firebase | `your-app-id` |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`| Có | Thùng chứa dữ liệu Firebase Storage | `your-app.appspot.com` |
 
 ---
 
