@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
+import { NavUser } from "@/components/nav-user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sidebar,
@@ -148,41 +149,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarSeparator className="mx-4" />
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:px-0.5">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            {!authResolved ? (
+        {!authResolved ? (
+          <SidebarMenu>
+            <SidebarMenuItem>
               <SidebarMenuSkeleton showIcon />
-            ) : currentUser ? (
-              <SidebarMenuButton
-                size="lg"
-                tooltip="Hồ sơ cá nhân"
-                className="product-focus w-full justify-start rounded-control p-2 text-copy-secondary group-data-[collapsible=icon]:justify-center"
-                render={
-                  <Link
-                    href={`/profile/${currentUser.uid}`}
-                    aria-label="Trang cá nhân"
-                    onClick={() => setOpenMobile(false)}
-                  />
-                }
-              >
-                <Avatar className="size-9 shrink-0 border border-brand-cyan/20 bg-brand-cyan/15">
-                  {avatarUrl ? (
-                    <AvatarImage src={avatarUrl} alt={`Ảnh đại diện của ${displayName}`} />
-                  ) : null}
-                  <AvatarFallback className="bg-transparent font-bold text-brand-cyan">
-                    {displayName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="ml-2.5 flex min-w-0 flex-col gap-0.5 text-left group-data-[collapsible=icon]:hidden">
-                  <span className="max-w-40 truncate font-semibold text-foreground">
-                    {displayName}
-                  </span>
-                  <span className="truncate text-xs font-normal text-copy-muted">
-                    Xem trang cá nhân
-                  </span>
-                </span>
-              </SidebarMenuButton>
-            ) : (
+            </SidebarMenuItem>
+          </SidebarMenu>
+        ) : currentUser ? (
+          <NavUser
+            user={{
+              name: displayName,
+              email: currentUser.email || "",
+              avatar: avatarUrl || "",
+              id: currentUser.uid,
+            }}
+          />
+        ) : (
+          <SidebarMenu>
+            <SidebarMenuItem>
               <SidebarMenuButton
                 size="lg"
                 tooltip="Đăng nhập"
@@ -203,9 +187,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </span>
                 </span>
               </SidebarMenuButton>
-            )}
-          </SidebarMenuItem>
-        </SidebarMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
       </SidebarFooter>
     </Sidebar>
   )
