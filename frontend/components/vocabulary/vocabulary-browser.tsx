@@ -122,7 +122,7 @@ function DeckGrid({
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold tracking-tight text-white">{deck.name}</h3>
+                <h3 className="text-xl font-semibold tracking-tight text-foreground">{deck.name}</h3>
                 <p className="mt-2 line-clamp-3 min-h-[3.75rem] text-sm leading-6 text-copy-muted">
                   {deck.description || "Một bộ từ được sắp xếp để bạn mở, nghe và ôn lại theo nhịp riêng."}
                 </p>

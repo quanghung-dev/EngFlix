@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { AppThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import "./globals.css";
@@ -34,9 +35,12 @@ export default function RootLayout({
       lang="vi"
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col antialiased">
-        <TooltipProvider>{children}</TooltipProvider>
+        <AppThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </AppThemeProvider>
       </body>
     </html>
   );

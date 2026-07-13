@@ -102,12 +102,12 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    <div className={cn("flex flex-col gap-6 text-copy-primary", className)}>
       <form onSubmit={handleSubmit} {...props}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-1 text-center">
-            <h1 className="text-2xl font-bold">Đăng nhập tài khoản</h1>
-            <p className="text-sm text-balance text-muted-foreground">
+            <h1 className="text-2xl font-bold text-copy-primary">Đăng nhập tài khoản</h1>
+            <p className="text-sm text-balance text-copy-muted">
               Nhập email và mật khẩu để bắt đầu học tập trên EngFlex
             </p>
           </div>
@@ -119,7 +119,7 @@ export function LoginForm({
           )}
 
           <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor="email" className="text-copy-secondary">Email</FieldLabel>
             <Input
               id="email"
               type="email"
@@ -128,15 +128,16 @@ export function LoginForm({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
+              className="border-stroke-strong bg-surface-inner text-copy-primary"
             />
           </Field>
 
           <Field>
             <div className="flex items-center">
-              <FieldLabel htmlFor="password">Mật khẩu</FieldLabel>
+              <FieldLabel htmlFor="password" className="text-copy-secondary">Mật khẩu</FieldLabel>
               <a
                 href="#"
-                className="ml-auto text-xs underline-offset-4 hover:underline"
+                className="ml-auto text-xs text-copy-secondary underline-offset-4 transition-colors hover:text-brand-cyan hover:underline"
               >
                 Quên mật khẩu?
               </a>
@@ -149,6 +150,7 @@ export function LoginForm({
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
+              className="border-stroke-strong bg-surface-inner text-copy-primary"
             />
           </Field>
 
@@ -161,11 +163,10 @@ export function LoginForm({
       </form>
 
       {/* Đường phân cách */}
-      <div className="relative flex items-center justify-center my-1 text-xs uppercase text-muted-foreground">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-stroke" />
-        </div>
-        <span className="relative bg-canvas px-3 z-10">Hoặc tiếp tục với</span>
+      <div className="my-1 flex items-center gap-3 text-xs uppercase text-copy-muted">
+        <div className="h-px flex-1 bg-stroke" />
+        <span>Hoặc tiếp tục với</span>
+        <div className="h-px flex-1 bg-stroke" />
       </div>
 
       {/* Đăng nhập bằng Google */}
@@ -174,9 +175,10 @@ export function LoginForm({
         variant="glass"
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 border-stroke"
+        aria-busy={loading}
+        className="flex w-full items-center justify-center gap-2 border-stroke text-copy-primary"
       >
-        <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
+        <svg aria-hidden="true" focusable="false" className="size-4" viewBox="0 0 24 24" fill="currentColor">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
@@ -185,9 +187,9 @@ export function LoginForm({
         Google
       </Button>
 
-      <div className="text-center text-xs text-muted-foreground mt-2">
+      <div className="mt-2 text-center text-xs text-copy-muted">
         Chưa có tài khoản?{" "}
-        <a href="/signup" className="underline underline-offset-4 text-white hover:text-brand-cyan transition">
+        <a href="/signup" className="text-copy-primary underline underline-offset-4 transition-colors hover:text-brand-cyan">
           Đăng ký ngay
         </a>
       </div>

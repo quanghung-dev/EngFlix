@@ -79,7 +79,7 @@ export function VocabularyDeckDetail({
               {deck.level && <span>· {deck.level}</span>}
               {categoryName && <span>· {categoryName}</span>}
             </div>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">{deck.name}</h2>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{deck.name}</h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-copy-muted sm:text-base">
               {deck.description || "Mở từng mục từ để nghe phát âm, đọc ngữ cảnh và luyện lại bằng flashcard."}
             </p>
@@ -125,7 +125,7 @@ export function VocabularyDeckDetail({
             <CardContent>
               <Layers3 className="size-5 text-brand-cyan" aria-hidden="true" />
               <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Mục từ trang này</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{loading ? "—" : items.length}</p>
+              <p className="mt-2 text-3xl font-semibold text-foreground">{loading ? "—" : items.length}</p>
             </CardContent>
           </Card>
         </ProductReveal>
@@ -134,7 +134,7 @@ export function VocabularyDeckDetail({
             <CardContent>
               <BookOpenCheck className="size-5 text-action-gold" aria-hidden="true" />
               <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Chế độ ôn</p>
-              <p className="mt-2 text-xl font-semibold text-white">Danh sách & flashcard</p>
+              <p className="mt-2 text-xl font-semibold text-foreground">Danh sách & flashcard</p>
             </CardContent>
           </Card>
         </ProductReveal>
@@ -143,7 +143,7 @@ export function VocabularyDeckDetail({
             <CardContent>
               <ShieldCheck className="size-5 text-status-success" aria-hidden="true" />
               <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Quyền truy cập</p>
-              <p className="mt-2 text-xl font-semibold text-white">{isOwner ? "Bạn có thể chỉnh sửa" : "Chỉ đọc"}</p>
+              <p className="mt-2 text-xl font-semibold text-foreground">{isOwner ? "Bạn có thể chỉnh sửa" : "Chỉ đọc"}</p>
             </CardContent>
           </Card>
         </ProductReveal>
@@ -153,7 +153,7 @@ export function VocabularyDeckDetail({
         <section aria-labelledby="vocabulary-items-title" className="space-y-5">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Nội dung bộ từ</p>
-            <h2 id="vocabulary-items-title" className="mt-2 text-2xl font-semibold text-white">Từ và ngữ cảnh</h2>
+            <h2 id="vocabulary-items-title" className="mt-2 text-2xl font-semibold text-foreground">Từ và ngữ cảnh</h2>
           </div>
           <VocabularyItemList
             items={items}

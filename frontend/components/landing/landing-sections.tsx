@@ -52,8 +52,8 @@ const methodSteps = [
 
 function SectionEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/15 bg-cyan-300/[0.06] px-3.5 py-2 text-[0.68rem] font-semibold tracking-[0.22em] text-cyan-200 uppercase shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-      <Sparkles aria-hidden="true" className="size-3.5 text-amber-300" />
+    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-cyan/20 bg-brand-cyan/10 px-3.5 py-2 text-[0.68rem] font-semibold tracking-[0.22em] text-brand-cyan uppercase shadow-[inset_0_1px_0_var(--engflex-border-subtle)]">
+      <Sparkles aria-hidden="true" className="size-3.5 text-action-gold" />
       {children}
     </div>
   );
@@ -61,8 +61,8 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 
 function FeatureLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 font-mono text-[0.65rem] font-semibold tracking-[0.18em] text-cyan-200/70 uppercase">
-      <span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.9)]" />
+    <span className="inline-flex items-center gap-2 font-mono text-[0.65rem] font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+      <span className="size-1.5 rounded-full bg-brand-cyan shadow-[0_0_12px_var(--engflex-brand-cyan)]" />
       {children}
     </span>
   );
@@ -77,45 +77,45 @@ export function ValueStrip() {
       <h2 id="learning-value-title" className="sr-only">
         Trải nghiệm học tập của EngFlex
       </h2>
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-stroke bg-surface-glass shadow-modal backdrop-blur-xl">
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/65 to-transparent"
+          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-cyan/65 to-transparent"
         />
         <div className="grid md:grid-cols-3">
-          <div className="group flex min-h-32 items-center gap-5 px-6 py-7 sm:px-8 md:border-r md:border-white/[0.08]">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-200/20 bg-cyan-300/10 text-cyan-200 transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none">
+          <div className="group flex min-h-32 items-center gap-5 px-6 py-7 sm:px-8 md:border-r md:border-stroke-subtle">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none">
               <AudioLines aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-cyan-300 uppercase">
+              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-brand-cyan uppercase">
                 03 learning modes
               </p>
-              <p className="mt-1 text-base font-medium text-white">Ba cách luyện trong một cảnh phim</p>
+              <p className="mt-1 text-base font-medium text-copy-primary">Ba cách luyện trong một cảnh phim</p>
             </div>
           </div>
 
-          <div className="group flex min-h-32 items-center gap-5 border-y border-white/[0.08] px-6 py-7 sm:px-8 md:border-x-0 md:border-y-0 md:border-r">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-amber-200/20 bg-amber-300/10 text-amber-200 transition-transform duration-500 group-hover:-translate-y-1 group-hover:-rotate-3 motion-reduce:transition-none">
+          <div className="group flex min-h-32 items-center gap-5 border-y border-stroke-subtle px-6 py-7 sm:px-8 md:border-x-0 md:border-y-0 md:border-r">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-action-gold/20 bg-action-gold/10 text-action-gold transition-transform duration-500 group-hover:-translate-y-1 group-hover:-rotate-3 motion-reduce:transition-none">
               <WandSparkles aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-amber-300 uppercase">
+              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-action-gold uppercase">
                 Instant feedback
               </p>
-              <p className="mt-1 text-base font-medium text-white">Biết ngay âm nào cần luyện lại</p>
+              <p className="mt-1 text-base font-medium text-copy-primary">Biết ngay âm nào cần luyện lại</p>
             </div>
           </div>
 
           <div className="group flex min-h-32 items-center gap-5 px-6 py-7 sm:px-8">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-violet-200/20 bg-violet-300/10 text-violet-200 transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-accent-violet/20 bg-accent-violet/10 text-accent-violet transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none">
               <Target aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-violet-300 uppercase">
+              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-accent-violet uppercase">
                 Personal path
               </p>
-              <p className="mt-1 text-base font-medium text-white">Lộ trình đi theo nhịp độ của bạn</p>
+              <p className="mt-1 text-base font-medium text-copy-primary">Lộ trình đi theo nhịp độ của bạn</p>
             </div>
           </div>
         </div>
@@ -129,36 +129,36 @@ export function FeatureGrid() {
     <section id="features" aria-labelledby="features-title" className="relative scroll-mt-24 py-28 sm:py-36">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-cyan-400/[0.07] blur-[120px]"
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-brand-cyan/[0.07] blur-[120px]"
       />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="mx-auto mb-14 max-w-3xl text-center sm:mb-18">
           <SectionEyebrow>Built for real conversations</SectionEyebrow>
-          <h2 id="features-title" className="text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+          <h2 id="features-title" className="text-4xl font-semibold tracking-[-0.045em] text-copy-primary sm:text-5xl lg:text-6xl">
             Không chỉ xem phim. Bạn đang
-            <span className="block bg-gradient-to-r from-cyan-200 via-white to-amber-200 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-brand-cyan via-copy-primary to-action-gold bg-clip-text text-transparent">
               luyện một cuộc hội thoại thật.
             </span>
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300/75 sm:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-copy-muted sm:text-lg">
             Mỗi công cụ được đặt đúng vào khoảnh khắc bạn cần nghe rõ hơn, nói tự nhiên hơn và nhớ lâu hơn.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-5">
-          <article className="group relative min-h-[31rem] overflow-hidden rounded-[2rem] border border-white/[0.09] bg-[linear-gradient(145deg,rgba(16,40,62,0.86),rgba(6,18,35,0.94))] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.06)] transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-cyan-300/25 motion-reduce:transition-none sm:p-8 lg:col-span-7">
-            <div aria-hidden="true" className="absolute -top-20 -right-20 size-64 rounded-full bg-cyan-400/10 blur-3xl" />
+          <article className="group relative min-h-[31rem] overflow-hidden rounded-[2rem] border border-stroke bg-surface-panel p-6 shadow-card transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-brand-cyan/25 motion-reduce:transition-none sm:p-8 lg:col-span-7">
+            <div aria-hidden="true" className="absolute -top-20 -right-20 size-64 rounded-full bg-brand-cyan/10 blur-3xl" />
             <div className="relative flex h-full flex-col">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <FeatureLabel>Dictation mode</FeatureLabel>
-                  <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Nghe từng chữ. Bắt trọn ý.</h3>
-                  <p className="mt-3 max-w-lg leading-7 text-slate-300/70">
+                  <h3 className="mt-4 text-2xl font-semibold tracking-tight text-copy-primary sm:text-3xl">Nghe từng chữ. Bắt trọn ý.</h3>
+                  <p className="mt-3 max-w-lg leading-7 text-copy-muted">
                     Phụ đề biến thành bài điền từ vừa đủ khó, giúp tai bạn quen với nối âm và tốc độ nói tự nhiên.
                   </p>
                 </div>
-                <div className="hidden size-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-200/15 bg-cyan-300/10 text-cyan-200 sm:flex">
+                <div className="hidden size-12 shrink-0 items-center justify-center rounded-2xl border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan sm:flex">
                   <Headphones aria-hidden="true" className="size-5" />
                 </div>
               </div>
@@ -205,12 +205,12 @@ export function FeatureGrid() {
             </div>
           </article>
 
-          <article className="group relative min-h-[31rem] overflow-hidden rounded-[2rem] border border-white/[0.09] bg-[linear-gradient(150deg,rgba(31,28,60,0.92),rgba(7,17,34,0.96))] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.06)] transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-violet-300/25 motion-reduce:transition-none sm:p-8 lg:col-span-5">
-            <div aria-hidden="true" className="absolute -top-24 -right-20 size-64 rounded-full bg-violet-400/12 blur-3xl" />
+          <article className="group relative min-h-[31rem] overflow-hidden rounded-[2rem] border border-stroke bg-surface-panel p-6 shadow-card transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-accent-violet/25 motion-reduce:transition-none sm:p-8 lg:col-span-5">
+            <div aria-hidden="true" className="absolute -top-24 -right-20 size-64 rounded-full bg-accent-violet/10 blur-3xl" />
             <div className="relative flex h-full flex-col">
               <FeatureLabel>Shadowing studio</FeatureLabel>
-              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Nói cùng nhân vật.</h3>
-              <p className="mt-3 leading-7 text-slate-300/70">
+              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-copy-primary sm:text-3xl">Nói cùng nhân vật.</h3>
+              <p className="mt-3 leading-7 text-copy-muted">
                 Bắt nhịp, ngữ điệu và cảm xúc bằng cách nói đuổi ngay sau câu thoại gốc.
               </p>
 
@@ -263,11 +263,11 @@ export function FeatureGrid() {
             </div>
           </article>
 
-          <article className="group relative min-h-[30rem] overflow-hidden rounded-[2rem] border border-white/[0.09] bg-[linear-gradient(150deg,rgba(16,47,50,0.83),rgba(6,18,34,0.96))] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.06)] transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-emerald-300/25 motion-reduce:transition-none sm:p-8 lg:col-span-5">
+          <article className="group relative min-h-[30rem] overflow-hidden rounded-[2rem] border border-stroke bg-surface-panel p-6 shadow-card transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-status-success/25 motion-reduce:transition-none sm:p-8 lg:col-span-5">
             <div className="relative flex h-full flex-col">
               <FeatureLabel>AI pronunciation</FeatureLabel>
-              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Thấy rõ từng âm.</h3>
-              <p className="mt-3 leading-7 text-slate-300/70">
+              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-copy-primary sm:text-3xl">Thấy rõ từng âm.</h3>
+              <p className="mt-3 leading-7 text-copy-muted">
                 Phản hồi trực quan cho độ chính xác, độ trôi chảy và ngữ điệu sau mỗi lần nói.
               </p>
 
@@ -314,18 +314,18 @@ export function FeatureGrid() {
             </div>
           </article>
 
-          <article className="group relative min-h-[30rem] overflow-hidden rounded-[2rem] border border-white/[0.09] bg-[linear-gradient(145deg,rgba(50,39,23,0.83),rgba(8,18,34,0.96))] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.06)] transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-amber-300/25 motion-reduce:transition-none sm:p-8 lg:col-span-7">
-            <div aria-hidden="true" className="absolute -right-20 -bottom-20 size-64 rounded-full bg-amber-300/10 blur-3xl" />
+          <article className="group relative min-h-[30rem] overflow-hidden rounded-[2rem] border border-stroke bg-surface-panel p-6 shadow-card transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-action-gold/25 motion-reduce:transition-none sm:p-8 lg:col-span-7">
+            <div aria-hidden="true" className="absolute -right-20 -bottom-20 size-64 rounded-full bg-action-gold/10 blur-3xl" />
             <div className="relative flex h-full flex-col">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <FeatureLabel>Smart vocabulary</FeatureLabel>
-                  <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Nhớ từ bằng khoảnh khắc.</h3>
-                  <p className="mt-3 max-w-xl leading-7 text-slate-300/70">
+                  <h3 className="mt-4 text-2xl font-semibold tracking-tight text-copy-primary sm:text-3xl">Nhớ từ bằng khoảnh khắc.</h3>
+                  <p className="mt-3 max-w-xl leading-7 text-copy-muted">
                     Một cú chạm để lưu từ, câu thoại và sắc thái — rồi ôn lại bằng đúng ngữ cảnh đã khiến bạn chú ý.
                   </p>
                 </div>
-                <BookOpenCheck aria-hidden="true" className="mt-1 hidden size-6 text-amber-200 sm:block" />
+                <BookOpenCheck aria-hidden="true" className="mt-1 hidden size-6 text-action-gold sm:block" />
               </div>
 
               <div className="mt-7 grid flex-1 items-center gap-5 sm:grid-cols-[1fr_0.72fr]">
@@ -389,18 +389,18 @@ export function MethodSection() {
     <section id="method" aria-labelledby="method-title" className="relative scroll-mt-24 overflow-hidden py-28 sm:py-36">
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-cyan-300/15 to-transparent"
+        className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-brand-cyan/15 to-transparent"
       />
-      <div aria-hidden="true" className="absolute top-20 -left-28 size-80 rounded-full bg-violet-500/[0.08] blur-[100px]" />
+      <div aria-hidden="true" className="absolute top-20 -left-28 size-80 rounded-full bg-accent-violet/[0.08] blur-[100px]" />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="max-w-3xl">
           <SectionEyebrow>Learn in context</SectionEyebrow>
-          <h2 id="method-title" className="text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+          <h2 id="method-title" className="text-4xl font-semibold tracking-[-0.045em] text-copy-primary sm:text-5xl lg:text-6xl">
             Một nhịp học tự nhiên như
-            <span className="text-cyan-200"> chính bộ phim bạn yêu thích.</span>
+            <span className="text-brand-cyan"> chính bộ phim bạn yêu thích.</span>
           </h2>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300/70 sm:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-copy-muted sm:text-lg">
             Không học thuộc những câu rời rạc. EngFlex đưa bạn đi từ khoảnh khắc nghe thấy đến lúc có thể tự tin nói lại.
           </p>
         </div>
@@ -408,9 +408,9 @@ export function MethodSection() {
         <div className="relative mt-16 lg:mt-20">
           <div
             aria-hidden="true"
-            className="absolute top-7 right-[16.7%] left-[16.7%] hidden h-px overflow-hidden bg-white/10 lg:block"
+            className="absolute top-7 right-[16.7%] left-[16.7%] hidden h-px overflow-hidden bg-stroke lg:block"
           >
-            <span className="block h-full w-2/3 bg-gradient-to-r from-cyan-300 via-amber-300 to-violet-300 shadow-[0_0_18px_rgba(103,232,249,0.6)] motion-safe:animate-pulse" />
+            <span className="block h-full w-2/3 bg-gradient-to-r from-brand-cyan via-action-gold to-accent-violet shadow-[0_0_18px_var(--engflex-brand-cyan)] motion-safe:animate-pulse" />
           </div>
 
           <ol className="grid gap-5 lg:grid-cols-3">
@@ -418,27 +418,27 @@ export function MethodSection() {
               const Icon = step.icon;
               const tone =
                 step.color === "cyan"
-                  ? "border-cyan-200/25 bg-cyan-300/10 text-cyan-200"
+                  ? "border-brand-cyan/25 bg-brand-cyan/10 text-brand-cyan"
                   : step.color === "gold"
-                    ? "border-amber-200/25 bg-amber-300/10 text-amber-200"
-                    : "border-violet-200/25 bg-violet-300/10 text-violet-200";
+                    ? "border-action-gold/25 bg-action-gold/10 text-action-gold"
+                    : "border-accent-violet/25 bg-accent-violet/10 text-accent-violet";
 
               return (
                 <li key={step.number} className="group relative">
                   <div className="relative mb-6 flex items-center lg:justify-center">
-                    <div className={`relative z-10 flex size-14 items-center justify-center rounded-2xl border ${tone} shadow-[0_12px_32px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none`}>
+                    <div className={`relative z-10 flex size-14 items-center justify-center rounded-2xl border ${tone} shadow-card transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none`}>
                       <Icon aria-hidden="true" className="size-5" />
                     </div>
-                    <span className="ml-4 font-mono text-xs tracking-[0.16em] text-slate-500 lg:hidden">STEP {step.number}</span>
+                    <span className="ml-4 font-mono text-xs tracking-[0.16em] text-copy-muted lg:hidden">STEP {step.number}</span>
                   </div>
 
-                  <article className="h-full rounded-[1.75rem] border border-white/[0.08] bg-white/[0.035] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm transition-[background-color,border-color,transform] duration-500 hover:-translate-y-1 hover:border-white/[0.14] hover:bg-white/[0.052] motion-reduce:transition-none sm:p-7">
+                  <article className="h-full rounded-[1.75rem] border border-stroke bg-surface-panel p-6 shadow-[inset_0_1px_0_var(--engflex-border-subtle)] backdrop-blur-sm transition-[background-color,border-color,transform] duration-500 hover:-translate-y-1 hover:border-stroke-strong hover:bg-surface-inner motion-reduce:transition-none sm:p-7">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[0.65rem] font-semibold tracking-[0.2em] text-cyan-200/65">{step.eyebrow}</span>
-                      <span className="hidden font-mono text-xs text-slate-600 lg:block">{step.number}</span>
+                      <span className="font-mono text-[0.65rem] font-semibold tracking-[0.2em] text-brand-cyan">{step.eyebrow}</span>
+                      <span className="hidden font-mono text-xs text-copy-subtle lg:block">{step.number}</span>
                     </div>
-                    <h3 className="mt-7 text-xl font-semibold tracking-tight text-white sm:text-2xl">{step.title}</h3>
-                    <p className="mt-4 leading-7 text-slate-300/65">{step.description}</p>
+                    <h3 className="mt-7 text-xl font-semibold tracking-tight text-copy-primary sm:text-2xl">{step.title}</h3>
+                    <p className="mt-4 leading-7 text-copy-muted">{step.description}</p>
                   </article>
                 </li>
               );
@@ -446,15 +446,15 @@ export function MethodSection() {
           </ol>
 
           <div aria-hidden="true" className="pointer-events-none absolute -top-20 right-8 hidden xl:block">
-            <div className="rotate-6 rounded-xl border border-cyan-200/15 bg-[#0a2230]/90 px-4 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] motion-safe:animate-pulse [animation-duration:4s]">
-              <p className="text-sm font-semibold text-white">serendipity</p>
-              <p className="mt-0.5 text-[0.65rem] text-cyan-200/55">a lucky discovery</p>
+            <div className="rotate-6 rounded-xl border border-brand-cyan/20 bg-surface-glass px-4 py-3 shadow-card motion-safe:animate-pulse [animation-duration:4s]">
+              <p className="text-sm font-semibold text-copy-primary">serendipity</p>
+              <p className="mt-0.5 text-[0.65rem] text-brand-cyan">a lucky discovery</p>
             </div>
           </div>
           <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-10 hidden -rotate-6 xl:block">
-            <div className="rounded-xl border border-amber-200/15 bg-[#251d14]/90 px-4 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] motion-safe:animate-pulse [animation-delay:1.2s] [animation-duration:5s]">
-              <p className="text-sm font-semibold text-white">speak up</p>
-              <p className="mt-0.5 text-[0.65rem] text-amber-200/55">nói lên suy nghĩ</p>
+            <div className="rounded-xl border border-action-gold/20 bg-surface-glass px-4 py-3 shadow-card motion-safe:animate-pulse [animation-delay:1.2s] [animation-duration:5s]">
+              <p className="text-sm font-semibold text-copy-primary">speak up</p>
+              <p className="mt-0.5 text-[0.65rem] text-action-gold">nói lên suy nghĩ</p>
             </div>
           </div>
         </div>
@@ -466,58 +466,68 @@ export function MethodSection() {
 export function FinalCta() {
   return (
     <section aria-labelledby="final-cta-title" className="relative px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
-      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.25rem] border border-cyan-200/15 bg-[linear-gradient(120deg,#0b2537_0%,#101b32_48%,#2b2114_100%)] shadow-[0_45px_140px_rgba(0,0,0,0.38),0_0_80px_rgba(34,211,238,0.07),inset_0_1px_0_rgba(255,255,255,0.09)]">
-        <div aria-hidden="true" className="absolute -top-28 -left-16 size-80 rounded-full bg-cyan-400/15 blur-[90px]" />
-        <div aria-hidden="true" className="absolute -right-16 -bottom-32 size-96 rounded-full bg-amber-300/13 blur-[100px]" />
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.25rem] border border-brand-cyan/20 bg-surface-panel shadow-modal">
+        <div aria-hidden="true" className="absolute -top-28 -left-16 size-80 rounded-full bg-brand-cyan/15 blur-[90px]" />
+        <div aria-hidden="true" className="absolute -right-16 -bottom-32 size-96 rounded-full bg-action-gold/15 blur-[100px]" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:28px_28px]"
+          className="absolute inset-0 opacity-30 [background-image:radial-gradient(var(--engflex-border-strong)_1px,transparent_1px)] [background-size:28px_28px]"
         />
 
         <div className="relative grid items-center gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:px-16 lg:py-16">
           <div className="relative z-10 max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-200/15 bg-amber-300/[0.08] px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.18em] text-amber-200 uppercase">
-              <Star aria-hidden="true" className="size-3.5 fill-amber-300/25" />
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-action-gold/20 bg-action-gold/10 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.18em] text-action-gold uppercase">
+              <Star aria-hidden="true" className="size-3.5 fill-action-gold/25" />
               Your next scene starts here
             </div>
-            <h2 id="final-cta-title" className="text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+            <h2 id="final-cta-title" className="text-4xl font-semibold tracking-[-0.05em] text-copy-primary sm:text-5xl lg:text-6xl">
               Đừng chỉ hiểu câu thoại.
-              <span className="block bg-gradient-to-r from-cyan-200 via-white to-amber-200 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-brand-cyan via-accent-violet to-action-gold bg-clip-text text-transparent">
                 Hãy biến nó thành phản xạ.
               </span>
             </h2>
-            <p className="mt-6 max-w-xl text-base leading-8 text-slate-200/70 sm:text-lg">
+            <p className="mt-6 max-w-xl text-base leading-8 text-copy-muted sm:text-lg">
               Chọn một chủ đề bạn thích, bước vào cảnh phim đầu tiên và cảm nhận tiếng Anh trở nên sống động hơn từng phút.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/topics"
-                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-cyan-200 px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_14px_35px_rgba(34,211,238,0.22)] transition-[transform,box-shadow,background-color] duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_18px_45px_rgba(34,211,238,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200 motion-reduce:transition-none"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-action-gold-fill px-6 py-3 text-sm font-semibold text-action-foreground shadow-card transition-[transform,box-shadow,background-color] duration-300 hover:-translate-y-0.5 hover:bg-action-gold-fill/85 hover:shadow-modal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus motion-reduce:transition-none"
               >
                 Khám phá bài học
                 <ArrowRight aria-hidden="true" className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
               </Link>
               <Link
                 href="/vocabulary"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.055] px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-[transform,background-color,border-color] duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.09] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-stroke-strong bg-surface-inner px-6 py-3 text-sm font-medium text-copy-primary backdrop-blur-md transition-[transform,background-color,border-color] duration-300 hover:-translate-y-0.5 hover:border-brand-cyan/30 hover:bg-surface-glass focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus motion-reduce:transition-none"
               >
-                <BookOpenCheck aria-hidden="true" className="size-4 text-amber-200" />
+                <BookOpenCheck aria-hidden="true" className="size-4 text-action-gold" />
                 Mở kho từ vựng
               </Link>
             </div>
           </div>
 
           <div className="relative mx-auto w-full max-w-[23rem] lg:mr-0">
-            <div aria-hidden="true" className="absolute inset-6 rounded-full bg-cyan-300/20 blur-3xl motion-safe:animate-pulse" />
+            <div aria-hidden="true" className="absolute inset-6 rounded-full bg-brand-cyan/20 blur-3xl motion-safe:animate-pulse" />
             <div className="relative rotate-2 overflow-hidden rounded-[2rem] border border-white/10 bg-[#10254a] p-2 shadow-[0_35px_80px_rgba(0,0,0,0.4)] transition-transform duration-700 hover:rotate-0 hover:scale-[1.02] motion-reduce:transition-none">
               <Image
-                src="/owl-writing-cinematic.webp"
-                alt="Linh vật cú EngFlex đang học tiếng Anh với tai nghe và sổ ghi chú"
+                src="/owl_writing_white.png"
+                alt=""
                 width={1024}
                 height={1024}
+                aria-hidden="true"
                 sizes="(max-width: 1024px) 80vw, 368px"
-                className="h-auto w-full rounded-[1.55rem] object-cover"
+                className="h-auto w-full rounded-[1.55rem] object-cover dark:hidden"
+              />
+              <Image
+                src="/owl-writing-cinematic.webp"
+                alt=""
+                width={1024}
+                height={1024}
+                aria-hidden="true"
+                sizes="(max-width: 1024px) 80vw, 368px"
+                className="hidden h-auto w-full rounded-[1.55rem] object-cover dark:block"
               />
             </div>
             <div className="absolute -bottom-4 -left-5 flex items-center gap-2 rounded-xl border border-emerald-200/15 bg-[#0a1c27]/90 px-3.5 py-2.5 text-xs text-emerald-100 shadow-xl backdrop-blur-xl motion-safe:animate-pulse [animation-duration:3s]">
@@ -533,47 +543,47 @@ export function FinalCta() {
 
 export function LandingFooter() {
   return (
-    <footer className="relative border-t border-white/[0.07] bg-[#040b16]">
+    <footer className="relative border-t border-stroke-subtle bg-canvas-deep">
       <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
         <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <Link
             href="/home"
             aria-label="EngFlex - Trang chủ"
-            className="group inline-flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+            className="group inline-flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
           >
-            <span className="flex size-10 items-center justify-center rounded-xl border border-cyan-200/20 bg-gradient-to-br from-cyan-300/20 to-blue-500/15 text-cyan-200 shadow-[0_0_24px_rgba(34,211,238,0.1)] transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none">
+            <span className="flex size-10 items-center justify-center rounded-xl border border-brand-cyan/20 bg-gradient-to-br from-brand-cyan/20 to-accent-violet/15 text-brand-cyan shadow-[0_0_24px_var(--engflex-cyan-tint)] transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none">
               <Clapperboard aria-hidden="true" className="size-5" />
             </span>
             <span>
-              <span className="block text-lg font-semibold tracking-tight text-white">EngFlex</span>
-              <span className="block font-mono text-[0.55rem] tracking-[0.18em] text-cyan-200/55 uppercase">English in motion</span>
+              <span className="block text-lg font-semibold tracking-tight text-copy-primary">EngFlex</span>
+              <span className="block font-mono text-[0.55rem] tracking-[0.18em] text-brand-cyan uppercase">English in motion</span>
             </span>
           </Link>
 
           <nav aria-label="Liên kết cuối trang">
-            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-400">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-copy-muted">
               <li>
-                <a className="transition-colors hover:text-cyan-200 focus-visible:text-cyan-200 focus-visible:outline-none" href="#features">
+                <a className="transition-colors hover:text-brand-cyan focus-visible:text-brand-cyan focus-visible:outline-none" href="#features">
                   Tính năng
                 </a>
               </li>
               <li>
-                <a className="transition-colors hover:text-cyan-200 focus-visible:text-cyan-200 focus-visible:outline-none" href="#method">
+                <a className="transition-colors hover:text-brand-cyan focus-visible:text-brand-cyan focus-visible:outline-none" href="#method">
                   Phương pháp
                 </a>
               </li>
               <li>
-                <a className="transition-colors hover:text-cyan-200 focus-visible:text-cyan-200 focus-visible:outline-none" href="#experience">
+                <a className="transition-colors hover:text-brand-cyan focus-visible:text-brand-cyan focus-visible:outline-none" href="#experience">
                   Trải nghiệm
                 </a>
               </li>
               <li>
-                <Link className="transition-colors hover:text-cyan-200 focus-visible:text-cyan-200 focus-visible:outline-none" href="/topics">
+                <Link className="transition-colors hover:text-brand-cyan focus-visible:text-brand-cyan focus-visible:outline-none" href="/topics">
                   Chủ đề
                 </Link>
               </li>
               <li>
-                <Link className="transition-colors hover:text-cyan-200 focus-visible:text-cyan-200 focus-visible:outline-none" href="/vocabulary">
+                <Link className="transition-colors hover:text-brand-cyan focus-visible:text-brand-cyan focus-visible:outline-none" href="/vocabulary">
                   Từ vựng
                 </Link>
               </li>
@@ -581,10 +591,10 @@ export function LandingFooter() {
           </nav>
         </div>
 
-        <div className="mt-9 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-9 flex flex-col gap-3 border-t border-stroke-subtle pt-6 text-xs text-copy-muted sm:flex-row sm:items-center sm:justify-between">
           <p>© EngFlex. Học tiếng Anh qua những câu chuyện đáng nhớ.</p>
           <p className="flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            <span className="size-1.5 rounded-full bg-status-success shadow-[0_0_8px_var(--engflex-status-success)]" />
             Ready for your next scene
           </p>
         </div>

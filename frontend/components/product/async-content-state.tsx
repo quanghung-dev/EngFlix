@@ -60,7 +60,7 @@ export function AsyncContentState({
               <InboxIcon className="size-7" aria-hidden="true" />
             ))}
         </span>
-        <Heading className="mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+        <Heading className="mt-6 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           {title}
         </Heading>
         <p className="mt-3 max-w-lg text-sm leading-6 text-copy-muted sm:text-base sm:leading-7">

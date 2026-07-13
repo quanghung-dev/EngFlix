@@ -202,7 +202,7 @@ export function NotesWorkspace() {
           aside={
             <div className="rounded-panel border border-action-gold/20 bg-action-gold/10 px-5 py-4 text-action-gold">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em]">Đã lưu</p>
-              <p className="mt-1 text-3xl font-semibold text-white">{bookmarks.length}</p>
+              <p className="mt-1 text-3xl font-semibold text-foreground">{bookmarks.length}</p>
             </div>
           }
         />
@@ -301,7 +301,7 @@ export function NotesWorkspace() {
 
                     <div className="mt-auto border-t border-stroke-subtle pt-5">
                       <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-copy-muted">Ghi chú của bạn</p>
-                      <p className="mt-2 min-h-10 whitespace-pre-wrap text-sm leading-6 text-white">
+                      <p className="mt-2 min-h-10 whitespace-pre-wrap text-sm leading-6 text-foreground">
                         {bookmark.note || <span className="italic text-copy-muted">Chưa có ghi chú riêng.</span>}
                       </p>
                       <div className="mt-4 flex justify-end gap-2">
@@ -336,7 +336,7 @@ export function NotesWorkspace() {
       <p className="sr-only" aria-live="polite">{feedback}</p>
 
       <Dialog open={Boolean(editing)} onOpenChange={(open) => !open && !saving && setEditing(null)}>
-        <DialogContent className="rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal sm:max-w-lg sm:p-8">
+        <DialogContent className="rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal sm:max-w-lg sm:p-8">
           <form onSubmit={saveNote}>
             <DialogHeader>
               <DialogTitle className="text-xl font-semibold">Cập nhật ghi chú</DialogTitle>

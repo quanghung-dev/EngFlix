@@ -131,7 +131,7 @@ export function CommentThread({ postId, onCommentCreated }: CommentThreadProps) 
                 <div className="flex flex-wrap items-center gap-2">
                   <Link
                     href={`/profile/${comment.user_id}`}
-                    className="product-focus rounded font-semibold text-white hover:text-brand-cyan"
+                    className="product-focus rounded font-semibold text-foreground hover:text-brand-cyan"
                   >
                     {comment.username}
                   </Link>

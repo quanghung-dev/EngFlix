@@ -642,9 +642,9 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
     return (
       <div className="mx-auto flex h-[70vh] max-w-md flex-col items-center justify-center text-center gap-6 px-6">
         <HelpCircle className="size-16 text-destructive/80" />
-        <h2 className="text-2xl font-semibold text-white">Xảy ra lỗi</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Xảy ra lỗi</h2>
         <p className="text-copy-muted leading-relaxed">{error || "Tải dữ liệu thất bại."}</p>
-        <Link href="/topics" className="product-focus inline-flex h-11 items-center gap-2 rounded-nav border border-stroke bg-surface-panel px-6 font-medium text-white hover:bg-surface-glass transition">
+        <Link href="/topics" className="product-focus inline-flex h-11 items-center gap-2 rounded-nav border border-stroke bg-surface-panel px-6 font-medium text-foreground hover:bg-surface-glass transition">
           <ArrowLeft className="size-4" /> Về thư viện chủ đề
         </Link>
       </div>
@@ -654,16 +654,16 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
   const activeTranscript = transcripts[currentSentenceIndex]
 
   return (
-    <div className="min-h-screen bg-canvas text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       {/* Vùng Header điều hướng phụ */}
       <div className="flex flex-col gap-4 border-b border-stroke-subtle px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
         {/* Breadcrumbs */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-copy-muted md:text-sm">
-          <Link href="/topics" className="hover:text-white transition">
+          <Link href="/topics" className="hover:text-foreground transition">
             Topics
           </Link>
           <ChevronRight className="size-3 text-copy-subtle" />
-          <span className="max-w-[12rem] truncate hover:text-white transition" title={categoryName || "Chủ đề"}>
+          <span className="max-w-[12rem] truncate hover:text-foreground transition" title={categoryName || "Chủ đề"}>
             {categoryName || "Chủ đề"}
           </span>
           <ChevronRight className="size-3 text-copy-subtle" />
@@ -726,7 +726,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     onChange={(e) => setAutoPause(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="relative w-8 h-4 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-muted after:border-gray-300 after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
+                  <div className="relative w-8 h-4 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-muted after:border-stroke-strong after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
                   Tự động dừng
                 </label>
                 <label className="inline-flex items-center gap-2.5 cursor-pointer text-xs font-mono text-copy-secondary">
@@ -736,7 +736,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     onChange={(e) => setLargeVideo(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="relative w-8 h-4 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-muted after:border-gray-300 after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
+                  <div className="relative w-8 h-4 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-muted after:border-stroke-strong after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
                   Video kích thước lớn
                 </label>
               </div>
@@ -775,7 +775,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                             "w-full px-3 py-1.5 text-left font-mono text-xs rounded-control transition",
                             playbackSpeed === speed
                               ? "bg-brand-cyan/10 text-brand-cyan"
-                              : "text-copy-muted hover:bg-surface-inner hover:text-white"
+                              : "text-copy-muted hover:bg-surface-inner hover:text-foreground"
                           )}
                         >
                           {speed === 1 ? "Normal" : `${speed}x`}
@@ -871,14 +871,14 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
             {/* POPUP DỊCH NHANH BẰNG AI DEEPSEEK */}
             {(translateLoading || translationResult) && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="w-full max-w-sm rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal mx-4 relative animate-scale-in">
+                <div className="w-full max-w-sm rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal mx-4 relative animate-scale-in">
                   <button
                     type="button"
                     onClick={() => {
                       setTranslationResult(null)
                       setTranslateLoading(false)
                     }}
-                    className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-white transition"
+                    className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-foreground transition"
                   >
                     <X className="size-4" />
                   </button>
@@ -896,14 +896,14 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     translationResult && (
                       <div className="space-y-4">
                         <div className="bg-canvas-deep border border-stroke p-3 rounded-card text-center">
-                          <h4 className="text-base font-bold text-white">{translationResult.phrase}</h4>
+                          <h4 className="text-base font-bold text-foreground">{translationResult.phrase}</h4>
                           <p className="text-xs font-mono text-copy-muted mt-1">{translationResult.phonetic}</p>
                           <span className="inline-block text-[9px] font-mono text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
                         </div>
 
                         <div>
                           <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
-                          <p className="text-xs font-semibold text-emerald-400">{translationResult.meaning}</p>
+                          <p className="text-xs font-semibold text-status-success">{translationResult.meaning}</p>
                         </div>
 
                         {translationResult.example_sentence && (
@@ -971,7 +971,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                             : scoreVal >= 60
                             ? "text-action-gold font-semibold border-action-gold/30"
                             : "text-destructive font-semibold border-destructive/30"
-                          : "text-white"
+                          : "text-foreground"
                       )}
                     >
                       {item.word}
@@ -996,7 +996,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     <p className="font-mono text-[10px] text-brand-cyan font-bold tracking-widest uppercase mb-2">
                       ĐÁNH GIÁ TỪ: “{alignedWords[selectedWordIndex].word}”
                     </p>
-                    <p>Accuracy Score: <span className="font-mono font-bold text-white">{alignedWords[selectedWordIndex].score?.toFixed(0)}/100</span></p>
+                    <p>Accuracy Score: <span className="font-mono font-bold text-foreground">{alignedWords[selectedWordIndex].score?.toFixed(0)}/100</span></p>
                     <p>{alignedWords[selectedWordIndex].feedback}</p>
                     
                     {alignedWords[selectedWordIndex].weakPhonemes.length > 0 && (
@@ -1021,7 +1021,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                   </div>
                   <button
                     onClick={() => setSelectedWordIndex(null)}
-                    className="p-1 text-copy-subtle hover:text-white rounded-full"
+                    className="p-1 text-copy-subtle hover:text-foreground rounded-full"
                   >
                     <X className="size-3.5" />
                   </button>
@@ -1034,25 +1034,25 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
               <div className="mt-5 p-4 rounded-control border border-stroke-strong bg-canvas-deep/60 grid grid-cols-2 gap-4 md:grid-cols-4 animate-scale-in">
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
                   <span className="text-[10px] font-mono text-copy-muted uppercase">Overall</span>
-                  <span className="text-xl font-bold font-mono text-white mt-1">
+                  <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.overallScore.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
                   <span className="text-[10px] font-mono text-copy-muted uppercase">Accuracy</span>
-                  <span className="text-xl font-bold font-mono text-white mt-1">
+                  <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.accuracy.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
                   <span className="text-[10px] font-mono text-copy-muted uppercase">Fluency</span>
-                  <span className="text-xl font-bold font-mono text-white mt-1">
+                  <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.fluency.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
                   <span className="text-[10px] font-mono text-copy-muted uppercase">Prosody</span>
-                  <span className="text-xl font-bold font-mono text-white mt-1">
+                  <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.prosody.toFixed(0)}
                   </span>
                 </div>
@@ -1090,7 +1090,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                   variant="default"
                   size="app"
                   onClick={stopRecording}
-                  className="flex-1 bg-destructive border border-destructive/40 text-white animate-pulse"
+                  className="flex-1 bg-destructive border border-destructive/40 text-copy-primary animate-pulse"
                 >
                   <MicOff className="size-4" /> DỪNG GHI ÂM
                 </Button>
@@ -1110,7 +1110,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
           {/* Vùng Bình Luận Mockup */}
           <div className="rounded-panel border border-stroke bg-surface-panel/40 p-4 shadow-card">
-            <div className="flex items-center justify-between cursor-pointer text-copy-secondary hover:text-white transition">
+            <div className="flex items-center justify-between cursor-pointer text-copy-secondary hover:text-foreground transition">
               <span className="flex items-center gap-2 text-sm font-semibold">
                 <MessageSquare className="size-4 text-brand-cyan" />
                 BÌNH LUẬN
@@ -1145,7 +1145,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     onChange={(e) => setShowIpa(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="relative w-7 h-3.5 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-subtle after:rounded-full after:h-2 after:w-2 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
+                  <div className="relative w-7 h-3.5 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-subtle after:border after:border-stroke-strong after:rounded-full after:h-2 after:w-2 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
                   IPA
                 </label>
 
@@ -1156,7 +1156,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     onChange={(e) => setShowTrans(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="relative w-7 h-3.5 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-subtle after:rounded-full after:h-2 after:w-2 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
+                  <div className="relative w-7 h-3.5 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-subtle after:border after:border-stroke-strong after:rounded-full after:h-2 after:w-2 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
                   Trans
                 </label>
               </div>
@@ -1185,7 +1185,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                     className={cn(
                       "group p-4 rounded-card border cursor-pointer transition-all duration-300 relative overflow-hidden",
                       isActive
-                        ? "border-brand-cyan bg-brand-cyan/5 shadow-[0_0_15px_rgba(110,231,242,0.15)]"
+                        ? "border-brand-cyan bg-brand-cyan/5 shadow-[0_0_15px_var(--engflex-cyan-tint)]"
                         : isCompleted
                         ? "border-status-success/20 bg-status-success/5 hover:border-status-success/40"
                         : "border-stroke bg-surface-panel hover:border-stroke-strong hover:bg-surface-glass"
@@ -1237,10 +1237,10 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
       {/* Modal phím tắt học tập */}
       {showShortcutsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal mx-4 relative animate-scale-in">
+          <div className="w-full max-w-md rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal mx-4 relative animate-scale-in">
             <button
               onClick={() => setShowShortcutsModal(false)}
-              className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-white transition"
+              className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-foreground transition"
             >
               <X className="size-4" />
             </button>

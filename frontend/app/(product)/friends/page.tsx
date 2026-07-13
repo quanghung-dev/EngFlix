@@ -275,8 +275,8 @@ export default function FriendsPage() {
           description="Quản lý kết nối, phản hồi lời mời và tìm thêm bạn học trong cộng đồng EngFlex."
           aside={
             <div className="grid grid-cols-2 gap-3">
-              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-white">{friends.length}</p><p className="mt-1 text-xs text-copy-muted">bạn bè</p></CardContent></Card>
-              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-white">{requests.length}</p><p className="mt-1 text-xs text-copy-muted">lời mời</p></CardContent></Card>
+              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-foreground">{friends.length}</p><p className="mt-1 text-xs text-copy-muted">bạn bè</p></CardContent></Card>
+              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-foreground">{requests.length}</p><p className="mt-1 text-xs text-copy-muted">lời mời</p></CardContent></Card>
             </div>
           }
         />
@@ -393,7 +393,7 @@ export default function FriendsPage() {
             <TabsContent value="search" className="mt-6">
               <section aria-labelledby="search-heading" className="space-y-5">
                 <div>
-                  <h2 id="search-heading" className="text-2xl font-semibold text-white">Tìm bạn học mới</h2>
+                  <h2 id="search-heading" className="text-2xl font-semibold text-foreground">Tìm bạn học mới</h2>
                   <p className="mt-2 text-copy-muted">Tìm theo tên hoặc email. EngFlex chỉ hiển thị thông tin hồ sơ công khai.</p>
                 </div>
                 <form className="flex flex-col gap-3 sm:flex-row" onSubmit={handleSearch} role="search">

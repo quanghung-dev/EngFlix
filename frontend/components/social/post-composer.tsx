@@ -62,7 +62,7 @@ export function PostComposer({
       <CardHeader className="flex-row items-center gap-3">
         <SocialUserAvatar name={authorName} src={authorAvatar} />
         <div>
-          <h2 className="text-lg font-semibold text-white">Chia sẻ cùng cộng đồng</h2>
+          <h2 className="text-lg font-semibold text-foreground">Chia sẻ cùng cộng đồng</h2>
           <p className="mt-1 text-sm text-copy-muted">
             Một câu hỏi hay hay một chiến thắng nhỏ đều đáng được ghi lại.
           </p>

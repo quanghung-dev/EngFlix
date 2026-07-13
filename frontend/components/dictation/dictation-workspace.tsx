@@ -683,9 +683,9 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
     return (
       <div className="mx-auto flex h-[70vh] max-w-md flex-col items-center justify-center text-center gap-6 px-6">
         <HelpCircle className="size-16 text-destructive/80" />
-        <h2 className="text-2xl font-semibold text-white">Xảy ra lỗi</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Xảy ra lỗi</h2>
         <p className="text-copy-muted leading-relaxed">{error || "Tải dữ liệu thất bại."}</p>
-        <Link href="/topics" className="product-focus inline-flex h-11 items-center gap-2 rounded-nav border border-stroke bg-surface-panel px-6 font-medium text-white hover:bg-surface-glass transition">
+        <Link href="/topics" className="product-focus inline-flex h-11 items-center gap-2 rounded-nav border border-stroke bg-surface-panel px-6 font-medium text-foreground hover:bg-surface-glass transition">
           <ArrowLeft className="size-4" /> Về thư viện chủ đề
         </Link>
       </div>
@@ -696,16 +696,16 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
   const isCurrentSentenceCompleted = activeTranscript && completedIds.has(activeTranscript.id)
 
   return (
-    <div className="min-h-screen bg-canvas text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       {/* Vùng Header điều khiển phụ */}
       <div className="flex flex-col gap-4 border-b border-stroke-subtle px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
         {/* Breadcrumbs */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-copy-muted md:text-sm">
-          <Link href="/topics" className="hover:text-white transition">
+          <Link href="/topics" className="hover:text-foreground transition">
             Topics
           </Link>
           <ChevronRight className="size-3 text-copy-subtle" />
-          <span className="max-w-[12rem] truncate hover:text-white transition" title={categoryName || "Chủ đề"}>
+          <span className="max-w-[12rem] truncate hover:text-foreground transition" title={categoryName || "Chủ đề"}>
             {categoryName || "Chủ đề"}
           </span>
           <ChevronRight className="size-3 text-copy-subtle" />
@@ -835,7 +835,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                         : tab === "normal"
                         ? "bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/35"
                         : "bg-action-gold/15 text-action-gold border border-action-gold/35"
-                      : "text-copy-muted hover:text-white"
+                      : "text-copy-muted hover:text-foreground"
                   )}
                 >
                   {tab}
@@ -920,7 +920,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                             "w-full px-3 py-1.5 text-left font-mono text-xs rounded-control transition",
                             playbackSpeed === speed
                               ? "bg-brand-cyan/10 text-brand-cyan"
-                              : "text-copy-muted hover:bg-surface-inner hover:text-white"
+                              : "text-copy-muted hover:bg-surface-inner hover:text-foreground"
                           )}
                         >
                           {speed === 1 ? "Normal" : `${speed}x`}
@@ -969,14 +969,14 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
             {/* POPUP DỊCH NHANH BẰNG AI DEEPSEEK */}
             {(translateLoading || translationResult) && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="w-full max-w-sm rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal mx-4 relative animate-scale-in">
+                <div className="w-full max-w-sm rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal mx-4 relative animate-scale-in">
                   <button
                     type="button"
                     onClick={() => {
                       setTranslationResult(null)
                       setTranslateLoading(false)
                     }}
-                    className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-white transition"
+                    className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-foreground transition"
                   >
                     <X className="size-4" />
                   </button>
@@ -994,14 +994,14 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                     translationResult && (
                       <div className="space-y-4">
                         <div className="bg-canvas-deep border border-stroke p-3 rounded-card text-center">
-                          <h4 className="text-base font-bold text-white">{translationResult.phrase}</h4>
+                          <h4 className="text-base font-bold text-foreground">{translationResult.phrase}</h4>
                           <p className="text-xs font-mono text-copy-muted mt-1">{translationResult.phonetic}</p>
                           <span className="inline-block text-[9px] font-mono text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
                         </div>
 
                         <div>
                           <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
-                          <p className="text-xs font-semibold text-emerald-400">{translationResult.meaning}</p>
+                          <p className="text-xs font-semibold text-status-success">{translationResult.meaning}</p>
                         </div>
 
                         {translationResult.example_sentence && (
@@ -1059,7 +1059,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                     ? "Bạn đã hoàn thành chính xác câu thoại này!"
                     : "Gõ câu trả lời của bạn ở đây..."
                 }
-                className="w-full min-h-[110px] bg-transparent p-4 pr-12 text-sm leading-6 outline-none resize-none placeholder-copy-subtle text-white disabled:text-copy-muted"
+                className="w-full min-h-[110px] bg-transparent p-4 pr-12 text-sm leading-6 outline-none resize-none placeholder-copy-subtle text-foreground disabled:text-copy-muted"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault()
@@ -1079,7 +1079,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                 className={cn(
                   "absolute right-3.5 bottom-3.5 p-2 rounded-full border transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none",
                   isListening
-                    ? "bg-destructive border-destructive text-white animate-pulse"
+                    ? "bg-destructive border-destructive text-copy-primary animate-pulse"
                     : "bg-surface-inner border-stroke-strong text-copy-secondary hover:border-brand-cyan hover:text-brand-cyan"
                 )}
                 title={isListening ? "Đang lắng nghe... bấm để dừng" : "Gõ bằng giọng nói (Voice Typing)"}
@@ -1194,10 +1194,10 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-5 shrink-0 text-status-success mt-0.5" />
                 <div>
-                  <p className="font-semibold text-white text-xs font-mono tracking-widest text-status-success uppercase mb-1">
+                  <p className="font-semibold text-xs font-mono tracking-widest text-status-success uppercase mb-1">
                     CHÍNH XÁC - DỊCH NGHĨA:
                   </p>
-                  <p className="italic text-slate-200">“{activeTranscript.vietnamese}”</p>
+                  <p className="italic text-copy-secondary">“{activeTranscript.vietnamese}”</p>
                   {activeTranscript.phonetic && (
                     <p className="mt-1 text-xs text-copy-muted font-mono">Phonetic: {activeTranscript.phonetic}</p>
                   )}
@@ -1239,7 +1239,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                     className={cn(
                       "group p-4 rounded-card border cursor-pointer transition-all duration-300 relative overflow-hidden",
                       isActive
-                        ? "border-brand-cyan bg-brand-cyan/5 shadow-[0_0_15px_rgba(110,231,242,0.15)]"
+                        ? "border-brand-cyan bg-brand-cyan/5 shadow-[0_0_15px_var(--engflex-cyan-tint)]"
                         : isCompleted
                         ? "border-status-success/20 bg-status-success/5 hover:border-status-success/40"
                         : "border-stroke bg-surface-panel hover:border-stroke-strong hover:bg-surface-glass"
@@ -1283,10 +1283,10 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
       {/* Modal hướng dẫn phím tắt */}
       {showShortcutsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal mx-4 relative animate-scale-in">
+          <div className="w-full max-w-md rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal mx-4 relative animate-scale-in">
             <button
               onClick={() => setShowShortcutsModal(false)}
-              className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-white transition"
+              className="absolute right-4 top-4 p-1.5 rounded-full border border-stroke-strong bg-surface-inner text-copy-muted hover:text-foreground transition"
             >
               <X className="size-4" />
             </button>

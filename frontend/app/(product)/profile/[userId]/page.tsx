@@ -440,9 +440,9 @@ export default function UserProfilePage() {
 
       <ProductReveal delay={0.07}>
         <section aria-label="Thống kê hồ sơ" className="grid gap-4 sm:grid-cols-3">
-          <Card variant="inner"><CardContent><FileTextIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-3xl font-semibold tabular-nums text-white">{profile.post_count}</p><p className="mt-1 text-sm text-copy-muted">bài viết</p></CardContent></Card>
-          <Card variant="inner"><CardContent><UsersIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-3xl font-semibold tabular-nums text-white">{profile.friend_count}</p><p className="mt-1 text-sm text-copy-muted">bạn bè</p></CardContent></Card>
-          <Card variant="inner"><CardContent><CalendarDaysIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-base font-semibold text-white">{formatJoinedDate(profile.created_at)}</p><p className="mt-1 text-sm text-copy-muted">tham gia EngFlex</p></CardContent></Card>
+          <Card variant="inner"><CardContent><FileTextIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-3xl font-semibold tabular-nums text-foreground">{profile.post_count}</p><p className="mt-1 text-sm text-copy-muted">bài viết</p></CardContent></Card>
+          <Card variant="inner"><CardContent><UsersIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-3xl font-semibold tabular-nums text-foreground">{profile.friend_count}</p><p className="mt-1 text-sm text-copy-muted">bạn bè</p></CardContent></Card>
+          <Card variant="inner"><CardContent><CalendarDaysIcon className="size-5 text-brand-cyan" aria-hidden="true" /><p className="mt-4 text-base font-semibold text-foreground">{formatJoinedDate(profile.created_at)}</p><p className="mt-1 text-sm text-copy-muted">tham gia EngFlex</p></CardContent></Card>
         </section>
       </ProductReveal>
 
@@ -455,7 +455,7 @@ export default function UserProfilePage() {
       <section aria-labelledby="profile-posts-heading" className="space-y-5">
         <div>
           <p className="font-mono text-xs tracking-[0.16em] text-brand-cyan uppercase">Learning journal</p>
-          <h2 id="profile-posts-heading" className="mt-2 text-2xl font-semibold text-white">Bài viết trên hồ sơ</h2>
+          <h2 id="profile-posts-heading" className="mt-2 text-2xl font-semibold text-foreground">Bài viết trên hồ sơ</h2>
         </div>
 
         {posts.length === 0 ? (
@@ -497,7 +497,7 @@ export default function UserProfilePage() {
       <Dialog open={editOpen} onOpenChange={(open) => { if (!editPending) setEditOpen(open) }}>
         <DialogContent className="max-w-lg rounded-card border border-stroke bg-surface-panel p-6 sm:max-w-lg" aria-busy={editPending}>
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-white">Chỉnh sửa hồ sơ</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-foreground">Chỉnh sửa hồ sơ</DialogTitle>
             <DialogDescription className="text-copy-muted">Tên hiển thị và số điện thoại được lưu trong hồ sơ EngFlex của bạn.</DialogDescription>
           </DialogHeader>
           <form className="space-y-5" onSubmit={handleEditSubmit}>

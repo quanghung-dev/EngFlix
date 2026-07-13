@@ -127,7 +127,7 @@ export function ProgressWorkspace() {
             averagePronunciation !== null ? (
               <div className="rounded-panel border border-brand-cyan/20 bg-brand-cyan/10 px-5 py-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-brand-cyan">Điểm phát âm TB</p>
-                <p className="mt-1 text-3xl font-semibold text-white">{averagePronunciation}<span className="text-base text-copy-muted">/100</span></p>
+                <p className="mt-1 text-3xl font-semibold text-foreground">{averagePronunciation}<span className="text-base text-copy-muted">/100</span></p>
               </div>
             ) : undefined
           }
@@ -183,7 +183,7 @@ export function ProgressWorkspace() {
                         <span className={cn("grid size-11 place-items-center rounded-nav border", metric.accent)}>
                           <Icon className="size-5" aria-hidden="true" />
                         </span>
-                        <p className="mt-8 font-mono text-4xl font-semibold tracking-tight text-white">
+                        <p className="mt-8 font-mono text-4xl font-semibold tracking-tight text-foreground">
                           {stats[metric.key].toLocaleString("vi-VN")}
                         </p>
                         <p className="mt-2 text-sm font-medium text-copy-secondary">{metric.label}</p>
@@ -202,7 +202,7 @@ export function ProgressWorkspace() {
                 <Card variant="product" className="h-full">
                   <CardHeader>
                     <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-brand-cyan">7 ngày gần nhất</p>
-                    <CardTitle className="mt-2 text-xl text-white">Bài học hoàn tất theo ngày</CardTitle>
+                    <CardTitle className="mt-2 text-xl text-foreground">Bài học hoàn tất theo ngày</CardTitle>
                     <p className="mt-2 text-sm leading-6 text-copy-muted">Một bài chỉ được tính khi cả Dictation và Shadowing đã hoàn tất.</p>
                   </CardHeader>
                   <CardContent className="pt-2">
@@ -215,7 +215,7 @@ export function ProgressWorkspace() {
                 <Card variant="product" className="h-full">
                   <CardHeader>
                     <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-brand-cyan">10 lượt gần nhất</p>
-                    <CardTitle className="mt-2 text-xl text-white">Xu hướng điểm phát âm</CardTitle>
+                    <CardTitle className="mt-2 text-xl text-foreground">Xu hướng điểm phát âm</CardTitle>
                     <p className="mt-2 text-sm leading-6 text-copy-muted">Theo dõi sự thay đổi giữa các lượt ghi âm Shadowing đã được chấm.</p>
                   </CardHeader>
                   <CardContent className="pt-2">
@@ -224,7 +224,7 @@ export function ProgressWorkspace() {
                     ) : (
                       <div className="flex h-64 flex-col items-center justify-center text-center">
                         <BrainCircuit className="size-8 text-copy-subtle" aria-hidden="true" />
-                        <p className="mt-4 text-sm font-medium text-white">Chưa có điểm phát âm</p>
+                        <p className="mt-4 text-sm font-medium text-foreground">Chưa có điểm phát âm</p>
                         <p className="mt-2 max-w-xs text-sm leading-6 text-copy-muted">Luyện một câu trong Shadowing để bắt đầu đường xu hướng.</p>
                       </div>
                     )}

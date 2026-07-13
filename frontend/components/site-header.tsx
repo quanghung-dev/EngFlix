@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ArrowUpRightIcon, ChevronRightIcon } from "lucide-react"
 
+import { ThemeToggle } from "@/components/theme-toggle"
 import { buttonVariants } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
@@ -114,7 +115,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 flex h-(--header-height) shrink-0 items-center border-b border-stroke-subtle bg-canvas-deep/85 backdrop-blur-xl">
       <div className="flex w-full min-w-0 items-center gap-3 px-5 sm:px-8 lg:px-10">
-        <SidebarTrigger className="product-focus -ml-2 text-copy-secondary hover:bg-muted hover:text-white" />
+        <SidebarTrigger className="product-focus -ml-2 text-copy-secondary hover:bg-muted hover:text-foreground" />
         <span className="h-5 w-px shrink-0 bg-stroke-subtle" aria-hidden="true" />
 
         {descriptor.breadcrumbs ? (
@@ -140,7 +141,7 @@ export function SiteHeader() {
                     ) : (
                       <span
                         aria-current={isCurrent ? "page" : undefined}
-                        className="truncate font-medium text-white"
+                        className="truncate font-medium text-foreground"
                       >
                         {item.label}
                       </span>
@@ -151,24 +152,27 @@ export function SiteHeader() {
             </ol>
           </nav>
         ) : (
-          <p className="truncate text-sm font-medium text-white">
+          <p className="truncate text-sm font-medium text-foreground">
             {descriptor.title}
           </p>
         )}
 
-        {descriptor.action ? (
-          <Link
-            href={descriptor.action.href}
-            className={cn(
-              buttonVariants({ variant: "glass" }),
-              "ml-auto h-11 rounded-control px-3 sm:px-4"
-            )}
-          >
-            <span className="hidden sm:inline">{descriptor.action.label}</span>
-            <ArrowUpRightIcon aria-hidden="true" />
-            <span className="sr-only sm:hidden">{descriptor.action.label}</span>
-          </Link>
-        ) : null}
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <ThemeToggle />
+          {descriptor.action ? (
+            <Link
+              href={descriptor.action.href}
+              className={cn(
+                buttonVariants({ variant: "glass" }),
+                "h-11 rounded-control px-3 sm:px-4"
+              )}
+            >
+              <span className="hidden sm:inline">{descriptor.action.label}</span>
+              <ArrowUpRightIcon aria-hidden="true" />
+              <span className="sr-only sm:hidden">{descriptor.action.label}</span>
+            </Link>
+          ) : null}
+        </div>
       </div>
     </header>
   )

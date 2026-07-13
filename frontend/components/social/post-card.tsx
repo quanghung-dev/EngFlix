@@ -62,7 +62,7 @@ export function PostCard({
                 <Link
                   id={`post-${post.id}-author`}
                   href={`/profile/${post.user_id}`}
-                  className="product-focus truncate rounded font-semibold text-white hover:text-brand-cyan"
+                  className="product-focus truncate rounded font-semibold text-foreground hover:text-brand-cyan"
                 >
                   {post.username}
                 </Link>

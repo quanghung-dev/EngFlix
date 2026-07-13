@@ -35,6 +35,8 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+import { ThemeToggle } from "@/components/theme-toggle"
+
 const NAV_ITEMS = [
   { href: "#features", label: "Tính năng" },
   { href: "#method", label: "Phương pháp" },
@@ -72,6 +74,7 @@ interface ExperienceMode {
   description: string
   icon: LucideIcon
   accent: string
+  accentClass: string
   bullets: readonly string[]
 }
 
@@ -85,6 +88,7 @@ const EXPERIENCE_MODES: readonly ExperienceMode[] = [
       "Phụ đề song ngữ thông minh làm nổi bật cụm từ đáng nhớ ngay khi nhân vật cất lời.",
     icon: Eye,
     accent: "#6ee7f2",
+    accentClass: "text-brand-cyan",
     bullets: ["Phụ đề theo từng câu thoại", "Chạm để lưu từ mới"],
   },
   {
@@ -96,6 +100,7 @@ const EXPERIENCE_MODES: readonly ExperienceMode[] = [
       "Ghi âm trực tiếp trên câu thoại và quan sát waveform để luyện đúng nhịp, trọng âm, cảm xúc.",
     icon: Mic2,
     accent: "#f7c76f",
+    accentClass: "text-action-gold",
     bullets: ["Shadowing theo từng nhịp", "Nghe lại và so sánh tức thì"],
   },
   {
@@ -107,6 +112,7 @@ const EXPERIENCE_MODES: readonly ExperienceMode[] = [
       "EngFlex phân tích phát âm, độ trôi chảy và ngữ điệu để mỗi lần thử đều tiến bộ rõ ràng.",
     icon: BrainCircuit,
     accent: "#9af7c5",
+    accentClass: "text-status-success",
     bullets: ["Điểm số theo ba tiêu chí", "Gợi ý luyện lại có trọng tâm"],
   },
 ] as const
@@ -153,28 +159,36 @@ export function LandingNav() {
         aria-label="Điều hướng chính"
         className={`landing-glass pointer-events-auto mx-auto max-w-7xl rounded-2xl border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ${
           isScrolled || isMenuOpen
-            ? "border-cyan-200/15 bg-[#071321]/82 shadow-[0_16px_60px_rgba(0,0,0,0.34),0_0_0_1px_rgba(110,231,242,0.03)] backdrop-blur-xl"
-            : "border-white/[0.07] bg-[#071321]/45 backdrop-blur-md"
+            ? "border-brand-cyan/20 bg-surface-glass shadow-card backdrop-blur-xl"
+            : "border-stroke-subtle bg-surface-glass/70 backdrop-blur-md"
         }`}
       >
         <div className="flex h-16 items-center justify-between px-4 sm:px-5 lg:px-6">
           <Link
             href="/home"
-            className="group flex items-center gap-2.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2] focus-visible:ring-offset-4 focus-visible:ring-offset-[#06101d]"
+            className="group flex items-center gap-2.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
             aria-label="EngFlex - Trang chủ"
           >
-            <span className="relative grid size-9 place-items-center overflow-hidden rounded-xl border border-cyan-200/20 bg-gradient-to-br from-cyan-200/15 to-amber-200/10 shadow-[inset_0_0_16px_rgba(110,231,242,0.08)]">
+            <span className="relative grid size-9 place-items-center overflow-hidden rounded-xl border border-brand-cyan/20 bg-gradient-to-br from-brand-cyan/15 to-action-gold/10 shadow-[inset_0_0_16px_var(--engflex-cyan-tint)]">
+              <Image
+                src="/owl-speaking-light.webp"
+                alt=""
+                width={40}
+                height={40}
+                aria-hidden="true"
+                className="h-auto w-10 object-contain transition-transform duration-300 group-hover:scale-110 dark:hidden"
+              />
               <Image
                 src="/owl-speaking-cinematic.webp"
                 alt=""
                 width={40}
                 height={40}
                 aria-hidden="true"
-                className="size-10 object-contain transition-transform duration-300 group-hover:scale-110"
+                className="hidden h-auto w-10 object-contain transition-transform duration-300 group-hover:scale-110 dark:block"
               />
             </span>
-            <span className="text-lg font-semibold tracking-[-0.035em] text-white">
-              Eng<span className="text-[#6ee7f2]">Flex</span>
+            <span className="text-lg font-semibold tracking-[-0.035em] text-copy-primary">
+              Eng<span className="text-brand-cyan">Flex</span>
             </span>
           </Link>
 
@@ -183,7 +197,7 @@ export function LandingNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-white/[0.05] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2]"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-copy-secondary transition-colors hover:bg-surface-inner hover:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
               >
                 {item.label}
               </Link>
@@ -191,9 +205,11 @@ export function LandingNav() {
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle className="size-11 shrink-0" />
+
             <Link
               href="/topics"
-              className="hidden items-center gap-2 rounded-xl bg-[#f7c76f] px-4 py-2.5 text-sm font-semibold text-[#101827] shadow-[0_8px_30px_rgba(247,199,111,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#ffda8c] hover:shadow-[0_12px_36px_rgba(247,199,111,0.26)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7c76f] focus-visible:ring-offset-4 focus-visible:ring-offset-[#071321] sm:inline-flex"
+              className="hidden min-h-11 items-center gap-2 rounded-xl bg-action-gold-fill px-4 py-2.5 text-sm font-semibold text-action-foreground shadow-card transition-all hover:-translate-y-0.5 hover:bg-action-gold-fill/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4 focus-visible:ring-offset-canvas sm:inline-flex"
             >
               Bắt đầu học
               <ArrowRight aria-hidden="true" className="size-4" />
@@ -205,7 +221,7 @@ export function LandingNav() {
               aria-expanded={isMenuOpen}
               aria-controls="landing-mobile-menu"
               aria-label={isMenuOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
-              className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-colors hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2] lg:hidden"
+              className="grid size-11 place-items-center rounded-xl border border-stroke bg-surface-inner text-copy-primary transition-colors hover:bg-surface-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus lg:hidden"
             >
               {isMenuOpen ? (
                 <X aria-hidden="true" className="size-5" />
@@ -226,13 +242,13 @@ export function LandingNav() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.25 }}
               className="overflow-hidden lg:hidden"
             >
-              <div className="grid gap-1 border-t border-white/[0.07] p-3">
+              <div className="grid gap-1 border-t border-stroke-subtle p-3">
                 {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={closeMenu}
-                    className="rounded-xl px-4 py-3 text-sm font-medium text-slate-200 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2]"
+                    className="rounded-xl px-4 py-3 text-sm font-medium text-copy-secondary transition-colors hover:bg-surface-inner hover:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                   >
                     {item.label}
                   </Link>
@@ -240,7 +256,7 @@ export function LandingNav() {
                 <Link
                   href="/topics"
                   onClick={closeMenu}
-                  className="mt-1 flex items-center justify-between rounded-xl bg-[#f7c76f] px-4 py-3 text-sm font-semibold text-[#101827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:hidden"
+                  className="mt-1 flex min-h-11 items-center justify-between rounded-xl bg-action-gold-fill px-4 py-3 text-sm font-semibold text-action-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:hidden"
                 >
                   Bắt đầu học
                   <ArrowRight aria-hidden="true" className="size-4" />
@@ -730,11 +746,11 @@ export function ExperienceShowcase() {
   }
 
   return (
-    <div className="landing-glass rounded-[2rem] border border-white/[0.09] bg-[#081522]/70 p-2 shadow-[0_34px_100px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:rounded-[2.5rem] sm:p-3 lg:p-4">
+    <div className="landing-glass rounded-[2rem] border border-stroke bg-surface-glass p-2 shadow-modal backdrop-blur-xl sm:rounded-[2.5rem] sm:p-3 lg:p-4">
       <div
         role="tablist"
         aria-label="Các bước trải nghiệm EngFlex"
-        className="mb-2 grid grid-cols-3 gap-1 rounded-[1.25rem] border border-white/[0.06] bg-[#050e18]/65 p-1 sm:mb-3 sm:gap-2 sm:rounded-[1.5rem] sm:p-1.5"
+        className="mb-2 grid grid-cols-3 gap-1 rounded-[1.25rem] border border-stroke-subtle bg-surface-inner p-1 sm:mb-3 sm:gap-2 sm:rounded-[1.5rem] sm:p-1.5"
       >
         {EXPERIENCE_MODES.map((mode, index) => {
           const Icon = mode.icon
@@ -751,18 +767,21 @@ export function ExperienceShowcase() {
               tabIndex={isActive ? 0 : -1}
               onClick={() => setActiveId(mode.id)}
               onKeyDown={(event) => handleTabKeyDown(event, index)}
-              className={`relative flex items-center justify-center gap-2 rounded-xl px-2 py-3 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2] sm:rounded-2xl sm:px-4 sm:text-sm ${
-                isActive ? "text-white" : "text-slate-500 hover:bg-white/[0.035] hover:text-slate-300"
+              className={`relative flex items-center justify-center gap-2 rounded-xl px-2 py-3 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:rounded-2xl sm:px-4 sm:text-sm ${
+                isActive ? "text-copy-primary" : "text-copy-muted hover:bg-surface-panel hover:text-copy-secondary"
               }`}
             >
               {isActive ? (
                 <motion.span
                   layoutId={`${tabIdPrefix}-active-tab`}
-                  className="absolute inset-0 rounded-xl border border-white/10 bg-white/[0.075] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:rounded-2xl"
+                  className="absolute inset-0 rounded-xl border border-stroke bg-surface-panel shadow-[inset_0_1px_0_var(--engflex-border-subtle)] sm:rounded-2xl"
                   transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
                 />
               ) : null}
-              <Icon aria-hidden="true" className="relative z-10 size-4" style={{ color: isActive ? mode.accent : undefined }} />
+              <Icon
+                aria-hidden="true"
+                className={`relative z-10 size-4 ${isActive ? mode.accentClass : ""}`}
+              />
               <span className="relative z-10">{mode.label}</span>
             </button>
           )
@@ -775,12 +794,12 @@ export function ExperienceShowcase() {
           role="tabpanel"
           aria-labelledby={`${tabIdPrefix}-${activeMode.id}-tab`}
           tabIndex={0}
-          className="rounded-[1.5rem] outline-none focus-visible:ring-2 focus-visible:ring-[#6ee7f2] sm:rounded-[2rem]"
+          className="rounded-[1.5rem] outline-none focus-visible:ring-2 focus-visible:ring-focus sm:rounded-[2rem]"
         >
           <ExperienceStage mode={activeMode} shouldReduceMotion={shouldReduceMotion} />
         </div>
 
-        <div className="relative min-h-[280px] overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-[#06111c]/74 p-6 sm:rounded-[2rem] sm:p-8 lg:flex lg:min-h-0 lg:flex-col lg:justify-between">
+        <div className="relative min-h-[280px] overflow-hidden rounded-[1.5rem] border border-stroke-subtle bg-surface-panel p-6 sm:rounded-[2rem] sm:p-8 lg:flex lg:min-h-0 lg:flex-col lg:justify-between">
           <div
             aria-hidden="true"
             className="absolute -right-16 -top-16 size-44 rounded-full blur-[70px]"
@@ -796,18 +815,18 @@ export function ExperienceShowcase() {
               className="relative z-10"
               aria-live="polite"
             >
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: activeMode.accent }}>
+              <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] ${activeMode.accentClass}`}>
                 <activeMode.icon aria-hidden="true" className="size-4" />
                 {activeMode.eyebrow}
               </div>
-              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-3xl lg:text-[2rem]">
+              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.045em] text-copy-primary sm:text-3xl lg:text-[2rem]">
                 {activeMode.title}
               </h3>
-              <p className="mt-4 text-sm leading-7 text-slate-400">{activeMode.description}</p>
+              <p className="mt-4 text-sm leading-7 text-copy-muted">{activeMode.description}</p>
               <ul className="mt-6 grid gap-3">
                 {activeMode.bullets.map((bullet) => (
-                  <li key={bullet} className="flex items-center gap-3 text-sm text-slate-300">
-                    <span className="grid size-6 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04]" style={{ color: activeMode.accent }}>
+                  <li key={bullet} className="flex items-center gap-3 text-sm text-copy-secondary">
+                    <span className={`grid size-6 shrink-0 place-items-center rounded-full border border-stroke bg-surface-inner ${activeMode.accentClass}`}>
                       <Check aria-hidden="true" className="size-3.5" />
                     </span>
                     {bullet}
@@ -817,8 +836,8 @@ export function ExperienceShowcase() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="relative z-10 mt-8 flex items-center gap-3 border-t border-white/[0.07] pt-5 text-xs text-slate-500">
-            <Headphones aria-hidden="true" className="size-4 text-slate-400" />
+          <div className="relative z-10 mt-8 flex items-center gap-3 border-t border-stroke-subtle pt-5 text-xs text-copy-muted">
+            <Headphones aria-hidden="true" className="size-4 text-copy-muted" />
             Chuyển chế độ để khám phá toàn bộ trải nghiệm
           </div>
         </div>

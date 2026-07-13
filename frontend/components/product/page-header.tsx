@@ -30,7 +30,7 @@ export function ProductPageHeader({
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
           {eyebrow}
         </div>
-        <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-white lg:text-5xl">
+        <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-foreground lg:text-5xl">
           {title}
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-7 text-copy-muted sm:text-lg sm:leading-8">

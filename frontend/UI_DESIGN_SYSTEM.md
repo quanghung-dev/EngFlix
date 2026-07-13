@@ -1,6 +1,6 @@
 # EngFlex UI Design System
 
-> Phiên bản: 1.1
+> Phiên bản: 1.2
 > Ngày cập nhật implementation: 13/07/2026
 > Nguồn chuẩn trực quan: route `/home`  
 > Phạm vi: frontend web tại `frontend/`  
@@ -67,13 +67,13 @@ Khi Home thay đổi có chủ đích, tài liệu này phải được audit v�
 | Icon | Lucide React |
 | Motion | Motion for React + CSS keyframes/Tailwind animation utilities |
 | Font | Geist Sans, Geist Mono qua `next/font` |
-| Theme | Neutral light/dark tokens có sẵn; Home dùng dark cinematic shell riêng |
+| Theme | `next-themes`, light mặc định, dark opt-in, lưu tại browser key `engflex-theme` |
 | Responsive | Tailwind breakpoints + media queries riêng + mobile hook 768px |
 
 CSS hiện gồm:
 
 1. Tailwind, `tw-animate-css` và shadcn imports.
-2. Semantic neutral tokens cho light/dark.
+2. Semantic EngFlex tokens: light ở `:root`, dark override dưới `.dark`.
 3. Base layer.
 4. Namespace `.landing-*` cho Home.
 5. Nhiều utility và arbitrary value trực tiếp trong JSX.
@@ -115,16 +115,28 @@ Flow này đi từ **lời hứa → bằng chứng → trải nghiệm → phư
 
 ### 1.6. Hiện trạng cần lưu ý
 
-- Home vẫn là nguồn chuẩn trực quan; nhóm product/study pages đã được đồng bộ sang dark cinematic product foundation, còn auth pages là phạm vi legacy riêng.
+- Home vẫn là nguồn chuẩn trực quan; light và dark cùng dùng một semantic product foundation, không tách thành hai bộ component.
 - Home không dùng `Button` hay `Card` primitive cho CTA/card chính.
 - 51 màu hex literal khác nhau xuất hiện trong Home-related source; token implementation đang phân mảnh.
 - Các biến `--landing-*` đã được khai báo nhưng chưa được sử dụng bởi `var(...)`.
-- Dark token set tồn tại nhưng không có ThemeProvider hoặc class `dark` ở root.
-- Product app đã có `ProductShell`, route-aware header, sidebar EngFlex và semantic product tokens; auth/landing legacy vẫn cần được đánh giá riêng khi chỉnh sửa.
+- Root đã có `AppThemeProvider`; class `.dark` do `next-themes` quản lý và lựa chọn được giữ qua điều hướng/reload.
+- Product app đã có `ProductShell`, route-aware header, sidebar EngFlex và semantic product tokens; Home và auth cùng hỗ trợ chuyển theme.
 - `Select`, `Textarea`, reusable `Tabs`, `AlertDialog`, `ProductPageHeader`, `AsyncContentState` và `ProductReveal` đã tồn tại. Table/DataTable, Checkbox, Radio, Switch và Pagination primitive vẫn là khoảng trống.
 - Topics đã có route-level `loading.tsx`, `error.tsx` và `not-found.tsx`; các route product còn lại dùng system state trong page và chưa chuẩn hóa route-level boundary riêng.
 
 Design System này vừa là đặc tả vừa là inventory: chỉ các mục gắn **[Đã triển khai]** mới được xem là API dùng chung hiện hữu; việc một primitive đã có không đồng nghĩa mọi page đã hoàn tất migration.
+
+### 1.7. Kiến trúc theme
+
+**[Đã triển khai]** EngFlex hỗ trợ đúng hai giá trị theme: `light` và `dark`.
+
+- Lần truy cập đầu dùng `light`, không tự bám theme hệ điều hành; `dark` chỉ được bật khi người dùng chủ động chọn.
+- `AppThemeProvider` dùng `next-themes` với `attribute="class"`, `defaultTheme="light"`, `enableSystem={false}` và `storageKey="engflex-theme"`.
+- `ThemeToggle` là control dùng chung ở Home, product/study và auth. Control phải có accessible name theo hành động sắp thực hiện, focus-visible rõ và hit area tối thiểu 44×44px.
+- Lựa chọn chỉ lưu trong local browser; không thêm API, database field hoặc đồng bộ theo tài khoản.
+- Token light nằm ở `:root`; `.dark` chỉ override giá trị. Các lớp semantic phải đặt ở root scope để dialog, select, tooltip và sheet render qua portal vẫn nhận đúng theme.
+- Component và page chỉ dùng token theo vai trò (`canvas`, `surface-*`, `copy-*`, `stroke-*`, `brand-*`, `status-*`). Không rẽ nhánh JSX hoặc nhân đôi component theo theme.
+- `color-scheme` phải là `light` ở root và `dark` dưới `.dark` để native form controls cùng theme với ứng dụng.
 
 ---
 
@@ -132,7 +144,7 @@ Design System này vừa là đặc tả vừa là inventory: chỉ các mục g
 
 ### 2.1. Định danh phong cách
 
-EngFlex là **Dark Cinematic EdTech SaaS** với bốn lớp ảnh hưởng:
+EngFlex là **Cinematic EdTech SaaS hai theme**. Dark giữ chiều sâu nhập vai nguyên bản; light chuyển nền sang trắng–xanh nhạt nhưng vẫn giữ cyan/gold và hierarchy premium. Ngôn ngữ này có bốn lớp ảnh hưởng:
 
 - **Cinematic**: nền navy gần đen, ánh sáng cyan/gold, grid phối cảnh, glow, scene/subtitle/waveform.
 - **AI learning cockpit**: score, progress, audio waveform, feedback và panel giống một không gian luyện tập tương tác.
@@ -247,7 +259,9 @@ Pattern chưa có trên Home phải mang nhãn **[Suy ra]**, dùng đúng founda
 
 Vì vậy, từ thời điểm tài liệu này có hiệu lực, dùng bảng canonical dưới đây cho thiết kế. Các giá trị gần kề trong source cũ là alias/legacy, không phải lý do tạo thêm token.
 
-### 4.2. Canonical palette
+### 4.2. Canonical palette theo theme
+
+#### Dark canonical
 
 | Token thiết kế | Giá trị canonical | Vai trò | Nguồn |
 |---|---:|---|---|
@@ -269,10 +283,36 @@ Vì vậy, từ thời điểm tài liệu này có hiệu lực, dùng bảng c
 | `color.text.primary` | `#FFFFFF` | Heading và nội dung chính | [Quan sát] |
 | `color.text.secondary` | `#CBD5E1` | Body mạnh, slate-300 | [Quan sát] |
 | `color.text.muted` | `#94A3B8` | Supporting copy, slate-400 | [Quan sát] |
-| `color.text.subtle` | `#64748B` | Metadata không quan trọng, slate-500 | [Quan sát, hạn chế] |
+| `color.text.subtle` | `#718096` | Metadata phụ trên dark surface; đủ AA ở cỡ chữ nhỏ | [Chuẩn hóa] |
 | `color.status.error` | `oklch(0.704 0.191 22.216)` | Error trên dark context; giá trị `.dark --destructive` hiện có | [Suy ra] |
 
-Alias legacy:
+#### Light canonical
+
+| Token thiết kế | Giá trị canonical | Vai trò |
+|---|---:|---|
+| `color.canvas` | `#F7FAFC` | Nền page chính |
+| `color.canvas.deep` | `#EEF4F8` | Nền shell/footer sâu hơn |
+| `color.surface.glass` | `rgb(255 255 255 / 82%)` | Nav, menu và glass surface |
+| `color.surface.panel` | `#FFFFFF` | Card, form và panel nổi |
+| `color.surface.inner` | `#EAF2F7` | Inner panel và control |
+| `color.brand.cyan` | `#0E7490` | Brand, link, active và info có tương phản trên nền sáng |
+| `color.focus` | `#0891B2` | Focus ring |
+| `color.action.gold` | `#A16207` | Gold dùng cho text/icon |
+| `color.action.gold.fill` | `#F7C76F` | Gold fill cho conversion CTA; dùng foreground tối |
+| `color.status.success` | `#15803D` | Success/progress có tương phản trên nền sáng |
+| `color.status.error` | `oklch(0.53 0.2 25)` | Error/destructive có tương phản trên nền sáng |
+| `color.text.primary` | `#0F172A` | Heading và nội dung chính |
+| `color.text.secondary` | `#334155` | Body mạnh |
+| `color.text.muted` | `#475569` | Supporting copy |
+| `color.text.subtle` | `#64748B` | Metadata phụ, chỉ dùng khi đạt cỡ/contrast phù hợp |
+| `border.subtle` | slate-200 | Divider/inner separation |
+| `border.default` | slate-300 | Card/panel/control |
+| `border.strong` | slate-500 | Interactive/raised boundary |
+| `shadow.card/modal` | slate/black 8–12% | Elevation nhẹ, không dùng glow đen nặng |
+
+Cyan/gold cho text và cyan/gold cho fill là hai vai trò khác nhau. Không dùng cyan sáng hoặc gold fill làm chữ trên white surface; không dùng cyan/gold text làm fill rồi giữ foreground cũ.
+
+Alias dark legacy:
 
 - `#64E9FF` là cyan đã khai báo trong `.landing-shell`.
 - `#FFD56A` là gold đã khai báo.
@@ -285,13 +325,13 @@ Các `color.status.info` và `color.status.warning` là semantic alias của bra
 
 ### 4.3. Text hierarchy
 
-| Cấp | Màu | Dùng cho |
-|---|---|---|
-| Primary | white / white 90% | Heading, CTA label, critical value |
-| Secondary | slate-300 | Body chính |
-| Muted | slate-400 | Description, supporting instruction |
-| Subtle | slate-500 | Timestamp, metadata phụ |
-| Decorative only | white 35–42% | Large decorative word hoặc cue, không dùng cho body nhỏ |
+| Cấp | Dark | Light | Dùng cho |
+|---|---|---|---|
+| Primary | white / white 90% | slate-900 | Heading, CTA label, critical value |
+| Secondary | slate-300 | slate-700 | Body chính |
+| Muted | slate-400 | slate-600 | Description, supporting instruction |
+| Subtle | `#718096` | slate-500 | Timestamp, metadata phụ |
+| Decorative only | white 35–42% | slate-500 ở opacity phù hợp | Large decorative word hoặc cue, không dùng cho body nhỏ |
 
 Trên `#050B18`:
 
@@ -304,42 +344,42 @@ Trên `#050B18`:
 
 Do đó:
 
-- slate-500 không dùng cho body nhỏ hoặc thông tin cần đọc;
+- slate-500 không dùng cho body nhỏ hoặc thông tin cần đọc trong dark mode; token subtle chuẩn được nâng lên `#718096` để đạt AA;
 - white 42% chỉ dùng cho text lớn;
 - white 35% chỉ dùng cho decoration/cue không thiết yếu;
 - khi nghi ngờ, nâng lên slate-400.
+- trên light canvas, body nhỏ mặc định dùng slate-700/slate-600; slate-500 chỉ dùng cho metadata khi phép đo thực tế vẫn đạt AA.
 
 ### 4.4. Border palette
 
-| Token | Giá trị | Dùng cho |
-|---|---:|---|
-| `border.subtle` | white 6% | Divider/inner separation |
-| `border.default` | white 8–9% | Card/panel |
-| `border.strong` | white 10–14% | Interactive/raised surface |
-| `border.glass` | cyan-tinted 14–18% | Glass có nhận diện |
-| `border.accent` | accent 15–25% | Active/hover/semantic highlight |
-| `border.focus` | cyan 100%, 2px | Focus-visible |
+| Token | Dark | Light | Dùng cho |
+|---|---:|---:|---|
+| `border.subtle` | white 6% | slate-200 | Divider/inner separation |
+| `border.default` | white 8–9% | slate-300 | Card/panel |
+| `border.strong` | white 38% | slate-500 | Control/focus boundary cần đạt tối thiểu 3:1 |
+| `border.glass` | cyan-tinted 14–18% | cyan/slate-300 | Glass có nhận diện |
+| `border.accent` | accent 15–25% | accent 25–35% | Active/hover/semantic highlight |
+| `border.focus` | cyan 100%, 2px | cyan 100%, 2px | Focus-visible |
 
 ### 4.5. Surface recipes
 
 #### Canvas
 
-- Nền `#050B18`.
-- Có thể dùng một radial glow mờ; không thay canvas bằng gradient sáng.
-- Footer hoặc deepest layer dùng `#040B16`.
+- Light dùng `#F7FAFC`; deepest layer dùng `#EEF4F8`.
+- Dark dùng `#050B18`; deepest layer dùng `#040B16`.
+- Có thể dùng một radial glow cyan/gold mờ ở cả hai theme, nhưng glow không được làm giảm tương phản nội dung.
 
 #### Glass
 
-- Border 1px cyan-tinted khoảng 18%.
-- Nền gradient navy trong mờ.
+- Light dùng white 82%, border slate/cyan nhẹ và shadow slate/black 8–12%.
+- Dark dùng gradient navy trong mờ, border cyan-tinted khoảng 18% và inset highlight white 5–6%.
 - Backdrop blur 12–18px.
-- Inset highlight white 5–6%.
 - Drop shadow theo elevation.
 
 #### Feature surface
 
-- Outer card là dark gradient có tint theo feature.
-- Inner demo panel luôn tối hơn outer.
+- Light dùng white panel với inner surface xanh nhạt; dark dùng gradient navy có tint theo feature.
+- Inner demo panel phải phân biệt rõ với outer surface bằng token, không hard-code màu theo page.
 - Mỗi card tối đa một accent chính.
 
 ### 4.6. Gradient chuẩn
@@ -817,7 +857,7 @@ Brand lockup chuẩn ở Home là owl cinematic + chữ **EngFlex**, cyan nhấn
 |---|---|
 | `frontend/public/owl-speaking-cinematic.webp` | Nav, hero, speaking/listening context |
 | `frontend/public/owl-writing-cinematic.webp` | Writing/vocabulary/final CTA |
-| `frontend/public/owl-speaking-light.webp` | Chỉ cho surface light có chủ đích |
+| `frontend/public/owl-speaking-light.webp` | Mascot mặc định trên light canvas/surface |
 
 Hai cinematic assets là illustration vuông 1024×1024, nền navy, owl cyan và headphone gold; đây là phong cách nhận diện chính.
 
@@ -833,10 +873,12 @@ Hai cinematic assets là illustration vuông 1024×1024, nền navy, owl cyan v�
 
 ### 13.3. Dark và light variants
 
-- Dark cinematic asset trên navy/glass.
-- Light asset chỉ trên nền sáng được thiết kế riêng.
+- Light theme ưu tiên asset `*-light` trên canvas/surface sáng; dark theme ưu tiên asset `*-cinematic` trên navy/glass.
+- Khi cùng một vị trí cần hai asset, chuyển bằng class/theme-aware source mà không làm thay đổi kích thước frame hoặc gây layout shift.
 - Không đặt PNG/light asset có nền trắng vào dark card nếu tạo khối trắng lạc tông.
-- Không trộn stock photo tông ấm với owl cinematic trong cùng page nếu chưa có art direction nối hai phong cách.
+- Ảnh/video/waveform có thể giữ thành **dark media island** ở cả hai theme khi nội dung cần độ tập trung; media phải nằm trong frame có radius, border và contrast boundary rõ.
+- Ảnh auth dùng cùng source nhưng filter theo theme: light khoảng `brightness(.72)`, dark khoảng `brightness(.3)`, kèm overlay dùng semantic canvas token để chữ/surface lân cận vẫn đọc rõ.
+- Không trộn stock photo với owl cinematic trong cùng region nếu chưa có art direction nối hai phong cách.
 
 ### 13.4. Alt text
 
@@ -990,7 +1032,7 @@ Home mobile menu button hiện 40px; đây là **[Khoảng trống accessibility
 - `Field`, `FieldDescription`, `FieldError role="alert"`;
 - `Textarea` product-styled với label bên ngoài, invalid/focus/disabled states;
 - `Select` dựa trên Base UI với portal, popup, item selection và keyboard behavior;
-- login/signup form dựa chủ yếu vào native `required`.
+- login/signup có pending, inline error, password matching/min-length và Google sign-in; field vẫn dựa vào native `required` cho validation cơ bản.
 
 **[Đã triển khai]** `Select` và `Textarea` đã có trong `components/ui/`. Checkbox, Radio, Switch và một form-level submit state API thống nhất vẫn là **[Khoảng trống]**. Các quy tắc chưa có component bên dưới vẫn là **[Suy ra]** từ visual language Home và behavior primitive hiện có.
 
@@ -1020,11 +1062,11 @@ Placeholder không thay label.
 | Height | 48px |
 | Radius | 12px |
 | Padding | 16px horizontal |
-| Background | white 4–6% trên navy |
-| Border | white 10% |
-| Text | white/slate-200, 14–16px |
-| Placeholder | slate-500; không chứa thông tin bắt buộc |
-| Focus | cyan 2px, offset/ring rõ |
+| Background | semantic `surface.inner` theo theme |
+| Border | semantic `border.strong` theo theme |
+| Text | semantic `text.primary`, 14–16px |
+| Placeholder | semantic `text.subtle`; không chứa thông tin bắt buộc |
+| Focus | semantic `focus` 2px, offset/ring rõ |
 | Disabled | opacity 50%, no pointer, vẫn đọc được |
 | Invalid | destructive border/ring + error message |
 
@@ -1039,9 +1081,9 @@ Input có icon:
 
 **[Đã triển khai]** bằng Base UI; giữ behavior focus, selection, portal và typeahead của primitive.
 
-- Trigger có target tối thiểu 44px, cùng radius và dark inner surface với product controls.
+- Trigger có target tối thiểu 44px, cùng radius và semantic inner surface với product controls.
 - Chevron 16px ở trailing edge.
-- Menu dùng dark glass/popover, radius 12–16px, border white 8–10%, elevation 2.
+- Menu dùng semantic glass/popover, radius 12–16px, semantic border, elevation 2.
 - Selected item có cyan tint và check icon.
 - Hỗ trợ keyboard, typeahead, focus management; không dựng select bằng clickable div.
 - Placeholder của Select không thay label.
@@ -2131,7 +2173,7 @@ CTA chính trên Home đều dẫn tới học/chủ đề; CTA phụ giải th�
 
 ## C.5. Form UX
 
-Auth hiện chỉ là scaffold: chưa submit handler, pending, error, success, password matching/strength. Không lấy auth hiện tại làm form UX chuẩn; dùng mục 15.
+Auth đã có submit handler, pending state, inline error, password matching/min-length và Google sign-in. Success được biểu đạt bằng điều hướng sang Topics; các cải tiến tương lai vẫn phải theo mục 15 và không dùng browser alert.
 
 ## C.6. Feedback
 
@@ -2151,8 +2193,8 @@ Mục 20–22 là chuẩn bắt buộc cho page mới.
 
 | Page/khu vực | Độ lệch chính |
 |---|---|
-| `/login` | Neutral split scaffold, EngFlix, generic icon, ảnh tông ấm, form thiếu states |
-| `/signup` | Tương tự login; thiếu validation/submit states |
+| `/login` | **Đã đồng bộ:** split auth shell dùng semantic light/dark surfaces, ThemeToggle, inline auth states và ảnh theme-aware |
+| `/signup` | **Đã đồng bộ:** cùng auth shell, password validation, Google sign-in và theme persistence |
 | `/topics` | **Đã đồng bộ:** ProductShell, capped container, cinematic cards, centralized preview fetch và đủ loading/empty/error/retry |
 | `/topics/[categoryId]` | **Đã đồng bộ:** responsive auto-fill grid, heading đúng cấp, route/content states và controlled reveal |
 | `/vocabulary`, `/vocabulary/quiz` | **Đã đồng bộ:** library/mine browser, owner CRUD, responsive item list, semantic flashcard và quiz state machine trong study shell |
@@ -2163,7 +2205,7 @@ Mục 20–22 là chuẩn bắt buộc cho page mới.
 | StudyModeDialog | **Đã đồng bộ:** semantic Dialog, keyboard/touch buttons và cinematic mascot assets |
 | LessonCard | **Đã đồng bộ:** semantic button overlay, focus-visible, responsive image sizes và reduced-motion coverage |
 
-Các dòng **Đã đồng bộ** là implementation inventory, không phải khoảng trống cần sao chép lại. Login/signup vẫn là legacy ngoài phạm vi redesign này.
+Các dòng **Đã đồng bộ** là implementation inventory, không phải khoảng trống cần sao chép lại.
 
 ---
 

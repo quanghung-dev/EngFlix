@@ -37,7 +37,7 @@ export function PersonCard({
           />
           <span className="min-w-0 flex-1">
             <span className="flex min-w-0 flex-wrap items-center gap-2">
-              <span className="truncate font-semibold text-white group-hover:text-brand-cyan">
+              <span className="truncate font-semibold text-foreground group-hover:text-brand-cyan">
                 {person.username}
               </span>
               <SocialBadge type={person.badge_type} />

@@ -197,7 +197,7 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
             <p className="font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
               Chủ đề học tập
             </p>
-            <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-white lg:text-5xl">
+            <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-foreground lg:text-5xl">
               {category.name}
             </h1>
             <p className="mt-5 text-base leading-7 text-copy-muted">

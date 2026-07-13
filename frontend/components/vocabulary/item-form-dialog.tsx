@@ -79,7 +79,7 @@ export function ItemFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto rounded-panel border border-stroke bg-canvas-deep p-6 text-white shadow-modal sm:max-w-lg sm:p-8">
+      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal sm:max-w-lg sm:p-8">
         <form onSubmit={handleSubmit} aria-busy={pending}>
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">

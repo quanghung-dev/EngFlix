@@ -352,7 +352,7 @@ function QuizIntro({
           <Brain className="size-7" aria-hidden="true" />
         </span>
         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Sẵn sàng luyện</p>
-        <h2 className="mt-2 text-3xl font-semibold text-white">{questionCount} câu hỏi phản xạ</h2>
+        <h2 className="mt-2 text-3xl font-semibold text-foreground">{questionCount} câu hỏi phản xạ</h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-copy-muted sm:text-base">
           {source === "personal"
             ? "Câu hỏi được tạo từ các bộ từ cá nhân của bạn."
@@ -362,7 +362,7 @@ function QuizIntro({
 
       <CardContent className="mt-2 space-y-7">
         <fieldset>
-          <legend className="text-sm font-semibold text-white">Chọn nhịp làm bài</legend>
+          <legend className="text-sm font-semibold text-foreground">Chọn nhịp làm bài</legend>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Button
               type="button"
@@ -397,7 +397,7 @@ function QuizIntro({
 
         <div className="flex flex-col gap-4 rounded-panel border border-stroke bg-surface-inner p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-medium text-white">Tự động phát âm từ</p>
+            <p className="font-medium text-foreground">Tự động phát âm từ</p>
             <p className="mt-1 text-sm leading-6 text-copy-muted">Bạn vẫn có thể phát lại từng từ trong lúc làm bài.</p>
           </div>
           <Button
@@ -529,7 +529,7 @@ function QuizPlaying({
 
         <div className="rounded-card border border-brand-cyan/20 bg-canvas-deep p-7 text-center sm:p-10">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Chọn nghĩa đúng của từ</p>
-          <h2 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-white sm:text-5xl">{question.phrase}</h2>
+          <h2 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{question.phrase}</h2>
           {question.note && <p className="mt-4 font-mono text-sm text-copy-muted">{question.note}</p>}
         </div>
 
@@ -620,7 +620,7 @@ function QuizFinished({
             <CheckCircle2 className="size-7" aria-hidden="true" />
           </span>
           <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-status-success">Hoàn thành</p>
-          <h2 className="mt-2 text-3xl font-semibold text-white">Bạn trả lời đúng {score}/{questions.length} câu</h2>
+          <h2 className="mt-2 text-3xl font-semibold text-foreground">Bạn trả lời đúng {score}/{questions.length} câu</h2>
           <p className="mt-3 max-w-xl text-sm leading-7 text-copy-muted sm:text-base">
             Kết quả {percentage}% từ {source === "personal" ? "bộ từ cá nhân" : "bộ câu hỏi mẫu"}. Xem lại các câu chưa đúng trước khi bắt đầu lượt luyện tiếp theo.
           </p>
@@ -653,7 +653,7 @@ function QuizFinished({
         <section aria-labelledby="quiz-review-title" className="space-y-4">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Review</p>
-            <h2 id="quiz-review-title" className="mt-2 text-2xl font-semibold text-white">Xem lại từng câu</h2>
+            <h2 id="quiz-review-title" className="mt-2 text-2xl font-semibold text-foreground">Xem lại từng câu</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {questions.map((question, index) => {
@@ -664,7 +664,7 @@ function QuizFinished({
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-copy-muted">Câu {index + 1}</p>
-                        <h3 className="mt-2 text-xl font-semibold text-white">{question.phrase}</h3>
+                        <h3 className="mt-2 text-xl font-semibold text-foreground">{question.phrase}</h3>
                       </div>
                       {answer?.isCorrect ? (
                         <CheckCircle2 className="size-5 text-status-success" aria-label="Trả lời đúng" />
@@ -681,7 +681,7 @@ function QuizFinished({
                       </div>
                       <div>
                         <dt className="text-copy-muted">Đáp án đúng</dt>
-                        <dd className="text-white">{question.meaning}</dd>
+                        <dd className="text-foreground">{question.meaning}</dd>
                       </div>
                       {question.example_sentence && (
                         <div>

@@ -58,7 +58,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
         <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-brand-cyan">
           Vòng ôn tập hoàn tất
         </p>
-        <h2 className="mt-3 text-3xl font-semibold text-white">Bạn đã đi hết {items.length} thẻ</h2>
+        <h2 className="mt-3 text-3xl font-semibold text-foreground">Bạn đã đi hết {items.length} thẻ</h2>
         <p className="mt-3 max-w-md text-sm leading-6 text-copy-muted">
           Bạn đánh dấu đã thuộc {masteredCount}/{items.length} từ ({percentage}%). Kết quả này chỉ dùng
           trong vòng học hiện tại và chưa được lưu vào hồ sơ.
@@ -84,7 +84,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">
             Flashcard · {cardIndex + 1}/{items.length}
           </p>
-          <h2 id="flashcard-title" className="mt-2 text-xl font-semibold text-white">{deckName}</h2>
+          <h2 id="flashcard-title" className="mt-2 text-xl font-semibold text-foreground">{deckName}</h2>
         </div>
         <Button variant="ghost" size="icon-app" onClick={onExit} aria-label="Thoát chế độ flashcard">
           <X aria-hidden="true" />
@@ -124,7 +124,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
               }`}
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-copy-muted">Từ / cụm từ</span>
-              <strong className="mt-5 text-balance text-4xl font-semibold text-white sm:text-5xl">{currentItem.phrase}</strong>
+              <strong className="mt-5 text-balance text-4xl font-semibold text-foreground sm:text-5xl">{currentItem.phrase}</strong>
               {currentItem.note && <span className="mt-4 font-mono text-sm text-copy-muted">{currentItem.note}</span>}
               <span className="absolute bottom-6 text-xs text-copy-muted">Chạm hoặc nhấn Enter để xem nghĩa</span>
             </div>
@@ -136,7 +136,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
               }`}
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-cyan">Nghĩa</span>
-              <strong className="mt-5 text-balance text-3xl font-semibold text-white">{currentItem.meaning}</strong>
+              <strong className="mt-5 text-balance text-3xl font-semibold text-foreground">{currentItem.meaning}</strong>
               {currentItem.example_sentence && (
                 <p className="mt-6 max-w-lg border-t border-stroke-subtle pt-5 text-sm italic leading-6 text-copy-secondary">
                   “{currentItem.example_sentence}”

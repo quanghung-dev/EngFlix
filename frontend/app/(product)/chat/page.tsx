@@ -72,7 +72,7 @@ function ContactRail({
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="font-mono text-[11px] tracking-[0.15em] text-brand-cyan uppercase">Study circle</p>
-            <h2 className="mt-1 text-lg font-semibold text-white">Bạn học</h2>
+            <h2 className="mt-1 text-lg font-semibold text-foreground">Bạn học</h2>
           </div>
           <Badge variant="neutral">{friends.length}</Badge>
         </div>
@@ -99,7 +99,7 @@ function ContactRail({
                   <SocialUserAvatar name={friend.username} src={friend.avatar_url} size="sm" />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-1.5">
-                      <span className="truncate text-sm font-medium text-white">{friend.username}</span>
+                      <span className="truncate text-sm font-medium text-foreground">{friend.username}</span>
                       <SocialBadge type={friend.badge_type} />
                     </span>
                     <span className="mt-0.5 block text-xs text-copy-muted">Xem hồ sơ</span>
@@ -121,7 +121,7 @@ function ChannelInfo() {
         <span className="grid size-12 place-items-center rounded-panel border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan">
           <Globe2Icon className="size-5" aria-hidden="true" />
         </span>
-        <h2 className="mt-4 text-lg font-semibold text-white">Kênh cộng đồng</h2>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">Kênh cộng đồng</h2>
         <p className="mt-2 text-sm leading-6 text-copy-muted">Một phòng trò chuyện chung cho toàn bộ học viên EngFlex.</p>
       </div>
       <div className="space-y-4 border-t border-stroke-subtle pt-5">
@@ -137,7 +137,7 @@ function ChannelInfo() {
       <Card variant="inner">
         <CardContent>
           <p className="font-mono text-[11px] tracking-[0.14em] text-copy-muted uppercase">Sync mode</p>
-          <p className="mt-2 font-semibold text-white">Làm mới mỗi 5 giây</p>
+          <p className="mt-2 font-semibold text-foreground">Làm mới mỗi 5 giây</p>
           <p className="mt-2 text-xs leading-5 text-copy-muted">Tin cũ vẫn được giữ nếu kết nối nền tạm lỗi.</p>
         </CardContent>
       </Card>
@@ -280,7 +280,7 @@ export default function ChatPage() {
                 <span className="absolute right-0 bottom-0 size-3 rounded-full border-2 border-surface-panel bg-status-success" aria-hidden="true" />
               </span>
               <div className="min-w-0 flex-1">
-                <h2 className="font-semibold text-white">Cộng đồng EngFlex</h2>
+                <h2 className="font-semibold text-foreground">Cộng đồng EngFlex</h2>
                 <p className="mt-0.5 text-xs text-copy-muted">Phòng chung · không phải hội thoại riêng</p>
               </div>
               <div className="flex items-center gap-1">
@@ -327,7 +327,7 @@ export default function ChatPage() {
                           </Link>
                           <div className={cn("max-w-[min(82%,40rem)]", own && "text-right")}>
                             <div className={cn("mb-1.5 flex flex-wrap items-center gap-2", own && "justify-end")}>
-                              <Link href={`/profile/${message.user_id}`} className="product-focus rounded text-sm font-semibold text-white hover:text-brand-cyan">{own ? "Bạn" : message.username}</Link>
+                              <Link href={`/profile/${message.user_id}`} className="product-focus rounded text-sm font-semibold text-foreground hover:text-brand-cyan">{own ? "Bạn" : message.username}</Link>
                               <SocialBadge type={message.badge_type} />
                               <LevelBadge level={message.level} />
                               <time dateTime={message.created_at} className="font-mono text-[11px] text-copy-muted">{formatSocialDate(message.created_at)}</time>
@@ -335,7 +335,7 @@ export default function ChatPage() {
                             <p className={cn(
                               "rounded-panel border px-4 py-3 text-left text-sm leading-6 whitespace-pre-wrap",
                               own
-                                ? "border-brand-cyan/25 bg-brand-cyan/12 text-white"
+                                ? "border-brand-cyan/25 bg-brand-cyan/12 text-foreground"
                                 : "border-stroke-subtle bg-surface-inner text-copy-secondary"
                             )}>{message.content}</p>
                           </div>

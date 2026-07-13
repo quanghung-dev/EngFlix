@@ -47,14 +47,23 @@
   --color-brand-cyan: var(--engflex-brand-cyan);
   --color-focus: var(--engflex-focus);
   --color-action-gold: var(--engflex-action-gold);
+  --color-action-gold-fill: var(--engflex-action-gold-fill);
+  --color-action-gold-foreground: var(--engflex-action-gold-foreground);
+  --color-action-foreground: var(--engflex-action-gold-foreground);
   --color-accent-violet: var(--engflex-accent-violet);
   --color-status-success: var(--engflex-status-success);
+  --color-copy-primary: var(--engflex-text-primary);
   --color-copy-secondary: var(--engflex-text-secondary);
   --color-copy-muted: var(--engflex-text-muted);
   --color-copy-subtle: var(--engflex-text-subtle);
   --color-stroke-subtle: var(--engflex-border-subtle);
   --color-stroke: var(--engflex-border-default);
   --color-stroke-strong: var(--engflex-border-strong);
+  --color-media-canvas: var(--engflex-media-canvas);
+  --color-media-panel: var(--engflex-media-panel);
+  --color-media-foreground: var(--engflex-media-foreground);
+  --color-media-muted: var(--engflex-media-muted);
+  --color-media-stroke: var(--engflex-media-border);
   --radius-control: 0.75rem;
   --radius-nav: 1rem;
   --radius-panel: 1.5rem;
@@ -72,31 +81,40 @@
 }
 
 :root {
-  --engflex-canvas: #050b18;
-  --engflex-canvas-deep: #040b16;
-  --engflex-surface-glass: rgb(13 27 48 / 72%);
-  --engflex-surface-panel: rgb(8 21 34 / 70%);
-  --engflex-surface-inner: rgb(6 17 28 / 74%);
-  --engflex-brand-cyan: #6ee7f2;
-  --engflex-focus: #67e8f9;
-  --engflex-action-gold: #f7c76f;
-  --engflex-accent-violet: #c4b5fd;
-  --engflex-status-success: #9af7c5;
-  --engflex-text-primary: #ffffff;
-  --engflex-text-secondary: #cbd5e1;
-  --engflex-text-muted: #94a3b8;
+  color-scheme: light;
+  --engflex-canvas: #f7fafc;
+  --engflex-canvas-deep: #eef4f8;
+  --engflex-surface-glass: rgb(255 255 255 / 82%);
+  --engflex-surface-panel: #ffffff;
+  --engflex-surface-inner: #eaf2f7;
+  --engflex-brand-cyan: #0e7490;
+  --engflex-focus: #0891b2;
+  --engflex-action-gold: #a16207;
+  --engflex-action-gold-fill: #f7c76f;
+  --engflex-action-gold-foreground: #101827;
+  --engflex-accent-violet: #7c3aed;
+  --engflex-status-success: #15803d;
+  --engflex-destructive: oklch(0.53 0.2 25);
+  --engflex-text-primary: #0f172a;
+  --engflex-text-secondary: #334155;
+  --engflex-text-muted: #475569;
   --engflex-text-subtle: #64748b;
-  --engflex-border-subtle: rgb(255 255 255 / 7%);
-  --engflex-border-default: rgb(255 255 255 / 9%);
-  --engflex-border-strong: rgb(255 255 255 / 14%);
-  --engflex-hover-surface: rgb(255 255 255 / 5%);
-  --engflex-cyan-tint: rgb(110 231 242 / 10%);
-  --engflex-gold-tint: rgb(247 199 111 / 10%);
-  --engflex-violet-tint: rgb(196 181 253 / 10%);
-  --engflex-success-tint: rgb(154 247 197 / 10%);
-  --engflex-shadow-card: 0 28px 80px rgb(0 0 0 / 22%), inset 0 1px rgb(255 255 255 / 6%);
-  --engflex-shadow-modal: 0 34px 100px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%);
-  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(110 231 242 / 8%), transparent 34rem);
+  --engflex-border-subtle: rgb(15 23 42 / 8%);
+  --engflex-border-default: rgb(15 23 42 / 13%);
+  --engflex-border-strong: #64748b;
+  --engflex-hover-surface: rgb(14 116 144 / 8%);
+  --engflex-cyan-tint: rgb(14 116 144 / 10%);
+  --engflex-gold-tint: rgb(161 98 7 / 10%);
+  --engflex-violet-tint: rgb(124 58 237 / 9%);
+  --engflex-success-tint: rgb(21 128 61 / 10%);
+  --engflex-shadow-card: 0 24px 64px rgb(15 23 42 / 10%), inset 0 1px rgb(255 255 255 / 88%);
+  --engflex-shadow-modal: 0 30px 90px rgb(15 23 42 / 16%), inset 0 1px rgb(255 255 255 / 92%);
+  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(8 145 178 / 11%), transparent 34rem), radial-gradient(circle at 8% 88%, rgb(247 199 111 / 9%), transparent 30rem);
+  --engflex-media-canvas: #050b18;
+  --engflex-media-panel: #081522;
+  --engflex-media-foreground: #ffffff;
+  --engflex-media-muted: #94a3b8;
+  --engflex-media-border: rgb(255 255 255 / 10%);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -147,7 +165,7 @@
   --muted-foreground: var(--engflex-text-muted);
   --accent: var(--engflex-hover-surface);
   --accent-foreground: var(--engflex-text-primary);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: var(--engflex-destructive);
   --border: var(--engflex-border-default);
   --input: var(--engflex-border-strong);
   --ring: var(--engflex-focus);
@@ -160,7 +178,6 @@
   --sidebar-border: var(--engflex-border-subtle);
   --sidebar-ring: var(--engflex-focus);
   background: var(--engflex-atmosphere), var(--background);
-  color-scheme: dark;
 }
 
 .product-shell ::selection {
@@ -178,6 +195,35 @@
 }
 
 .dark {
+  color-scheme: dark;
+  --engflex-canvas: #050b18;
+  --engflex-canvas-deep: #040b16;
+  --engflex-surface-glass: rgb(13 27 48 / 72%);
+  --engflex-surface-panel: rgb(8 21 34 / 70%);
+  --engflex-surface-inner: rgb(6 17 28 / 74%);
+  --engflex-brand-cyan: #6ee7f2;
+  --engflex-focus: #67e8f9;
+  --engflex-action-gold: #f7c76f;
+  --engflex-action-gold-fill: #f7c76f;
+  --engflex-action-gold-foreground: #101827;
+  --engflex-accent-violet: #c4b5fd;
+  --engflex-status-success: #9af7c5;
+  --engflex-destructive: oklch(0.704 0.191 22.216);
+  --engflex-text-primary: #ffffff;
+  --engflex-text-secondary: #cbd5e1;
+  --engflex-text-muted: #94a3b8;
+  --engflex-text-subtle: #718096;
+  --engflex-border-subtle: rgb(255 255 255 / 7%);
+  --engflex-border-default: rgb(255 255 255 / 9%);
+  --engflex-border-strong: rgb(255 255 255 / 38%);
+  --engflex-hover-surface: rgb(255 255 255 / 5%);
+  --engflex-cyan-tint: rgb(110 231 242 / 10%);
+  --engflex-gold-tint: rgb(247 199 111 / 10%);
+  --engflex-violet-tint: rgb(196 181 253 / 10%);
+  --engflex-success-tint: rgb(154 247 197 / 10%);
+  --engflex-shadow-card: 0 28px 80px rgb(0 0 0 / 22%), inset 0 1px rgb(255 255 255 / 6%);
+  --engflex-shadow-modal: 0 34px 100px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%);
+  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(110 231 242 / 8%), transparent 34rem);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -226,28 +272,63 @@
 
 /* EngFlex landing page ----------------------------------------------------- */
 .landing-shell {
+  --landing-navy: var(--engflex-canvas);
+  --landing-surface: var(--engflex-surface-glass);
+  --landing-cyan: var(--engflex-brand-cyan);
+  --landing-blue: #2563eb;
+  --landing-gold: var(--engflex-action-gold);
+  --landing-atmosphere: radial-gradient(circle at 50% -15%, rgb(8 145 178 / 14%), transparent 34rem);
+  --landing-selection: rgb(8 145 178 / 20%);
+  --landing-noise-strong: rgb(15 23 42 / 14%);
+  --landing-noise-soft: rgb(15 23 42 / 10%);
+  --landing-grid-line: rgb(8 145 178 / 13%);
+  --landing-orbit-border: rgb(14 116 144 / 15%);
+  --landing-glass-border: rgb(14 116 144 / 18%);
+  --landing-glass-background: linear-gradient(135deg, rgb(255 255 255 / 88%), rgb(238 244 248 / 72%));
+  --landing-glass-highlight: inset 0 1px rgb(255 255 255 / 92%);
+  --landing-glass-shadow: 0 18px 60px rgb(15 23 42 / 10%);
+  --landing-gradient-copy: linear-gradient(102deg, #0f172a 2%, #0e7490 39%, #2563eb 68%, #a16207 100%);
+  --landing-secondary-background: rgb(255 255 255 / 76%);
+  --landing-secondary-hover: rgb(234 242 247 / 94%);
+  --landing-card-background: linear-gradient(145deg, rgb(255 255 255 / 96%), rgb(238 244 248 / 92%));
+  --landing-card-shimmer: rgb(255 255 255 / 68%);
+  position: relative;
+  background: var(--landing-atmosphere), var(--landing-navy);
+}
+
+.dark .landing-shell {
   --landing-navy: #050b18;
-  --landing-surface: rgba(13, 27, 48, 0.72);
+  --landing-surface: rgb(13 27 48 / 72%);
   --landing-cyan: #64e9ff;
   --landing-blue: #4d7cff;
   --landing-gold: #ffd56a;
-  position: relative;
-  background:
-    radial-gradient(circle at 50% -15%, rgba(38, 93, 155, 0.18), transparent 34rem),
-    #050b18;
-  color-scheme: dark;
+  --landing-atmosphere: radial-gradient(circle at 50% -15%, rgb(38 93 155 / 18%), transparent 34rem);
+  --landing-selection: rgb(100 233 255 / 28%);
+  --landing-noise-strong: rgb(255 255 255 / 22%);
+  --landing-noise-soft: rgb(255 255 255 / 18%);
+  --landing-grid-line: rgb(100 233 255 / 16%);
+  --landing-orbit-border: rgb(125 211 252 / 11%);
+  --landing-glass-border: rgb(148 212 233 / 18%);
+  --landing-glass-background: linear-gradient(135deg, rgb(18 42 69 / 72%), rgb(7 18 35 / 45%));
+  --landing-glass-highlight: inset 0 1px rgb(255 255 255 / 6%);
+  --landing-glass-shadow: 0 18px 60px rgb(0 0 0 / 24%);
+  --landing-gradient-copy: linear-gradient(102deg, #e5fbff 2%, #67e8f9 39%, #78a8ff 68%, #ffd56a 100%);
+  --landing-secondary-background: rgb(11 25 44 / 58%);
+  --landing-secondary-hover: rgb(17 38 62 / 74%);
+  --landing-card-background: linear-gradient(145deg, rgb(18 38 64 / 78%), rgb(7 17 32 / 86%));
+  --landing-card-shimmer: rgb(255 255 255 / 5.5%);
 }
 
 .landing-shell ::selection {
-  background: rgba(100, 233, 255, 0.28);
-  color: white;
+  background: var(--landing-selection);
+  color: var(--engflex-text-primary);
 }
 
 .landing-hero::after {
   position: absolute;
   inset: auto 0 0;
   height: 18rem;
-  background: linear-gradient(to bottom, transparent, #050b18);
+  background: linear-gradient(to bottom, transparent, var(--landing-navy));
   content: "";
   pointer-events: none;
   z-index: 1;
@@ -258,8 +339,8 @@
   inset: 0;
   opacity: 0.18;
   background-image:
-    radial-gradient(circle at 10% 25%, rgba(255, 255, 255, 0.22) 0 0.6px, transparent 0.8px),
-    radial-gradient(circle at 75% 45%, rgba(255, 255, 255, 0.18) 0 0.6px, transparent 0.8px);
+    radial-gradient(circle at 10% 25%, var(--landing-noise-strong) 0 0.6px, transparent 0.8px),
+    radial-gradient(circle at 75% 45%, var(--landing-noise-soft) 0 0.6px, transparent 0.8px);
   background-size: 20px 20px, 31px 31px;
   mask-image: linear-gradient(to bottom, black, transparent 90%);
   pointer-events: none;
@@ -273,8 +354,8 @@
   height: 58%;
   opacity: 0.24;
   background-image:
-    linear-gradient(rgba(100, 233, 255, 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 233, 255, 0.16) 1px, transparent 1px);
+    linear-gradient(var(--landing-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--landing-grid-line) 1px, transparent 1px);
   background-size: 72px 52px;
   transform: perspective(520px) rotateX(64deg);
   transform-origin: center top;
@@ -310,7 +391,7 @@
 
 .landing-orbit {
   position: absolute;
-  border: 1px solid rgba(125, 211, 252, 0.11);
+  border: 1px solid var(--landing-orbit-border);
   border-radius: 999px;
   pointer-events: none;
 }
@@ -355,15 +436,15 @@
 
 .landing-eyebrow,
 .landing-glass {
-  border: 1px solid rgba(148, 212, 233, 0.18);
-  background: linear-gradient(135deg, rgba(18, 42, 69, 0.72), rgba(7, 18, 35, 0.45));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06), 0 18px 60px rgba(0, 0, 0, 0.24);
+  border: 1px solid var(--landing-glass-border);
+  background: var(--landing-glass-background);
+  box-shadow: var(--landing-glass-highlight), var(--landing-glass-shadow);
   backdrop-filter: blur(18px);
 }
 
 .landing-gradient-text {
   color: transparent;
-  background: linear-gradient(102deg, #e5fbff 2%, #67e8f9 39%, #78a8ff 68%, #ffd56a 100%);
+  background: var(--landing-gradient-copy);
   background-size: 180% 100%;
   background-clip: text;
   -webkit-background-clip: text;
@@ -384,16 +465,16 @@
 }
 
 .landing-secondary-button {
-  border: 1px solid rgba(148, 212, 233, 0.18);
-  background: rgba(11, 25, 44, 0.58);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--landing-glass-border);
+  background: var(--landing-secondary-background);
+  box-shadow: var(--landing-glass-highlight);
   backdrop-filter: blur(12px);
   transition: border-color 240ms ease, background 240ms ease, transform 240ms ease;
 }
 
 .landing-secondary-button:hover {
-  border-color: rgba(103, 232, 249, 0.38);
-  background: rgba(17, 38, 62, 0.74);
+  border-color: color-mix(in srgb, var(--landing-cyan) 42%, transparent);
+  background: var(--landing-secondary-hover);
   transform: translateY(-2px);
 }
 
@@ -401,7 +482,7 @@
 .landing-secondary-button:focus-visible,
 .landing-shell a:focus-visible,
 .landing-shell button:focus-visible {
-  outline: 2px solid #67e8f9;
+  outline: 2px solid var(--engflex-focus);
   outline-offset: 4px;
 }
 
@@ -414,7 +495,7 @@
   font-weight: 650;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #67e8f9;
+  color: var(--landing-cyan);
 }
 
 .landing-section-glow {
@@ -442,18 +523,16 @@
 .landing-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(148, 212, 233, 0.14);
-  background:
-    linear-gradient(145deg, rgba(18, 38, 64, 0.78), rgba(7, 17, 32, 0.86)),
-    rgba(7, 17, 32, 0.86);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.055), 0 28px 80px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--engflex-border-default);
+  background: var(--landing-card-background);
+  box-shadow: var(--engflex-shadow-card);
   backdrop-filter: blur(18px);
 }
 
 .landing-card::before {
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, transparent 28%, rgba(255, 255, 255, 0.055), transparent 68%);
+  background: linear-gradient(120deg, transparent 28%, var(--landing-card-shimmer), transparent 68%);
   transform: translateX(-110%);
   transition: transform 800ms ease;
   content: "";

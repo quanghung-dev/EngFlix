@@ -36,7 +36,7 @@ export function ContentErrorState({
           <CircleAlertIcon className="size-6" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <Heading className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+          <Heading className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             {title}
           </Heading>
           <p className="mt-2 max-w-xl text-sm leading-6 text-copy-muted sm:text-base sm:leading-7">
@@ -73,7 +73,7 @@ export function ContentEmptyState({
         <span className="grid size-16 place-items-center rounded-panel border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan">
           <ClapperboardIcon className="size-7" aria-hidden="true" />
         </span>
-        <Heading className="mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+        <Heading className="mt-6 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           {title}
         </Heading>
         <p className="mt-3 max-w-lg text-sm leading-6 text-copy-muted sm:text-base sm:leading-7">

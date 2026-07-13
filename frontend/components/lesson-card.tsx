@@ -48,7 +48,7 @@ export function LessonCard({
           <p className="font-mono text-[11px] font-semibold tracking-[0.16em] text-copy-muted uppercase">
             {lesson.level || "Mọi trình độ"}
           </p>
-          <h3 className="mt-3 line-clamp-2 text-xl leading-7 font-semibold tracking-tight text-white">
+          <h3 className="mt-3 line-clamp-2 text-xl leading-7 font-semibold tracking-tight text-foreground">
             {lesson.title}
           </h3>
           <p className="mt-2 line-clamp-2 text-sm leading-6 text-copy-muted">
@@ -61,7 +61,7 @@ export function LessonCard({
             <Badge variant="support">Nhại giọng</Badge>
           </div>
 
-          <div className="mt-auto flex items-center justify-between border-t border-stroke-subtle pt-5 text-sm font-semibold text-white">
+          <div className="mt-auto flex items-center justify-between border-t border-stroke-subtle pt-5 text-sm font-semibold text-foreground">
             <span>Chọn chế độ học</span>
             <ArrowUpRightIcon
               className="size-4 text-brand-cyan"

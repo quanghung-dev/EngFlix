@@ -118,15 +118,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-nav border border-brand-cyan/20 bg-brand-cyan/10">
                 <Image
+                  src="/owl-speaking-light.webp"
+                  alt=""
+                  width={36}
+                  height={36}
+                  aria-hidden="true"
+                  className="h-auto w-full object-contain dark:hidden"
+                />
+                <Image
                   src="/owl-speaking-cinematic.webp"
                   alt=""
                   width={36}
                   height={36}
                   aria-hidden="true"
-                  className="size-full object-contain"
+                  className="hidden h-auto w-full object-contain dark:block"
                 />
               </span>
-              <span className="text-lg font-semibold tracking-[-0.035em] text-white group-data-[collapsible=icon]:hidden">
+              <span className="text-lg font-semibold tracking-[-0.035em] text-foreground group-data-[collapsible=icon]:hidden">
                 Eng<span className="text-brand-cyan">Flex</span>
               </span>
             </SidebarMenuButton>
@@ -166,7 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </AvatarFallback>
                 </Avatar>
                 <span className="ml-2.5 flex min-w-0 flex-col gap-0.5 text-left group-data-[collapsible=icon]:hidden">
-                  <span className="max-w-40 truncate font-semibold text-white">
+                  <span className="max-w-40 truncate font-semibold text-foreground">
                     {displayName}
                   </span>
                   <span className="truncate text-xs font-normal text-copy-muted">
@@ -189,7 +197,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               >
                 <LogInIcon aria-hidden="true" />
                 <span className="flex min-w-0 flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
-                  <span className="font-medium text-white">Đăng nhập</span>
+                  <span className="font-medium text-foreground">Đăng nhập</span>
                   <span className="truncate text-xs font-normal text-copy-muted">
                     Lưu tiến độ học tập
                   </span>

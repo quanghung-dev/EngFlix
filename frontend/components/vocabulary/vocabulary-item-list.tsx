@@ -123,7 +123,7 @@ export function VocabularyItemList({
                 <tbody className="divide-y divide-stroke-subtle">
                   {filteredItems.map((item) => (
                     <tr key={item.id} className="align-top transition-colors duration-300 hover:bg-surface-inner/40">
-                      <th scope="row" className="px-6 py-5 font-medium text-white">
+                      <th scope="row" className="px-6 py-5 font-medium text-foreground">
                         <div className="flex items-start gap-3">
                           <Button
                             variant="ghost"
@@ -188,7 +188,7 @@ export function VocabularyItemList({
                 <CardContent className="space-y-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">{item.phrase}</h3>
+                      <h3 className="text-xl font-semibold text-foreground">{item.phrase}</h3>
                       {item.note && (
                         <p className="mt-1 font-mono text-xs text-copy-muted">{item.note}</p>
                       )}

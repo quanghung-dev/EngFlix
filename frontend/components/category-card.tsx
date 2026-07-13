@@ -36,7 +36,7 @@ export function CategoryCard({
             </p>
             <h2
               id={headingId}
-              className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl"
+              className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
             >
               {category.name}
             </h2>
@@ -47,7 +47,7 @@ export function CategoryCard({
             </p>
           </div>
 
-          <span className="col-span-2 flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-nav border border-stroke-strong bg-surface-inner px-5 text-sm font-semibold text-white transition-colors group-hover:border-brand-cyan/35 lg:col-span-1 lg:w-auto">
+          <span className="col-span-2 flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-nav border border-stroke-strong bg-surface-inner px-5 text-sm font-semibold text-foreground transition-colors group-hover:border-brand-cyan/35 lg:col-span-1 lg:w-auto">
             Xem tất cả
             <ArrowUpRightIcon className="size-4" aria-hidden="true" />
           </span>
