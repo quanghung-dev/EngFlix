@@ -129,14 +129,17 @@ const searchUsersToAdd = async (userId, searchQuery) => {
                (
                    SELECT f.status FROM friendships f 
                    WHERE f.user_id = $1 AND f.friend_id = u.uid
+                   LIMIT 1
                ) AS sent_status,
                (
                    SELECT f.status FROM friendships f 
                    WHERE f.user_id = u.uid AND f.friend_id = $1
+                   LIMIT 1
                ) AS received_status,
                (
                    SELECT f.id FROM friendships f 
                    WHERE (f.user_id = $1 AND f.friend_id = u.uid) OR (f.user_id = u.uid AND f.friend_id = $1)
+                   LIMIT 1
                ) AS friendship_id
         FROM users u
         WHERE u.uid != $1

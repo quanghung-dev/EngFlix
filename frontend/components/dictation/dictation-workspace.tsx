@@ -27,7 +27,8 @@ import {
   Maximize2,
   Tv,
   ListMusic,
-  GraduationCap
+  GraduationCap,
+  Bookmark
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -40,6 +41,11 @@ import {
   recordLearningHistory
 } from "@/services/lesson.service"
 import { getAllCategories } from "@/services/category.service"
+import {
+  createBookmark,
+  deleteBookmark,
+  getTranscriptBookmarksByLesson
+} from "@/services/bookmark.service"
 import { LessonType, TranscriptType } from "@/types/lesson"
 import { cn } from "@/lib/utils"
 
@@ -95,6 +101,35 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
   const [translateLoading, setTranslateLoading] = useState(false)
   const [translationResult, setTranslationResult] = useState<any | null>(null)
   const [savingWord, setSavingWord] = useState(false)
+  const [bookmarkedMap, setBookmarkedMap] = useState<Map<number, number>>(new Map())
+
+  const handleToggleBookmark = async () => {
+    const activeTranscript = transcripts[currentSentenceIndex]
+    if (!activeTranscript) return
+    const transcriptId = activeTranscript.id
+    const bookmarkId = bookmarkedMap.get(transcriptId)
+    try {
+      if (bookmarkId) {
+        await deleteBookmark(bookmarkId)
+        setBookmarkedMap((prev) => {
+          const next = new Map(prev)
+          next.delete(transcriptId)
+          return next
+        })
+      } else {
+        const res = await createBookmark(transcriptId, "Đã lưu từ bài học Dictation")
+        if (res?.data) {
+          setBookmarkedMap((prev) => {
+            const next = new Map(prev)
+            next.set(transcriptId, res.data.id)
+            return next
+          })
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi thay đổi trạng thái bookmark:", err)
+    }
+  }
 
   const handleTranslateWord = async (word: string) => {
     setTranslateLoading(true)
@@ -169,11 +204,12 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
 
       try {
         setLoading(true)
-        const [lessonRes, transcriptsRes, completedRes, categoriesRes] = await Promise.all([
+        const [lessonRes, transcriptsRes, completedRes, categoriesRes, bookmarksRes] = await Promise.all([
           getLessonById(lessonId),
           getLessonTranscripts(lessonId),
           getCompletedTranscripts(lessonId),
-          getAllCategories()
+          getAllCategories(),
+          getTranscriptBookmarksByLesson(lessonId)
         ])
 
         if (!isActive) return
@@ -195,6 +231,15 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
           completedRes.data.forEach((item) => completedSet.add(item.transcript_id))
         }
         setCompletedIds(completedSet)
+
+        // Phục hồi bookmarks
+        const bookmarkMap = new Map<number, number>()
+        if (bookmarksRes?.data) {
+          bookmarksRes.data.forEach((b: any) => {
+            bookmarkMap.set(b.transcript_id, b.id)
+          })
+        }
+        setBookmarkedMap(bookmarkMap)
 
         // Tìm câu chưa hoàn thành đầu tiên để bắt đầu học
         if (sortedTranscripts.length > 0) {
@@ -942,6 +987,24 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                   title={isLooping ? "Đang bật lặp đoạn" : "Đang tắt lặp đoạn"}
                 >
                   Loop
+                </Button>
+
+                {/* Bookmark Toggle */}
+                <Button
+                  variant="glass"
+                  size="sm"
+                  onClick={handleToggleBookmark}
+                  disabled={!activeTranscript}
+                  className={cn(
+                    "h-7 text-xs font-mono rounded-control transition gap-1.5",
+                    activeTranscript && bookmarkedMap.has(activeTranscript.id) 
+                      ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5 font-semibold" 
+                      : "text-copy-muted hover:text-brand-cyan"
+                  )}
+                  title={activeTranscript && bookmarkedMap.has(activeTranscript.id) ? "Bỏ lưu câu thoại này" : "Lưu câu thoại vào ghi chú"}
+                >
+                  <Bookmark className="size-3.5" />
+                  {activeTranscript && bookmarkedMap.has(activeTranscript.id) ? "Bookmarked" : "Bookmark"}
                 </Button>
               </div>
             </div>

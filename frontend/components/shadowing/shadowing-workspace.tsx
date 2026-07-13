@@ -30,7 +30,8 @@ import {
   MessageSquare,
   ChevronDown,
   VolumeX,
-  Info
+  Info,
+  Bookmark
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -44,6 +45,11 @@ import {
   recordLearningHistory
 } from "@/services/lesson.service"
 import { getAllCategories } from "@/services/category.service"
+import {
+  createBookmark,
+  deleteBookmark,
+  getTranscriptBookmarksByLesson
+} from "@/services/bookmark.service"
 import { LessonType, TranscriptType } from "@/types/lesson"
 import { WavRecorder } from "@/lib/wav-recorder"
 import { cn } from "@/lib/utils"
@@ -113,6 +119,35 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
   const [translateLoading, setTranslateLoading] = useState(false)
   const [translationResult, setTranslationResult] = useState<any | null>(null)
   const [savingWord, setSavingWord] = useState(false)
+  const [bookmarkedMap, setBookmarkedMap] = useState<Map<number, number>>(new Map())
+
+  const handleToggleBookmark = async () => {
+    const activeTranscript = transcripts[currentSentenceIndex]
+    if (!activeTranscript) return
+    const transcriptId = activeTranscript.id
+    const bookmarkId = bookmarkedMap.get(transcriptId)
+    try {
+      if (bookmarkId) {
+        await deleteBookmark(bookmarkId)
+        setBookmarkedMap((prev) => {
+          const next = new Map(prev)
+          next.delete(transcriptId)
+          return next
+        })
+      } else {
+        const res = await createBookmark(transcriptId, "Đã lưu từ bài học Shadowing")
+        if (res?.data) {
+          setBookmarkedMap((prev) => {
+            const next = new Map(prev)
+            next.set(transcriptId, res.data.id)
+            return next
+          })
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi thay đổi trạng thái bookmark:", err)
+    }
+  }
 
   const handleTranslateWord = async (word: string) => {
     setTranslateLoading(true)
@@ -215,11 +250,12 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
       try {
         setLoading(true)
-        const [lessonRes, transcriptsRes, progressRes, categoriesRes] = await Promise.all([
+        const [lessonRes, transcriptsRes, progressRes, categoriesRes, bookmarksRes] = await Promise.all([
           getLessonById(lessonId),
           getLessonTranscripts(lessonId),
           getPronunciationProgress(lessonId),
-          getAllCategories()
+          getAllCategories(),
+          getTranscriptBookmarksByLesson(lessonId)
         ])
 
         if (!isActive) return
@@ -250,6 +286,15 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
         }
         setCompletedIds(completedSet)
         setBestScores(scoresMap)
+
+        // Phục hồi bookmarks
+        const bookmarkMap = new Map<number, number>()
+        if (bookmarksRes?.data) {
+          bookmarksRes.data.forEach((b: any) => {
+            bookmarkMap.set(b.transcript_id, b.id)
+          })
+        }
+        setBookmarkedMap(bookmarkMap)
 
         // Tìm câu chưa hoàn thành đầu tiên
         if (sortedTranscripts.length > 0) {
@@ -796,6 +841,24 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                   )}
                 >
                   Loop
+                </Button>
+
+                {/* Bookmark Toggle */}
+                <Button
+                  variant="glass"
+                  size="sm"
+                  onClick={handleToggleBookmark}
+                  disabled={!transcripts[currentSentenceIndex]}
+                  className={cn(
+                    "h-8 text-xs font-mono rounded-control transition gap-1.5",
+                    transcripts[currentSentenceIndex] && bookmarkedMap.has(transcripts[currentSentenceIndex].id) 
+                      ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5 font-semibold" 
+                      : "text-copy-muted hover:text-brand-cyan"
+                  )}
+                  title={transcripts[currentSentenceIndex] && bookmarkedMap.has(transcripts[currentSentenceIndex].id) ? "Bỏ lưu câu thoại này" : "Lưu câu thoại vào ghi chú"}
+                >
+                  <Bookmark className="size-3.5" />
+                  {transcripts[currentSentenceIndex] && bookmarkedMap.has(transcripts[currentSentenceIndex].id) ? "Bookmarked" : "Bookmark"}
                 </Button>
               </div>
             </div>

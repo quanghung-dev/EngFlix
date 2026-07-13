@@ -34,7 +34,7 @@ async function runMigrations() {
         console.log('Hoàn tất migration!');
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Lỗi chạy migration:', err);
+        console.error('Lỗi chạy migration:', error);
     } finally{
         client.release();
         process.exit();

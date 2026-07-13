@@ -52,14 +52,19 @@ const createNewPost = async (req, res, next) => {
     }
 };
 
+const parsePositiveInteger = (value) => {
+    const number = Number(value);
+    return Number.isInteger(number) && number > 0 ? number : null;
+};
+
 // Xoá bài viết của mình
 const deleteUserPost = async (req, res, next) => {
     try {
         const userId = req.user?.uid;
-        const { id } = req.params;
+        const id = parsePositiveInteger(req.params.id);
 
         if (!userId) return errorResponse(res, 401, 'Unauthorized');
-        if (!id) return errorResponse(res, 400, 'id is required');
+        if (!id) return errorResponse(res, 400, 'id must be a positive integer');
 
         const deleted = await postService.deletePost(userId, id);
         if (!deleted) return errorResponse(res, 403, 'Not authorized or post not found');
@@ -74,10 +79,10 @@ const deleteUserPost = async (req, res, next) => {
 const likePost = async (req, res, next) => {
     try {
         const userId = req.user?.uid;
-        const { id } = req.params;
+        const id = parsePositiveInteger(req.params.id);
 
         if (!userId) return errorResponse(res, 401, 'Unauthorized');
-        if (!id) return errorResponse(res, 400, 'id is required');
+        if (!id) return errorResponse(res, 400, 'id must be a positive integer');
 
         const result = await postService.toggleLike(userId, id);
         return dataResponse(res, 200, result);
@@ -90,8 +95,8 @@ const likePost = async (req, res, next) => {
 // Lấy danh sách bình luận của bài viết
 const getComments = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        if (!id) return errorResponse(res, 400, 'id is required');
+        const id = parsePositiveInteger(req.params.id);
+        if (!id) return errorResponse(res, 400, 'id must be a positive integer');
 
         const comments = await postService.getPostComments(id);
         return dataResponse(res, 200, comments);
@@ -105,11 +110,11 @@ const getComments = async (req, res, next) => {
 const postComment = async (req, res, next) => {
     try {
         const userId = req.user?.uid;
-        const { id } = req.params;
+        const id = parsePositiveInteger(req.params.id);
         const { content } = req.body;
 
         if (!userId) return errorResponse(res, 401, 'Unauthorized');
-        if (!id) return errorResponse(res, 400, 'id is required');
+        if (!id) return errorResponse(res, 400, 'id must be a positive integer');
         if (!content || !content.trim()) return errorResponse(res, 400, 'Content is required');
 
         const comment = await postService.createComment(userId, id, content.trim());

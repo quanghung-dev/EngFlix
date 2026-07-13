@@ -43,3 +43,22 @@ export async function deleteBookmark(id: number): Promise<DataResponse<BookmarkT
     method: "DELETE"
   })
 }
+
+export async function createBookmark(
+  transcriptId: number,
+  note?: string
+): Promise<DataResponse<BookmarkType>> {
+  return apiRequest<DataResponse<BookmarkType>>("transcript-bookmarks", {
+    method: "POST",
+    body: JSON.stringify({
+      transcript_id: transcriptId,
+      note: note || ""
+    })
+  })
+}
+
+export async function getTranscriptBookmarksByLesson(
+  lessonId: number
+): Promise<PagedResponse<BookmarkType>> {
+  return apiRequest<PagedResponse<BookmarkType>>(`transcript-bookmarks/${lessonId}`)
+}

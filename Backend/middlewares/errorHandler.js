@@ -4,8 +4,10 @@ const errorHandler = (err, req, res, next) => {
     console.error(`[Error] ${statusCode} - ${message}`);
     if (err.stack) console.error(err.stack);
     res.status(statusCode).json({
-        message: message,
-        data: null
+        error: {
+            code: statusCode,
+            message
+        }
     }); 
 };
 
