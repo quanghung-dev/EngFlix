@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { HouseIcon } from "lucide-react"
+import { useQuery, useQueries } from "@tanstack/react-query"
 
 import { CategoryCard } from "@/components/category-card"
 import { LessonCard } from "@/components/lesson-card"
@@ -97,131 +98,57 @@ function CategoryRow({
   )
 }
 
-async function loadCategoryRows(categories: CategoryType[], options?: RequestInit) {
-  const results = await Promise.allSettled(
-    categories.map((category) =>
-      getLessons({ category_id: category.id, limit: 4 }, options)
-    )
-  )
-
-  return categories.map<CategoryLessonRow>((category, index) => {
-    const result = results[index]
-    if (result.status === "fulfilled") {
-      return {
-        category,
-        lessons: result.value.data || [],
-        totalLessons: result.value.meta.total,
-        loading: false,
-        error: null,
-      }
-    }
-
-    return {
-      category,
-      lessons: [],
-      loading: false,
-      error: `Chưa thể tải bài học của chủ đề “${category.name}”. Dữ liệu ở các chủ đề khác vẫn được giữ nguyên.`,
-    }
-  })
-}
-
-export function CategoryLessons() {
+export function CategoryLessons({
+  initialCategories = [],
+}: {
+  initialCategories?: CategoryType[]
+}) {
   const router = useRouter()
-  const mountedRef = useRef(true)
-  const [rows, setRows] = useState<CategoryLessonRow[]>([])
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    mountedRef.current = true
+  const isReload = typeof window !== "undefined" &&
+    (window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming)?.type === "reload";
 
-    async function loadCatalog() {
-      try {
-        const isReload = typeof window !== "undefined" &&
-          (window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming)?.type === "reload";
-        
-        const fetchOptions = isReload ? { headers: { "Cache-Control": "no-cache" } } : undefined;
+  const fetchOptions = isReload ? { headers: { "Cache-Control": "no-cache" } } : undefined;
 
-        const categoryResponse = await getAllCategories(undefined, fetchOptions)
-        const categories = categoryResponse.data || []
-        const nextRows = await loadCategoryRows(categories, fetchOptions)
-        if (!mountedRef.current) return
-        setRows(nextRows)
-        setError(null)
-      } catch {
-        if (!mountedRef.current) return
-        setError(
-          "Thư viện chủ đề hiện chưa phản hồi. Kết nối của bạn vẫn được giữ và bạn có thể thử tải lại ngay."
-        )
-      } finally {
-        if (mountedRef.current) setLoading(false)
-      }
-    }
+  const {
+    data: categoriesResponse,
+    refetch: refetchCategories,
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: ({ signal }) => getAllCategories(undefined, { signal, ...fetchOptions }),
+    initialData: {
+      data: initialCategories,
+      meta: { page: 1, limit: initialCategories.length, total: initialCategories.length, total_pages: 1 },
+    },
+  })
 
-    void loadCatalog()
-    return () => {
-      mountedRef.current = false
-    }
-  }, [])
+  const categories = categoriesResponse?.data || []
 
-  const retryCategories = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const fetchOptions = { headers: { "Cache-Control": "no-cache" } };
-      const categoryResponse = await getAllCategories(undefined, fetchOptions)
-      const nextRows = await loadCategoryRows(categoryResponse.data || [], fetchOptions)
-      if (!mountedRef.current) return
-      setRows(nextRows)
-    } catch {
-      if (!mountedRef.current) return
-      setError(
-        "Thư viện chủ đề hiện chưa phản hồi. Kết nối của bạn vẫn được giữ và bạn có thể thử tải lại ngay."
-      )
-    } finally {
-      if (mountedRef.current) setLoading(false)
-    }
+  const lessonsQueries = useQueries({
+    queries: categories.map((category) => ({
+      queryKey: ["lessons", { category_id: category.id, limit: 4 }],
+      queryFn: ({ signal }) =>
+        getLessons(
+          { category_id: category.id, limit: 4 },
+          { signal, ...fetchOptions }
+        ),
+      staleTime: 5 * 60 * 1000,
+    })),
+  })
+
+  const handleRetryCategories = async () => {
+    const forceOptions = { headers: { "Cache-Control": "no-cache" } };
+    await refetchCategories();
+    lessonsQueries.forEach((q) => q.refetch());
   }
 
-  const retryCategory = async (category: CategoryType) => {
-    setRows((current) =>
-      current.map((row) =>
-        row.category.id === category.id
-          ? { ...row, loading: true, error: null }
-          : row
-      )
-    )
-
-    try {
-      const response = await getLessons({ category_id: category.id, limit: 4 }, { headers: { "Cache-Control": "no-cache" } })
-      if (!mountedRef.current) return
-      setRows((current) =>
-        current.map((row) =>
-          row.category.id === category.id
-            ? {
-                ...row,
-                lessons: response.data || [],
-                totalLessons: response.meta.total,
-                loading: false,
-                error: null,
-              }
-            : row
-        )
-      )
-    } catch {
-      if (!mountedRef.current) return
-      setRows((current) =>
-        current.map((row) =>
-          row.category.id === category.id
-            ? {
-                ...row,
-                loading: false,
-                error: `Chưa thể tải bài học của chủ đề “${category.name}”. Dữ liệu ở các chủ đề khác vẫn được giữ nguyên.`,
-              }
-            : row
-        )
-      )
+  const handleRetryCategory = (category: CategoryType) => {
+    const idx = categories.findIndex((c) => c.id === category.id)
+    if (idx !== -1) {
+      lessonsQueries[idx].refetch()
     }
   }
 
@@ -231,19 +158,19 @@ export function CategoryLessons() {
     setSelectedLesson(null)
   }
 
-  if (loading) return <CategoryListSkeleton />
+  if (categoriesLoading) return <CategoryListSkeleton />
 
-  if (error) {
+  if (categoriesError) {
     return (
       <ContentErrorState
         title="Chưa thể mở thư viện chủ đề"
-        description={error}
-        onRetry={() => void retryCategories()}
+        description="Thư viện chủ đề hiện chưa phản hồi. Kết nối của bạn vẫn được giữ và bạn có thể thử tải lại ngay."
+        onRetry={() => void handleRetryCategories()}
       />
     )
   }
 
-  if (rows.length === 0) {
+  if (categories.length === 0) {
     return (
       <ContentEmptyState
         title="Thư viện đang chờ bài học đầu tiên"
@@ -261,6 +188,24 @@ export function CategoryLessons() {
     )
   }
 
+  const rows = categories.map<CategoryLessonRow>((category, index) => {
+    const query = lessonsQueries[index]
+    const lessons = query?.data?.data || []
+    const totalLessons = query?.data?.meta?.total
+    const loading = query ? query.isPending || query.isFetching : false
+    const error = query?.isError
+      ? `Chưa thể tải bài học của chủ đề “${category.name}”. Dữ liệu ở các chủ đề khác vẫn được giữ nguyên.`
+      : null
+
+    return {
+      category,
+      lessons,
+      totalLessons,
+      loading,
+      error,
+    }
+  })
+
   return (
     <div className="flex flex-col gap-16">
       {rows.map((row, index) => (
@@ -268,7 +213,7 @@ export function CategoryLessons() {
           key={row.category.id}
           row={row}
           index={index}
-          onRetry={(category) => void retryCategory(category)}
+          onRetry={handleRetryCategory}
           onSelectLesson={setSelectedLesson}
         />
       ))}

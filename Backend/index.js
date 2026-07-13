@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const { errorHandler } = require('./middlewares/errorHandler.js');
 const app = express();
@@ -27,6 +28,7 @@ const postRoutes = require('./routes/postRoutes.js');
 const progressRoutes = require('./routes/progressRoutes.js');
 
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
