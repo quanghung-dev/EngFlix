@@ -72,7 +72,13 @@ const getProgressStats = async (userId) => {
 
     // 2. Tính toán tổng số bài học đã tham gia
     const historyCountRes = await pool.query(
-        `SELECT COUNT(*)::int AS count FROM learning_history WHERE user_id = $1`,
+        `
+            SELECT COUNT(*)::int AS count
+            FROM learning_history
+            WHERE user_id = $1
+              AND completed_dictation IS TRUE
+              AND completed_pronunciation IS TRUE
+        `,
         [userId]
     );
     const totalLessons = historyCountRes.rows[0].count;
@@ -91,7 +97,10 @@ const getProgressStats = async (userId) => {
             SELECT updated_at::date AS activity_date,
                    COUNT(*) AS lessons_completed
             FROM learning_history
-            WHERE user_id = $1 AND updated_at >= CURRENT_DATE - INTERVAL '6 days'
+            WHERE user_id = $1
+              AND completed_dictation IS TRUE
+              AND completed_pronunciation IS TRUE
+              AND updated_at >= CURRENT_DATE - INTERVAL '6 days'
             GROUP BY updated_at::date
         ) h ON d.date = h.activity_date
         ORDER BY activity_date ASC
@@ -100,13 +109,17 @@ const getProgressStats = async (userId) => {
 
     // 4. Lấy lịch sử 10 lần phát âm Shadowing gần nhất để vẽ biểu đồ tiến độ phát âm
     const shadowingAttemptsQuery = `
-        SELECT id, 
-               pronunciation_score::int AS score,
-               created_at
-        FROM pronunciation_attempts
-        WHERE user_id = $1
-        ORDER BY created_at ASC
-        LIMIT 10
+        SELECT id, score, created_at
+        FROM (
+            SELECT id,
+                   overall_score::int AS score,
+                   created_at
+            FROM pronunciation_attempts
+            WHERE user_id = $1
+            ORDER BY created_at DESC, id DESC
+            LIMIT 10
+        ) latest_attempts
+        ORDER BY created_at ASC, id ASC
     `;
     const shadowingAttemptsRes = await pool.query(shadowingAttemptsQuery, [userId]);
 
@@ -116,6 +129,7 @@ const getProgressStats = async (userId) => {
         FROM vocabulary_items vi
         JOIN vocabulary_decks vd ON vi.deck_id = vd.id
         WHERE vd.user_id = $1
+          AND vd.is_default = false
     `;
     const vocabStatsRes = await pool.query(vocabStatsQuery, [userId]);
     const totalWords = vocabStatsRes.rows[0].total_words;

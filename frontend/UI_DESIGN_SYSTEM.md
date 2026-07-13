@@ -1,18 +1,19 @@
 # EngFlex UI Design System
 
-> Phiên bản: 1.0  
-> Ngày audit: 10/07/2026  
+> Phiên bản: 1.1
+> Ngày cập nhật implementation: 13/07/2026
 > Nguồn chuẩn trực quan: route `/home`  
 > Phạm vi: frontend web tại `frontend/`  
-> Trạng thái: tài liệu chuẩn để thiết kế và đánh giá UI; không phản ánh rằng mọi token/component đã được triển khai trong code.
+> Trạng thái: tài liệu chuẩn để thiết kế, triển khai và đánh giá UI; inventory bên dưới phản ánh product foundation đã có trong code tại ngày cập nhật.
 
 ## Cách đọc tài liệu
 
-Tài liệu dùng bốn nhãn để tránh nhầm giữa hiện trạng và đặc tả:
+Tài liệu dùng năm nhãn để tránh nhầm giữa hiện trạng và đặc tả:
 
 - **[Quan sát]**: có bằng chứng trực tiếp trong Home Page hoặc source hiện tại.
 - **[Chuẩn hóa]**: quy tắc chính thức được gom từ các giá trị lặp lại trên Home Page.
 - **[Suy ra]**: pattern Home chưa có, nhưng được đặc tả bằng chính màu, typography, spacing, surface và accessibility của Home.
+- **[Đã triển khai]**: pattern đã có API/component cụ thể trong source và có thể được tái sử dụng.
 - **[Khoảng trống]**: chưa có component/state hoàn chỉnh trong source; không được mô tả như thứ đã tồn tại.
 
 Thứ tự ưu tiên khi có xung đột:
@@ -49,6 +50,8 @@ Home chuẩn là `/home`. Route `/` chỉ redirect tới `/home`.
 | `frontend/app/globals.css`, phần `.landing-*` | Nền, glass, gradient, border, shadow, focus, keyframes |
 | `frontend/app/layout.tsx` | Geist, Geist Mono, metadata, ngôn ngữ `vi` |
 | `frontend/components/ui/*` | Primitive behavior; chưa phải visual source of truth của Home |
+| `frontend/components/product-shell.tsx`, `frontend/app/(product)`, `frontend/app/(study)` | Product shell và route composition đã triển khai |
+| `frontend/components/product/*` | Page header, async states và reveal dùng chung cho product pages |
 
 Khi Home thay đổi có chủ đích, tài liệu này phải được audit và cập nhật cùng thay đổi đó.
 
@@ -82,7 +85,10 @@ Không có CSS Module, Sass hay styled-components.
 | Thư mục | Trách nhiệm |
 |---|---|
 | `app/` | Route, root layout, global CSS |
+| `app/(product)/` | Product routes dùng shared shell; route group không đổi URL |
+| `app/(study)/` | Study workspace dùng shared shell với sidebar mặc định đóng |
 | `components/landing/` | Toàn bộ visual language đặc thù Home |
+| `components/product/` | Page composition, async states và controlled reveal cho product app |
 | `components/ui/` | shadcn/Base UI primitives |
 | `components/topics/` | Data view cho Topics |
 | `components/*.tsx` | App shell, auth form, cards, navigation, study dialog |
@@ -109,16 +115,16 @@ Flow này đi từ **lời hứa → bằng chứng → trải nghiệm → phư
 
 ### 1.6. Hiện trạng cần lưu ý
 
-- Home là một visual island riêng; các page khác chủ yếu vẫn là shadcn neutral.
+- Home vẫn là nguồn chuẩn trực quan; nhóm product/study pages đã được đồng bộ sang dark cinematic product foundation, còn auth pages là phạm vi legacy riêng.
 - Home không dùng `Button` hay `Card` primitive cho CTA/card chính.
 - 51 màu hex literal khác nhau xuất hiện trong Home-related source; token implementation đang phân mảnh.
 - Các biến `--landing-*` đã được khai báo nhưng chưa được sử dụng bởi `var(...)`.
 - Dark token set tồn tại nhưng không có ThemeProvider hoặc class `dark` ở root.
-- Brand Home là **EngFlex**; auth/sidebar còn ghi **EngFlix**.
-- Chưa có reusable Table, Select, Textarea, Checkbox, Radio, Switch, Tabs, Breadcrumb, EmptyState, ErrorState hay route-level LoadingState.
-- Không có `loading.tsx`, `error.tsx` hoặc `not-found.tsx` trong app routes.
+- Product app đã có `ProductShell`, route-aware header, sidebar EngFlex và semantic product tokens; auth/landing legacy vẫn cần được đánh giá riêng khi chỉnh sửa.
+- `Select`, `Textarea`, reusable `Tabs`, `AlertDialog`, `ProductPageHeader`, `AsyncContentState` và `ProductReveal` đã tồn tại. Table/DataTable, Checkbox, Radio, Switch và Pagination primitive vẫn là khoảng trống.
+- Topics đã có route-level `loading.tsx`, `error.tsx` và `not-found.tsx`; các route product còn lại dùng system state trong page và chưa chuẩn hóa route-level boundary riêng.
 
-Design System này xử lý sự lệch đó ở cấp đặc tả; nó không tuyên bố code hiện tại đã đồng bộ.
+Design System này vừa là đặc tả vừa là inventory: chỉ các mục gắn **[Đã triển khai]** mới được xem là API dùng chung hiện hữu; việc một primitive đã có không đồng nghĩa mọi page đã hoàn tất migration.
 
 ---
 
@@ -625,6 +631,15 @@ Page chuẩn:
 
 Product page không dùng hero display trừ khi thật sự là marketing/intro page.
 
+`ProductShell` **[Đã triển khai]** là shell duy nhất cho product và study routes:
+
+- route group `app/(product)` chứa các page sản phẩm; `app/(study)` chứa workspace học, không route group nào làm thay đổi URL công khai;
+- mỗi group layout đọc `await cookies()` và truyền `defaultSidebarOpen` vào `ProductShell`;
+- nếu chưa có cookie, product mặc định mở sidebar và study mặc định đóng sidebar; nếu có `sidebar_state`, cookie luôn thắng default của group để giữ lựa chọn qua navigation;
+- shell chỉ render một skip link, một `main#main-content`, một `SiteHeader` và một `AppSidebar`; route con không được lồng thêm shell, skip link hoặc `main-content` thứ hai;
+- sidebar rộng 18rem và header cao 4rem thông qua custom properties của shell;
+- route layout con chỉ giữ metadata hoặc composition riêng của page.
+
 ### 10.3. Grid
 
 Pattern Home được phép tái sử dụng:
@@ -666,11 +681,13 @@ Product header **[Chuẩn hóa]**:
 - không hard-code title không liên quan tới route;
 - giữ trong app shell, không tạo header riêng cho từng page.
 
+`SiteHeader` **[Đã triển khai]** resolve `ProductRouteDescriptor` từ pathname. Descriptor là nguồn duy nhất cho title, breadcrumb và contextual action của route; page content vẫn dùng một H1 riêng qua `ProductPageHeader`.
+
 ### 10.5. Sidebar
 
 **[Quan sát]** Infrastructure hiện dùng:
 
-- 288px ở Topics do override;
+- 288px trong shared `ProductShell`;
 - mobile Sheet dưới 768px;
 - offcanvas/cookie state/keyboard shortcut;
 - icon-collapsed primitive 48px.
@@ -684,6 +701,7 @@ Product header **[Chuẩn hóa]**:
 - primary sidebar CTA: gold khi thật sự cần;
 - user/footer region tách bằng divider subtle;
 - mobile dùng Sheet và giữ đầy đủ accessible name/focus behavior.
+- `sidebar_state` lưu lựa chọn người dùng; group default chỉ áp dụng khi cookie chưa tồn tại.
 
 ### 10.6. Footer
 
@@ -970,9 +988,11 @@ Home mobile menu button hiện 40px; đây là **[Khoảng trống accessibility
 - `Input` cao 32px;
 - `Label`;
 - `Field`, `FieldDescription`, `FieldError role="alert"`;
+- `Textarea` product-styled với label bên ngoài, invalid/focus/disabled states;
+- `Select` dựa trên Base UI với portal, popup, item selection và keyboard behavior;
 - login/signup form dựa chủ yếu vào native `required`.
 
-**[Khoảng trống]** Chưa có Select, Textarea, Checkbox, Radio, Switch; chưa có submit loading/error/success. Các quy tắc dưới đây là **[Suy ra]** từ visual language Home và behavior primitive hiện có.
+**[Đã triển khai]** `Select` và `Textarea` đã có trong `components/ui/`. Checkbox, Radio, Switch và một form-level submit state API thống nhất vẫn là **[Khoảng trống]**. Các quy tắc chưa có component bên dưới vẫn là **[Suy ra]** từ visual language Home và behavior primitive hiện có.
 
 ### 15.2. Field anatomy
 
@@ -1017,9 +1037,9 @@ Input có icon:
 
 ### 15.4. Select
 
-**[Suy ra/Chưa có component]**
+**[Đã triển khai]** bằng Base UI; giữ behavior focus, selection, portal và typeahead của primitive.
 
-- Trigger dùng cùng height, radius và surface với Input.
+- Trigger có target tối thiểu 44px, cùng radius và dark inner surface với product controls.
 - Chevron 16px ở trailing edge.
 - Menu dùng dark glass/popover, radius 12–16px, border white 8–10%, elevation 2.
 - Selected item có cyan tint và check icon.
@@ -1028,13 +1048,13 @@ Input có icon:
 
 ### 15.5. Textarea
 
-**[Suy ra/Chưa có component]**
+**[Đã triển khai]** bằng native `textarea` với product token và semantic invalid state.
 
-- Min-height 120px.
+- Min-height mặc định 96px; consumer có thể tăng theo workflow nhưng không giảm dưới touch/readability target.
 - Padding 16px.
 - Radius 12px.
 - Cùng border/focus/error state với Input.
-- Resize vertical; không cho resize làm vỡ layout ngang.
+- Native resize không được làm vỡ layout ngang; page có thể giới hạn theo workflow.
 - Với giới hạn ký tự, counter dùng caption/mono và có accessible description.
 
 ### 15.6. Checkbox
@@ -1224,7 +1244,7 @@ Không bóp mọi cột tới mức không đọc được. Không dùng font 10
 ### 18.1. Trạng thái implementation
 
 - Base UI `Dialog` primitive hiện có portal, overlay, focus behavior, close, title/description/footer slots và transition.
-- `StudyModeDialog` hiện override neutral white/zinc, dùng clickable div và không dùng `DialogTitle/DialogDescription`.
+- Base UI `AlertDialog` product-styled **[Đã triển khai]** cho destructive/irreversible confirmation.
 - Home không có modal.
 
 Visual dưới đây là **[Suy ra]** từ Home; behavior phải giữ từ Base UI.
@@ -1278,7 +1298,7 @@ Footer:
 
 ### 18.6. Motion
 
-- Chỉ dùng fade/zoom 95% khoảng 100–200ms như primitive hiện có.
+- Chỉ dùng fade/zoom 95% trong dải state transition 0.25–0.45s; `AlertDialog` hiện dùng 0.3s.
 - Không thêm bounce/3D/aurora animation vào modal.
 - Reduced motion bỏ transform và rút duration.
 
@@ -1292,6 +1312,16 @@ Footer:
 - Footer action sticky chỉ khi content scroll dài.
 - Focus trap, Escape và restore focus theo behavior Dialog.
 - Reduced motion bỏ slide distance, giữ transition tối thiểu.
+
+### 18.8. AlertDialog/ConfirmDialog
+
+`AlertDialog` **[Đã triển khai]** trong `components/ui/alert-dialog.tsx` và là primitive bắt buộc cho xóa hoặc hành động khó hoàn tác:
+
+- dùng Base UI `Root`, `Trigger`, `Backdrop`, `Popup`, `Title`, `Description` và `Close` để giữ focus management, Escape và restore focus;
+- confirmation gồm title mô tả hành động, description nêu hậu quả, cancel rõ ràng và action có pending/disabled feedback;
+- không thay bằng browser `confirm()`/`alert()` hoặc Dialog chung thiếu semantics cảnh báo;
+- action destructive không được auto-focus; khi request lỗi, giữ dialog/context và hiển thị feedback inline;
+- overlay/content dùng product tokens; reduced motion tắt zoom/transform và đưa duration về 0.
 
 ---
 
@@ -1316,12 +1346,14 @@ Thêm `aria-current` cho link hiện hành khi áp dụng cho multi-page nav.
 
 ### 19.2. Product sidebar
 
-Behavior hiện có được giữ:
+Behavior **[Đã triển khai]** được giữ:
 
 - Sheet dưới 768px;
 - expanded/collapsed state;
 - keyboard shortcut;
 - tooltip khi collapsed.
+- state được lưu trong cookie `sidebar_state` và được server layout đọc bằng `await cookies()`;
+- product default mở, study workspace default đóng; cookie của người dùng luôn được ưu tiên hơn default.
 
 Visual chính thức:
 
@@ -1341,12 +1373,15 @@ Visual chính thức:
 - Left: sidebar trigger + breadcrumb/page title.
 - Right: contextual actions.
 - Border bottom white 6–7%.
-- Không hard-code “Documents” trên route Topics.
+- `ProductRouteDescriptor` **[Đã triển khai]** map exact route và dynamic route pattern thành `title`, `breadcrumbs` và `action`.
+- Không hard-code title/action trực tiếp trong `SiteHeader`; descriptor phải được cập nhật khi thêm route.
 - Không dùng header title thay H1 trong content nếu heading outline cần H1.
+
+`ProductPageHeader` **[Đã triển khai]** thuộc content layer, cung cấp eyebrow, H1, description, actions và optional aside. Nó bổ sung cho `SiteHeader`, không tạo app header thứ hai.
 
 ### 19.4. Breadcrumb
 
-**[Suy ra/Chưa có component]**
+**[Đã triển khai trong `SiteHeader`]** qua `ProductBreadcrumb` của route descriptor; hiện chưa tách thành primitive độc lập.
 
 - Dùng khi sâu từ hai cấp trở lên.
 - 14px; parent slate-400, current white.
@@ -1357,7 +1392,7 @@ Visual chính thức:
 
 ### 19.5. Tabs
 
-Pattern chuẩn là `ExperienceShowcase`:
+Pattern visual bắt nguồn từ `ExperienceShowcase`; reusable `Tabs` **[Đã triển khai]** bằng Base UI:
 
 - `role="tablist"`, `role="tab"`, `role="tabpanel"`;
 - roving `tabIndex`;
@@ -1369,7 +1404,7 @@ Pattern chuẩn là `ExperienceShowcase`:
 - focus ring cyan;
 - dynamic panel có `aria-live="polite"` khi phù hợp.
 
-Reusable Tabs component hiện chưa tồn tại; không tự làm tab bằng div.
+Base UI quản lý roving focus và keyboard navigation cho tab list. Consumer dùng `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`; không tự làm tab bằng div hoặc tự viết lại Arrow/Home/End behavior.
 
 ### 19.6. Footer navigation
 
@@ -1403,7 +1438,7 @@ Reusable Tabs component hiện chưa tồn tại; không tự làm tab bằng di
 
 ### 20.1. Trạng thái
 
-**[Khoảng trống]** Current Topics chỉ render plain paragraph; không có reusable EmptyState. Pattern dưới đây là **[Suy ra]**.
+`AsyncContentState` **[Đã triển khai]** hỗ trợ `kind="empty"` với heading semantic, description, optional action và `role="status"`. Page vẫn phải cung cấp copy/CTA đúng nguyên nhân; component không thay thế no-result layout đặc thù hoặc collection skeleton.
 
 ### 20.2. Các loại empty
 
@@ -1444,11 +1479,11 @@ Không dùng cùng một copy “Không có dữ liệu” cho mọi trường h
 **[Quan sát]**
 
 - `Skeleton` primitive có pulse.
-- `SidebarMenuSkeleton` có sẵn nhưng chưa được dùng.
-- Topics chỉ hiển thị plain text “Đang tải…”.
+- `SidebarMenuSkeleton` và page-specific skeleton có thể giữ footprint của navigation/grid.
+- `AsyncContentState` **[Đã triển khai]** hỗ trợ generic content loading với `aria-busy`, status copy và skeleton text.
 - Home không có page/data loading state.
 
-**[Khoảng trống]** Chưa có route-level loading hoặc reusable content skeleton.
+Topics **[Đã triển khai]** route-level `loading.tsx` với skeleton đúng footprint; route product khác hiện xử lý loading trong page. `AsyncContentState` không được dùng thay layout-shaped skeleton khi page đã biết cấu trúc card/grid thật.
 
 ### 21.2. Loading hierarchy
 
@@ -1492,14 +1527,9 @@ Không thay toàn page bằng spinner giữa canvas nếu có thể dựng skele
 
 ### 22.1. Trạng thái
 
-**[Khoảng trống]**
+`AsyncContentState` **[Đã triển khai]** hỗ trợ `kind="error"`, destructive semantic token, `role="alert"` và optional retry. Route-level `error.tsx` vẫn là **[Khoảng trống]**. Home không có error visual và rose trên Home vẫn là recording/window indicator, không phải error system.
 
-- Fetch error hiện chỉ `console.error`.
-- Không có page-level ErrorState, retry hoặc `error.tsx`.
-- Home không có error visual.
-- Rose trên Home là recording/window indicator, không phải error system.
-
-Pattern dưới đây là **[Suy ra]** và dùng destructive semantic token hiện có.
+Pattern dưới đây là **[Chuẩn hóa]** cho product app và dùng destructive semantic token hiện có.
 
 ### 22.2. Error levels
 
@@ -1610,6 +1640,7 @@ Tối thiểu WCAG 2.2 AA cho contrast, keyboard, focus, semantics và target si
 - Reduced motion bỏ loop, translate, scale và smooth scroll.
 - Không dùng motion để truyền tải thông tin duy nhất.
 - Không thêm animation ngoài inventory tại Phụ lục B.
+- Product entrance dùng `ProductReveal`; không tạo reveal wrapper khác với easing/duration riêng.
 
 ### 23.9. Readability
 
@@ -1622,14 +1653,13 @@ Tối thiểu WCAG 2.2 AA cho contrast, keyboard, focus, semantics và target si
 
 ### 23.10. Known accessibility gaps không được lặp lại
 
-- LessonCard và StudyMode option dùng clickable div.
-- Flashcard Home chỉ flip bằng hover; wrapper không focusable.
-- Nav mobile icon 40px nhỏ hơn target 44px.
+- Landing Experience flashcard vẫn cần được audit riêng; product flashcard đã dùng button và ẩn mặt không hoạt động khỏi accessibility tree.
+- Landing mobile nav icon 40px nhỏ hơn target 44px; product sidebar trigger đã đạt 44px.
 - Auth image alt là “Image”.
-- SiteHeader title không đúng route.
-- Async state không có live region.
-- Reduced-motion global hiện chỉ bao phủ `.landing-shell`.
-- Không có skip link.
+- Các page legacy có thể vẫn thiếu async announcement hoặc dùng feedback ngoài UI; page migration phải dùng system state mới.
+- Route-level boundary mới có đầy đủ ở Topics, chưa đồng đều trên mọi route product.
+
+Product foundation đã xử lý route-aware SiteHeader, một skip link tới `main#main-content`, target sidebar trigger 44px, `AsyncContentState` có status/alert semantics và reduced-motion coverage cho `.product-shell`.
 
 ---
 
@@ -1761,7 +1791,8 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 - Dùng action height 48px; hero 56px.
 - Dùng Lucide icon và accessible label.
 - Dùng link/button semantic cho interactive card.
-- Dùng tabs keyboard pattern của ExperienceShowcase.
+- Dùng reusable Base UI `Tabs`; giữ roving keyboard pattern của ExperienceShowcase.
+- Dùng `ProductShell`, `ProductRouteDescriptor`, `ProductPageHeader`, `AsyncContentState` và `ProductReveal` thay vì tạo bản page-local trùng chức năng.
 - Thiết kế đủ loading, empty, error và retry.
 - Giữ layout khi loading bằng skeleton đúng hình dạng.
 - Tôn trọng reduced motion.
@@ -1803,7 +1834,7 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 - Không dùng placeholder thay label.
 - Không báo lỗi chỉ bằng màu.
 - Không coi rose recording là error token mặc định.
-- Không nói component Table/Select/Tabs/EmptyState đã tồn tại khi chưa có.
+- Không nói Table/DataTable, Checkbox, Radio, Switch, Pagination hoặc route-level state đã tồn tại khi chưa có; `Select`, `Textarea`, `Tabs`, `AlertDialog` và `AsyncContentState` đã là inventory chính thức.
 - Không tự thêm spinner/shimmer/bounce/parallax mới.
 - Không bỏ focus outline.
 - Không animate khi reduced motion.
@@ -1920,39 +1951,47 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 
 | Component | Khả năng hiện có | Khoảng trống chính |
 |---|---|---|
-| Button | 6 variants, nhiều size, focus/active/disabled/invalid | Chưa có EngFlex visual size; chưa loading |
+| Button | Base variants + `product`/`glass`; `app` 48px và `icon-app` 44px; focus/active/disabled/invalid | Chưa có prop loading thống nhất |
 | Badge | 6 variants, pill | Chưa có success/warning/info semantic variants |
-| Card | Header/Title/Description/Action/Content/Footer | Neutral visual; chưa interactive/selected/loading |
+| Card | Header/Title/Description/Action/Content/Footer; `product`/`inner` visual variants | Chưa có interactive/selected/loading API thống nhất |
 | Input | Focus/disabled/invalid | 32px; chưa size/icon/success |
 | Label | Label + disabled | — |
 | Field | Fieldset, legend, orientation, helper, error alert | Error chưa được dùng trong forms |
 | Dialog | Portal, overlay, close, title, description, footer | Consumer StudyMode chưa dùng semantics/EngFlex visual |
+| AlertDialog | Base UI portal/backdrop/popup/title/description/close; product visual; confirmation footer | Consumer phải quản lý pending/error của action |
 | Sheet | 4 sides, overlay, transition | Chủ yếu dùng cho sidebar |
 | DropdownMenu | Group, item, destructive, submenu, checkbox/radio, shortcut | Nhiều feature chưa có call site |
 | Avatar | Size, fallback, badge, group | Badge/group chưa dùng |
-| Sidebar | Desktop/mobile, collapse, cookie, shortcut, tooltip, skeleton | Visual hard-code zinc, demo data |
-| Skeleton | Pulse block | Chưa dùng cho page/content loading |
-| Tooltip | Base UI tooltip | Provider chưa được mount rõ trong app |
+| Sidebar | Desktop/mobile Sheet, collapse, cookie, shortcut, tooltip, skeleton; product tokens | Presence/online state không thuộc sidebar primitive |
+| Skeleton | Pulse block | Route/page vẫn cần skeleton đúng footprint |
+| Tooltip | Base UI tooltip; provider mount tại root layout | Không chứa action thiết yếu |
 | Separator | Horizontal/vertical | — |
 | AspectRatio | CSS aspect wrapper | — |
+| Tabs | Base UI root/list/tab/panel; horizontal/vertical; roving keyboard; product visual | Consumer tự quyết định live announcement cho dynamic content |
+| Select | Base UI trigger/value/popup/items/scroll controls; keyboard/typeahead | Form-level validation feedback do consumer nối |
+| Textarea | Native semantic control; product focus/invalid/disabled states | Form-level counter/success do consumer nối |
 
 ## A.2. Application component hiện có
 
 | Component | Vai trò | Ghi chú |
 |---|---|---|
-| AppSidebar | App navigation | Demo user/menu, EngFlix |
-| NavMain | Active route navigation | Home icon chưa đúng nghĩa |
-| NavUser | User dropdown | Item chưa có handler/link |
+| ProductShell | Shared product/study shell | Một skip link, sidebar, SiteHeader và `main#main-content`; nhận server-derived sidebar default |
+| AppSidebar | App navigation | EngFlex navigation, active route, authenticated profile link, mobile Sheet |
+| NavMain | Active route navigation | Semantic links và icon đúng route |
+| SiteHeader | Route-aware product header | Resolve `ProductRouteDescriptor` cho title/breadcrumb/action |
+| ProductPageHeader | Content heading | Eyebrow + một H1 + description + actions/aside |
+| AsyncContentState | Loading/empty/error state | Status/alert semantics, `aria-busy`, retry/action |
+| ProductReveal | Controlled product entrance | 0.65s, easing chuẩn, viewport reveal, reduced-motion safe |
+| NavUser | User dropdown/profile action | Dữ liệu auth thật trong AppSidebar |
 | NavSecondary | Secondary nav | Có source nhưng chưa dùng |
 | NavDocuments | Document nav/dropdown | Có source nhưng chưa dùng |
-| SiteHeader | Sidebar trigger + title | Title hard-code “Documents” |
 | LoginForm | Email/password form | Chưa submit/loading/error |
 | SignupForm | Registration fields | Chưa validation/submit states |
 | CategoryCard | Category heading + link | Neutral visual |
-| LessonCard | Thumbnail/badges | Clickable div, thiếu keyboard |
-| StudyModeDialog | Hai study options | Clickable div, thiếu Dialog semantics |
-| CategoryLessons | Category/lesson fetch | Plain loading/empty; error console |
-| LessonDetail | Category lesson grid | Không loading/error/empty; grid fixed 4 |
+| LessonCard | Thumbnail/badges | Semantic overlay button 44px+, keyboard focus và reduced-motion safe |
+| StudyModeDialog | Hai study options | Dialog semantics, focus trap/restore và hai mode là button |
+| CategoryLessons | Category/lesson fetch | Preview được gom bằng `Promise.allSettled`, grid skeleton và state phân biệt lỗi |
+| LessonDetail | Category lesson grid | Responsive grid với loading/empty/error/retry và not-found riêng |
 
 ## A.3. Home-specific component
 
@@ -1968,29 +2007,23 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 - Private patterns: `SectionEyebrow`, `FeatureLabel`, Experience stage variants.
 - `TiltCard` có source/export nhưng chưa có call site.
 
-## A.4. Chưa tồn tại
+## A.4. Chưa tồn tại hoặc chưa được chuẩn hóa thành primitive dùng chung
 
 - Table/DataTable component.
-- Select.
-- Textarea.
 - Checkbox.
 - Radio.
 - Switch.
-- Reusable Tabs.
-- Breadcrumb.
+- Breadcrumb primitive độc lập; breadcrumb route-aware đã có trong `SiteHeader`.
 - Pagination.
 - Progress primitive.
 - Toast usage.
 - Alert.
-- EmptyState.
-- ErrorState.
-- Page/content LoadingState.
+- EmptyState/ErrorState độc lập; ba state generic đã có qua `AsyncContentState`.
+- Route-level LoadingState/ErrorState/not-found chưa được chuẩn hóa ngoài Topics.
 - Button loading.
-- Confirmation dialog.
 - Search/filter component.
-- Route-level loading/error/not-found.
 
-Không được yêu cầu Agent “dùng component có sẵn” cho danh sách A.4. Trước khi implementation được cho phép, đây chỉ là guideline.
+Không được yêu cầu Agent “dùng component có sẵn” cho danh sách A.4. Với `Select`, `Textarea`, `Tabs`, `AlertDialog`, `ProductPageHeader`, `AsyncContentState` và `ProductReveal`, phải tái sử dụng implementation hiện có thay vì tạo page-local duplicate.
 
 ---
 
@@ -2017,7 +2050,7 @@ Motion có ba nhóm:
 | Float | 5s/7s | ease-in-out infinite | Helper có source; call site hạn chế/không rõ |
 | Sound wave | 1.05s | ease-in-out alternate | Helper có source |
 | Marquee | 24s | linear infinite | Class có source, không có rendered call site |
-| Flashcard flip | 700ms | transform | Đang dùng; accessibility gap |
+| Flashcard flip | 300ms | transform | Button hỗ trợ keyboard/touch; mặt ẩn có `aria-hidden`, reduced-motion không transform |
 | Card/icon hover | 300–500ms | transform/color | Đang dùng |
 
 ### B.3. Motion React đang có
@@ -2027,6 +2060,7 @@ Motion có ba nhóm:
 | Nav entrance | y -24 + opacity, 0.55s ease-out |
 | Mobile menu | height/opacity, 0.25s |
 | Reveal | y 28 + opacity, 0.65s, bezier [.22,1,.36,1], viewport amount .18 |
+| ProductReveal | y 28 + opacity, 0.65s, bezier [.22,1,.36,1], viewport amount .18, once; stagger call site theo bước .07s |
 | Hero cockpit entrance | y 26 + scale .96 + opacity, 0.8s |
 | Pointer tilt | spring; only fine pointer, non-touch |
 | Hero parallax | rotateX ±5.5°, rotateY ±7.5°, layer ±14/10px |
@@ -2041,27 +2075,30 @@ Motion có ba nhóm:
 
 - Interactive components dùng `useReducedMotion()`.
 - Server sections dùng `motion-safe`/`motion-reduce`.
-- `.landing-shell` có media query đưa duration về 0.01ms và tắt smooth scroll.
-- Pattern tương lai ngoài Landing cũng phải có coverage tương đương.
+- `ProductReveal` đưa `initial=false` và duration về 0 khi người dùng yêu cầu reduced motion.
+- `.landing-shell` và `.product-shell` có media query đưa animation/transition về 0.01ms, loop về một lần và tắt smooth scroll.
+- Dialog/AlertDialog/Sheet phải bỏ transform/slide/zoom qua `motion-reduce`.
 
 ### B.5. Motion gaps
 
 - Hero dùng `Reveal eager` với `initial=false` nhưng không có `animate/whileInView`; các delay truyền vào không tạo stagger reveal thực tế.
 - `TiltCard` được export nhưng không dùng.
 - Nhiều helper `.landing-card`, perspective/depth, float, sound-bar, marquee và mask-fade chưa có rendered call site.
-- Flashcard hover flip không có focusable trigger và không phù hợp touch.
-- Reduced-motion global hiện giới hạn trong `.landing-shell`.
+- Landing `Reveal` và product `ProductReveal` là hai scope khác nhau; product pages không import Landing wrapper.
+- Coverage reduced motion đã mở rộng tới `.product-shell`; route ngoài hai shell vẫn phải được audit riêng.
 
 ### B.6. Motion rules
 
 - Không thêm keyframe/easing/duration mới.
-- Entrance dùng 0.55–0.8s chỉ cho major focal.
+- Product entrance dùng đúng 0.65s, easing `[.22,1,.36,1]`; collection stagger tăng theo bước 0.07s và không tạo nhiều live announcement.
 - State transition dùng 0.25–0.45s.
-- Hover dùng 240–500ms.
+- Hover dùng 0.24–0.5s.
 - Ambient loop chỉ trên decoration, không trên critical content.
+- Không thêm bounce, spin hoặc pulse trang trí; pulse skeleton chỉ thể hiện loading thật.
 - Không chạy parallax trên touch.
 - Không dùng animation che loading chậm.
 - Không animate layout gây reflow liên tục.
+- Khi reduced motion bật, mọi transform và loop phải tắt; thông tin và feedback vẫn phải đầy đủ ở trạng thái tĩnh.
 
 ---
 
@@ -2102,9 +2139,9 @@ Home diễn đạt feedback qua waveform, score, progress, status badge và acti
 
 ## C.7. Loading/empty/error
 
-- Loading hiện tại: plain text hoặc không có.
-- Empty hiện tại: plain paragraph.
-- Error hiện tại: console only.
+- Product pages dùng layout-shaped skeleton hoặc `AsyncContentState` cho loading, empty, error và retry; background refresh giữ dữ liệu cũ khi workflow yêu cầu.
+- Topics có thêm route-level loading/error/not-found; các route khác quản lý state tại page/workspace.
+- Legacy pages ngoài phạm vi migration vẫn có thể còn plain text, browser feedback hoặc console-only error và phải được audit khi chạm tới.
 
 Mục 20–22 là chuẩn bắt buộc cho page mới.
 
@@ -2116,15 +2153,17 @@ Mục 20–22 là chuẩn bắt buộc cho page mới.
 |---|---|
 | `/login` | Neutral split scaffold, EngFlix, generic icon, ảnh tông ấm, form thiếu states |
 | `/signup` | Tương tự login; thiếu validation/submit states |
-| `/topics` | Generic sidebar/card, no container cap, loading/empty sơ sài, error console |
-| `/topics/[categoryId]` | Fixed 4-column, no loading/error/empty, heading outline sai |
-| `/vocabulary` | Placeholder, không app shell |
-| AppSidebar | Demo user/menu, EngFlix, zinc active/hover |
-| SiteHeader | Hard-code “Documents” |
-| StudyModeDialog | White/zinc visual, clickable div, light PNG trên dark variant |
-| LessonCard | Neutral Card, clickable div, keyboard gap |
+| `/topics` | **Đã đồng bộ:** ProductShell, capped container, cinematic cards, centralized preview fetch và đủ loading/empty/error/retry |
+| `/topics/[categoryId]` | **Đã đồng bộ:** responsive auto-fill grid, heading đúng cấp, route/content states và controlled reveal |
+| `/vocabulary`, `/vocabulary/quiz` | **Đã đồng bộ:** library/mine browser, owner CRUD, responsive item list, semantic flashcard và quiz state machine trong study shell |
+| Social pages | **Đã đồng bộ:** Community/Profile dùng shared post primitives; Friends dùng Base UI Tabs; Chat là community cockpit không giả lập direct message |
+| Notes/Progress | **Đã đồng bộ:** quote-card notes states và bento/Recharts report có accessible summary/reduced motion |
+| AppSidebar | **Đã đồng bộ:** EngFlex navigation, auth/profile thật, 44px actions, mobile Sheet và cookie state |
+| SiteHeader | **Đã đồng bộ:** `ProductRouteDescriptor` cho title, breadcrumb và contextual action |
+| StudyModeDialog | **Đã đồng bộ:** semantic Dialog, keyboard/touch buttons và cinematic mascot assets |
+| LessonCard | **Đã đồng bộ:** semantic button overlay, focus-visible, responsive image sizes và reduced-motion coverage |
 
-Không được sao chép các lệch này sang page mới.
+Các dòng **Đã đồng bộ** là implementation inventory, không phải khoảng trống cần sao chép lại. Login/signup vẫn là legacy ngoài phạm vi redesign này.
 
 ---
 

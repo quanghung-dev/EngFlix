@@ -7,6 +7,7 @@ const friendshipController = require('../controllers/friendshipController.js');
 router.get('/', verifyToken, friendshipController.getFriendsList);
 router.get('/requests', verifyToken, friendshipController.getIncomingRequests);
 router.get('/search', verifyToken, friendshipController.searchNewFriends);
+router.get('/status/:userId', verifyToken, friendshipController.getStatus);
 router.post('/requests', verifyToken, friendshipController.sendRequest);
 router.put('/requests/:id', verifyToken, friendshipController.acceptRequest);
 router.delete('/:id', verifyToken, friendshipController.declineOrRemove);

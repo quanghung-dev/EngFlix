@@ -1,8 +1,6 @@
-const { Pool } = require('pg');
 const pool = require('../db/index');
-const { errorResponse } = require('../utils/response');
 const getVocabularyDecks = async (category_id, limit, offset) => {
-    const conditions = [];
+    const conditions = ['is_default = true'];
     const values = [];
     let paramIndex = 1;
 
@@ -66,7 +64,7 @@ const createVocabularyDecks = async (userId, category_id, name, description, lev
     return result.rows[0];
 };
 
-const updateVocabularyDecks = async (id, name, description, level, thumbnail_url) => {
+const updateVocabularyDecks = async (userId, id, name, description, level, thumbnail_url) => {
     const query = `
         UPDATE vocabulary_decks
         SET name = $1,
@@ -75,15 +73,23 @@ const updateVocabularyDecks = async (id, name, description, level, thumbnail_url
             thumbnail_url = $4,
             updated_at = NOW()
         WHERE id = $5
+          AND user_id = $6
+          AND is_default = false
         RETURNING *
     `;
-    const result = await pool.query(query, [name, description, level, thumbnail_url, id]);
+    const result = await pool.query(query, [name, description, level, thumbnail_url, id, userId]);
     return result.rows[0];
 };
 
-const deleteVocabularyDecks = async (id) => {
-    const query = 'DELETE FROM vocabulary_decks WHERE id = $1 RETURNING *'
-    const result = await pool.query(query,[id])
+const deleteVocabularyDecks = async (userId, id) => {
+    const query = `
+        DELETE FROM vocabulary_decks
+        WHERE id = $1
+          AND user_id = $2
+          AND is_default = false
+        RETURNING *
+    `;
+    const result = await pool.query(query, [id, userId]);
     return result.rows[0]
 };
 module.exports = {

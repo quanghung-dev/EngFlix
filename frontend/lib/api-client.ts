@@ -1,14 +1,20 @@
 import axios from "axios";
 
+import { auth } from "@/lib/firebase";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
-function normalizeHeaders(headers?: HeadersInit) {
+async function normalizeHeaders(headers?: HeadersInit, forceRefresh = false) {
     const norm = headers
         ? Object.fromEntries(new Headers(headers).entries())
         : {};
         
     if (typeof window !== "undefined") {
-        const token = localStorage.getItem("token");
+        await auth.authStateReady();
+        const firebaseUser = auth.currentUser;
+        const token = firebaseUser
+            ? await firebaseUser.getIdToken(forceRefresh)
+            : null;
         if (token) {
             norm["Authorization"] = `Bearer ${token}`;
         }
@@ -18,9 +24,6 @@ function normalizeHeaders(headers?: HeadersInit) {
 
 export const api = axios.create({
     baseURL: BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
 
 export async function apiRequest<T>(
@@ -29,14 +32,30 @@ export async function apiRequest<T>(
 ): Promise<T> {
     const method = options?.method || "GET";
 
-    const requestData = options?.body ? JSON.parse(options.body as string) : undefined;
+    const requestData = typeof options?.body === "string"
+        ? JSON.parse(options.body)
+        : options?.body;
 
-    const response = await api.request<T>({
-        url: endpoint,
-        method: method,
-        data: requestData,
-        headers: normalizeHeaders(options?.headers),
-    });
+    const request = async (forceRefresh = false) =>
+        api.request<T>({
+            url: endpoint,
+            method,
+            data: requestData,
+            headers: await normalizeHeaders(options?.headers, forceRefresh),
+        });
 
-    return response.data;
+    try {
+        const response = await request();
+        return response.data;
+    } catch (error) {
+        if (
+            axios.isAxiosError(error) &&
+            error.response?.status === 401 &&
+            auth.currentUser
+        ) {
+            const response = await request(true);
+            return response.data;
+        }
+        throw error;
+    }
 }

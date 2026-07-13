@@ -3,6 +3,7 @@ const router = express.Router();
 const vocabularyDecksController = require('../controllers/vocabularyDecksController.js');
 const vocabularyItemsController = require('../controllers/vocabularyItemsController.js');
 const verifyToken = require('../middlewares/auth.js');
+const optionalAuth = require('../middlewares/optionalAuth.js');
 
 /**
  * @swagger
@@ -277,7 +278,7 @@ router.get('/mine', verifyToken, vocabularyDecksController.getMyVocabularyDecks)
  *       500:
  *         description: Internal server error
  */
-router.get('/:deckId/items', vocabularyItemsController.getVocabularyItems);
+router.get('/:deckId/items', optionalAuth, vocabularyItemsController.getVocabularyItems);
 
 /**
  * @swagger
@@ -349,7 +350,7 @@ router.get('/:deckId/items', vocabularyItemsController.getVocabularyItems);
  *       500:
  *         description: Internal server error
  */
-router.post('/:deckId/items', vocabularyItemsController.addVocabularyItems);
+router.post('/:deckId/items', verifyToken, vocabularyItemsController.addVocabularyItems);
 
 /**
  * @swagger
@@ -428,7 +429,7 @@ router.post('/:deckId/items', vocabularyItemsController.addVocabularyItems);
  *       500:
  *         description: Internal server error
  */
-router.put('/:deckId/items/:itemId', vocabularyItemsController.updateVocabularyItems);
+router.put('/:deckId/items/:itemId', verifyToken, vocabularyItemsController.updateVocabularyItems);
 
 /**
  * @swagger
@@ -468,7 +469,7 @@ router.put('/:deckId/items/:itemId', vocabularyItemsController.updateVocabularyI
  *       500:
  *         description: Internal server error
  */
-router.delete('/:deckId/items/:itemId', vocabularyItemsController.deleteVocabularyItems);
+router.delete('/:deckId/items/:itemId', verifyToken, vocabularyItemsController.deleteVocabularyItems);
 
 /**
  * @swagger
@@ -638,7 +639,7 @@ router.post('/', verifyToken, vocabularyDecksController.createVocabularyDecks);
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', vocabularyDecksController.updateVocabularyDecks);
+router.put('/:id', verifyToken, vocabularyDecksController.updateVocabularyDecks);
 
 /**
  * @swagger
@@ -698,6 +699,6 @@ router.put('/:id', vocabularyDecksController.updateVocabularyDecks);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', vocabularyDecksController.deleteVocabularyDecks);
+router.delete('/:id', verifyToken, vocabularyDecksController.deleteVocabularyDecks);
 
 module.exports = router;

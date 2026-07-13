@@ -5,6 +5,7 @@ import {
   VocabularyDeckType,
   VocabularyItemType
 } from "@/types/vocabulary"
+import type { QuizPayload, QuizQuestion } from "@/types/learning"
 
 // Tải danh mục từ vựng
 export async function getVocabularyCategories(): Promise<PagedResponse<VocabularyCategoryType>> {
@@ -188,14 +189,7 @@ export async function deleteVocabularyItem(
   }
 }
 
-export interface QuizQuestionType {
-  id: number
-  phrase: string
-  meaning: string
-  note: string
-  example_sentence: string
-  choices: string[]
-}
+export type QuizQuestionType = QuizQuestion
 
 export interface AITranslationType {
   phrase: string
@@ -207,13 +201,17 @@ export interface AITranslationType {
 }
 
 // Tải câu hỏi trắc nghiệm từ vựng cá nhân
-export async function getVocabularyQuiz(): Promise<DataResponse<QuizQuestionType[]>> {
-  try {
-    return await apiRequest<DataResponse<QuizQuestionType[]>>("vocabulary-categories/quiz")
-  } catch (error) {
-    console.error("Không thể tải bài trắc nghiệm từ vựng", error)
-    throw error
-  }
+export async function getVocabularyQuiz(): Promise<DataResponse<QuizPayload>> {
+  const response = await apiRequest<DataResponse<QuizPayload | QuizQuestionType[]>>(
+    "vocabulary-categories/quiz"
+  )
+
+  // Transitional compatibility while older API instances still return an array.
+  const payload: QuizPayload = Array.isArray(response.data)
+    ? { questions: response.data, source: "sample" }
+    : response.data
+
+  return { ...response, data: payload }
 }
 
 // Dịch từ vựng nhanh bằng AI DeepSeek

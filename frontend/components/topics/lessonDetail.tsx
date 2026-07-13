@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeftIcon, CheckCircle2Icon } from "lucide-react"
+import { ArrowLeftIcon } from "lucide-react"
 
 import { LessonCard } from "@/components/lesson-card"
+import { ProductReveal } from "@/components/product/product-reveal"
 import { StudyModeDialog } from "@/components/study-mode-dialog"
 import {
   ContentEmptyState,
@@ -25,9 +26,9 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
   const [lessons, setLessons] = useState<LessonType[]>([])
   const [totalLessons, setTotalLessons] = useState(0)
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null)
-  const [feedback, setFeedback] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [missing, setMissing] = useState(false)
 
   useEffect(() => {
     let isActive = true
@@ -47,18 +48,19 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
           setCategory(null)
           setLessons([])
           setTotalLessons(0)
-          setError(
-            "Chủ đề này không tồn tại hoặc không còn được xuất bản. Hãy quay lại thư viện để chọn một chủ đề khác."
-          )
+          setMissing(true)
+          setError(null)
           return
         }
 
         setCategory(matchedCategory)
         setLessons(lessonResponse.data || [])
         setTotalLessons(lessonResponse.meta.total)
+        setMissing(false)
         setError(null)
       } catch {
         if (!isActive) return
+        setMissing(false)
         setError(
           "Chưa thể tải thông tin chủ đề và danh sách bài học. Bạn có thể thử lại mà không cần rời trang."
         )
@@ -76,6 +78,7 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
   const retryTopic = () => {
     setLoading(true)
     setError(null)
+    setMissing(false)
     void Promise.all([
       getLessons({ category_id: categoryId }),
       getAllCategories(),
@@ -88,14 +91,13 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
           setCategory(null)
           setLessons([])
           setTotalLessons(0)
-          setError(
-            "Chủ đề này không tồn tại hoặc không còn được xuất bản. Hãy quay lại thư viện để chọn một chủ đề khác."
-          )
+          setMissing(true)
           return
         }
         setCategory(matchedCategory)
         setLessons(lessonResponse.data || [])
         setTotalLessons(lessonResponse.meta.total)
+        setMissing(false)
       })
       .catch(() => {
         setError(
@@ -123,6 +125,35 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
 
   if (loading) {
     return <TopicDetailSkeleton />
+  }
+
+  if (missing || (!error && !category)) {
+    return (
+      <div>
+        <Link
+          href="/topics"
+          className={buttonVariants({ variant: "glass", size: "app" })}
+        >
+          <ArrowLeftIcon aria-hidden="true" />
+          Về thư viện
+        </Link>
+        <div className="mt-8">
+          <ContentEmptyState
+            title="Không tìm thấy chủ đề"
+            description="Chủ đề này không tồn tại hoặc không còn được xuất bản. Hãy quay lại thư viện để chọn một nội dung đang có trên EngFlex."
+            headingLevel="h1"
+            action={
+              <Link
+                href="/topics"
+                className={buttonVariants({ variant: "product", size: "app" })}
+              >
+                Khám phá chủ đề khác
+              </Link>
+            }
+          />
+        </div>
+      </div>
+    )
   }
 
   if (error || !category) {
@@ -160,37 +191,25 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
         Quay lại chủ đề
       </Link>
 
-      <header className="mt-10 flex flex-col gap-5 border-b border-stroke-subtle pb-10 sm:flex-row sm:items-end sm:justify-between">
-        <div className="max-w-2xl">
-          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
-            Chủ đề học tập
-          </p>
-          <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-white lg:text-5xl">
-            {category.name}
-          </h1>
-          <p className="mt-5 text-base leading-7 text-copy-muted">
-            Chọn một phân cảnh, sau đó luyện nghe chính tả hoặc nhại giọng
-            để cải thiện phản xạ tiếng Anh theo từng bước.
-          </p>
-        </div>
-        <Badge variant="info" className="h-7 px-3 font-mono">
-          {totalLessons} bài học
-        </Badge>
-      </header>
-
-      {feedback ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="mt-8 flex items-start gap-3 rounded-panel border border-status-success/20 bg-status-success/10 p-4 text-sm leading-6 text-copy-secondary"
-        >
-          <CheckCircle2Icon
-            className="mt-0.5 size-5 shrink-0 text-status-success"
-            aria-hidden="true"
-          />
-          <p>{feedback}</p>
-        </div>
-      ) : null}
+      <ProductReveal eager>
+        <header className="mt-10 flex flex-col gap-5 border-b border-stroke-subtle pb-10 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
+              Chủ đề học tập
+            </p>
+            <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-white lg:text-5xl">
+              {category.name}
+            </h1>
+            <p className="mt-5 text-base leading-7 text-copy-muted">
+              Chọn một phân cảnh, sau đó luyện nghe chính tả hoặc nhại giọng
+              để cải thiện phản xạ tiếng Anh theo từng bước.
+            </p>
+          </div>
+          <Badge variant="info" className="h-7 px-3 font-mono">
+            {totalLessons} bài học
+          </Badge>
+        </header>
+      </ProductReveal>
 
       <div className="mt-10">
         {lessons.length > 0 ? (
@@ -199,12 +218,14 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
               Danh sách bài học
             </h2>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] gap-4 lg:gap-5">
-              {lessons.map((lesson) => (
-                <LessonCard
-                  key={lesson.id}
-                  lesson={lesson}
-                  onSelect={setSelectedLesson}
-                />
+              {lessons.map((lesson, index) => (
+                <ProductReveal key={lesson.id} delay={(index % 6) * 0.07} className="h-full">
+                  <LessonCard
+                    lesson={lesson}
+                    priority={index === 0}
+                    onSelect={setSelectedLesson}
+                  />
+                </ProductReveal>
               ))}
             </div>
           </section>

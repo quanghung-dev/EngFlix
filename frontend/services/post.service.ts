@@ -1,38 +1,15 @@
 import { apiRequest } from "@/lib/api-client"
 import { PagedResponse, DataResponse } from "@/types/api"
+import type { PostComment, SocialPost } from "@/types/social"
 
-export interface PostType {
-  id: number
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  content: string
-  image_url: string | null
-  created_at: string
-  likes_count: number
-  comments_count: number
-  is_liked: boolean
-}
-
-export interface CommentType {
-  id: number
-  post_id: number
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  content: string
-  created_at: string
-}
+export type PostType = SocialPost
+export type CommentType = PostComment
 
 // Lấy danh sách bài viết trang bảng tin cộng đồng
 export async function getPostsFeed(params?: {
   page?: number
   limit?: number
-}): Promise<PagedResponse<PostType>> {
+}): Promise<PagedResponse<SocialPost>> {
   try {
     const queryParams = new URLSearchParams()
     if (params) {
@@ -41,7 +18,7 @@ export async function getPostsFeed(params?: {
     }
     const queryString = queryParams.toString()
     const url = queryString ? `posts/feed?${queryString}` : "posts/feed"
-    return await apiRequest<PagedResponse<PostType>>(url)
+    return await apiRequest<PagedResponse<SocialPost>>(url)
   } catch (error) {
     console.error("Không thể tải bảng tin cộng đồng", error)
     throw error
@@ -55,7 +32,7 @@ export async function getUserPosts(
     page?: number
     limit?: number
   }
-): Promise<PagedResponse<PostType>> {
+): Promise<PagedResponse<SocialPost>> {
   try {
     const queryParams = new URLSearchParams()
     if (params) {
@@ -63,8 +40,11 @@ export async function getUserPosts(
       if (params.limit !== undefined) queryParams.append("limit", params.limit.toString())
     }
     const queryString = queryParams.toString()
-    const url = queryString ? `posts/user/${userId}?${queryString}` : `posts/user/${userId}`
-    return await apiRequest<PagedResponse<PostType>>(url)
+    const encodedUserId = encodeURIComponent(userId)
+    const url = queryString
+      ? `posts/user/${encodedUserId}?${queryString}`
+      : `posts/user/${encodedUserId}`
+    return await apiRequest<PagedResponse<SocialPost>>(url)
   } catch (error) {
     console.error(`Không thể tải bài viết của user ${userId}`, error)
     throw error
@@ -75,9 +55,9 @@ export async function getUserPosts(
 export async function createPost(params: {
   content: string
   imageUrl?: string | null
-}): Promise<DataResponse<PostType>> {
+}): Promise<DataResponse<SocialPost>> {
   try {
-    return await apiRequest<DataResponse<PostType>>("posts", {
+    return await apiRequest<DataResponse<SocialPost>>("posts", {
       method: "POST",
       body: JSON.stringify(params)
     })
@@ -88,9 +68,9 @@ export async function createPost(params: {
 }
 
 // Xóa bài viết
-export async function deletePost(postId: number): Promise<DataResponse<any>> {
+export async function deletePost(postId: number): Promise<DataResponse<unknown>> {
   try {
-    return await apiRequest<DataResponse<any>>(`posts/${postId}`, {
+    return await apiRequest<DataResponse<unknown>>(`posts/${postId}`, {
       method: "DELETE"
     })
   } catch (error) {
@@ -117,9 +97,9 @@ export async function toggleLikePost(
 }
 
 // Lấy danh sách bình luận của bài viết
-export async function getPostComments(postId: number): Promise<DataResponse<CommentType[]>> {
+export async function getPostComments(postId: number): Promise<DataResponse<PostComment[]>> {
   try {
-    return await apiRequest<DataResponse<CommentType[]>>(`posts/${postId}/comments`)
+    return await apiRequest<DataResponse<PostComment[]>>(`posts/${postId}/comments`)
   } catch (error) {
     console.error(`Không thể lấy bình luận bài viết ${postId}`, error)
     throw error
@@ -130,9 +110,9 @@ export async function getPostComments(postId: number): Promise<DataResponse<Comm
 export async function createComment(
   postId: number,
   content: string
-): Promise<DataResponse<CommentType>> {
+): Promise<DataResponse<PostComment>> {
   try {
-    return await apiRequest<DataResponse<CommentType>>(`posts/${postId}/comments`, {
+    return await apiRequest<DataResponse<PostComment>>(`posts/${postId}/comments`, {
       method: "POST",
       body: JSON.stringify({ content })
     })

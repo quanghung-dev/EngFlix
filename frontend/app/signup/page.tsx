@@ -1,18 +1,25 @@
 "use client"
 
 import { useEffect } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 import { SignupForm } from "@/components/signup-form"
 import { GalleryVerticalEndIcon } from "lucide-react"
+import { auth } from "@/lib/firebase"
 
 export default function SignupPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      router.push("/topics")
+    let active = true
+    void auth.authStateReady().then(() => {
+      if (!active) return
+      if (auth.currentUser) router.replace("/topics")
+      else localStorage.removeItem("token")
+    })
+    return () => {
+      active = false
     }
   }, [router])
 
@@ -34,9 +41,12 @@ export default function SignupPage() {
         </div>
       </div>
       <div className="relative hidden bg-canvas lg:block border-l border-stroke-subtle">
-        <img
+        <Image
           src="/login.jpg"
-          alt="Image"
+          alt="Hai học viên đang đọc sách trong thư viện"
+          fill
+          priority
+          sizes="50vw"
           className="absolute inset-0 h-full w-full object-cover brightness-[0.3]"
         />
       </div>

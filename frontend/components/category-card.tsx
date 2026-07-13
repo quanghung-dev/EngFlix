@@ -40,10 +40,7 @@ export function CategoryCard({
             >
               {category.name}
             </h2>
-            <p
-              aria-live="polite"
-              className="mt-2 text-sm leading-6 text-copy-muted"
-            >
+            <p className="mt-2 text-sm leading-6 text-copy-muted">
               {totalLessons === undefined
                 ? "Đang cập nhật số bài học"
                 : `${totalLessons} bài học để bạn khám phá`}

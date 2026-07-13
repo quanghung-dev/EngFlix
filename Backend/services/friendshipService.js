@@ -8,8 +8,7 @@ const getFriends = async (userId) => {
                COALESCE(u.name, split_part(u.email, '@', 1)) AS username,
                u.avatar_url,
                COALESCE(u.level, 1) AS level,
-               COALESCE(u.badge_type, 'none') AS badge_type,
-               'online' AS status
+               COALESCE(u.badge_type, 'none') AS badge_type
         FROM friendships f
         JOIN users u ON (f.user_id = u.uid AND f.friend_id = $1) OR (f.friend_id = u.uid AND f.user_id = $1)
         WHERE f.status = 'accepted'
@@ -36,6 +35,39 @@ const getPendingRequests = async (userId) => {
     `;
     const result = await pool.query(query, [userId]);
     return result.rows;
+};
+
+const getFriendshipStatus = async (userId, targetUserId) => {
+    if (userId === targetUserId) {
+        return { friendship_id: null, state: 'none' };
+    }
+
+    const result = await pool.query(
+        `
+            SELECT id, user_id, friend_id, status
+            FROM friendships
+            WHERE (user_id = $1 AND friend_id = $2)
+               OR (user_id = $2 AND friend_id = $1)
+            ORDER BY CASE WHEN status = 'accepted' THEN 0 ELSE 1 END,
+                     created_at DESC
+            LIMIT 1
+        `,
+        [userId, targetUserId]
+    );
+    const friendship = result.rows[0];
+
+    if (!friendship) {
+        return { friendship_id: null, state: 'none' };
+    }
+
+    if (friendship.status === 'accepted') {
+        return { friendship_id: friendship.id, state: 'accepted' };
+    }
+
+    return {
+        friendship_id: friendship.id,
+        state: friendship.user_id === userId ? 'pending_sent' : 'pending_received'
+    };
 };
 
 // Gửi lời mời kết bạn
@@ -138,6 +170,7 @@ const searchUsersToAdd = async (userId, searchQuery) => {
 module.exports = {
     getFriends,
     getPendingRequests,
+    getFriendshipStatus,
     sendFriendRequest,
     acceptFriendRequest,
     declineOrRemoveFriend,

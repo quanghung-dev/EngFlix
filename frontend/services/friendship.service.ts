@@ -1,40 +1,20 @@
 import { apiRequest } from "@/lib/api-client"
 import { DataResponse } from "@/types/api"
+import type {
+  Friend,
+  FriendRequest,
+  FriendSearchResult,
+  FriendshipStatus,
+} from "@/types/social"
 
-export interface FriendType {
-  friendship_id: number
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  status: "online" | "offline"
-}
-
-export interface FriendRequestType {
-  friendship_id: number
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  created_at: string
-}
-
-export interface SearchUserResultType {
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  friendship_id: number | null
-  friendship_state: "none" | "pending_sent" | "pending_received" | "accepted"
-}
+export type FriendType = Friend
+export type FriendRequestType = FriendRequest
+export type SearchUserResultType = FriendSearchResult
 
 // Lấy danh sách bạn bè đã kết bạn
-export async function getFriends(): Promise<DataResponse<FriendType[]>> {
+export async function getFriends(): Promise<DataResponse<Friend[]>> {
   try {
-    return await apiRequest<DataResponse<FriendType[]>>("friendships")
+    return await apiRequest<DataResponse<Friend[]>>("friendships")
   } catch (error) {
     console.error("Không thể tải danh sách bạn bè", error)
     throw error
@@ -42,9 +22,9 @@ export async function getFriends(): Promise<DataResponse<FriendType[]>> {
 }
 
 // Lấy danh sách lời mời kết bạn đang chờ duyệt
-export async function getIncomingRequests(): Promise<DataResponse<FriendRequestType[]>> {
+export async function getIncomingRequests(): Promise<DataResponse<FriendRequest[]>> {
   try {
-    return await apiRequest<DataResponse<FriendRequestType[]>>("friendships/requests")
+    return await apiRequest<DataResponse<FriendRequest[]>>("friendships/requests")
   } catch (error) {
     console.error("Không thể tải lời mời kết bạn", error)
     throw error
@@ -52,9 +32,9 @@ export async function getIncomingRequests(): Promise<DataResponse<FriendRequestT
 }
 
 // Gửi lời mời kết bạn mới
-export async function sendFriendRequest(friendId: string): Promise<DataResponse<any>> {
+export async function sendFriendRequest(friendId: string): Promise<DataResponse<unknown>> {
   try {
-    return await apiRequest<DataResponse<any>>("friendships/requests", {
+    return await apiRequest<DataResponse<unknown>>("friendships/requests", {
       method: "POST",
       body: JSON.stringify({ friend_id: friendId })
     })
@@ -65,9 +45,9 @@ export async function sendFriendRequest(friendId: string): Promise<DataResponse<
 }
 
 // Chấp nhận lời mời kết bạn
-export async function acceptFriendRequest(friendshipId: number): Promise<DataResponse<any>> {
+export async function acceptFriendRequest(friendshipId: number): Promise<DataResponse<unknown>> {
   try {
-    return await apiRequest<DataResponse<any>>(`friendships/requests/${friendshipId}`, {
+    return await apiRequest<DataResponse<unknown>>(`friendships/requests/${friendshipId}`, {
       method: "PUT"
     })
   } catch (error) {
@@ -77,9 +57,9 @@ export async function acceptFriendRequest(friendshipId: number): Promise<DataRes
 }
 
 // Xóa bạn bè hoặc từ chối lời mời
-export async function declineOrRemoveFriend(friendshipId: number): Promise<DataResponse<any>> {
+export async function declineOrRemoveFriend(friendshipId: number): Promise<DataResponse<unknown>> {
   try {
-    return await apiRequest<DataResponse<any>>(`friendships/${friendshipId}`, {
+    return await apiRequest<DataResponse<unknown>>(`friendships/${friendshipId}`, {
       method: "DELETE"
     })
   } catch (error) {
@@ -89,11 +69,26 @@ export async function declineOrRemoveFriend(friendshipId: number): Promise<DataR
 }
 
 // Tìm kiếm người dùng khác trong hệ thống
-export async function searchNewFriends(query: string): Promise<DataResponse<SearchUserResultType[]>> {
+export async function searchNewFriends(query: string): Promise<DataResponse<FriendSearchResult[]>> {
   try {
-    return await apiRequest<DataResponse<SearchUserResultType[]>>(`friendships/search?query=${encodeURIComponent(query)}`)
+    return await apiRequest<DataResponse<FriendSearchResult[]>>(
+      `friendships/search?query=${encodeURIComponent(query)}`
+    )
   } catch (error) {
     console.error("Không thể tìm kiếm bạn mới", error)
+    throw error
+  }
+}
+
+export async function getFriendshipStatus(
+  userId: string
+): Promise<DataResponse<FriendshipStatus>> {
+  try {
+    return await apiRequest<DataResponse<FriendshipStatus>>(
+      `friendships/status/${encodeURIComponent(userId)}`
+    )
+  } catch (error) {
+    console.error(`Không thể kiểm tra quan hệ bạn bè với ${userId}`, error)
     throw error
   }
 }

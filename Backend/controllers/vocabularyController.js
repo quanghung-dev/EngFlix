@@ -109,8 +109,8 @@ const getVocabularyQuiz = async (req, res, next) => {
         const userId = req.user?.uid;
         if (!userId) return errorResponse(res, 401, 'Unauthorized');
 
-        const questions = await vocabularyItemsService.getUserVocabularyForQuiz(userId);
-        return dataResponse(res, 200, questions);
+        const quiz = await vocabularyItemsService.getUserVocabularyForQuiz(userId);
+        return dataResponse(res, 200, quiz);
     } catch (error) {
         console.error('Error fetching vocabulary quiz:', error);
         next(error);

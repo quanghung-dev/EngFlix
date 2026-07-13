@@ -7,9 +7,6 @@ const getVocabularyDecks = async (req, res, next) => {
         const { category_id } = req.query;
         const { page, limit, offset } = getPagination(req.query);
         const { result, totalCount } = await vocabularyDecksService.getVocabularyDecks(category_id, limit, offset);
-        if (!result || result.length === 0) {
-            return errorResponse(res, 400, 'Khong tim thay');
-        }
         return dataResponse(res, 200, result, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -46,6 +43,7 @@ const createVocabularyDecks = async (req, res, next) => {
 
 const updateVocabularyDecks = async (req, res, next) => {
     try {
+        const userId = req.user.uid;
         const { id } = req.params;
         const { name, description, level, thumbnail_url } = req.body;
 
@@ -57,7 +55,7 @@ const updateVocabularyDecks = async (req, res, next) => {
             return errorResponse(res, 400, 'name la bat buoc');
         }
 
-        const result = await vocabularyDecksService.updateVocabularyDecks(id, name, description, level, thumbnail_url);
+        const result = await vocabularyDecksService.updateVocabularyDecks(userId, id, name, description, level, thumbnail_url);
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay');
         }
@@ -70,11 +68,12 @@ const updateVocabularyDecks = async (req, res, next) => {
 
 const deleteVocabularyDecks = async (req, res, next) => {
     try {
+        const userId = req.user.uid;
         const { id } = req.params;
         if (!id) {
             return errorResponse(res, 400, 'id la bat buoc');
         }
-        const result = await vocabularyDecksService.deleteVocabularyDecks(id);
+        const result = await vocabularyDecksService.deleteVocabularyDecks(userId, id);
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay');
         }

@@ -1,22 +1,14 @@
 import { apiRequest } from "@/lib/api-client"
 import { PagedResponse, DataResponse } from "@/types/api"
+import type { ChatMessage } from "@/types/social"
 
-export interface ChatMessageType {
-  id: number
-  user_id: string
-  username: string
-  avatar_url: string | null
-  level: number
-  badge_type: "verify" | "medal" | "crown" | "none"
-  content: string
-  created_at: string
-}
+export type ChatMessageType = ChatMessage
 
 // Lấy danh sách tin nhắn chat mới nhất từ PostgreSQL
 export async function getChatMessages(params?: {
   page?: number
   limit?: number
-}): Promise<PagedResponse<ChatMessageType>> {
+}): Promise<PagedResponse<ChatMessage>> {
   try {
     const queryParams = new URLSearchParams()
     if (params) {
@@ -25,7 +17,7 @@ export async function getChatMessages(params?: {
     }
     const queryString = queryParams.toString()
     const url = queryString ? `chat?${queryString}` : "chat"
-    return await apiRequest<PagedResponse<ChatMessageType>>(url)
+    return await apiRequest<PagedResponse<ChatMessage>>(url)
   } catch (error) {
     console.error("Không thể tải tin nhắn chat", error)
     throw error
@@ -33,9 +25,9 @@ export async function getChatMessages(params?: {
 }
 
 // Gửi tin nhắn mới lên PostgreSQL
-export async function sendChatMessage(content: string): Promise<DataResponse<ChatMessageType>> {
+export async function sendChatMessage(content: string): Promise<DataResponse<ChatMessage>> {
   try {
-    return await apiRequest<DataResponse<ChatMessageType>>("chat", {
+    return await apiRequest<DataResponse<ChatMessage>>("chat", {
       method: "POST",
       body: JSON.stringify({ content })
     })

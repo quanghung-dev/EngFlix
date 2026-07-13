@@ -209,6 +209,39 @@ router.post('/sync', verifyToken, authController.syncUser);
  *       500:
  *         description: Internal server error
  */
+router.get('/profile', verifyToken, authController.getOwnProfile);
+router.get('/profile/:uid', authController.getPublicProfile);
 router.put('/profile', verifyToken, authController.updateProfile);
+
+/**
+ * @swagger
+ * /api/v1/auth/avatar:
+ *   put:
+ *     summary: Update avatar URL
+ *     description: Updates the user's avatar URL (typically a Firebase Storage download URL).
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - avatarUrl
+ *             properties:
+ *               avatarUrl:
+ *                 type: string
+ *                 description: Public URL of the avatar image
+ *     responses:
+ *       200:
+ *         description: Avatar updated successfully
+ *       400:
+ *         description: avatarUrl is required
+ *       401:
+ *         description: Unauthorized
+ */
+router.put('/avatar', verifyToken, authController.updateAvatar);
 
 module.exports = router;

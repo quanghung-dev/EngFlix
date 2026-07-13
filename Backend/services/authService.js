@@ -78,7 +78,35 @@ const syncUser = async ({ uid, email, name, avatarUrl = null, phone = null }) =>
     return result.rows[0];
 };
 
-const updateUser = async (uid, { name, phone }) => {
+const getUserByUid = async (uid) => {
+    const result = await pool.query(
+        'SELECT uid, email, name, user_role, avatar_url, phone, created_at FROM users WHERE uid = $1',
+        [uid]
+    );
+    return result.rows[0] || null;
+};
+
+const getUserProfileCounts = async (uid) => {
+    const result = await pool.query(
+        `
+            SELECT
+                (SELECT COUNT(*)::int FROM posts WHERE user_id = $1) AS post_count,
+                (
+                    SELECT COUNT(DISTINCT CASE
+                        WHEN user_id = $1 THEN friend_id
+                        ELSE user_id
+                    END)::int
+                    FROM friendships
+                    WHERE status = 'accepted'
+                      AND (user_id = $1 OR friend_id = $1)
+                ) AS friend_count
+        `,
+        [uid]
+    );
+    return result.rows[0] || { post_count: 0, friend_count: 0 };
+};
+
+const updateUser = async (uid, { name, phone, avatarUrl }) => {
     const updates = [];
     const values = [];
     let paramIndex = 1;
@@ -92,6 +120,12 @@ const updateUser = async (uid, { name, phone }) => {
     if (phone !== undefined) {
         updates.push(`phone = $${paramIndex}`);
         values.push(phone);
+        paramIndex++;
+    }
+
+    if (avatarUrl !== undefined) {
+        updates.push(`avatar_url = $${paramIndex}`);
+        values.push(avatarUrl);
         paramIndex++;
     }
 
@@ -125,5 +159,7 @@ const updateUser = async (uid, { name, phone }) => {
 module.exports = {
     signInWithFirebase,
     syncUser,
+    getUserByUid,
+    getUserProfileCounts,
     updateUser
 };

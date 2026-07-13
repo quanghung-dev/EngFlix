@@ -1,6 +1,17 @@
-import { api, apiRequest } from "@/lib/api-client";
-import { LessonType, TranscriptType } from "@/types/lesson";
+import { apiRequest } from "@/lib/api-client";
+import {
+    LearningHistoryType,
+    LessonType,
+    PronunciationAssessmentResult,
+    PronunciationProgressType,
+    TranscriptProgressType,
+    TranscriptType,
+} from "@/types/lesson";
 import { PagedResponse, DataResponse } from "@/types/api";
+
+type UnwrappedPronunciationAssessment = PronunciationAssessmentResult & {
+    data?: undefined;
+};
 
 export async function getLessons(params?: {
     page?: number;
@@ -47,18 +58,18 @@ export async function getLessonTranscripts(id: number): Promise<DataResponse<Tra
     }
 }
 
-export async function getCompletedTranscripts(lessonId: number): Promise<DataResponse<{ transcript_id: number }[]>> {
+export async function getCompletedTranscripts(lessonId: number): Promise<DataResponse<TranscriptProgressType[]>> {
     try {
-        return await apiRequest<DataResponse<{ transcript_id: number }[]>>(`transcript-progress/${lessonId}`);
+        return await apiRequest<DataResponse<TranscriptProgressType[]>>(`transcript-progress/${lessonId}`);
     } catch (error) {
         console.error(`Không thể tải tiến trình transcript của bài học ID = ${lessonId}`, error);
         throw error;
     }
 }
 
-export async function completeTranscript(lessonId: number, transcriptId: number): Promise<any> {
+export async function completeTranscript(lessonId: number, transcriptId: number): Promise<DataResponse<TranscriptProgressType>> {
     try {
-        return await apiRequest<any>(`transcript-progress/${lessonId}`, {
+        return await apiRequest<DataResponse<TranscriptProgressType>>(`transcript-progress/${lessonId}`, {
             method: "POST",
             body: JSON.stringify({ transcript_id: transcriptId }),
         });
@@ -72,9 +83,9 @@ export async function recordLearningHistory(params: {
     lesson_id: number;
     completed_dictation?: boolean;
     completed_pronunciation?: boolean;
-}): Promise<any> {
+}): Promise<DataResponse<LearningHistoryType>> {
     try {
-        return await apiRequest<any>("learning-history", {
+        return await apiRequest<DataResponse<LearningHistoryType>>("learning-history", {
             method: "POST",
             body: JSON.stringify(params),
         });
@@ -89,7 +100,7 @@ export async function assessPronunciation(params: {
     referenceText: string;
     lessonId: number;
     transcriptId: number;
-}): Promise<any> {
+}): Promise<UnwrappedPronunciationAssessment> {
     try {
         const formData = new FormData();
         formData.append("audio", params.audio, "recording.wav");
@@ -97,12 +108,9 @@ export async function assessPronunciation(params: {
         formData.append("lessonId", params.lessonId.toString());
         formData.append("transcriptId", params.transcriptId.toString());
 
-        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-        const response = await api.post("pronunciation-attempts", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
-            }
+        const response = await apiRequest<DataResponse<PronunciationAssessmentResult>>("pronunciation-attempts", {
+            method: "POST",
+            body: formData,
         });
         return response.data;
     } catch (error) {
@@ -111,22 +119,22 @@ export async function assessPronunciation(params: {
     }
 }
 
-export async function getPronunciationProgress(lessonId: number): Promise<DataResponse<{ transcript_id: number; best_score: number }[]>> {
+export async function getPronunciationProgress(lessonId: number): Promise<DataResponse<PronunciationProgressType[]>> {
     try {
-        return await apiRequest<DataResponse<{ transcript_id: number; best_score: number }[]>>(`pronunciation/progress/${lessonId}`);
+        return await apiRequest<DataResponse<PronunciationProgressType[]>>(`pronunciation/progress/${lessonId}`);
     } catch (error) {
         console.error(`Không thể tải tiến trình phát âm của bài học ID = ${lessonId}`, error);
         throw error;
     }
 }
 
-export async function updatePronunciationProgress(transcriptId: number): Promise<any> {
+export async function updatePronunciationProgress(transcriptId: number): Promise<DataResponse<PronunciationProgressType>> {
     try {
-        return await apiRequest<any>(`pronunciation/progress/update/${transcriptId}`, {
+        return await apiRequest<DataResponse<PronunciationProgressType>>(`pronunciation/progress/update/${transcriptId}`, {
             method: "POST",
         });
     } catch (error) {
         console.error(`Không thể cập nhật tiến trình phát âm của transcript ID = ${transcriptId}`, error);
         throw error;
     }
-}
+}

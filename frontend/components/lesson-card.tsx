@@ -10,9 +10,11 @@ import type { LessonType } from "@/types/lesson"
 export function LessonCard({
   lesson,
   onSelect,
+  priority = false,
 }: {
   lesson: LessonType
   onSelect: (lesson: LessonType) => void
+  priority?: boolean
 }) {
   const description = sanitizeLessonDescription(lesson.description)
 
@@ -30,6 +32,7 @@ export function LessonCard({
             src={lesson.thumbnail_url || "/zootopia.jpg"}
             alt={`Ảnh thu nhỏ bài học ${lesson.title}`}
             fill
+            priority={priority}
             sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) 50vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105 group-focus-within:scale-105 motion-reduce:transform-none"
           />

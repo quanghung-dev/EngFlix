@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { errorHandler } = require('./middlewares/errorHandler.js');
 const app = express();
 const swaggerUi = require('swagger-ui-express');
@@ -27,6 +28,7 @@ const progressRoutes = require('./routes/progressRoutes.js');
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);

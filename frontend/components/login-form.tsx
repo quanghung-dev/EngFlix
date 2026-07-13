@@ -3,18 +3,54 @@
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth"
+import { FirebaseError } from "firebase/app"
+import axios from "axios"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { apiRequest } from "@/lib/api-client"
 import { auth, googleProvider } from "@/lib/firebase"
+import {
+  clearAuthenticatedSession,
+  syncAuthenticatedSession,
+} from "@/services/auth.service"
+
+interface ApiErrorBody {
+  error?: { message?: string }
+}
+
+function loginErrorMessage(error: unknown) {
+  if (error instanceof FirebaseError) {
+    const messages: Record<string, string> = {
+      "auth/user-not-found": "Email hoặc mật khẩu không chính xác.",
+      "auth/wrong-password": "Email hoặc mật khẩu không chính xác.",
+      "auth/invalid-credential": "Email hoặc mật khẩu không chính xác.",
+      "auth/invalid-email": "Định dạng email không hợp lệ.",
+      "auth/user-disabled": "Tài khoản của bạn đã bị khóa.",
+      "auth/too-many-requests": "Bạn đã thử quá nhiều lần. Vui lòng đợi một lúc rồi thử lại.",
+      "auth/network-request-failed": "Không thể kết nối Firebase. Hãy kiểm tra mạng và thử lại.",
+    }
+    return messages[error.code] ?? "Đăng nhập Firebase chưa thành công. Vui lòng thử lại."
+  }
+
+  if (axios.isAxiosError<ApiErrorBody>(error)) {
+    if (!error.response) {
+      return "Không thể kết nối máy chủ EngFlex. Vui lòng kiểm tra backend và thử lại."
+    }
+    return error.response.data?.error?.message
+      ? "Tài khoản đã được xác thực nhưng chưa thể đồng bộ hồ sơ. Vui lòng thử lại."
+      : "Chưa thể đồng bộ hồ sơ EngFlex. Vui lòng thử lại."
+  }
+
+  return error instanceof Error && error.message
+    ? error.message
+    : "Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu."
+}
 
 export function LoginForm({
   className,
@@ -33,40 +69,13 @@ export function LoginForm({
     setError(null)
 
     try {
-      // 1. Đăng nhập trực tiếp qua Firebase SDK ở Client
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      const token = await userCredential.user.getIdToken()
-
-      if (!token) {
-        throw new Error("Không nhận được token từ Firebase")
-      }
-
-      // 2. Lưu token vào localStorage
-      localStorage.setItem("token", token)
-
-      // 3. Gọi API đồng bộ (sync) thông tin người dùng với DB Postgres nội bộ
-      await apiRequest("auth/sync", {
-        method: "POST",
-      })
-
-      // 4. Điều hướng về trang học tập
-      router.push("/topics")
-    } catch (err: any) {
-      console.error("Đăng nhập Firebase thất bại:", err)
-      
-      // Việt hóa mã lỗi Firebase thông dụng
-      let errorMsg = "Đăng nhập thất bại. Vui lòng kiểm tra lại email/mật khẩu."
-      if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
-        errorMsg = "Email hoặc mật khẩu không chính xác."
-      } else if (err.code === "auth/invalid-email") {
-        errorMsg = "Định dạng email không hợp lệ."
-      } else if (err.code === "auth/user-disabled") {
-        errorMsg = "Tài khoản của bạn đã bị khóa."
-      } else if (err.message) {
-        errorMsg = err.message
-      }
-
-      setError(errorMsg)
+      await syncAuthenticatedSession(userCredential.user)
+      router.replace("/topics")
+    } catch (requestError) {
+      console.error("Đăng nhập thất bại:", requestError)
+      await clearAuthenticatedSession()
+      setError(loginErrorMessage(requestError))
     } finally {
       setLoading(false)
     }
@@ -78,28 +87,14 @@ export function LoginForm({
     setError(null)
 
     try {
-      // 1. Đăng nhập bằng Popup Google
       const userCredential = await signInWithPopup(auth, googleProvider)
-      const token = await userCredential.user.getIdToken()
-
-      if (!token) {
-        throw new Error("Không nhận được token Google")
-      }
-
-      // 2. Lưu token vào localStorage
-      localStorage.setItem("token", token)
-
-      // 3. Gọi API đồng bộ (sync) với DB Postgres nội bộ
-      await apiRequest("auth/sync", {
-        method: "POST",
-      })
-
-      // 4. Điều hướng về trang học tập
-      router.push("/topics")
-    } catch (err: any) {
-      console.error("Đăng nhập Google thất bại:", err)
-      if (err.code !== "auth/popup-closed-by-user") {
-        setError(err.message || "Đăng nhập bằng tài khoản Google thất bại.")
+      await syncAuthenticatedSession(userCredential.user)
+      router.replace("/topics")
+    } catch (requestError) {
+      console.error("Đăng nhập Google thất bại:", requestError)
+      await clearAuthenticatedSession()
+      if (!(requestError instanceof FirebaseError && requestError.code === "auth/popup-closed-by-user")) {
+        setError(loginErrorMessage(requestError))
       }
     } finally {
       setLoading(false)
@@ -118,7 +113,7 @@ export function LoginForm({
           </div>
 
           {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-center text-xs text-destructive">
+            <div role="alert" className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-center text-xs text-destructive">
               {error}
             </div>
           )}
@@ -158,7 +153,7 @@ export function LoginForm({
           </Field>
 
           <Field>
-            <Button type="submit" variant="product" disabled={loading} className="w-full">
+            <Button type="submit" variant="product" disabled={loading} aria-busy={loading} className="w-full">
               {loading ? "Đang xử lý..." : "Đăng nhập"}
             </Button>
           </Field>

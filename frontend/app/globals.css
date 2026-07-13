@@ -133,14 +133,6 @@
 
 /* EngFlex product shell --------------------------------------------------- */
 .product-shell {
-  /* A slightly brighter navy ramp for product pages and their sidebar. */
-  --engflex-canvas: #081426;
-  --engflex-canvas-deep: #061020;
-  --engflex-surface-glass: rgb(20 40 68 / 78%);
-  --engflex-surface-panel: rgb(15 33 55 / 80%);
-  --engflex-surface-inner: rgb(11 27 46 / 86%);
-  --engflex-hover-surface: rgb(255 255 255 / 7%);
-  --engflex-atmosphere: radial-gradient(circle at 82% -10%, rgb(110 231 242 / 11%), transparent 34rem);
   --background: var(--engflex-canvas);
   --foreground: var(--engflex-text-primary);
   --card: var(--engflex-surface-panel);
@@ -172,7 +164,7 @@
 }
 
 .product-shell ::selection {
-  background: rgb(110 231 242 / 28%);
+  background: var(--engflex-cyan-tint);
   color: var(--engflex-text-primary);
 }
 
@@ -592,5 +584,10 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .product-reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
