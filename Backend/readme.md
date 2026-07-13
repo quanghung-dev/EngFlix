@@ -1,350 +1,337 @@
-# EngFlex Backend - API Server Documentation
+# EngFlex Backend - API Server
 
-Tài liệu chi tiết mã nguồn, định tuyến, thiết kế cơ sở dữ liệu và triển khai cho phần **Backend** của dự án EngFlex.
+Module **Backend** của dự án EngFlex là một RESTful API server chịu trách nhiệm xử lý toàn bộ logic nghiệp vụ cốt lõi, lưu trữ và truy vấn cơ sở dữ liệu, xác thực người dùng, tích hợp các dịch vụ AI bên thứ ba (Firebase Auth, Azure Cognitive Services) và phục vụ dữ liệu cho hai môi trường Frontend (Next.js) và Mobile (Android Client).
 
 ---
 
-## 1. Kiến Trúc Backend
+## 1. Tech Stack
 
-Backend được triển khai theo mô hình kiến trúc phân lớp (Layered Architecture/3-Tier Architecture) với các lớp phân tách rõ rệt:
+Dưới đây là các công nghệ và thư viện chính được sử dụng thực tế trong mã nguồn backend:
+
+* **Ngôn ngữ**: Node.js (CommonJS, ES6)
+* **Framework**: Express.js (phiên bản `^5.2.1`)
+* **Cơ sở dữ liệu**: PostgreSQL
+* **Thư viện truy vấn**: `pg` (PostgreSQL client pool, phiên bản `^8.20.0`)
+* **Xác thực và phân quyền**: Firebase Admin SDK (phiên bản `^13.9.0`)
+* **Đánh giá phát âm AI**: Microsoft Cognitive Services Speech SDK (`^1.50.0`)
+* **Quản lý tải file**: Multer (`^2.2.0` - dùng cho việc nhận file ghi âm `.wav`)
+* **Tài liệu hóa API**: Swagger UI (`swagger-jsdoc` & `swagger-ui-express`)
+* **Chạy môi trường phát triển**: Nodemon (`^3.1.14`)
+* **Container hóa**: Docker & Docker Compose
+* **Platform triển khai**: Vercel (đã cấu hình qua `vercel.json`)
+* **Testing framework**: *Chưa được cấu hình trong project.*
+
+---
+
+## 2. Kiến Trúc Backend
+
+Backend được thiết kế theo kiến trúc phân lớp (Layered Architecture) kết hợp với mô hình MVC đơn giản (chỉ bao gồm Controller và View là JSON API).
 
 ```mermaid
 graph TD
-    Client[Client Request] -->|HTTP/REST| Routes[Routes Layer]
-    Routes -->|Middleware Verification| Middleware[Middleware Layer]
+    Client[Client Request: Web/Mobile] -->|HTTP REST API| Routes[Routes Layer]
+    Routes -->|Token Verification| Middleware[Middleware Layer]
     Middleware --> Controllers[Controllers Layer]
     Controllers --> Services[Services Layer]
     Services --> DB[(PostgreSQL Database)]
-    Services -->|Speech SDK| AzureSpeech[Azure Cognitive Services]
+    Services -->|Speech SDK| AzureSpeech[Azure Cognitive Services Speech]
+    Services -->|Admin SDK| FirebaseAdmin[Firebase Admin SDK]
 ```
 
-### Chi tiết các lớp:
-1. **Routes (`routes/`)**: Định nghĩa các endpoint của API, tích hợp Swagger để sinh tài liệu API tự động, và định tuyến luồng điều khiển qua các middleware xác thực.
+### Vai trò các lớp:
+1. **Routes (`routes/`)**: Khai báo các endpoint HTTP, ánh xạ url tới các hàm xử lý trong Controller. Được tích hợp JSDoc Swagger để tự động tạo giao diện API Docs.
 2. **Middlewares (`middlewares/`)**:
-   - `auth.js`: Giải mã và xác thực Firebase ID Token (`verifyToken`) thông qua Firebase Admin SDK.
-   - `role.js`: Kiểm tra quyền hạn của người dùng (`requireRole` - hiện tại chưa được áp dụng trực tiếp).
-   - `errorHandler.js`: Middleware tập trung bắt và xử lý lỗi trong toàn bộ hệ thống.
-3. **Controllers (`controllers/`)**: Đóng vai trò cầu nối, trích xuất dữ liệu đầu vào từ request (`req.body`, `req.params`, `req.query`), thực hiện phân trang, gọi các service xử lý logic nghiệp vụ và trả về định dạng response chuẩn hóa (`utils/response.js`).
-4. **Services (`services/`)**: Nơi thực hiện toàn bộ logic nghiệp vụ của ứng dụng và thực hiện trực tiếp các truy vấn cơ sở dữ liệu (PostgreSQL) thông qua đối tượng kết nối `pool` (Repository Pattern được tích hợp trực tiếp trong Service layer).
-5. **Database (`db/` & `migrations/`)**: Quản lý kết nối cơ sở dữ liệu và lưu trữ các file SQL migrations để kiến thiết schema.
+   - `auth.js`: Đánh chặn và giải mã Firebase ID Token (`Bearer <token>`) từ client để xác thực thông tin user.
+   - `errorHandler.js`: Bắt và định dạng mọi lỗi phát sinh trong hệ thống trước khi gửi trả về client.
+3. **Controllers (`controllers/`)**: Tiếp nhận tham số từ request (query, params, body), kiểm tra tính hợp lệ cơ bản của dữ liệu, gọi tầng Service xử lý nghiệp vụ, và trả về dữ liệu chuẩn thông qua các hàm tiện ích (`utils/response.js`).
+4. **Services (`services/`)**: Triển khai logic nghiệp vụ chi tiết, thực hiện các truy vấn cơ sở dữ liệu trực tiếp trên PostgreSQL connection pool.
+5. **Database (`db/` & `migrations/`)**: Quản lý kết nối cơ sở dữ liệu và lưu vết cấu trúc schema bằng các file SQL migrations.
 
 ---
 
-## 2. API Endpoints Mapping
+## 3. Cấu Trúc Thư Mục
 
+Cấu trúc thư mục chính của dự án Backend được thể hiện dưới đây:
 
-
-### 2.1. Public Routes (Không yêu cầu đăng nhập)
-
-| Method | Endpoint | Controller Handler | Description |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/api-docs` | `swagger-ui` | Giao diện tài liệu Swagger API Docs |
-| **GET** | `/api/v1/categories` | `categoryController.getAllCategories` | Lấy danh sách toàn bộ danh mục bài học |
-| **GET** | `/api/v1/lessons` | `lessonsController.getLessons` | Lấy danh sách bài học (hỗ trợ tìm kiếm, phân trang) |
-| **GET** | `/api/v1/lessons/:lessonId` | `lessonsController.getLessonById` | Lấy chi tiết một bài học |
-| **GET** | `/api/v1/lessons/:lessonId/transcripts` | `transcriptController.getTranscriptsByLessonId` | Lấy danh sách transcript của một bài học |
-| **POST** | `/api/v1/auth/login` | `authController.login` | Đăng nhập bằng email/password (qua Firebase API) |
-| **GET** | `/api/v1/vocabulary-categories` | `vocabularyController.getVocabulary` | Lấy danh sách danh mục từ vựng |
-| **GET** | `/api/v1/vocabulary-decks` | `vocabularyDecksController.getVocabularyDecks` | Lấy danh sách bộ từ vựng (decks) |
-| **GET** | `/api/v1/vocabulary-decks/:deckId/items` | `vocabularyItemsController.getVocabularyItems` | Lấy danh sách từ trong một bộ từ vựng |
-| **POST** | `/api/v1/vocabulary-decks/:deckId/items` | `vocabularyItemsController.addVocabularyItems` | Thêm từ mới vào bộ từ vựng |
-| **PUT** | `/api/v1/vocabulary-decks/:deckId/items/:itemId` | `vocabularyItemsController.updateVocabularyItems` | Cập nhật từ vựng trong bộ |
-| **DELETE** | `/api/v1/vocabulary-decks/:deckId/items/:itemId` | `vocabularyItemsController.deleteVocabularyItems` | Xóa từ vựng khỏi bộ |
-| **PUT** | `/api/v1/vocabulary-decks/:id` | `vocabularyDecksController.updateVocabularyDecks` | Cập nhật thông tin bộ từ vựng |
-| **DELETE** | `/api/v1/vocabulary-decks/:id` | `vocabularyDecksController.deleteVocabularyDecks` | Xóa bộ từ vựng |
-| **GET** | `/api/v1/learning-history/test/all` | `learningHistoryController.testGetgetLearningHistory` | Endpoint kiểm tra lịch sử học tập (Test) |
-
-### 2.2. Auth-required Routes (Yêu cầu Authorization header: `Bearer <token>`)
-
-| Method | Endpoint | Controller Handler | Description |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/api/v1/auth/sync` | `authController.syncUser` | Đồng bộ dữ liệu người dùng từ Firebase về PostgreSQL |
-| **GET** | `/api/v1/bookmarks` | `bookmarkController.getBookmarks` | Lấy danh sách các bài học đã đánh dấu (bookmarked) |
-| **POST** | `/api/v1/bookmarks/:lessonId` | `bookmarkController.createBookmark` | Đánh dấu một bài học |
-| **PATCH** | `/api/v1/bookmarks/:transcriptId` | `bookmarkController.updateBookmarks` | Cập nhật ghi chú bookmark của transcript |
-| **DELETE** | `/api/v1/bookmarks/:transcriptId` | `bookmarkController.removeBookmark` | Xóa đánh dấu bài học |
-| **GET** | `/api/v1/transcript-bookmarks/:lessonId` | `transcriptBookmarksController.getTranscriptBookmarksByUserId` | Lấy danh sách transcript đã đánh dấu theo bài học |
-| **POST** | `/api/v1/transcript-bookmarks` | `transcriptBookmarksController.createTranscriptBookmark` | Đánh dấu/Ghi chú một câu transcript |
-| **PUT** | `/api/v1/transcript-bookmarks/:id` | `transcriptBookmarksController.updateTranscriptBookmark` | Cập nhật ghi chú câu transcript |
-| **DELETE** | `/api/v1/transcript-bookmarks/:id` | `transcriptBookmarksController.deleteTranscriptBookmark` | Xóa đánh dấu câu transcript |
-| **GET** | `/api/v1/transcript-progress/:lessonId` | `transcriptProgressController.getTranscriptProgressById` | Lấy tiến độ đọc transcript của một bài học |
-| **POST** | `/api/v1/transcript-progress/:lessonId` | `transcriptProgressController.createTranscriptProgress` | Lưu tiến độ đọc transcript |
-| **GET** | `/api/v1/learning-history` | `learningHistoryController.getLearningHistory` | Lấy lịch sử học tập của người dùng |
-| **POST** | `/api/v1/learning-history` | `learningHistoryController.recordLearningHistory` | Ghi nhận lịch sử học tập cho một bài học |
-| **GET** | `/api/v1/learning-history/finished` | `learningHistoryController.getLearningHistoryFinished` | Lấy lịch sử các bài học đã hoàn thành |
-| **GET** | `/api/v1/learning-history/unfinished` | `learningHistoryController.getLearningHistoryUnfinished` | Lấy lịch sử các bài học chưa hoàn thành |
-| **GET** | `/api/v1/learning-history/summary` | `learningHistoryController.getLearningHistorySummary` | Lấy báo cáo tóm tắt tiến trình học |
-| **GET** | `/api/v1/learning-history/lessons/:lessonId/summary` | `learningHistoryController.getLearningHistorySummaryByLesson` | Tóm tắt lịch sử học tập theo từng bài |
-| **GET** | `/api/v1/learning-history/:lessonId` | `learningHistoryController.getLearningHistoryByLesson` | Lấy chi tiết lịch sử học một bài học |
-| **GET** | `/api/v1/dictation-status` | `dictationStatusController.getDictationStatus` | Lấy danh sách các câu đã làm bài tập Dictation |
-| **POST** | `/api/v1/dictation-status/:transcriptId` | `dictationStatusController.setDictationStatus` | Ghi nhận hoàn thành Dictation một câu |
-| **GET** | `/api/v1/shadowing-status` | `shadowingStatusController.getShadowingStatus` | Lấy trạng thái hoàn thành bài Shadowing |
-| **POST** | `/api/v1/shadowing-status/:transcriptId` | `shadowingStatusController.setShadowingStatus` | Ghi nhận hoàn thành Shadowing một câu |
-| **GET** | `/api/v1/vocabulary-decks/mine` | `vocabularyDecksController.getMyVocabularyDecks` | Lấy danh sách bộ từ vựng cá nhân tự tạo |
-| **POST** | `/api/v1/vocabulary-decks` | `vocabularyDecksController.createVocabularyDecks` | Tạo bộ từ vựng cá nhân mới |
-| **POST** | `/api/v1/pronunciation-attempts` | `pronunciationAttemptsController.assessPronunciationAttempt` | Tải tệp âm thanh WAV lên và đánh giá phát âm AI |
-| **DELETE** | `/api/v1/pronunciation-attempts/attempts/:attemptId` | `pronunciationAttemptsController.deletePronunciationAttempt` | Xóa một lượt thử phát âm |
-| **DELETE** | `/api/v1/pronunciation/attempts/:attemptId` | `pronunciationAttemptsController.deletePronunciationAttempt` | Xóa lượt thử phát âm (route phụ) |
-| **GET** | `/api/v1/pronunciation/progress/:lessonId` | `pronunciationProgressController.getPronunciationProgress` | Lấy tiến độ phát âm của một bài học |
-| **POST** | `/api/v1/pronunciation/progress/update/:transcriptId` | `pronunciationProgressController.updatePronunciationProgress` | Cập nhật điểm phát âm tốt nhất cho câu |
-
-### 2.3. Admin Routes (Bảo mật cho quản trị viên)
-
-
-| Method | Endpoint | Controller Handler | Description |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/api/v1/admin/dashboard` | `adminController.getDashboardData` | Lấy thống kê quản trị viên (dữ liệu mock cứng) |
-| **GET** | `/api/v1/admin/lessons` | `lessonsController.getLessons` | Lấy danh sách bài học dành cho admin |
-| **GET** | `/api/v1/admin/lessons/:id` | `lessonsController.getLessonById` | Lấy chi tiết bài học dành cho admin |
-| **POST** | `/api/v1/admin/lessons` | `lessonsController.createLesson` | Tạo bài học mới |
-| **PUT** | `/api/v1/admin/lessons/:id` | `lessonsController.updateLesson` | Cập nhật bài học |
-| **DELETE** | `/api/v1/admin/lessons/:id` | `lessonsController.deleteLesson` | Xóa bài học |
-| **PUT** | `/api/v1/admin/lessons/:lessonId/transcripts` | `transcriptController.replaceTranscripts` | Thay thế toàn bộ transcripts của bài học |
-| **POST** | `/api/v1/admin/lessons/:lessonId/transcripts/bulk` | `transcriptController.bulkCreateTranscripts` | Tạo hàng loạt transcripts mới |
-| **GET** | `/api/v1/admin/lessons/:lessonId/transcripts` | `transcriptController.getTranscriptsByLessonId` | Lấy transcripts của một bài học |
-| **GET** | `/api/v1/admin/categories` | `categoryController.getAllCategories` | Lấy danh sách danh mục (admin) |
-| **GET** | `/api/v1/admin/categories/:id` | `categoryController.getCategoryById` | Lấy chi tiết danh mục (admin) |
-| **POST** | `/api/v1/admin/categories` | `categoryController.createCategory` | Tạo danh mục mới |
-| **PUT** | `/api/v1/admin/categories/:id` | `categoryController.updateCategory` | Cập nhật danh mục |
-| **DELETE** | `/api/v1/admin/categories/:id` | `categoryController.deleteCategory` | Xóa danh mục |
-| **POST** | `/api/v1/admin/transcripts` | `transcriptController.createTranscript` | Tạo mới một câu transcript lẻ |
-| **GET** | `/api/v1/admin/transcripts/:id` | `transcriptController.getTranscriptsById` | Lấy thông tin chi tiết một câu transcript |
-| **PUT** | `/api/v1/admin/transcripts/:id` | `transcriptController.updateTranscript` | Cập nhật câu transcript |
-| **DELETE** | `/api/v1/admin/transcripts/:id` | `transcriptController.deleteTranscript` | Xóa câu transcript |
-| **GET** | `/api/v1/admin/vocabulary-categories/:id` | `vocabularyController.getVocabularyCategorybyCategory` | Lấy danh mục từ vựng (admin) |
-| **PUT** | `/api/v1/admin/vocabulary-categories/:id` | `vocabularyController.updateVocabularyCategory` | Cập nhật danh mục từ vựng |
-| **DELETE** | `/api/v1/admin/vocabulary-categories/:id` | `vocabularyController.deleteVocabularyCategory` | Xóa danh mục từ vựng |
-| **POST** | `/api/v1/admin/vocabulary-categories` | `vocabularyController.createVocabularyCategory` | Tạo danh mục từ vựng mới |
-
----
-
-## 3. Database Schema
-
-Hệ thống cơ sở dữ liệu PostgreSQL gồm 16 bảng chính:
-
-```mermaid
-erDiagram
-    users {
-        VARCHAR uid PK
-        VARCHAR email UNIQUE
-        VARCHAR name
-        VARCHAR user_role
-        VARCHAR avatar_url
-        TIMESTAMP created_at
-    }
-    categories {
-        SERIAL id PK
-        VARCHAR name UNIQUE
-    }
-    lessons {
-        SERIAL id PK
-        INTEGER category_id FK
-        VARCHAR title
-        TEXT description
-        VARCHAR video_url
-        VARCHAR thumbnail_url
-        VARCHAR level
-        DOUBLE duration
-        TIMESTAMP created_at
-        BOOLEAN is_complete
-    }
-    transcripts {
-        SERIAL id PK
-        INTEGER lesson_id FK
-        INTEGER sequence
-        TEXT content
-        VARCHAR phonetic
-        TEXT vietnamese
-        DOUBLE start_timestamp
-        DOUBLE end_timestamp
-    }
-    bookmarks {
-        VARCHAR user_id PK, FK
-        INTEGER lesson_id FK
-        INTEGER transcript_id PK, FK
-        TEXT note
-        TIMESTAMP created_at
-    }
-    transcript_bookmarks {
-        SERIAL id PK
-        VARCHAR user_id FK
-        INTEGER transcript_id FK
-        TEXT note
-        TIMESTAMP created_at
-    }
-    transcript_progress {
-        VARCHAR user_id PK, FK
-        INTEGER transcript_id PK, FK
-        INTEGER lesson_id FK
-        TIMESTAMP completed_at
-    }
-    learning_history {
-        SERIAL id PK
-        VARCHAR user_id FK
-        INTEGER lesson_id FK
-        BOOLEAN completed_dictation
-        BOOLEAN completed_pronunciation
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-    dictation_status {
-        VARCHAR user_id PK, FK
-        INTEGER transcript_id PK, FK
-        INTEGER lesson_id
-        TIMESTAMP completed_at
-    }
-    shadowing_status {
-        VARCHAR user_id PK, FK
-        INTEGER transcript_id PK, FK
-        INTEGER lesson_id
-        TIMESTAMP completed_at
-    }
-    vocabulary_categories {
-        SERIAL id PK
-        VARCHAR name UNIQUE
-        TEXT description
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-    vocabulary_decks {
-        SERIAL id PK
-        VARCHAR user_id FK
-        INTEGER category_id FK
-        VARCHAR name
-        TEXT description
-        VARCHAR thumbnail_url
-        VARCHAR level
-        BOOLEAN is_default
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-    vocabulary_items {
-        SERIAL id PK
-        INTEGER deck_id FK
-        INTEGER lesson_id FK
-        INTEGER transcript_id FK
-        VARCHAR phrase
-        VARCHAR normalized_phrase
-        VARCHAR meaning
-        TEXT example_sentence
-        TEXT note
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-    pronunciation_attempts {
-        SERIAL id PK
-        VARCHAR user_id FK
-        INTEGER lesson_id FK
-        INTEGER transcript_id FK
-        TEXT reference_text
-        NUMERIC overall_score
-        NUMERIC accuracy_score
-        NUMERIC fluency_score
-        NUMERIC completeness_score
-        NUMERIC prosody_score
-        TEXT feedback
-        TIMESTAMP created_at
-    }
-    pronunciation_progress {
-        VARCHAR user_id PK, FK
-        INTEGER transcript_id PK, FK
-        INTEGER lesson_id FK
-        INTEGER best_attempt_id FK
-        NUMERIC best_score
-        TEXT feedback
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-
-    users ||--o{ bookmarks : "manages"
-    users ||--o{ transcript_bookmarks : "flags"
-    users ||--o{ transcript_progress : "tracks"
-    users ||--o{ learning_history : "records"
-    users ||--o{ dictation_status : "completes"
-    users ||--o{ shadowing_status : "completes"
-    users ||--o{ vocabulary_decks : "creates"
-    users ||--o{ pronunciation_attempts : "performs"
-    users ||--o{ pronunciation_progress : "achieves"
-
-    categories ||--o{ lessons : "groups"
-    lessons ||--o{ transcripts : "has"
-    lessons ||--o{ bookmarks : "targets"
-    lessons ||--o{ transcript_progress : "contains"
-    lessons ||--o{ learning_history : "summarizes"
-    lessons ||--o{ vocabulary_items : "references"
-    lessons ||--o{ pronunciation_attempts : "belongs_to"
-    lessons ||--o{ pronunciation_progress : "belongs_to"
-
-    transcripts ||--o{ bookmarks : "points"
-    transcripts ||--o{ transcript_bookmarks : "points"
-    transcripts ||--o{ transcript_progress : "points"
-    transcripts ||--o{ dictation_status : "points"
-    transcripts ||--o{ shadowing_status : "points"
-    transcripts ||--o{ vocabulary_items : "points"
-    transcripts ||--o{ pronunciation_attempts : "attempts"
-    transcripts ||--o{ pronunciation_progress : "best_ref"
-
-    vocabulary_categories ||--o{ vocabulary_decks : "categorizes"
-    vocabulary_decks ||--o{ vocabulary_items : "contains"
-    pronunciation_attempts ||--o{ pronunciation_progress : "defines_best"
+```text
+Backend/
+├── config/             # Cấu hình Swagger API Docs
+│   └── swagger.js      # Khai báo metadata và cấu hình quét JSDoc
+├── constants/          # Khai báo các hằng số dùng chung trong hệ thống
+├── controllers/        # Bộ điều khiển nhận request và gửi response
+├── db/                 # Khởi tạo và quản lý PostgreSQL Connection Pool
+│   └── index.js        # Cấu hình pool (hỗ trợ SSL cho Neon DB)
+├── firebase/           # Khởi tạo Firebase Admin SDK
+│   └── index.js        # Đọc credentials từ file hoặc biến môi trường
+├── middlewares/        # Middlewares xử lý auth, phân quyền, và bắt lỗi
+├── migrations/         # Các file script SQL cấu trúc DB (001_xxx.sql đến 012_xxx.sql)
+├── routes/             # Định nghĩa toàn bộ hệ thống API endpoints
+├── scripts/            # Các kịch bản tự động hóa chạy migrations
+│   └── run-migrations.js # Đọc và thực thi tuần tự các file SQL trong migrations/
+├── uploads/            # Thư mục lưu trữ tạm thời các file audio thu âm của người dùng
+└── utils/              # Các hàm tiện ích bổ trợ (định dạng response, date, logs)
 ```
 
 ---
 
-## 4. Biến Môi Trường (Environment Variables)
+## 4. Yêu Cầu Hệ Thống
 
-Hệ thống yêu cầu các biến môi trường cấu hình tại file `.env`:
+Để cài đặt và vận hành backend, hệ thống cần đáp ứng các yêu cầu sau:
 
-| Biến môi trường | Bắt buộc | Mô tả |
-| :--- | :---: | :--- |
-| `PORT` | Không | Cổng chạy của Express Server (mặc định: `3000`, trong dev dùng `8000`) |
-| `DB_USER` | **Có** | Username đăng nhập PostgreSQL |
-| `DB_PASSWORD` | **Có** | Mật khẩu cơ sở dữ liệu PostgreSQL |
-| `DB_HOST` | **Có** | Địa chỉ máy chủ database (Ví dụ: `localhost` hoặc tên service docker `db`) |
-| `DB_PORT` | **Có** | Cổng kết nối PostgreSQL (Ví dụ: `5432`, hoặc `5430` khi kết nối ngoài Docker) |
-| `DB_DATABASE` | **Có** | Tên database khởi tạo (Ví dụ: `EngFlix`) |
-| `FIREBASE_WEB_API_KEY` | **Có** | API Key dùng để kết nối với API Firebase Auth REST (để xác thực email/password) |
-| `AZURE_SPEECH_KEY` | **Có** | Subscription Key của dịch vụ Azure Cognitive Services Speech |
-| `AZURE_SPEECH_REGION` | **Có** | Vùng địa lý đăng ký Azure Speech (Ví dụ: `southeastasia`) |
-| `AZURE_VISION_KEY` | Không | Không sử dụng trong mã nguồn hiện tại |
-| `AZURE_VISION_ENDPOINT` | Không | Không sử dụng trong mã nguồn hiện tại |
-| `DEEPSEEK_API_KEY` | Không | Chỉ dùng cho tệp thử nghiệm độc lập `test.js` |
+* **Node.js**: Phiên bản `>= 18.x` (được khuyến nghị)
+* **npm**: Trình quản lý thư viện đi kèm Node.js
+* **PostgreSQL**: Phiên bản `>= 15`
+* **Docker & Docker Compose**: (Tùy chọn) Nếu muốn chạy nhanh mà không cần cài đặt database thủ công.
 
 ---
 
-## 5. Hướng Dẫn Triển Khai (Deployment)
+## 5. Cài Đặt
 
-### 5.1. Triển khai bằng Docker & Docker Compose (Môi trường phát triển & staging)
+### Cách 1: Triển khai thủ công trên máy local
 
-Dự án đã tích hợp sẵn Docker Compose bao gồm backend server chạy Node.js và một cơ sở dữ liệu PostgreSQL.
-
-1. **Khởi động các container:**
+1. **Di chuyển vào thư mục backend**:
    ```bash
-   docker compose up --build -d
-   ```
-   *Lệnh này sẽ xây dựng lại image và khởi chạy backend trên cổng `3000` và database PostgreSQL nội bộ trên cổng `5432` (được map ra máy chủ ngoài tại cổng `5430`).*
-
-2. **Khởi tạo dữ liệu cơ sở dữ liệu (Migrations):**
-   Sau khi container chạy ổn định, thực thi lệnh sau để tạo cấu trúc bảng:
-   ```bash
-   docker compose exec backend npm run migrate
+   cd Backend
    ```
 
-### 5.2. Triển khai thủ công không dùng Docker
-
-1. Cài đặt các gói phụ thuộc:
+2. **Cài đặt các gói thư viện**:
    ```bash
    npm install
    ```
-2. Cấu hình file `.env` khớp với cơ sở dữ liệu PostgreSQL đã được cài đặt trên máy.
-3. Thực thi migrations:
+
+3. **Cấu hình file môi trường**:
+   Sao chép hoặc tạo mới file `.env` tại thư mục gốc của backend (Xem chi tiết cấu hình tại mục [Environment Variables](#6-environment-variables)):
    ```bash
-   node scripts/run-migrations.js
+   cp .env.example .env
    ```
-4. Khởi chạy server ở chế độ phát triển:
+
+4. **Khởi tạo dữ liệu cơ sở dữ liệu (Migrations)**:
+   Đảm bảo PostgreSQL đang chạy và khớp với cấu hình trong `.env`, sau đó thực thi lệnh:
+   ```bash
+   npm run migrate
+   ```
+
+5. **Khởi động ứng dụng**:
    ```bash
    npm run dev
    ```
 
 ---
 
+### Cách 2: Triển khai thông qua Docker Compose
+
+Hệ thống đã tích hợp sẵn tệp cấu hình Docker Compose giúp xây dựng môi trường phát triển nhanh chóng:
+
+1. **Khởi động các dịch vụ (PostgreSQL & Backend Server)**:
+   ```bash
+   docker compose up --build -d
+   ```
+   *Lệnh này sẽ tải image PostgreSQL 15, build ứng dụng Node.js từ Dockerfile, khởi tạo backend tại cổng `3000` và database tại cổng `5430` (được map ra ngoài máy chủ).*
+
+2. **Chạy các file SQL Migrations**:
+   Sau khi các container ở trạng thái hoạt động tốt (`healthy`), hãy thực thi:
+   ```bash
+   docker compose exec backend npm run migrate
+   ```
+
+---
+
+## 6. Environment Variables
+
+Dưới đây là mô tả chi tiết các biến cấu hình cần thiết trong file `.env`:
+
+| Biến môi trường | Bắt buộc | Mô tả | Ví dụ mẫu |
+| :--- | :---: | :--- | :--- |
+| `PORT` | Không | Cổng dịch vụ chạy Express (mặc định là `3000`, trong dev thường cấu hình `8000`) | `8000` |
+| `DATABASE_URL` | Có | Chuỗi kết nối PostgreSQL đầy đủ (Ưu tiên nếu sử dụng Neon DB) | `postgresql://user:pass@ep-flat-wave.neon.tech/neondb?sslmode=require` |
+| `DB_USER` | Có | Username đăng nhập cơ sở dữ liệu PostgreSQL (nếu không có DATABASE_URL) | `postgres` |
+| `DB_PASSWORD` | Có | Mật khẩu tài khoản PostgreSQL | `my_secure_password` |
+| `DB_HOST` | Có | Địa chỉ máy chủ PostgreSQL | `localhost` hoặc `db` (khi dùng Docker) |
+| `DB_PORT` | Có | Cổng kết nối PostgreSQL | `5432` |
+| `DB_DATABASE` | Có | Tên cơ sở dữ liệu cần kết nối | `engflix` |
+| `FIREBASE_WEB_API_KEY` | Có | API Key dùng để kết nối với API Firebase Auth REST (phục vụ login bằng email/password) | `AIzaSyCrM7LWwxt3EsVC02INI0McZmoILud5pIo` |
+| `AZURE_SPEECH_KEY` | Có | Key truy cập dịch vụ Azure Cognitive Services Speech | `your_azure_speech_subscription_key` |
+| `AZURE_SPEECH_REGION`| Có | Vùng địa lý đăng ký Azure Speech | `southeastasia` |
+| `AZURE_VISION_KEY` | Không | Key của dịch vụ Azure Vision (Chưa được cấu hình sử dụng trực tiếp trong API) | `your_azure_vision_key` |
+| `AZURE_VISION_ENDPOINT`| Không | Endpoint dịch vụ Azure Vision (Chưa được cấu hình sử dụng trực tiếp trong API) | `https://your-vision-endpoint.cognitiveservices.azure.com/` |
+| `DEEPSEEK_API_KEY` | Không | API Key của dịch vụ DeepSeek (Chỉ sử dụng thử nghiệm độc lập ở file `test.js`) | `sk-your-deepseek-api-key` |
+| `FIREBASE_SERVICE_ACCOUNT` | Không | Chuỗi JSON chứa toàn bộ key service account của Firebase (Nếu có biến này, hệ thống sẽ ưu tiên dùng để cấu hình Firebase Admin) | `{"type": "service_account", ...}` |
+
+> [!WARNING]
+> Không được commit file `.env` chứa thông tin bảo mật hoặc thông tin tài khoản thật lên hệ thống Git. Hãy tạo file `.env.example` để chia sẻ cấu hình mẫu cho dự án.
+
+---
+
+## 7. Cách Chạy Project
+
+* **Môi trường Development (Local)**:
+  ```bash
+  npm run dev
+  ```
+  *Ứng dụng sẽ tự động tải lại (hot reload) mỗi khi có sự thay đổi mã nguồn nhờ nodemon.*
+
+* **Khởi chạy Migrations DB**:
+  ```bash
+  npm run migrate
+  ```
+  *Đọc tuần tự toàn bộ file SQL trong thư mục `migrations` để cập nhật cấu trúc database.*
+
+---
+
+## 8. Chức Năng Chính
+
+Backend đã cung cấp các tính năng nghiệp vụ cụ thể sau:
+1. **Xác thực (Authentication)**: Đăng nhập bằng email/password (qua API Firebase Auth REST) và đồng bộ thông tin tài khoản của người dùng từ Firebase về cơ sở dữ liệu cục bộ PostgreSQL (`/api/v1/auth/sync`).
+2. **Quản lý Bài học & Danh mục**: Cung cấp danh sách các danh mục cấp độ bài học, tìm kiếm, phân trang và truy xuất chi tiết bài học kèm theo danh sách các câu transcripts (`/api/v1/lessons`, `/api/v1/categories`).
+3. **Tiến độ học tập**: Theo dõi việc đọc transcripts của người dùng, ghi nhận lịch sử hoàn thành hoặc học dở của bài học, lưu trạng thái nghe chép chính tả (Dictation) và nhại giọng (Shadowing) cho từng câu.
+4. **Từ vựng cá nhân hóa**: Cho phép người dùng học các bộ từ vựng mặc định của hệ thống, tạo các bộ từ vựng cá nhân, thêm/sửa/xóa từ vựng trong bộ của mình (`/api/v1/vocabulary-decks`).
+5. **Đánh giá phát âm AI**: Tiếp nhận tệp âm thanh `.wav` thu âm giọng đọc của người dùng gửi lên từ Client, sử dụng Azure Cognitive Services Speech SDK để đánh giá phát âm chi tiết (tính điểm Overall, Accuracy, Fluency, Completeness, Prosody) và đưa ra phản hồi sửa lỗi.
+6. **Mạng xã hội & Cộng đồng**: Đăng bài viết cộng đồng (tạo feed, xem trang cá nhân, xóa bài), tương tác thích (like) bài viết, và viết bình luận (comments).
+7. **Hệ thống bạn bè**: Gửi yêu cầu kết bạn, chấp nhận kết bạn, tìm kiếm người dùng mới, và lấy danh sách bạn bè hiện tại.
+8. **Chat trực tuyến**: Gửi và nhận tin nhắn trong phòng chat cộng đồng của hệ thống.
+9. **Dashboard quản trị**: Các API CRUD quản lý Bài học, Categories, Transcripts, và Từ vựng dành riêng cho vai trò Admin (`/api/v1/admin/*`).
+
+---
+
+## 9. API Documentation
+
+Tài liệu API được xây dựng tự động bằng Swagger UI. Khi server đang chạy, nhà phát triển có thể truy cập trực tiếp bằng trình duyệt tại địa chỉ:
+* **Swagger UI URL**: `http://localhost:8000/api-docs`
+
+### Danh sách nhóm API chính (RESTful):
+
+| Method | Endpoint | Xác thực (Bearer Token) | Mô tả |
+| :--- | :--- | :---: | :--- |
+| `POST` | `/api/v1/auth/login` | Không | Đăng nhập bằng email/password (trả về Firebase ID Token) |
+| `POST` | `/api/v1/auth/sync` | **Có** | Đồng bộ dữ liệu tài khoản từ Firebase vào PostgreSQL |
+| `GET` | `/api/v1/auth/profile` | **Có** | Lấy thông tin cá nhân của người dùng hiện tại |
+| `PUT` | `/api/v1/auth/profile` | **Có** | Cập nhật tên và số điện thoại cá nhân |
+| `PUT` | `/api/v1/auth/avatar` | **Có** | Cập nhật đường dẫn ảnh đại diện mới |
+| `GET` | `/api/v1/categories` | Không | Lấy danh sách các danh mục bài học |
+| `GET` | `/api/v1/lessons` | Không | Lấy danh sách bài học (hỗ trợ phân trang, tìm kiếm) |
+| `GET` | `/api/v1/lessons/:lessonId/transcripts`| Không | Lấy danh sách câu transcript của một bài học |
+| `GET` | `/api/v1/bookmarks` | **Có** | Lấy danh sách bài học/câu đã lưu đánh dấu |
+| `POST` | `/api/v1/bookmarks/:lessonId` | **Có** | Lưu đánh dấu bài học |
+| `POST` | `/api/v1/transcript-bookmarks` | **Có** | Thêm đánh dấu và ghi chú cho câu transcript |
+| `GET` | `/api/v1/learning-history` | **Có** | Lấy lịch sử học tập cá nhân |
+| `POST` | `/api/v1/learning-history` | **Có** | Lưu lịch sử học bài học (hoàn thành Dictation/Pronunciation) |
+| `POST` | `/api/v1/pronunciation-attempts`| **Có** | Tải lên file WAV và nhận đánh giá phát âm AI (Azure Speech SDK) |
+| `GET` | `/api/v1/pronunciation/progress/:lessonId`| **Có** | Lấy điểm phát âm tốt nhất theo bài học |
+| `GET` | `/api/v1/posts/feed` | **Có** | Lấy bảng tin cộng đồng |
+| `POST` | `/api/v1/posts` | **Có** | Tạo bài viết mới |
+| `POST` | `/api/v1/posts/:id/comments` | **Có** | Thêm bình luận vào bài viết |
+| `GET` | `/api/v1/friendships` | **Có** | Danh sách bạn bè hiện tại |
+| `POST` | `/api/v1/friendships/requests` | **Có** | Gửi yêu cầu kết bạn mới |
+| `GET` | `/api/v1/chat` | **Có** | Lấy danh sách tin nhắn phòng chat cộng đồng |
+| `POST` | `/api/v1/chat` | **Có** | Gửi tin nhắn chat mới |
+
+---
+
+## 10. Database Schema
+
+Cơ sở dữ liệu của dự án sử dụng hệ quản trị cơ sở dữ liệu **PostgreSQL** bao gồm các bảng chính sau:
+
+1. **`users`**: Lưu trữ thông tin tài khoản người dùng (`uid` khóa chính lấy từ Firebase UID, email, tên, vai trò `user_role`, `avatar_url`, `phone`, `created_at`).
+2. **`categories`**: Danh mục bài học (ví dụ: Beginner, Business, Daily life).
+3. **`lessons`**: Lưu chi tiết thông tin bài học (title, video_url nhúng từ Youtube, level, duration).
+4. **`transcripts`**: Lưu nội dung từng câu của bài học (lesson_id, sequence, content, phonetic, dịch nghĩa vietnamese, mốc thời gian start_timestamp và end_timestamp phục vụ cắt video phát lặp).
+5. **`bookmarks`** & **`transcript_bookmarks`**: Lưu trữ ghi chú các bài học hoặc các câu transcript mà người dùng đánh dấu học lại.
+6. **`transcript_progress`**: Theo dõi tiến độ học đọc transcript của người dùng.
+7. **`learning_history`**: Lưu lịch sử hoàn thành tổng quan bài học.
+8. **`dictation_status`** & **`shadowing_status`**: Ghi nhận xem người dùng đã hoàn thành các câu ở các chế độ Dictation hay Shadowing tương ứng chưa.
+9. **`vocabulary_categories`**, **`vocabulary_decks`**, & **`vocabulary_items`**: Hệ thống danh mục, bộ từ vựng cá nhân tự tạo và các từ vựng chi tiết được lưu trữ.
+10. **`pronunciation_attempts`** & **`pronunciation_progress`**: Lưu trữ lịch sử tất cả các lần ghi âm thử thách phát âm của người dùng cùng điểm số phân tích và cập nhật điểm số tốt nhất cho mỗi câu.
+11. **`friendships`**: Quản lý mối quan hệ bạn bè giữa các người dùng (`sender_id`, `receiver_id`, `status` - pending/accepted).
+12. **`posts`**, **`likes`**, & **`comments`**: Các bảng cho hệ thống mạng xã hội nội bộ.
+13. **`messages`**: Quản lý các tin nhắn chat cộng đồng giữa các người dùng.
+
+*Lưu ý: Mối quan hệ được duy trì thông qua các khóa ngoại (Foreign Keys) chặt chẽ giữa các bảng như được biểu diễn trong sơ đồ ERD ở tài liệu tổng.*
+
+---
+
+## 11. Kết Nối Giữa Các Module
+
+* **API Endpoints**: Backend cung cấp cổng kết nối RESTful API tại `http://localhost:8000/api/v1/` mặc định trong môi trường phát triển local.
+* **Authentication**: Các Client (Web & Mobile) phải đăng nhập trực tiếp với Firebase Auth để lấy ID Token dạng JWT. Token này phải được đính kèm vào header của mọi request API yêu cầu đăng nhập:
+  ```http
+  Authorization: Bearer <FIREBASE_ID_TOKEN>
+  ```
+* **CORS**: Đã được cấu hình thông qua gói `cors` nhằm cho phép tất cả các nguồn gốc kết nối (Web Client) gửi yêu cầu và nhận dữ liệu trong quá trình phát triển.
+
+---
+
+## 12. Testing
+
+> [!NOTE]
+> Dự án Backend **hiện chưa có bộ kiểm thử tự động (Unit Test / Integration Test)** tích hợp trong mã nguồn chính.
+> 
+> Chỉ có một tệp kịch bản kiểm tra kết nối API DeepSeek thủ công tại: [test.js](file:///d:/EngFlex/Backend/test.js).
+> Để chạy file này:
+> ```bash
+> node test.js
+> ```
+
+---
+
+## 13. Code Quality
+
+* **Công cụ**: *Chưa được cấu hình linting (ESLint, Prettier) hay các công cụ phân tích tĩnh trong phần backend.*
+* **Quy ước viết code**: Sử dụng chuẩn Node.js CommonJS module (`require`, `module.exports`) và xử lý lỗi tập trung bằng Middleware.
+
+---
+
+## 14. Build và Deployment
+
+### Tạo Production Build trên Vercel
+Backend được thiết kế tương thích để chạy dưới dạng các Serverless Functions trên nền tảng **Vercel** thông qua file [vercel.json](file:///d:/EngFlex/Backend/vercel.json).
+* Khi đẩy mã nguồn lên GitHub và kết nối với dự án Vercel, hệ thống CI/CD của Vercel sẽ tự động build ứng dụng thành Serverless API.
+* Hãy cấu hình toàn bộ các biến môi trường tại trang cấu hình Settings của Vercel giống như trong file `.env`.
+
+### Docker Production Image
+Nếu triển khai lên các máy chủ ảo hoặc các dịch vụ đám mây (AWS, Google Cloud, DigitalOcean):
+1. Đảm bảo cấu hình môi trường sản xuất (sử dụng cổng `3000` hoặc cổng được cấp phát).
+2. Chạy lệnh build image từ Dockerfile:
+   ```bash
+   docker build -t engflix-backend:latest .
+   ```
+
+---
+
+## 15. Troubleshooting
+
+1. **Lỗi `Error loading Firebase credentials`**:
+   - *Nguyên nhân*: Chưa cấu hình file `serviceAccountKey.json` ở thư mục gốc của Backend hoặc thiếu biến môi trường `FIREBASE_PRIVATE_KEY`.
+   - *Khắc phục*: Tải file JSON cấu hình Service Account từ bảng điều khiển Firebase Console -> Project Settings -> Service accounts, lưu dưới tên `serviceAccountKey.json` trong thư mục `Backend/`.
+2. **Lỗi `connect ECONNREFUSED 127.0.0.1:5432`**:
+   - *Nguyên nhân*: Máy chủ PostgreSQL chưa khởi động hoặc sai thông tin kết nối cổng / user trong file `.env`.
+   - *Khắc phục*: Kiểm tra dịch vụ Postgres trên máy local hoặc thay đổi port thành `5430` nếu đang kết nối từ máy local vào PostgreSQL chạy trong container Docker.
+3. **Lỗi Azure Speech trả về trạng thái lỗi hoặc điểm số rỗng**:
+   - *Nguyên nhân*: Key Azure Speech hoặc vùng (region) cấu hình bị sai hoặc hết hạn hạn mức.
+   - *Khắc phục*: Kiểm tra cấu hình `AZURE_SPEECH_KEY` và `AZURE_SPEECH_REGION` trong file `.env` xem có khớp với trang quản trị Microsoft Azure Portal hay không.
+4. **Lỗi CORS khi gọi API từ Frontend**:
+   - *Nguyên nhân*: Đôi khi cấu hình allowed origins không bao gồm port chạy của Web Client.
+   - *Khắc phục*: Xem lại file `index.js` tại dòng khai báo `app.use(cors())`. Trong phát triển, cấu hình này đang cho phép nhận request từ tất cả các origin.
+
+---
+
+## 16. Security Notes
+
+* **Bảo mật Credentials**: Tuyệt đối không commit file `.env`, file `serviceAccountKey.json` hoặc các tệp cấu hình chứa key thật lên GitHub. Các file này đã được khai báo loại trừ trong `.gitignore`.
+* **Database Access**: Khi chạy production, luôn tắt chế độ `rejectUnauthorized: false` hoặc sử dụng SSL đầy đủ để đảm bảo dữ liệu truyền nhận giữa backend và database không bị nghe lén.
+* **Firebase Token**: Firebase ID Token có thời gian sống ngắn (1 giờ). Client cần tự động làm mới token và gửi token mới lên backend để tránh nhận lỗi `401 Unauthorized`.
+
+---
+
+## 17. Contributing
+
+Quy trình đóng góp phát triển mã nguồn backend:
+1. Tạo một nhánh mới từ nhánh chính (`git checkout -b feature/amazing-feature`).
+2. Thực hiện cập nhật mã nguồn (tuân thủ cấu trúc phân lớp).
+3. Đảm bảo viết đầy đủ tài liệu API bằng comment JSDoc `@swagger` trên các route mới.
+4. Tạo Pull Request (PR) mô tả rõ ràng các thay đổi và tự kiểm tra tính tương thích với database schema.
+
+---
+
+## 18. License
+
+> Project hiện chưa khai báo license.
