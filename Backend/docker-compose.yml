@@ -28,12 +28,24 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_DATABASE=engflix
+      - REDIS_URL=redis://redis:6379
     volumes:
       - .:/app
       - /app/node_modules
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:7-alpine
+    container_name: engflix_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:

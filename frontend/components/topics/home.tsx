@@ -97,10 +97,10 @@ function CategoryRow({
   )
 }
 
-async function loadCategoryRows(categories: CategoryType[]) {
+async function loadCategoryRows(categories: CategoryType[], options?: RequestInit) {
   const results = await Promise.allSettled(
     categories.map((category) =>
-      getLessons({ category_id: category.id, limit: 4 })
+      getLessons({ category_id: category.id, limit: 4 }, options)
     )
   )
 
@@ -138,9 +138,14 @@ export function CategoryLessons() {
 
     async function loadCatalog() {
       try {
-        const categoryResponse = await getAllCategories()
+        const isReload = typeof window !== "undefined" &&
+          (window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming)?.type === "reload";
+        
+        const fetchOptions = isReload ? { headers: { "Cache-Control": "no-cache" } } : undefined;
+
+        const categoryResponse = await getAllCategories(undefined, fetchOptions)
         const categories = categoryResponse.data || []
-        const nextRows = await loadCategoryRows(categories)
+        const nextRows = await loadCategoryRows(categories, fetchOptions)
         if (!mountedRef.current) return
         setRows(nextRows)
         setError(null)
@@ -164,8 +169,9 @@ export function CategoryLessons() {
     setLoading(true)
     setError(null)
     try {
-      const categoryResponse = await getAllCategories()
-      const nextRows = await loadCategoryRows(categoryResponse.data || [])
+      const fetchOptions = { headers: { "Cache-Control": "no-cache" } };
+      const categoryResponse = await getAllCategories(undefined, fetchOptions)
+      const nextRows = await loadCategoryRows(categoryResponse.data || [], fetchOptions)
       if (!mountedRef.current) return
       setRows(nextRows)
     } catch {
@@ -188,7 +194,7 @@ export function CategoryLessons() {
     )
 
     try {
-      const response = await getLessons({ category_id: category.id, limit: 4 })
+      const response = await getLessons({ category_id: category.id, limit: 4 }, { headers: { "Cache-Control": "no-cache" } })
       if (!mountedRef.current) return
       setRows((current) =>
         current.map((row) =>

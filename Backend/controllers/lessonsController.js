@@ -2,6 +2,7 @@ const { dataResponse, errorResponse } = require('../utils/response');
 const lessonService = require('../services/lessonsService.js');
 const categoryService = require('../services/categoryService.js');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
+const { redisClient, getIsRedisConnected } = require('../db/redis');
 
 const parseOptionalPositiveInteger = (value, fieldName) => {
     if (value === undefined || value === null || value === '') {
@@ -25,7 +26,36 @@ const getLessons = async (req, res, next) => {
         }
 
         const { limit, offset, page } = getPagination(req.query);
+        const cacheKey = `lessons:category_id:${category_id || 'all'}:level:${level || 'all'}:search:${search || 'all'}:limit:${limit}:offset:${offset}`;
+
+        const isBypass = req.headers['cache-control'] === 'no-cache' || 
+                         req.headers['pragma'] === 'no-cache' || 
+                         req.query.refresh === 'true';
+
+        if (getIsRedisConnected() && !isBypass) {
+            try {
+                const cachedData = await redisClient.get(cacheKey);
+                if (cachedData) {
+                    const { lessons, totalCount } = JSON.parse(cachedData);
+                    return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
+                }
+            } catch (err) {
+                console.error('Redis get error for lessons:', err.message);
+            }
+        }
+
         const { lessons, totalCount } = await lessonService.getLessons(categoryIdResult.value, level, search, limit, offset);
+
+        if (getIsRedisConnected()) {
+            try {
+                await redisClient.set(cacheKey, JSON.stringify({ lessons, totalCount }), {
+                    EX: 3600
+                });
+            } catch (err) {
+                console.error('Redis set error for lessons:', err.message);
+            }
+        }
+
         return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);

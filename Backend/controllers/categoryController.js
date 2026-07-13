@@ -1,16 +1,49 @@
-const { AppError } = require('../utils/AppError');
 const categoryService = require('../services/categoryService.js');
 const { successResponse, dataResponse, errorResponse } = require('../utils/response');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
+const { redisClient, getIsRedisConnected } = require('../db/redis');
 const e = require('cors');
 
 const getAllCategories = async (req, res, next) => {
-    const { limit, offset, page } = getPagination(req.query);
-    const { categories, totalCount } = await categoryService.getAllCategories(limit, offset);
-    if (categories.length === 0) {
-        return errorResponse(res, 404, 'No categories found');
-    };
-    return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
+    try {
+        const { limit, offset, page } = getPagination(req.query);
+        const cacheKey = `categories:limit:${limit}:offset:${offset}`;
+
+        const isBypass = req.headers['cache-control'] === 'no-cache' || 
+                         req.headers['pragma'] === 'no-cache' || 
+                         req.query.refresh === 'true';
+
+        if (getIsRedisConnected() && !isBypass) {
+            try {
+                const cachedData = await redisClient.get(cacheKey);
+                if (cachedData) {
+                    const { categories, totalCount } = JSON.parse(cachedData);
+                    return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
+                }
+            } catch (err) {
+                console.error('Redis get error for categories:', err.message);
+            }
+        }
+
+        const { categories, totalCount } = await categoryService.getAllCategories(limit, offset);
+        if (categories.length === 0) {
+            return errorResponse(res, 404, 'No categories found');
+        }
+
+        if (getIsRedisConnected()) {
+            try {
+                await redisClient.set(cacheKey, JSON.stringify({ categories, totalCount }), {
+                    EX: 3600
+                });
+            } catch (err) {
+                console.error('Redis set error for categories:', err.message);
+            }
+        }
+
+        return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
+    } catch (error) {
+        next(error);
+    }
 };
 
 const createCategory = async (req, res, next) => {

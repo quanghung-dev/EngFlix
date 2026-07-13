@@ -4,10 +4,13 @@ import { apiRequest } from "@/lib/api-client";
 import { CategoryType } from "@/types/category";
 import { PagedResponse } from "@/types/api";
 
-export async function getAllCategories(params?: {
-  page?: number;
-  limit?: number;
-}): Promise<PagedResponse<CategoryType>> {
+export async function getAllCategories(
+  params?: {
+    page?: number;
+    limit?: number;
+  },
+  options?: RequestInit
+): Promise<PagedResponse<CategoryType>> {
   try {
     const queryParams = new URLSearchParams();
     if (params?.page !== undefined) {
@@ -20,7 +23,7 @@ export async function getAllCategories(params?: {
     const queryString = queryParams.toString();
     const url = queryString ? `/categories?${queryString}` : "/categories";
 
-    return apiRequest<PagedResponse<CategoryType>>(url)
+    return apiRequest<PagedResponse<CategoryType>>(url, options)
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 404) {
       return {

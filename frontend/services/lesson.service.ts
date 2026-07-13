@@ -13,13 +13,16 @@ type UnwrappedPronunciationAssessment = PronunciationAssessmentResult & {
     data?: undefined;
 };
 
-export async function getLessons(params?: {
-    page?: number;
-    limit?: number;
-    category_id?: number;
-    level?: string;
-    search?: string;
-}): Promise<PagedResponse<LessonType>> {
+export async function getLessons(
+    params?: {
+        page?: number;
+        limit?: number;
+        category_id?: number;
+        level?: string;
+        search?: string;
+    },
+    options?: RequestInit
+): Promise<PagedResponse<LessonType>> {
     try {
         const queryParams = new URLSearchParams();
         if (params) {
@@ -33,13 +36,12 @@ export async function getLessons(params?: {
         const queryString = queryParams.toString();
         const url = queryString ? `lessons?${queryString}` : "lessons";
 
-        return await apiRequest<PagedResponse<LessonType>>(url);
+        return await apiRequest<PagedResponse<LessonType>>(url, options);
     } catch (error) {
         console.error("Không thể tải danh sách bài học", error);
         throw error;
     }
 }
-
 export async function getLessonById(id: number): Promise<DataResponse<LessonType>> {
     try {
         return await apiRequest<DataResponse<LessonType>>(`lessons/${id}`);
