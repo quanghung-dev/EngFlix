@@ -4,10 +4,7 @@ import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
   ArrowDownIcon,
-  BookOpenCheckIcon,
-  CircleHelpIcon,
   Globe2Icon,
-  InfoIcon,
   RefreshCwIcon,
   SendIcon,
   UsersIcon,
@@ -24,7 +21,7 @@ import {
 } from "@/components/social/social-user"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card"
 import {
   Sheet,
   SheetContent,
@@ -70,13 +67,9 @@ function ContactRail({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-stroke-subtle px-5 py-4">
         <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[11px] tracking-[0.15em] text-brand-cyan uppercase">Study circle</p>
-            <h2 className="mt-1 text-lg font-semibold text-foreground">Bạn học</h2>
-          </div>
+          <h2 className="text-lg font-semibold text-foreground">Bạn học</h2>
           <Badge variant="neutral">{friends.length}</Badge>
         </div>
-        <p className="mt-2 text-xs leading-5 text-copy-muted">Danh bạ thật từ kết nối của bạn. Chat riêng chưa được hỗ trợ.</p>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {loading ? (
@@ -87,23 +80,18 @@ function ContactRail({
             <Button type="button" variant="glass" size="app" onClick={onRetry}><RefreshCwIcon aria-hidden="true" />Thử lại</Button>
           </div>
         ) : friends.length === 0 ? (
-          <p className="px-2 py-4 text-sm leading-6 text-copy-muted">Chưa có bạn học trong danh bạ. Bạn có thể tìm kết nối mới ở trang Bạn bè.</p>
+          <p className="px-2 py-4 text-sm text-copy-muted">Chưa có bạn học.</p>
         ) : (
           <ul className="space-y-1">
             {friends.map((friend) => (
               <li key={friend.friendship_id}>
                 <Link
                   href={`/profile/${friend.user_id}`}
-                  className="product-focus flex min-h-14 items-center gap-3 rounded-nav px-3 py-2 transition duration-300 hover:bg-brand-cyan/8 motion-reduce:transition-none"
+                  className="product-focus flex min-h-12 items-center gap-3 rounded-nav px-3 py-2 transition duration-300 hover:bg-brand-cyan/8 motion-reduce:transition-none"
                 >
                   <SocialUserAvatar name={friend.username} src={friend.avatar_url} size="sm" />
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-1.5">
-                      <span className="truncate text-sm font-medium text-foreground">{friend.username}</span>
-                      <SocialBadge type={friend.badge_type} />
-                    </span>
-                    <span className="mt-0.5 block text-xs text-copy-muted">Xem hồ sơ</span>
-                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{friend.username}</span>
+                  <SocialBadge type={friend.badge_type} />
                 </Link>
               </li>
             ))}
@@ -114,36 +102,7 @@ function ContactRail({
   )
 }
 
-function ChannelInfo() {
-  return (
-    <div className="space-y-6 p-5">
-      <div>
-        <span className="grid size-12 place-items-center rounded-panel border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan">
-          <Globe2Icon className="size-5" aria-hidden="true" />
-        </span>
-        <h2 className="mt-4 text-lg font-semibold text-foreground">Kênh cộng đồng</h2>
-        <p className="mt-2 text-sm leading-6 text-copy-muted">Một phòng trò chuyện chung cho toàn bộ học viên EngFlex.</p>
-      </div>
-      <div className="space-y-4 border-t border-stroke-subtle pt-5">
-        <div className="flex gap-3">
-          <BookOpenCheckIcon className="mt-0.5 size-4 shrink-0 text-brand-cyan" aria-hidden="true" />
-          <p className="text-sm leading-6 text-copy-secondary">Ưu tiên trao đổi về học tập, luyện tập và tài nguyên hữu ích.</p>
-        </div>
-        <div className="flex gap-3">
-          <CircleHelpIcon className="mt-0.5 size-4 shrink-0 text-brand-cyan" aria-hidden="true" />
-          <p className="text-sm leading-6 text-copy-secondary">Không chia sẻ dữ liệu nhạy cảm hoặc thông tin đăng nhập trong phòng chung.</p>
-        </div>
-      </div>
-      <Card variant="inner">
-        <CardContent>
-          <p className="font-mono text-[11px] tracking-[0.14em] text-copy-muted uppercase">Sync mode</p>
-          <p className="mt-2 font-semibold text-foreground">Làm mới mỗi 5 giây</p>
-          <p className="mt-2 text-xs leading-5 text-copy-muted">Tin cũ vẫn được giữ nếu kết nối nền tạm lỗi.</p>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
+
 
 export default function ChatPage() {
   const { user, resolved } = useAuthenticatedUser()
@@ -164,7 +123,6 @@ export default function ChatPage() {
   const [sending, setSending] = useState(false)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const [contactsOpen, setContactsOpen] = useState(false)
-  const [infoOpen, setInfoOpen] = useState(false)
 
   useEffect(() => {
     mountedRef.current = true
@@ -268,7 +226,7 @@ export default function ChatPage() {
     <div className="mx-auto w-full max-w-[96rem] space-y-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
 
       <ProductReveal delay={0.07}>
-        <div className="grid items-stretch gap-5 lg:grid-cols-[17rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,1fr)_18rem]">
+        <div className="grid items-stretch gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">
           <Card variant="product" className="hidden min-h-[42rem] py-0 lg:flex">
             <ContactRail friends={friends} loading={friendsLoading} error={friendsError} onRetry={() => void loadFriends()} />
           </Card>
@@ -286,9 +244,6 @@ export default function ChatPage() {
               <div className="flex items-center gap-1">
                 <Button type="button" variant="ghost" size="icon-app" className="lg:hidden" aria-label="Bạn học" onClick={() => setContactsOpen(true)}>
                   <UsersIcon aria-hidden="true" />
-                </Button>
-                <Button type="button" variant="ghost" size="icon-app" className="xl:hidden" aria-label="Thông tin kênh" onClick={() => setInfoOpen(true)}>
-                  <InfoIcon aria-hidden="true" />
                 </Button>
                 <Button type="button" variant="ghost" size="icon-app" aria-label="Làm mới tin nhắn" disabled={loading} onClick={() => void refreshMessages(false)}>
                   <RefreshCwIcon aria-hidden="true" />
@@ -381,10 +336,6 @@ export default function ChatPage() {
               </form>
             </div>
           </Card>
-
-          <Card variant="product" className="hidden min-h-[42rem] py-0 xl:block">
-            <ChannelInfo />
-          </Card>
         </div>
       </ProductReveal>
 
@@ -392,13 +343,6 @@ export default function ChatPage() {
         <SheetContent side="left" className="w-[min(90vw,22rem)] border-stroke bg-surface-panel p-0 sm:max-w-[22rem]">
           <SheetHeader className="sr-only"><SheetTitle>Bạn học</SheetTitle><SheetDescription>Danh bạ kết nối của bạn</SheetDescription></SheetHeader>
           <ContactRail friends={friends} loading={friendsLoading} error={friendsError} onRetry={() => void loadFriends()} />
-        </SheetContent>
-      </Sheet>
-
-      <Sheet open={infoOpen} onOpenChange={setInfoOpen}>
-        <SheetContent side="right" className="w-[min(90vw,22rem)] border-stroke bg-surface-panel p-0 sm:max-w-[22rem]">
-          <SheetHeader className="sr-only"><SheetTitle>Thông tin kênh</SheetTitle><SheetDescription>Quy tắc của kênh cộng đồng</SheetDescription></SheetHeader>
-          <ChannelInfo />
         </SheetContent>
       </Sheet>
     </div>
