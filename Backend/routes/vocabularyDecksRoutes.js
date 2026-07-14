@@ -470,6 +470,7 @@ router.put('/:deckId/items/:itemId', verifyToken, vocabularyItemsController.upda
  *         description: Internal server error
  */
 router.delete('/:deckId/items/:itemId', verifyToken, vocabularyItemsController.deleteVocabularyItems);
+router.post('/:deckId/items/:itemId/review', verifyToken, vocabularyItemsController.reviewVocabularyItem);
 
 /**
  * @swagger

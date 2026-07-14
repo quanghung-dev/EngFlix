@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useMemo } from "react"
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -53,6 +53,7 @@ import {
 import { LessonType, TranscriptType } from "@/types/lesson"
 import { WavRecorder } from "@/lib/wav-recorder"
 import { cn } from "@/lib/utils"
+import { LessonReportDialog } from "@/components/topics/lesson-report-dialog"
 
 declare global {
   interface Window {
@@ -65,11 +66,19 @@ interface ShadowingWorkspaceProps {
   lessonId: number
 }
 
+interface WordSyllable {
+  syllable: string
+  score: number
+  stressStatus: string
+}
+
 interface WordAssessment {
   word: string
   score: number
+  errorType: string
   feedback: string
   weakPhonemes: { phoneme: string; score: number }[]
+  syllables: WordSyllable[]
 }
 
 interface AssessmentResult {
@@ -80,6 +89,7 @@ interface AssessmentResult {
     fluency: number
     completeness: number
     prosody: number
+    speakingRate?: number
   }
   feedback: string
   words: WordAssessment[]
@@ -115,11 +125,15 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
   const [autoPause, setAutoPause] = useState(true)
   const [largeVideo, setLargeVideo] = useState(false)
 
-  // State dịch từ vựng nhanh bằng AI
+  // State dịch từ vựng nhanh
   const [translateLoading, setTranslateLoading] = useState(false)
   const [translationResult, setTranslationResult] = useState<any | null>(null)
   const [savingWord, setSavingWord] = useState(false)
   const [bookmarkedMap, setBookmarkedMap] = useState<Map<number, number>>(new Map())
+  const [savedWordsCount, setSavedWordsCount] = useState(0)
+  const [showReportDialog, setShowReportDialog] = useState(false)
+  const [isComparing, setIsComparing] = useState(false)
+  const compareAudioRef = useRef<HTMLAudioElement | null>(null)
 
   const handleToggleBookmark = async () => {
     const activeTranscript = transcripts[currentSentenceIndex]
@@ -188,8 +202,10 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
           note: translationResult.note,
           example_sentence: translationResult.example_sentence,
           lesson_id: lessonId,
-          transcript_id: activeTranscript?.id
+          transcript_id: activeTranscript?.id,
+          source_sentence: activeTranscript?.content
         })
+        setSavedWordsCount((c) => c + 1)
         alert(`Đã lưu "${translationResult.phrase}" vào bộ từ "${defaultDeck.name}"!`)
         setTranslationResult(null)
       }
@@ -477,6 +493,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
   // Thu âm giọng nói
   const startRecording = async () => {
     if (!recorder) return
+    stopCompareSequence()
     try {
       setUserAudioUrl(null)
       setRecordedBlob(null)
@@ -550,6 +567,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
               lesson_id: lessonId,
               completed_pronunciation: true
             })
+            setShowReportDialog(true)
           }
           return next
         })
@@ -576,8 +594,104 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
     audio.onended = () => setUserAudioPlaying(false)
   }
 
+  const stopCompareSequence = useCallback(() => {
+    setIsComparing(false)
+    if (player) {
+      player.pauseVideo()
+    }
+    setIsPlaying(false)
+    if (compareAudioRef.current) {
+      compareAudioRef.current.pause()
+      compareAudioRef.current = null
+    }
+  }, [player])
+
+  const startCompareSequence = async () => {
+    if (!player || !userAudioUrl || transcripts.length === 0) return
+    setIsComparing(true)
+    
+    const activeSentence = transcripts[currentSentenceIndex]
+    const start = activeSentence.start_timestamp
+    const end = activeSentence.end_timestamp
+
+    try {
+      // Step 1: Play original audio
+      player.seekTo(start, true)
+      player.playVideo()
+      setIsPlaying(true)
+
+      // Wait for original video segment to end
+      await new Promise<void>((resolve, reject) => {
+        let checkTimer = setInterval(() => {
+          try {
+            const currentTime = player.getCurrentTime()
+            if (currentTime >= end) {
+              player.pauseVideo()
+              setIsPlaying(false)
+              clearInterval(checkTimer)
+              resolve()
+            }
+          } catch (e) {
+            clearInterval(checkTimer)
+            reject(e)
+          }
+        }, 50)
+      })
+
+      // Step 2: Wait 0.5s
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Step 3: Play user audio
+      const userAudio = new Audio(userAudioUrl)
+      compareAudioRef.current = userAudio
+      userAudio.play()
+
+      await new Promise<void>((resolve, reject) => {
+        userAudio.onended = () => {
+          resolve()
+        }
+        userAudio.onerror = (e) => {
+          reject(e)
+        }
+      })
+
+      // Step 4: Wait 0.5s
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Step 5: Play original audio again
+      player.seekTo(start, true)
+      player.playVideo()
+      setIsPlaying(true)
+
+      // Wait for original video segment to end again
+      await new Promise<void>((resolve, reject) => {
+        let checkTimer = setInterval(() => {
+          try {
+            const currentTime = player.getCurrentTime()
+            if (currentTime >= end) {
+              player.pauseVideo()
+              setIsPlaying(false)
+              clearInterval(checkTimer)
+              resolve()
+            }
+          } catch (e) {
+            clearInterval(checkTimer)
+            reject(e)
+          }
+        }, 50)
+      })
+
+    } catch (err) {
+      console.log("Comparison sequence interrupted or failed:", err)
+    } finally {
+      setIsComparing(false)
+      compareAudioRef.current = null
+    }
+  }
+
   // Chuyển sang câu tiếp theo
   const handleNextSentence = () => {
+    stopCompareSequence()
     if (currentSentenceIndex < transcripts.length - 1) {
       setCurrentSentenceIndex((prev) => prev + 1)
       setAssessmentResult(null)
@@ -592,6 +706,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
   // Lùi câu trước
   const handlePrevSentence = () => {
+    stopCompareSequence()
     if (currentSentenceIndex > 0) {
       setCurrentSentenceIndex((prev) => prev - 1)
       setAssessmentResult(null)
@@ -601,6 +716,40 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
       setTimeout(() => {
         seekAndPlayCurrent()
       }, 300)
+    }
+  }
+
+  const handleReportAction = (actionType: "practice-errors" | "review-words" | "redo-pronunciation" | "next-lesson") => {
+    if (actionType === "practice-errors") {
+      const failedIdx = transcripts.findIndex((t) => {
+        const score = bestScores.get(t.id) || 0
+        return score < 60
+      })
+      if (failedIdx !== -1) {
+        setCurrentSentenceIndex(failedIdx)
+        setAssessmentResult(null)
+        setSelectedWordIndex(null)
+        setRecordedBlob(null)
+        setUserAudioUrl(null)
+      }
+      setShowReportDialog(false)
+    } else if (actionType === "redo-pronunciation") {
+      const failedIdx = transcripts.findIndex((t) => {
+        const score = bestScores.get(t.id) || 0
+        return score < 70
+      })
+      if (failedIdx !== -1) {
+        setCurrentSentenceIndex(failedIdx)
+        setAssessmentResult(null)
+        setSelectedWordIndex(null)
+        setRecordedBlob(null)
+        setUserAudioUrl(null)
+      }
+      setShowReportDialog(false)
+    } else if (actionType === "review-words") {
+      router.push("/vocabulary")
+    } else if (actionType === "next-lesson") {
+      router.push("/topics")
     }
   }
 
@@ -635,6 +784,8 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
       let score: number | null = null
       let wordFeedback = ""
       let weakPhonemes: { phoneme: string; score: number }[] = []
+      let errorType = "None"
+      let syllables: WordSyllable[] = []
 
       if (assessmentResult?.words && assessmentResult.words.length > 0) {
         // Khớp từ theo thứ tự vị trí
@@ -643,6 +794,8 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
           score = matchedAssessment.score
           wordFeedback = matchedAssessment.feedback
           weakPhonemes = matchedAssessment.weakPhonemes
+          errorType = matchedAssessment.errorType || "None"
+          syllables = matchedAssessment.syllables || []
         }
       }
 
@@ -652,7 +805,9 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
         ipa: rawIpa,
         score,
         feedback: wordFeedback,
-        weakPhonemes
+        weakPhonemes,
+        errorType,
+        syllables
       }
     })
   }, [transcripts, currentSentenceIndex, assessmentResult])
@@ -1029,16 +1184,32 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                       className={cn(
                         "text-lg lg:text-xl font-medium border-b border-transparent transition duration-300",
                         hasScore
-                          ? scoreVal >= 80
+                          ? item.errorType === "Omission" || scoreVal < 60
+                            ? "text-destructive font-semibold border-destructive/30 line-through opacity-70"
+                            : scoreVal >= 80
                             ? "text-status-success font-semibold border-status-success/30"
-                            : scoreVal >= 60
-                            ? "text-action-gold font-semibold border-action-gold/30"
-                            : "text-destructive font-semibold border-destructive/30"
+                            : "text-action-gold font-semibold border-action-gold/30"
                           : "text-foreground"
                       )}
                     >
                       {item.word}
                     </span>
+
+                    {/* Biểu tượng chấm điểm phát âm ✓/△/✕ */}
+                    {hasScore && (
+                      <span
+                        className={cn(
+                          "text-sm font-bold font-mono leading-none",
+                          item.errorType === "Omission" || scoreVal < 60
+                            ? "text-destructive"
+                            : scoreVal >= 80
+                            ? "text-status-success"
+                            : "text-action-gold"
+                        )}
+                      >
+                        {item.errorType === "Omission" || scoreVal < 60 ? "✕" : scoreVal >= 80 ? "✓" : "△"}
+                      </span>
+                    )}
 
                     {/* Phiên âm IPA bên dưới */}
                     {item.ipa && (
@@ -1071,6 +1242,43 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                       </p>
                     )}
 
+                    {alignedWords[selectedWordIndex].syllables && alignedWords[selectedWordIndex].syllables.length > 0 && (
+                      <div className="mt-3 space-y-1.5 border-t border-brand-cyan/15 pt-2">
+                        <p className="font-mono text-[9px] text-copy-muted font-bold tracking-wider uppercase">
+                          Cấu trúc âm tiết (Syllables):
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {alignedWords[selectedWordIndex].syllables.map((s, sIdx) => {
+                            const isMissingStress = s.stressStatus === "MissingStress"
+                            const isUnexpectedStress = s.stressStatus === "UnexpectedStress"
+                            
+                            return (
+                              <div
+                                key={sIdx}
+                                className={cn(
+                                  "inline-flex items-center gap-1.5 px-2.5 py-1 rounded border text-xs font-medium",
+                                  s.score >= 80
+                                    ? "bg-status-success/5 border-status-success/20 text-status-success"
+                                    : s.score >= 60
+                                    ? "bg-action-gold/5 border-action-gold/20 text-action-gold"
+                                    : "bg-destructive/5 border-destructive/20 text-destructive"
+                                )}
+                              >
+                                <span className="font-mono">{s.syllable}</span>
+                                <span className="font-mono text-[10px] opacity-70">({s.score.toFixed(0)})</span>
+                                {isMissingStress && (
+                                  <span className="text-[9px] font-bold px-1 rounded bg-action-gold/15 text-action-gold uppercase">Thiếu Trọng Âm</span>
+                                )}
+                                {isUnexpectedStress && (
+                                  <span className="text-[9px] font-bold px-1 rounded bg-destructive/15 text-destructive uppercase">Thừa Trọng Âm</span>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="mt-3.5">
                       <Button
                         variant="outline"
@@ -1094,33 +1302,39 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
             {/* Bảng điểm tổng quan sau khi chấm điểm */}
             {assessmentResult && (
-              <div className="mt-5 p-4 rounded-control border border-stroke-strong bg-canvas-deep/60 grid grid-cols-2 gap-4 md:grid-cols-4 animate-scale-in">
+              <div className="mt-5 p-4 rounded-control border border-stroke-strong bg-canvas-deep/60 grid grid-cols-2 gap-4 md:grid-cols-5 animate-scale-in">
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Overall</span>
+                  <span className="text-[10px] font-mono text-copy-muted uppercase">Tổng quan</span>
                   <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.overallScore.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Accuracy</span>
+                  <span className="text-[10px] font-mono text-copy-muted uppercase">Phát âm</span>
                   <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.accuracy.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Fluency</span>
+                  <span className="text-[10px] font-mono text-copy-muted uppercase">Trôi chảy</span>
                   <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.fluency.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Prosody</span>
+                  <span className="text-[10px] font-mono text-copy-muted uppercase">Ngữ điệu</span>
                   <span className="text-xl font-bold font-mono text-foreground mt-1">
                     {assessmentResult.scores.prosody.toFixed(0)}
                   </span>
                 </div>
+                <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle col-span-2 md:col-span-1">
+                  <span className="text-[10px] font-mono text-copy-muted uppercase">Tốc độ nói</span>
+                  <span className="text-lg font-bold font-mono text-foreground mt-1.5">
+                    {assessmentResult.scores.speakingRate ? `${assessmentResult.scores.speakingRate} WPM` : "-- WPM"}
+                  </span>
+                </div>
 
-                <div className="col-span-2 md:col-span-4 mt-2 border-t border-stroke-subtle pt-2">
+                <div className="col-span-2 md:col-span-5 mt-2 border-t border-stroke-subtle pt-2">
                   <p className="text-xs text-copy-secondary italic leading-relaxed text-center">
                     “{assessmentResult.feedback}”
                   </p>
@@ -1134,7 +1348,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                 variant="glass"
                 size="app"
                 onClick={playUserRecording}
-                disabled={!userAudioUrl || isRecording || userAudioPlaying}
+                disabled={!userAudioUrl || isRecording || userAudioPlaying || isComparing}
                 className={cn("flex-1", userAudioPlaying && "text-brand-cyan border-brand-cyan/40 bg-brand-cyan/5 animate-pulse")}
               >
                 {userAudioPlaying ? (
@@ -1144,6 +1358,27 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                 ) : (
                   <>
                     <Volume2 className="size-4" /> PHÁT LẠI GHI ÂM
+                  </>
+                )}
+              </Button>
+
+              <Button
+                variant="glass"
+                size="app"
+                onClick={isComparing ? stopCompareSequence : startCompareSequence}
+                disabled={!userAudioUrl || isRecording || userAudioPlaying || isAssessing}
+                className={cn(
+                  "flex-1",
+                  isComparing && "text-action-gold border-action-gold/40 bg-action-gold/5 animate-pulse"
+                )}
+              >
+                {isComparing ? (
+                  <>
+                    <Volume1 className="size-4 animate-bounce text-action-gold" /> ĐANG SO SÁNH...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="size-4 text-action-gold" /> SO SÁNH SONG SONG
                   </>
                 )}
               </Button>
@@ -1236,6 +1471,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
                   <div
                     key={t.id}
                     onClick={() => {
+                      stopCompareSequence()
                       setCurrentSentenceIndex(idx)
                       setAssessmentResult(null)
                       setSelectedWordIndex(null)
@@ -1333,6 +1569,20 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
           </div>
         </div>
       )}
+
+      <LessonReportDialog
+        open={showReportDialog}
+        onOpenChange={setShowReportDialog}
+        lessonTitle={lesson?.title || ""}
+        stats={{
+          pronunciationScore: transcripts.length > 0 ? Math.round(Array.from(bestScores.values()).reduce((sum, score) => sum + score, 0) / transcripts.length) : 0,
+          shadowingPassedCount: Array.from(bestScores.values()).filter((score) => score >= 60).length,
+          shadowingTotalCount: transcripts.length,
+          savedWordsCount,
+          errorsCount: transcripts.length - Array.from(bestScores.values()).filter((score) => score >= 70).length
+        }}
+        onAction={handleReportAction}
+      />
     </div>
   )
 }

@@ -79,6 +79,19 @@ const getLessonById = async (req, res, next) => {
     }
 };
 
+const clearLessonsCache = async () => {
+    if (getIsRedisConnected()) {
+        try {
+            const keys = await redisClient.keys('lessons:*');
+            if (keys && keys.length > 0) {
+                await redisClient.del(keys);
+            }
+        } catch (err) {
+            console.error('Lỗi xoá cache lessons:', err.message);
+        }
+    }
+};
+
 const createLesson = async (req, res, next) => {
     try {
         const { category_id, title, video_url, description } = req.body;
@@ -89,6 +102,7 @@ const createLesson = async (req, res, next) => {
         if (!newLesson) {
             return errorResponse(res, 500, 'Tao bai hoc that bai');
         }
+        await clearLessonsCache();
         return dataResponse(res, 201, newLesson);
     } catch (error) {
         next(error);
@@ -106,6 +120,7 @@ const updateLesson = async (req, res, next) => {
         if (!updatedLesson) {
             return errorResponse(res, 404, 'Khong tim thay bai hoc de cap nhat');
         }
+        await clearLessonsCache();
         return dataResponse(res, 200, updatedLesson);
     } catch (error) {
         next(error);
@@ -119,6 +134,7 @@ const deleteLesson = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Khong tim thay bai hoc de xoa');
         }
+        await clearLessonsCache();
         return dataResponse(res, 200, { message: 'Xoa bai hoc thanh cong' });
     } catch (error) {
         next(error);
@@ -141,6 +157,7 @@ const createLessonFromYoutube = async (req, res, next) => {
         if (!newLesson) {
             return errorResponse(res, 500, 'Tao bai hoc tu youtube that bai');
         }
+        await clearLessonsCache();
         return dataResponse(res, 201, newLesson);
     } catch (error) {
         next(error);

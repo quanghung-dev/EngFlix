@@ -22,14 +22,28 @@ const buildFeedback = ({ overallScore, prosodyScore, weakWords }) => {
   return feedback.join(" ");
 };
 
-const getWordFeedback = (weakPhonemes) => {
-  if (!weakPhonemes.length) {
-    return "Ph\u00e1t \u00e2m t\u1ed1t.";
+const getWordFeedback = (weakPhonemes, syllables) => {
+  const feedback = [];
+
+  if (weakPhonemes.length > 0) {
+    const phonemes = weakPhonemes.map((p) => `/${p.phoneme}/`).join(", ");
+    feedback.push(`Cần phát âm rõ hơn âm ${phonemes}.`);
   }
 
-  const phonemes = weakPhonemes.map((p) => `/${p.phoneme}/`).join(", ");
+  const stressError = syllables.find(s => s.stressStatus === "UnexpectedStress" || s.stressStatus === "MissingStress");
+  if (stressError) {
+    if (stressError.stressStatus === "MissingStress") {
+      feedback.push(`Cần nhấn trọng âm vào âm tiết "${stressError.syllable}".`);
+    } else {
+      feedback.push(`Không cần nhấn trọng âm vào âm tiết "${stressError.syllable}".`);
+    }
+  }
 
-  return `C\u1ea7n ph\u00e1t \u00e2m r\u00f5 h\u01a1n \u00e2m ${phonemes}.`;
+  if (feedback.length === 0) {
+    return "Phát âm tốt.";
+  }
+
+  return feedback.join(" ");
 };
 
 const formatPronunciationResponse = (azureResult) => {
@@ -40,6 +54,7 @@ const formatPronunciationResponse = (azureResult) => {
 
   const formattedWords = words.map((word) => {
     const phonemes = word.Phonemes || [];
+    const rawSyllables = word.Syllables || [];
 
     const weakPhonemes = phonemes
       .filter((phoneme) => {
@@ -51,15 +66,34 @@ const formatPronunciationResponse = (azureResult) => {
         score: phoneme.PronunciationAssessment?.AccuracyScore ?? 0,
       }));
 
+    const syllables = rawSyllables.map((s) => ({
+      syllable: s.Syllable,
+      score: s.PronunciationAssessment?.AccuracyScore ?? 0,
+      stressStatus: s.PronunciationAssessment?.StressStatus ?? "Correct",
+    }));
+
     return {
       word: word.Word,
       score: word.PronunciationAssessment?.AccuracyScore ?? 0,
-      feedback: getWordFeedback(weakPhonemes),
+      errorType: word.PronunciationAssessment?.ErrorType ?? "None",
+      feedback: getWordFeedback(weakPhonemes, syllables),
       weakPhonemes,
+      syllables,
     };
   });
 
   const weakWords = formattedWords.filter((word) => word.weakPhonemes.length > 0);
+
+  const firstWord = words[0];
+  const lastWord = words[words.length - 1];
+  let wpm = 0;
+  if (firstWord && lastWord) {
+    const duration100ns = (lastWord.Offset + lastWord.Duration) - firstWord.Offset;
+    const durationSeconds = duration100ns / 10000000;
+    if (durationSeconds > 0) {
+      wpm = Math.round((words.length / durationSeconds) * 60);
+    }
+  }
 
   return {
     text: recognizedText,
@@ -69,6 +103,7 @@ const formatPronunciationResponse = (azureResult) => {
       fluency: scores.FluencyScore ?? 0,
       completeness: scores.CompletenessScore ?? 0,
       prosody: scores.ProsodyScore ?? 0,
+      speakingRate: wpm,
     },
     feedback: buildFeedback({
       overallScore: scores.PronScore ?? 0,

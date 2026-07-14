@@ -38,11 +38,19 @@ export interface LearningHistoryType {
   updated_at: string;
 }
 
+export interface PronunciationSyllable {
+  syllable: string;
+  score: number;
+  stressStatus: string;
+}
+
 export interface PronunciationWordAssessment {
   word: string;
   score: number;
+  errorType: string;
   feedback: string;
   weakPhonemes: Array<{ phoneme: string; score: number }>;
+  syllables: PronunciationSyllable[];
 }
 
 export interface PronunciationAssessmentResult {
@@ -53,6 +61,7 @@ export interface PronunciationAssessmentResult {
     fluency: number;
     completeness: number;
     prosody: number;
+    speakingRate?: number;
   };
   feedback: string;
   words: PronunciationWordAssessment[];

@@ -1,12 +1,152 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useReducedMotion } from "motion/react"
 import { ArrowLeft, Check, RotateCcw, Volume2, VolumeX, X } from "lucide-react"
 
 import { useSpeech } from "@/components/learning/use-speech"
 import { Button } from "@/components/ui/button"
+import { getLessonById, getLessonTranscripts } from "@/services/lesson.service"
+import { translatePhraseAI, reviewVocabularyItem, type AITranslationType } from "@/services/vocabulary.service"
 import type { VocabularyItemType } from "@/types/vocabulary"
+import { cn } from "@/lib/utils"
+
+interface FlashcardContextDetailsProps {
+  phrase: string
+  lessonId: number | null
+  transcriptId: number | null
+  fallbackExampleSentence: string | null
+  fallbackExampleTranslation: string | null
+}
+
+function FlashcardContextDetails({
+  phrase,
+  lessonId,
+  transcriptId,
+  fallbackExampleSentence,
+  fallbackExampleTranslation,
+}: FlashcardContextDetailsProps) {
+  const [loading, setLoading] = useState(false)
+  const [lesson, setLesson] = useState<any>(null)
+  const [transcript, setTranscript] = useState<any>(null)
+  const [aiData, setAiData] = useState<AITranslationType | null>(null)
+
+  useEffect(() => {
+    let active = true
+    if (!lessonId) return
+
+    async function loadContext() {
+      setLoading(true)
+      try {
+        const [lessonRes, transcriptsRes] = await Promise.all([
+          getLessonById(lessonId!),
+          getLessonTranscripts(lessonId!)
+        ])
+        if (!active) return
+
+        setLesson(lessonRes.data)
+        const matched = (transcriptsRes.data || []).find((t: any) => t.id === transcriptId)
+        if (matched) setTranscript(matched)
+      } catch (err) {
+        console.error("Failed to load flashcard context details", err)
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    void loadContext()
+    return () => {
+      active = false
+    }
+  }, [lessonId, transcriptId])
+
+  useEffect(() => {
+    let active = true
+    async function loadAI() {
+      try {
+        const res = await translatePhraseAI(phrase)
+        if (active) setAiData(res.data)
+      } catch (err) {
+        console.error("Failed to fetch AI collocations for flashcard", err)
+      }
+    }
+    void loadAI()
+    return () => {
+      active = false
+    }
+  }, [phrase])
+
+  const getYouTubeId = (url?: string) => {
+    if (!url) return null
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+    const match = url.match(regExp)
+    return (match && match[2].length === 11) ? match[2] : null
+  }
+
+  const videoId = lesson ? getYouTubeId(lesson.video_url) : null
+
+  if (loading) {
+    return (
+      <div className="space-y-3 w-full mt-4 border-t border-stroke-subtle pt-4 animate-pulse">
+        <div className="h-28 bg-surface-inner rounded-card" />
+        <div className="h-4 bg-surface-inner rounded w-3/4" />
+        <div className="h-4 bg-surface-inner rounded w-1/2" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full mt-4 border-t border-stroke-subtle pt-4 text-left space-y-4">
+      {/* Video segment player */}
+      {videoId && transcript && (
+        <div className="relative w-full aspect-video rounded-card overflow-hidden border border-stroke-subtle bg-canvas-deep">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?start=${Math.max(0, Math.floor(transcript.start_timestamp) - 1)}&end=${Math.ceil(transcript.end_timestamp)}&autoplay=1&controls=0&modestbranding=1&rel=0`}
+            className="absolute inset-0 w-full h-full"
+            allow="autoplay; encrypted-media"
+            title="Video ngữ cảnh phim"
+          />
+        </div>
+      )}
+
+      {/* Original Sentence */}
+      {transcript && (
+        <div className="space-y-1">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-brand-cyan font-bold">Câu gốc trong phim</span>
+          <p className="text-xs font-semibold text-foreground">“{transcript.content}”</p>
+          {transcript.vietnamese && (
+            <p className="text-[10px] text-copy-muted italic">Dịch: {transcript.vietnamese}</p>
+          )}
+          {transcript.phonetic && (
+            <p className="text-[10px] text-copy-subtle font-mono">Phiên âm: {transcript.phonetic}</p>
+          )}
+        </div>
+      )}
+
+      {/* Collocations & Challenge */}
+      <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-stroke-subtle/50">
+        {/* Collocations */}
+        <div className="space-y-1">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-action-gold font-bold">Cụm từ hay dùng</span>
+          <p className="text-[11px] text-copy-secondary leading-relaxed">
+            {aiData?.note || "Đang tải collocation..."}
+          </p>
+        </div>
+
+        {/* New test sentence */}
+        <div className="space-y-1">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-status-success font-bold">Câu thử thách</span>
+          <p className="text-[11px] text-foreground font-semibold">
+            {aiData?.example_sentence || fallbackExampleSentence || "Đang tải câu mẫu..."}
+          </p>
+          {(aiData?.example_translation || fallbackExampleTranslation) && (
+            <p className="text-[9px] text-copy-muted italic">Dịch: {aiData?.example_translation || fallbackExampleTranslation}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 interface FlashcardStudyProps {
   deckName: string
@@ -21,6 +161,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
   const [isFlipped, setIsFlipped] = useState(false)
   const [masteredCount, setMasteredCount] = useState(0)
   const [completed, setCompleted] = useState(false)
+  const [reviewLoading, setReviewLoading] = useState(false)
 
   const currentItem = items[cardIndex]
   const progress = items.length ? ((cardIndex + 1) / items.length) * 100 : 0
@@ -33,9 +174,20 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
     stop()
   }
 
-  function recordResult(mastered: boolean) {
+  async function recordResult(mastered: boolean) {
+    if (reviewLoading) return
     if (mastered) setMasteredCount((count) => count + 1)
     stop()
+
+    setReviewLoading(true)
+    try {
+      // Gọi API Spaced Repetition trên backend
+      await reviewVocabularyItem(currentItem.deck_id, currentItem.id, mastered)
+    } catch (err) {
+      console.error("Failed to record spaced repetition review result:", err)
+    } finally {
+      setReviewLoading(false)
+    }
 
     if (cardIndex >= items.length - 1) {
       setCompleted(true)
@@ -60,8 +212,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
         </p>
         <h2 className="mt-3 text-3xl font-semibold text-foreground">Bạn đã đi hết {items.length} thẻ</h2>
         <p className="mt-3 max-w-md text-sm leading-6 text-copy-muted">
-          Bạn đánh dấu đã thuộc {masteredCount}/{items.length} từ ({percentage}%). Kết quả này chỉ dùng
-          trong vòng học hiện tại và chưa được lưu vào hồ sơ.
+          Bạn đã đánh dấu thuộc {masteredCount}/{items.length} từ ({percentage}%). Lịch học của bạn đã được cập nhật dựa trên thuật toán Spaced Repetition (SM-2).
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button variant="glass" size="app" onClick={onExit}>
@@ -111,10 +262,10 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
           onClick={() => setIsFlipped((value) => !value)}
           aria-pressed={isFlipped}
           aria-label={isFlipped ? "Đang xem nghĩa. Lật về mặt từ vựng" : "Đang xem từ vựng. Lật để xem nghĩa"}
-          className="product-focus relative block min-h-[22rem] w-full touch-manipulation rounded-card text-left"
+          className="product-focus relative block min-h-[30rem] w-full touch-manipulation rounded-card text-left outline-none"
         >
           <div
-            className="relative min-h-[22rem] w-full transition-transform duration-300 motion-reduce:transition-none [transform-style:preserve-3d]"
+            className="relative min-h-[30rem] w-full transition-transform duration-300 motion-reduce:transition-none [transform-style:preserve-3d]"
             style={{ transform: !reduceMotion && isFlipped ? "rotateY(180deg)" : undefined }}
           >
             <div
@@ -126,29 +277,35 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-copy-muted">Từ / cụm từ</span>
               <strong className="mt-5 text-balance text-4xl font-semibold text-foreground sm:text-5xl">{currentItem.phrase}</strong>
               {currentItem.note && <span className="mt-4 font-mono text-sm text-copy-muted">{currentItem.note}</span>}
-              <span className="absolute bottom-6 text-xs text-copy-muted">Chạm hoặc nhấn Enter để xem nghĩa</span>
+              <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs text-copy-muted">Chạm hoặc nhấn Enter để xem nghĩa</span>
             </div>
 
             <div
               aria-hidden={!isFlipped}
-              className={`absolute inset-0 flex flex-col items-center justify-center rounded-card border border-brand-cyan/30 bg-canvas-deep p-8 text-center shadow-card [backface-visibility:hidden] ${
+              className={`absolute inset-0 flex flex-col items-center rounded-card border border-brand-cyan/30 bg-canvas-deep p-6 text-center shadow-card [backface-visibility:hidden] overflow-y-auto ${
                 reduceMotion ? (isFlipped ? "visible" : "invisible") : "[transform:rotateY(180deg)]"
               }`}
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-cyan">Nghĩa</span>
-              <strong className="mt-5 text-balance text-3xl font-semibold text-foreground">{currentItem.meaning}</strong>
-              {currentItem.example_sentence && (
-                <p className="mt-6 max-w-lg border-t border-stroke-subtle pt-5 text-sm italic leading-6 text-copy-secondary">
-                  “{currentItem.example_sentence}”
-                </p>
+              <strong className="mt-3 text-balance text-2xl font-semibold text-foreground">{currentItem.meaning}</strong>
+
+              {isFlipped && (
+                <FlashcardContextDetails
+                  phrase={currentItem.phrase}
+                  lessonId={currentItem.lesson_id}
+                  transcriptId={currentItem.transcript_id}
+                  fallbackExampleSentence={currentItem.example_sentence}
+                  fallbackExampleTranslation={currentItem.example_translation}
+                />
               )}
-              <span className="absolute bottom-6 text-xs text-copy-muted">Chạm hoặc nhấn Enter để lật lại</span>
+
+              <span className="block mt-4 text-xs text-copy-muted">Chạm để lật lại</span>
             </div>
           </div>
         </button>
       </div>
 
-      <div className="mt-5 flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
+      <div className="mt-6 flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
         <Button
           variant="glass"
           size="app"
@@ -158,9 +315,9 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
           {isSpeaking ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
           {isSpeaking ? "Dừng phát âm" : "Nghe phát âm"}
         </Button>
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="glass" size="app" onClick={() => recordResult(false)}>Chưa thuộc</Button>
-          <Button variant="product" size="app" onClick={() => recordResult(true)}>Đã thuộc</Button>
+        <div className="grid grid-cols-2 gap-3 min-w-[200px]">
+          <Button variant="glass" size="app" disabled={reviewLoading} onClick={() => recordResult(false)}>Chưa thuộc</Button>
+          <Button variant="product" size="app" disabled={reviewLoading} onClick={() => recordResult(true)}>Đã thuộc</Button>
         </div>
       </div>
       <p className="mt-4 text-center text-xs text-copy-muted" aria-live="polite">

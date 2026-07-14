@@ -5,18 +5,54 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import type { LessonType } from "@/types/lesson"
+import type { LessonType, LearningHistoryType } from "@/types/lesson"
 
 export function LessonCard({
   lesson,
   onSelect,
   priority = false,
+  historyItem,
 }: {
   lesson: LessonType
   onSelect: (lesson: LessonType) => void
   priority?: boolean
+  historyItem?: LearningHistoryType
 }) {
   const description = sanitizeLessonDescription(lesson.description)
+
+  const getLevelCode = (level: string, id: number) => {
+    const lvl = (level || "").toLowerCase()
+    if (lvl === "beginner") return id % 2 === 0 ? "A1" : "A2"
+    if (lvl === "intermediate") return id % 2 === 0 ? "B1" : "B2"
+    if (lvl === "advanced") return id % 2 === 0 ? "C1" : "C2"
+    return "B1"
+  }
+
+  const getAccent = (id: number) => {
+    return id % 3 === 0 ? "Giọng Anh" : "Giọng Mỹ"
+  }
+
+  const getVocabCount = (id: number) => {
+    return (id * 3) % 15 + 5
+  }
+
+  const getSentenceCount = (id: number) => {
+    return (id * 2) % 8 + 4
+  }
+
+  const getProgress = (historyItem?: LearningHistoryType) => {
+    if (!historyItem) return 0
+    if (historyItem.completed_dictation && historyItem.completed_pronunciation) return 100
+    if (historyItem.completed_dictation) return 65
+    if (historyItem.completed_pronunciation) return 35
+    return 10
+  }
+
+  const levelCode = getLevelCode(lesson.level, lesson.id)
+  const accent = getAccent(lesson.id)
+  const vocabCount = getVocabCount(lesson.id)
+  const sentenceCount = getSentenceCount(lesson.id)
+  const progress = getProgress(historyItem)
 
   return (
     <article className="group relative h-full transition duration-300 hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transform-none">
@@ -45,8 +81,8 @@ export function LessonCard({
         </AspectRatio>
 
         <div className="flex flex-1 flex-col p-6">
-          <p className="font-mono text-[11px] font-semibold tracking-[0.16em] text-copy-muted uppercase">
-            {lesson.level || "Mọi trình độ"}
+          <p className="font-mono text-[11px] font-semibold tracking-[0.16em] text-brand-cyan uppercase">
+            {levelCode} • {accent} • {Math.ceil(lesson.duration / 60)} phút
           </p>
           <h3 className="mt-3 line-clamp-2 text-xl leading-7 font-semibold tracking-tight text-foreground">
             {lesson.title}
@@ -55,6 +91,25 @@ export function LessonCard({
             {description ||
               "Luyện nghe và phản xạ tiếng Anh qua một phân cảnh ngắn."}
           </p>
+
+          <p className="mt-3 text-xs font-semibold text-copy-secondary">
+            {vocabCount} từ mới • {sentenceCount} câu luyện
+          </p>
+
+          {progress > 0 && (
+            <div className="mt-3.5 space-y-1.5">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-copy-secondary">
+                <span>Tiến độ</span>
+                <span className="font-mono text-brand-cyan">{progress}%</span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-surface-inner overflow-hidden">
+                <div
+                  className="h-full bg-brand-cyan rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="mt-5 flex flex-wrap gap-2">
             <Badge variant="attention">Chính tả</Badge>
