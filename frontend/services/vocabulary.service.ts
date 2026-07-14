@@ -133,9 +133,11 @@ export async function addVocabularyItem(
     normalized_phrase: string
     meaning: string
     example_sentence?: string
+    example_translation?: string
     note?: string
     lesson_id?: number
     transcript_id?: number
+    source_sentence?: string
   }
 ): Promise<DataResponse<VocabularyItemType>> {
   try {
@@ -158,9 +160,11 @@ export async function updateVocabularyItem(
     normalized_phrase: string
     meaning: string
     example_sentence?: string
+    example_translation?: string
     note?: string
     lesson_id?: number
     transcript_id?: number
+    source_sentence?: string
   }
 ): Promise<DataResponse<VocabularyItemType>> {
   try {
@@ -223,6 +227,23 @@ export async function translatePhraseAI(text: string): Promise<DataResponse<AITr
     })
   } catch (error) {
     console.error(`Không thể dịch từ "${text}" bằng AI`, error)
+    throw error
+  }
+}
+
+// Ghi nhận ôn tập từ vựng ngắt quãng (Spaced Repetition)
+export async function reviewVocabularyItem(
+  deckId: number,
+  itemId: number,
+  isCorrect: boolean
+): Promise<DataResponse<VocabularyItemType>> {
+  try {
+    return await apiRequest<DataResponse<VocabularyItemType>>(`vocabulary-decks/${deckId}/items/${itemId}/review`, {
+      method: "POST",
+      body: JSON.stringify({ isCorrect })
+    })
+  } catch (error) {
+    console.error(`Không thể ghi nhận ôn tập cho từ vựng ID = ${itemId}`, error)
     throw error
   }
 }

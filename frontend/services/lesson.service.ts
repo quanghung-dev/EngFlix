@@ -140,3 +140,22 @@ export async function updatePronunciationProgress(transcriptId: number): Promise
         throw error;
     }
 }
+
+export async function getLearningHistory(params?: {
+    page?: number;
+    limit?: number;
+}): Promise<PagedResponse<LearningHistoryType>> {
+    try {
+        const queryParams = new URLSearchParams();
+        if (params) {
+            if (params.page !== undefined) queryParams.append("page", params.page.toString());
+            if (params.limit !== undefined) queryParams.append("limit", params.limit.toString());
+        }
+        const queryString = queryParams.toString();
+        const url = queryString ? `learning-history?${queryString}` : "learning-history";
+        return await apiRequest<PagedResponse<LearningHistoryType>>(url);
+    } catch (error) {
+        console.error("Không thể tải lịch sử học tập", error);
+        throw error;
+    }
+}

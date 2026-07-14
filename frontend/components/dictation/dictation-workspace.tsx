@@ -48,6 +48,7 @@ import {
 } from "@/services/bookmark.service"
 import { LessonType, TranscriptType } from "@/types/lesson"
 import { cn } from "@/lib/utils"
+import { LessonReportDialog } from "@/components/topics/lesson-report-dialog"
 
 // Khai báo kiểu YT cho TypeScript
 declare global {
@@ -102,6 +103,8 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
   const [translationResult, setTranslationResult] = useState<any | null>(null)
   const [savingWord, setSavingWord] = useState(false)
   const [bookmarkedMap, setBookmarkedMap] = useState<Map<number, number>>(new Map())
+  const [savedWordsCount, setSavedWordsCount] = useState(0)
+  const [showReportDialog, setShowReportDialog] = useState(false)
 
   const handleToggleBookmark = async () => {
     const activeTranscript = transcripts[currentSentenceIndex]
@@ -169,8 +172,10 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
           note: translationResult.note,
           example_sentence: translationResult.example_sentence,
           lesson_id: lessonId,
-          transcript_id: activeTranscript?.id
+          transcript_id: activeTranscript?.id,
+          source_sentence: activeTranscript?.content
         })
+        setSavedWordsCount((c) => c + 1)
         alert(`Đã lưu "${translationResult.phrase}" vào bộ từ "${defaultDeck.name}"!`)
         setTranslationResult(null)
       }
@@ -607,6 +612,45 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
     setRevealedAll((prev) => ({ ...prev, [currentSentenceIndex]: true }))
     setUserAnswers((prev) => ({ ...prev, [currentSentenceIndex]: currentTranscript.content }))
     void markAsCompleted(currentSentenceIndex)
+  }
+
+  const handleReportAction = (actionType: "practice-errors" | "review-words" | "redo-pronunciation" | "next-lesson") => {
+    if (actionType === "practice-errors") {
+      const skippedIndices = Object.keys(revealedAll)
+        .map(Number)
+        .filter((idx) => revealedAll[idx])
+
+      if (skippedIndices.length > 0) {
+        setUserAnswers((prev) => {
+          const next = { ...prev }
+          skippedIndices.forEach((idx) => {
+            next[idx] = ""
+          })
+          return next
+        })
+        setRevealedAll((prev) => {
+          const next = { ...prev }
+          skippedIndices.forEach((idx) => {
+            next[idx] = false
+          })
+          return next
+        })
+        setCompletedIds((prev) => {
+          const next = new Set(prev)
+          skippedIndices.forEach((idx) => {
+            const transcript = transcripts[idx]
+            if (transcript) next.delete(transcript.id)
+          })
+          return next
+        })
+        setCurrentSentenceIndex(skippedIndices[0])
+      }
+      setShowReportDialog(false)
+    } else if (actionType === "review-words") {
+      router.push("/vocabulary")
+    } else if (actionType === "next-lesson") {
+      router.push("/topics")
+    }
   }
 
   // Gợi ý từng từ đơn lẻ khi click nút con mắt
@@ -1214,7 +1258,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
                   <Button
                     variant="glass"
                     size="app"
-                    onClick={() => router.push("/topics")}
+                    onClick={() => setShowReportDialog(true)}
                     className="flex-1 border-status-success text-status-success hover:bg-status-success/5"
                   >
                     HOÀN THÀNH BÀI HỌC!
@@ -1342,6 +1386,18 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
           </div>
         )}
       </div>
+
+      <LessonReportDialog
+        open={showReportDialog}
+        onOpenChange={setShowReportDialog}
+        lessonTitle={lesson?.title || ""}
+        stats={{
+          dictationAccuracy: transcripts.length > 0 ? Math.round(((transcripts.length - Object.values(revealedAll).filter(Boolean).length) / transcripts.length) * 100) : 100,
+          savedWordsCount,
+          errorsCount: Object.values(revealedAll).filter(Boolean).length
+        }}
+        onAction={handleReportAction}
+      />
 
       {/* Modal hướng dẫn phím tắt */}
       {showShortcutsModal && (

@@ -46,17 +46,31 @@ const getAllCategories = async (req, res, next) => {
     }
 };
 
+const clearCategoriesCache = async () => {
+    if (getIsRedisConnected()) {
+        try {
+            const keys = await redisClient.keys('categories:*');
+            if (keys && keys.length > 0) {
+                await redisClient.del(keys);
+            }
+        } catch (err) {
+            console.error('Lỗi xoá cache categories:', err.message);
+        }
+    }
+};
+
 const createCategory = async (req, res, next) => {
     try {
         const {name} = req.body;
-    if (!name) {
-        return errorResponse(res, 400, 'Tên danh mục là bắt buộc');
-    }
-    const result = await categoryService.createCategory( name );
-    if (!result) {
-        return errorResponse(res, 500, 'Tạo danh mục thất bại');
-    }
-    return dataResponse(res,201, result);
+        if (!name) {
+            return errorResponse(res, 400, 'Tên danh mục là bắt buộc');
+        }
+        const result = await categoryService.createCategory( name );
+        if (!result) {
+            return errorResponse(res, 500, 'Tạo danh mục thất bại');
+        }
+        await clearCategoriesCache();
+        return dataResponse(res,201, result);
     } catch (error) {
         next(error);
     }
@@ -86,6 +100,7 @@ const updateCategory = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
+        await clearCategoriesCache();
         return dataResponse(res, 200, result);
     } catch (error) {
         next(error);    
@@ -98,6 +113,7 @@ const deleteCategory = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
+        await clearCategoriesCache();
         return dataResponse(res, 200, result);
     } catch (error) {
         next(error);

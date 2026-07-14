@@ -36,7 +36,7 @@ export function NavMain({
           {items.map((item) => {
             const isActive =
               pathname === item.url ||
-              (item.url !== "/home" && pathname.startsWith(`${item.url}/`))
+              (item.url !== "/dashboard" && pathname.startsWith(`${item.url}/`))
             const Icon = item.icon
 
             return (

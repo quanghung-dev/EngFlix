@@ -547,7 +547,7 @@ export function LandingFooter() {
       <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
         <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <Link
-            href="/home"
+            href="/"
             aria-label="EngFlex - Trang chủ"
             className="group inline-flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
           >

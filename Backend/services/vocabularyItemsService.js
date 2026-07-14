@@ -43,13 +43,23 @@ const addVocabularyItems = async (userId, deckId, item) => {
             normalized_phrase,
             meaning,
             example_sentence,
-            note
+            example_translation,
+            note,
+            source_sentence
         )
-        SELECT $1, $2, $3, $4, $5, $6, $7, $8
+        SELECT $1, $2, $3, $4, $5, $6, $7, $11, $8, $10
         FROM vocabulary_decks
         WHERE id = $1
           AND user_id = $9
           AND is_default = false
+        ON CONFLICT (deck_id, normalized_phrase)
+        DO UPDATE SET
+            meaning = EXCLUDED.meaning,
+            example_sentence = EXCLUDED.example_sentence,
+            example_translation = EXCLUDED.example_translation,
+            note = EXCLUDED.note,
+            source_sentence = EXCLUDED.source_sentence,
+            updated_at = NOW()
         RETURNING *
     `;
     const values = [
@@ -61,7 +71,9 @@ const addVocabularyItems = async (userId, deckId, item) => {
         item.meaning,
         item.example_sentence ?? null,
         item.note ?? null,
-        userId
+        userId,
+        item.source_sentence ?? null,
+        item.example_translation ?? null
     ];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -76,7 +88,9 @@ const updateVocabularyItems = async (userId, deckId, itemId, item) => {
             normalized_phrase = $4,
             meaning = $5,
             example_sentence = $6,
+            example_translation = $12,
             note = $7,
+            source_sentence = $11,
             updated_at = NOW()
         FROM vocabulary_decks vd
         WHERE vocabulary_items.id = $8
@@ -96,7 +110,9 @@ const updateVocabularyItems = async (userId, deckId, itemId, item) => {
         item.note ?? null,
         itemId,
         deckId,
-        userId
+        userId,
+        item.source_sentence ?? null,
+        item.example_translation ?? null
     ];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -200,7 +216,7 @@ const getUserVocabularyForQuiz = async (userId) => {
     const [userResult, publicResult] = await Promise.all([
         pool.query(
             `
-                SELECT vi.id, vi.phrase, vi.meaning, vi.example_sentence, vi.note
+                SELECT vi.id, vi.phrase, vi.meaning, vi.example_sentence, vi.example_translation, vi.note
                 FROM vocabulary_items vi
                 JOIN vocabulary_decks vd ON vi.deck_id = vd.id
                 WHERE vd.user_id = $1
@@ -210,7 +226,7 @@ const getUserVocabularyForQuiz = async (userId) => {
             [userId]
         ),
         pool.query(`
-            SELECT vi.id, vi.phrase, vi.meaning, vi.example_sentence, vi.note
+            SELECT vi.id, vi.phrase, vi.meaning, vi.example_sentence, vi.example_translation, vi.note
             FROM vocabulary_items vi
             JOIN vocabulary_decks vd ON vi.deck_id = vd.id
             WHERE vd.is_default = true
@@ -239,10 +255,73 @@ const getUserVocabularyForQuiz = async (userId) => {
             meaning: String(word.meaning).trim(),
             note: word.note || 'từ vựng',
             example_sentence: word.example_sentence || '',
+            example_translation: word.example_translation || '',
             choices: buildQuizChoices(word, allDistractors)
         }));
 
     return { questions, source };
+};
+
+const reviewItem = async (userId, deckId, itemId, isCorrect) => {
+    const checkQuery = `
+        SELECT vi.*
+        FROM vocabulary_items vi
+        JOIN vocabulary_decks vd ON vi.deck_id = vd.id
+        WHERE vi.id = $1
+          AND vi.deck_id = $2
+          AND vd.user_id = $3
+    `;
+    const checkResult = await pool.query(checkQuery, [itemId, deckId, userId]);
+    if (checkResult.rows.length === 0) return null;
+
+    const item = checkResult.rows[0];
+
+    let reviewInterval = item.review_interval || 1;
+    let easeFactor = item.ease_factor || 2.5;
+    let correctCount = item.correct_count || 0;
+    let incorrectCount = item.incorrect_count || 0;
+
+    if (isCorrect) {
+        correctCount += 1;
+        if (correctCount === 1) {
+            reviewInterval = 1;
+        } else if (correctCount === 2) {
+            reviewInterval = 6;
+        } else {
+            reviewInterval = Math.round(reviewInterval * easeFactor);
+        }
+        easeFactor = easeFactor + 0.1;
+    } else {
+        incorrectCount += 1;
+        correctCount = 0;
+        reviewInterval = 1;
+        easeFactor = Math.max(1.3, easeFactor - 0.2);
+    }
+
+    const nextReviewAt = new Date();
+    nextReviewAt.setDate(nextReviewAt.getDate() + reviewInterval);
+
+    const updateQuery = `
+        UPDATE vocabulary_items
+        SET review_interval = $1,
+            ease_factor = $2,
+            correct_count = $3,
+            incorrect_count = $4,
+            next_review_at = $5,
+            updated_at = NOW()
+        WHERE id = $6
+        RETURNING *
+    `;
+    const updateValues = [
+        reviewInterval,
+        easeFactor,
+        correctCount,
+        incorrectCount,
+        nextReviewAt.toISOString(),
+        itemId
+    ];
+    const updateResult = await pool.query(updateQuery, updateValues);
+    return updateResult.rows[0];
 };
 
 module.exports = {
@@ -251,5 +330,6 @@ module.exports = {
     addVocabularyItems,
     updateVocabularyItems,
     deleteVocabularyItems,
-    getUserVocabularyForQuiz
+    getUserVocabularyForQuiz,
+    reviewItem
 };

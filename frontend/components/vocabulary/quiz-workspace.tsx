@@ -687,6 +687,9 @@ function QuizFinished({
                         <div>
                           <dt className="text-copy-muted">Ví dụ</dt>
                           <dd className="italic text-copy-secondary">“{question.example_sentence}”</dd>
+                          {question.example_translation && (
+                            <dd className="text-xs text-copy-muted italic mt-0.5">Dịch: {question.example_translation}</dd>
+                          )}
                         </div>
                       )}
                     </dl>

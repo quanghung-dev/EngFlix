@@ -29,7 +29,14 @@ export interface VocabularyItemType {
   normalized_phrase: string;
   meaning: string;
   example_sentence: string | null;
+  example_translation: string | null;
   note: string | null;
   created_at: string;
   updated_at: string;
+  next_review_at?: string;
+  review_interval?: number;
+  ease_factor?: number;
+  correct_count?: number;
+  incorrect_count?: number;
+  source_sentence?: string;
 }

@@ -40,7 +40,7 @@ interface SidebarProfileSummary {
 }
 
 const navigationItems = [
-  { title: "Trang chủ", url: "/home", icon: HouseIcon },
+  { title: "Trang chủ", url: "/dashboard", icon: HouseIcon },
   { title: "Chủ đề", url: "/topics", icon: ClapperboardIcon },
   { title: "Từ vựng", url: "/vocabulary", icon: BookOpenTextIcon },
   { title: "Chat", url: "/chat", icon: MessageSquareIcon },
@@ -111,7 +111,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="product-focus h-12 bg-transparent p-1.5 hover:bg-sidebar-accent group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1!"
               render={
                 <Link
-                  href="/home"
+                  href="/dashboard"
                   aria-label="EngFlex - Trang chủ"
                   onClick={() => setOpenMobile(false)}
                 />

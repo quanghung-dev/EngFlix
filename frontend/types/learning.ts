@@ -22,6 +22,7 @@ export interface ProgressStats {
   weekly_progress: WeeklyLearningPoint[]
   shadowing_attempts: PronunciationAttemptPoint[]
   total_words: number
+  words_to_review: number
 }
 
 export interface QuizQuestion {
@@ -30,6 +31,7 @@ export interface QuizQuestion {
   meaning: string
   note: string | null
   example_sentence: string | null
+  example_translation?: string | null
   choices: string[]
 }
 

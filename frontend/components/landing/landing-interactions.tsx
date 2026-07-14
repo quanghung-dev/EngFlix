@@ -165,7 +165,7 @@ export function LandingNav() {
       >
         <div className="flex h-16 items-center justify-between px-4 sm:px-5 lg:px-6">
           <Link
-            href="/home"
+            href="/"
             className="group flex items-center gap-2.5 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
             aria-label="EngFlex - Trang chủ"
           >

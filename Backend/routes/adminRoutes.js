@@ -54,7 +54,7 @@ const ROLES = require('../constants/roles.js');
  *       500:
  *         description: Internal server error
  */
-// router.use(verifyToken, requireRole(ROLES.Admin));
+router.use(verifyToken, requireRole(ROLES.Admin));
 
 router.get('/dashboard', adminControllers.getDashboardData);
 

@@ -37,7 +37,7 @@ const parseOptionalPositiveInteger = (value) => {
 };
 
 const buildVocabularyItemPayload = (body) => {
-    const { lesson_id, transcript_id, phrase, normalized_phrase, meaning, example_sentence, note } = body;
+    const { lesson_id, transcript_id, phrase, normalized_phrase, meaning, example_sentence, example_translation, note, source_sentence } = body;
 
     if (isBlank(phrase)) {
         return 'phrase la bat buoc';
@@ -66,7 +66,9 @@ const buildVocabularyItemPayload = (body) => {
         normalized_phrase,
         meaning,
         example_sentence: example_sentence ?? null,
-        note: note ?? null
+        example_translation: example_translation ?? null,
+        note: note ?? null,
+        source_sentence: source_sentence ?? null
     };
 };
 
@@ -149,9 +151,36 @@ const deleteVocabularyItems = async (req, res, next) => {
         next(error);
     }
 };
+
+const reviewVocabularyItem = async (req, res, next) => {
+    try {
+        const userId = req.user.uid;
+        const deckId = parsePositiveInteger(req.params.deckId);
+        const itemId = parsePositiveInteger(req.params.itemId);
+        const { isCorrect } = req.body;
+
+        if (!deckId) {
+            return errorResponse(res, 400, 'deckId khong hop le');
+        }
+        if (!itemId) {
+            return errorResponse(res, 400, 'itemId khong hop le');
+        }
+
+        const result = await vocabularyItemsService.reviewItem(userId, deckId, itemId, isCorrect);
+        if (!result) {
+            return errorResponse(res, 404, 'Vocabulary item not found or not owned by you');
+        }
+
+        return dataResponse(res, 200, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getVocabularyItems,
     addVocabularyItems,
     updateVocabularyItems,
-    deleteVocabularyItems
+    deleteVocabularyItems,
+    reviewVocabularyItem
 };

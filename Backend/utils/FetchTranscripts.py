@@ -531,6 +531,12 @@ async def main():
 
 
 def get_db_connection():
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+        return psycopg2.connect(database_url)
+
     port = os.getenv("DB_PORT", "5432")
     return psycopg2.connect(
         user=os.getenv("DB_USER"),

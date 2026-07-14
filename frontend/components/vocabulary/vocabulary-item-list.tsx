@@ -208,9 +208,16 @@ export function VocabularyItemList({
                     <p className="mt-2 leading-6 text-copy-secondary">{item.meaning}</p>
                   </div>
                   {item.example_sentence && (
-                    <p className="border-l-2 border-brand-cyan/30 pl-4 text-sm italic leading-6 text-copy-muted">
-                      “{item.example_sentence}”
-                    </p>
+                    <div className="space-y-1 border-l-2 border-brand-cyan/30 pl-4">
+                      <p className="text-sm italic leading-6 text-copy-muted font-semibold">
+                        “{item.example_sentence}”
+                      </p>
+                      {item.example_translation && (
+                        <p className="text-[11px] text-copy-muted italic">
+                          Dịch: {item.example_translation}
+                        </p>
+                      )}
+                    </div>
                   )}
                   {isOwner && (
                     <div className="flex justify-end gap-2 border-t border-stroke-subtle pt-4">
