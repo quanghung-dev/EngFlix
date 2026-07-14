@@ -1,4 +1,23 @@
 const pool = require('../db/index.js');
+const Pusher = require('pusher');
+
+let pusher = null;
+if (
+    process.env.PUSHER_APP_ID && process.env.PUSHER_APP_ID !== 'your_pusher_app_id' &&
+    process.env.PUSHER_KEY && process.env.PUSHER_KEY !== 'your_pusher_key' &&
+    process.env.PUSHER_SECRET && process.env.PUSHER_SECRET !== 'your_pusher_secret' &&
+    process.env.PUSHER_CLUSTER && process.env.PUSHER_CLUSTER !== 'your_pusher_cluster'
+) {
+    pusher = new Pusher({
+        appId: process.env.PUSHER_APP_ID,
+        key: process.env.PUSHER_KEY,
+        secret: process.env.PUSHER_SECRET,
+        cluster: process.env.PUSHER_CLUSTER,
+        useTLS: true
+    });
+} else {
+    console.warn('Pusher is not configured or is using placeholder values. Real-time chat will not work until keys are filled in .env.');
+}
 
 // Lấy danh sách tin nhắn chat mới nhất, kèm thông tin người dùng
 const getChatMessages = async (limit = 50, offset = 0) => {
@@ -59,7 +78,15 @@ const createChatMessage = async (userId, content) => {
         WHERE cm.id = $1
     `;
     const detailResult = await pool.query(detailQuery, [newMessage.id]);
-    return detailResult.rows[0];
+    const responseMessage = detailResult.rows[0];
+
+    if (pusher) {
+        pusher.trigger('chat-channel', 'new-message', responseMessage).catch((err) => {
+            console.error('Failed to trigger Pusher event:', err);
+        });
+    }
+
+    return responseMessage;
 };
 
 module.exports = {

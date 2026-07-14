@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
+import Pusher, { Channel } from "pusher-js"
 import {
   ArrowDownIcon,
   Globe2Icon,
@@ -183,16 +184,62 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (!resolved || !user) return
+    
+    // Tải dữ liệu ban đầu
     const kickoff = window.setTimeout(() => {
       void refreshMessages(true)
       void loadFriends()
     }, 0)
-    const interval = window.setInterval(() => void refreshMessages(false), POLL_INTERVAL_MS)
+
+    const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY
+    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER
+    
+    let pusherInstance: Pusher | null = null
+    let channel: Channel | null = null
+    let pollInterval: number | null = null
+
+    const isPusherConfigured = pusherKey && pusherKey !== "your_pusher_key" && pusherCluster && pusherCluster !== "your_pusher_cluster"
+
+    if (isPusherConfigured) {
+      // Bật chế độ real-time dùng Pusher
+      try {
+        pusherInstance = new Pusher(pusherKey, {
+          cluster: pusherCluster,
+          forceTLS: true,
+        })
+        
+        channel = pusherInstance.subscribe("chat-channel")
+        channel.bind("new-message", (incomingMessage: ChatMessage) => {
+          setMessages((current) => mergeMessages(current, [incomingMessage]))
+          
+          // Tự động cuộn xuống khi có tin nhắn mới nếu đang ở gần cuối trang
+          window.requestAnimationFrame(() => {
+            if (nearBottomRef.current) {
+              scrollToBottom("smooth")
+            }
+          })
+        })
+      } catch (err) {
+        console.error("Lỗi kết nối Pusher:", err)
+      }
+    } else {
+      console.warn("Pusher chưa được cấu hình. Hệ thống chuyển sang tự động làm mới sau mỗi 5 giây.")
+      // Fallback: Tự động tải lại tin nhắn sau mỗi 5 giây
+      pollInterval = window.setInterval(() => void refreshMessages(false), POLL_INTERVAL_MS)
+    }
+
     return () => {
       window.clearTimeout(kickoff)
-      window.clearInterval(interval)
+      if (pollInterval) {
+        window.clearInterval(pollInterval)
+      }
+      if (pusherInstance && channel) {
+        channel.unbind_all()
+        pusherInstance.unsubscribe("chat-channel")
+        pusherInstance.disconnect()
+      }
     }
-  }, [loadFriends, refreshMessages, resolved, user])
+  }, [loadFriends, refreshMessages, resolved, user, scrollToBottom])
 
   function handleScroll() {
     const container = messagesContainerRef.current
