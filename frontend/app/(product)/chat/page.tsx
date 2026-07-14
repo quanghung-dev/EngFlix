@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import Pusher, { Channel } from "pusher-js"
 import {
   ArrowDownIcon,
-  Globe2Icon,
   RefreshCwIcon,
   SendIcon,
   UsersIcon,
@@ -279,23 +278,13 @@ export default function ChatPage() {
           </Card>
 
           <Card variant="product" className="min-h-[42rem] py-0">
-            <CardHeader className="flex-row items-center gap-3 border-b border-stroke-subtle py-4">
-              <span className="relative grid size-11 shrink-0 place-items-center rounded-full border border-brand-cyan/25 bg-brand-cyan/10 text-brand-cyan">
-                <Globe2Icon className="size-5" aria-hidden="true" />
-                <span className="absolute right-0 bottom-0 size-3 rounded-full border-2 border-surface-panel bg-status-success" aria-hidden="true" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h2 className="font-semibold text-foreground">Cộng đồng EngFlex</h2>
-                <p className="mt-0.5 text-xs text-copy-muted">Phòng chung · không phải hội thoại riêng</p>
-              </div>
-              <div className="flex items-center gap-1">
-                <Button type="button" variant="ghost" size="icon-app" className="lg:hidden" aria-label="Bạn học" onClick={() => setContactsOpen(true)}>
-                  <UsersIcon aria-hidden="true" />
-                </Button>
-                <Button type="button" variant="ghost" size="icon-app" aria-label="Làm mới tin nhắn" disabled={loading} onClick={() => void refreshMessages(false)}>
-                  <RefreshCwIcon aria-hidden="true" />
-                </Button>
-              </div>
+            <CardHeader className="flex-row items-center justify-between border-b border-stroke-subtle py-3 lg:hidden">
+              <Button type="button" variant="ghost" size="icon-app" aria-label="Bạn học" onClick={() => setContactsOpen(true)}>
+                <UsersIcon aria-hidden="true" />
+              </Button>
+              <Button type="button" variant="ghost" size="icon-app" aria-label="Làm mới tin nhắn" disabled={loading} onClick={() => void refreshMessages(false)}>
+                <RefreshCwIcon aria-hidden="true" />
+              </Button>
             </CardHeader>
 
             <div className="relative flex min-h-0 flex-1 flex-col">
