@@ -1,4 +1,5 @@
 # EngFlex - Hệ Thống Học Tiếng Anh Qua Phim & Video
+# [EngFlex - Hệ Thống Học Tiếng Anh Qua Phim & Video](https://eng-flix-alpha.vercel.app/)
 
 Dự án **EngFlex** (trước đây có tên là **EngFlix**) là một hệ thống hỗ trợ học tiếng Anh giao tiếp thông qua phim và video, kết hợp các phương pháp học hiện đại như **Dictation (Chính tả)**, **Shadowing (Nhại giọng)**, và **Đánh giá phát âm (Pronunciation Assessment)** sử dụng trí tuệ nhân tạo.
 
