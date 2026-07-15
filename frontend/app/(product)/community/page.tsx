@@ -3,12 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
   PlusIcon,
-  RefreshCwIcon,
   SparklesIcon,
 } from "lucide-react"
 
 import { AsyncContentState } from "@/components/product/async-content-state"
-import { ProductPageHeader } from "@/components/product/page-header"
+
 import { ProductReveal } from "@/components/product/product-reveal"
 import { ConfirmActionDialog } from "@/components/social/confirm-action-dialog"
 import { InlineFeedback } from "@/components/social/inline-feedback"
@@ -170,22 +169,7 @@ export default function CommunityPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-      <ProductReveal eager>
-        <ProductPageHeader
-          actions={
-            <Button
-              type="button"
-              variant="glass"
-              size="app"
-              disabled={loading || loadingMore}
-              onClick={() => void loadPosts(1)}
-            >
-              <RefreshCwIcon aria-hidden="true" />
-              Làm mới bảng tin
-            </Button>
-          }
-        />
-      </ProductReveal>
+
 
       {user ? (
         <ProductReveal delay={0.07}>

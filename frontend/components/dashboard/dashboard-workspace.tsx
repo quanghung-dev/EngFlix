@@ -9,15 +9,13 @@ import {
   Award,
   BookOpen,
   ArrowRight,
-  RefreshCw,
   Sparkles,
   Play,
   CheckCircle2,
   Circle,
   HelpCircle,
   Clapperboard,
-  Mic,
-  GraduationCap
+  Mic
 } from "lucide-react"
 
 import { ProductPageHeader } from "@/components/product/page-header"
@@ -220,19 +218,13 @@ export function DashboardWorkspace() {
           }
           description="Tiếp tục học tiếng Anh qua những thước phim yêu thích và theo dõi mục tiêu học tập hàng ngày của bạn."
           actions={
-            <>
-              <Link
-                href="/topics"
-                className={cn(buttonVariants({ variant: "product", size: "app" }))}
-              >
-                Khám phá bài học
-                <ArrowRight aria-hidden="true" />
-              </Link>
-              <Button variant="glass" size="app" onClick={refresh} disabled={loading}>
-                <RefreshCw className={cn(loading && "opacity-60")} aria-hidden="true" />
-                Làm mới dữ liệu
-              </Button>
-            </>
+            <Link
+              href="/topics"
+              className={cn(buttonVariants({ variant: "product", size: "app" }))}
+            >
+              Khám phá bài học
+              <ArrowRight aria-hidden="true" />
+            </Link>
           }
         />
       </ProductReveal>

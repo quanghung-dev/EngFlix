@@ -4,17 +4,15 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useReducedMotion } from "motion/react"
 import {
-  ArrowRight,
   BookOpenCheck,
   BrainCircuit,
   Clock3,
   Flame,
-  RefreshCw,
 } from "lucide-react"
 
 import { PronunciationChart, WeeklyProgressChart } from "@/components/learning/progress-charts"
 import { AsyncContentState } from "@/components/product/async-content-state"
-import { ProductPageHeader } from "@/components/product/page-header"
+
 import { ProductReveal } from "@/components/product/product-reveal"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -84,11 +82,7 @@ export function ProgressWorkspace() {
     }
   }, [reloadKey, resolved, user])
 
-  const averagePronunciation = useMemo(() => {
-    if (!stats?.shadowing_attempts.length) return null
-    const total = stats.shadowing_attempts.reduce((sum, attempt) => sum + attempt.score, 0)
-    return Math.round(total / stats.shadowing_attempts.length)
-  }, [stats])
+
 
   const hasActivity = Boolean(
     stats &&
@@ -104,30 +98,7 @@ export function ProgressWorkspace() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-      <ProductReveal eager>
-        <ProductPageHeader
-          actions={
-            <>
-              <Link href="/topics" className={cn(buttonVariants({ variant: "product", size: "app" }))}>
-                Tiếp tục học
-                <ArrowRight aria-hidden="true" />
-              </Link>
-              <Button variant="glass" size="app" onClick={refresh} disabled={loading}>
-                <RefreshCw className={cn(loading && "opacity-60")} aria-hidden="true" />
-                Làm mới dữ liệu
-              </Button>
-            </>
-          }
-          aside={
-            averagePronunciation !== null ? (
-              <div className="rounded-panel border border-brand-cyan/20 bg-brand-cyan/10 px-5 py-4">
-                <p className="text-micro uppercase tracking-meta text-brand-cyan">Điểm phát âm TB</p>
-                <p className="mt-1 text-3xl font-semibold text-foreground">{averagePronunciation}<span className="text-base text-copy-muted">/100</span></p>
-              </div>
-            ) : undefined
-          }
-        />
-      </ProductReveal>
+
 
       <section className="mt-8" aria-label="Báo cáo tiến trình" aria-busy={!resolved || loading}>
         {!resolved ? (
