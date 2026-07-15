@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils"
 
 interface ProductPageHeaderProps {
   eyebrow?: ReactNode
-  title: ReactNode
-  description: ReactNode
+  title?: ReactNode
+  description?: ReactNode
   actions?: ReactNode
   aside?: ReactNode
   className?: string
@@ -32,14 +32,18 @@ export function ProductPageHeader({
             {eyebrow}
           </div>
         ) : null}
-        <h1 className={cn("type-page-title text-foreground", eyebrow ? "mt-4" : "mt-0")}>
-          {title}
-        </h1>
-        <p className="type-body mt-5 max-w-2xl text-copy-muted sm:text-lg">
-          {description}
-        </p>
+        {title ? (
+          <h1 className={cn("type-page-title text-foreground", eyebrow ? "mt-4" : "mt-0")}>
+            {title}
+          </h1>
+        ) : null}
+        {description ? (
+          <p className="type-body mt-5 max-w-2xl text-copy-muted sm:text-lg">
+            {description}
+          </p>
+        ) : null}
         {actions ? (
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className={cn("flex flex-col gap-3 sm:flex-row sm:flex-wrap", (title || description || eyebrow) ? "mt-8" : "mt-0")}>
             {actions}
           </div>
         ) : null}

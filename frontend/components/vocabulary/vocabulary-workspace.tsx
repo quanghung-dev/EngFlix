@@ -358,8 +358,6 @@ export function VocabularyWorkspace() {
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          title="Kho từ vựng của EngFlex"
-          description="Khám phá bộ từ mẫu, xây thư viện cá nhân và chuyển ngay sang flashcard hoặc quiz khi bạn muốn ôn chủ động."
           actions={
             <>
               {isAuthenticated ? (
