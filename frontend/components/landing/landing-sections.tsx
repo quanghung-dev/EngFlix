@@ -52,7 +52,7 @@ const methodSteps = [
 
 function SectionEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-cyan/20 bg-brand-cyan/10 px-3.5 py-2 text-[0.68rem] font-semibold tracking-[0.22em] text-brand-cyan uppercase shadow-[inset_0_1px_0_var(--engflex-border-subtle)]">
+    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-cyan/20 bg-brand-cyan/10 px-3.5 py-2 text-micro font-semibold tracking-meta text-brand-cyan uppercase shadow-[inset_0_1px_0_var(--engflex-border-subtle)]">
       <Sparkles aria-hidden="true" className="size-3.5 text-action-gold" />
       {children}
     </div>
@@ -61,7 +61,7 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 
 function FeatureLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 font-mono text-[0.65rem] font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+    <span className="inline-flex items-center gap-2 text-micro font-semibold tracking-meta text-brand-cyan uppercase">
       <span className="size-1.5 rounded-full bg-brand-cyan shadow-[0_0_12px_var(--engflex-brand-cyan)]" />
       {children}
     </span>
@@ -88,7 +88,7 @@ export function ValueStrip() {
               <AudioLines aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+              <p className="text-xs font-semibold tracking-meta text-brand-cyan uppercase">
                 03 learning modes
               </p>
               <p className="mt-1 text-base font-medium text-copy-primary">Ba cách luyện trong một cảnh phim</p>
@@ -100,7 +100,7 @@ export function ValueStrip() {
               <WandSparkles aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-action-gold uppercase">
+              <p className="text-xs font-semibold tracking-meta text-action-gold uppercase">
                 Instant feedback
               </p>
               <p className="mt-1 text-base font-medium text-copy-primary">Biết ngay âm nào cần luyện lại</p>
@@ -112,7 +112,7 @@ export function ValueStrip() {
               <Target aria-hidden="true" className="size-5" />
             </div>
             <div>
-              <p className="font-mono text-xs font-semibold tracking-[0.18em] text-accent-violet uppercase">
+              <p className="text-xs font-semibold tracking-meta text-accent-violet uppercase">
                 Personal path
               </p>
               <p className="mt-1 text-base font-medium text-copy-primary">Lộ trình đi theo nhịp độ của bạn</p>
@@ -135,7 +135,7 @@ export function FeatureGrid() {
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="mx-auto mb-14 max-w-3xl text-center sm:mb-18">
           <SectionEyebrow>Built for real conversations</SectionEyebrow>
-          <h2 id="features-title" className="text-4xl font-semibold tracking-[-0.045em] text-copy-primary sm:text-5xl lg:text-6xl">
+          <h2 id="features-title" className="text-4xl font-semibold tracking-heading text-copy-primary sm:text-5xl lg:text-6xl">
             Không chỉ xem phim. Bạn đang
             <span className="block bg-gradient-to-r from-brand-cyan via-copy-primary to-action-gold bg-clip-text text-transparent">
               luyện một cuộc hội thoại thật.
@@ -184,7 +184,7 @@ export function FeatureGrid() {
                   <p className="text-center text-lg leading-9 font-medium text-white/90 sm:text-xl">
                     “You don&apos;t have to see the whole staircase,
                     <br className="hidden sm:block" /> just take the
-                    <span className="relative mx-2 inline-flex min-w-20 justify-center rounded-lg border border-cyan-200/20 bg-cyan-300/[0.08] px-2.5 py-0.5 align-middle font-mono text-sm text-cyan-200">
+                    <span className="relative mx-2 inline-flex min-w-20 justify-center rounded-lg border border-cyan-200/20 bg-cyan-300/[0.08] px-2.5 py-0.5 align-middle text-sm text-cyan-200">
                       <span className="transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-0 motion-reduce:transition-none">•••••</span>
                       <span className="absolute translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none">
                         first
@@ -199,7 +199,7 @@ export function FeatureGrid() {
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
                     <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-cyan-400 to-sky-300 shadow-[0_0_16px_rgba(34,211,238,0.5)]" />
                   </div>
-                  <span className="font-mono text-[0.65rem] text-cyan-200/70">3 / 4 WORDS</span>
+                  <span className="text-micro text-cyan-200/70">3 / 4 WORDS</span>
                 </div>
               </div>
             </div>
@@ -222,10 +222,10 @@ export function FeatureGrid() {
                     </div>
                     <div>
                       <p className="text-xs font-medium text-white/85">Your voice</p>
-                      <p className="font-mono text-[0.6rem] tracking-wider text-violet-200/60">RECORDING</p>
+                      <p className="text-micro tracking-meta text-violet-200/60">RECORDING</p>
                     </div>
                   </div>
-                  <span className="rounded-full border border-emerald-300/15 bg-emerald-300/[0.08] px-2.5 py-1 font-mono text-[0.6rem] text-emerald-200">
+                  <span className="rounded-full border border-emerald-300/15 bg-emerald-300/[0.08] px-2.5 py-1 text-micro text-emerald-200">
                     IN SYNC
                   </span>
                 </div>
@@ -251,11 +251,11 @@ export function FeatureGrid() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-xl border border-white/[0.07] bg-white/[0.035] p-3">
-                    <p className="font-mono text-[0.6rem] tracking-wider text-slate-500 uppercase">Rhythm</p>
+                    <p className="text-micro tracking-meta text-slate-500 uppercase">Rhythm</p>
                     <p className="mt-1 text-lg font-semibold text-white">Excellent</p>
                   </div>
                   <div className="rounded-xl border border-white/[0.07] bg-white/[0.035] p-3">
-                    <p className="font-mono text-[0.6rem] tracking-wider text-slate-500 uppercase">Tone match</p>
+                    <p className="text-micro tracking-meta text-slate-500 uppercase">Tone match</p>
                     <p className="mt-1 text-lg font-semibold text-cyan-200">82%</p>
                   </div>
                 </div>
@@ -282,8 +282,8 @@ export function FeatureGrid() {
                     <div aria-hidden="true" className="absolute inset-[7px] rounded-full bg-[#091b25]" />
                     <div aria-hidden="true" className="absolute -inset-2 rounded-full border border-dashed border-cyan-300/20 motion-safe:animate-spin [animation-duration:12s]" />
                     <div className="relative text-center">
-                      <p className="text-4xl font-semibold tracking-[-0.06em] text-white">93</p>
-                      <p className="font-mono text-[0.58rem] tracking-[0.16em] text-emerald-200 uppercase">Great job</p>
+                      <p className="text-4xl font-semibold tracking-heading text-white">93</p>
+                      <p className="text-micro tracking-meta text-emerald-200 uppercase">Great job</p>
                     </div>
                   </div>
 
@@ -296,7 +296,7 @@ export function FeatureGrid() {
                       <div key={label}>
                         <div className="mb-1.5 flex justify-between text-xs">
                           <span className="text-slate-400">{label}</span>
-                          <span className="font-mono text-emerald-200">{value}</span>
+                          <span className="text-emerald-200">{value}</span>
                         </div>
                         <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
                           <div className={`h-full ${width} rounded-full bg-gradient-to-r from-emerald-500 to-cyan-300`} />
@@ -333,7 +333,7 @@ export function FeatureGrid() {
                   <div className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover/flash:[transform:rotateY(180deg)] group-focus-within/flash:[transform:rotateY(180deg)] motion-reduce:transition-none motion-reduce:group-hover/flash:[transform:none]">
                     <div className="absolute inset-0 flex flex-col justify-between rounded-[1.5rem] border border-amber-200/15 bg-[linear-gradient(145deg,rgba(251,191,36,0.13),rgba(255,255,255,0.035))] p-5 shadow-[0_24px_50px_rgba(0,0,0,0.22)] [backface-visibility:hidden]">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-[0.6rem] tracking-[0.16em] text-amber-200/65 uppercase">New phrase</span>
+                        <span className="text-micro tracking-meta text-amber-200/65 uppercase">New phrase</span>
                         <Star aria-hidden="true" className="size-4 fill-amber-300/25 text-amber-300" />
                       </div>
                       <div>
@@ -345,7 +345,7 @@ export function FeatureGrid() {
 
                     <div className="absolute inset-0 flex flex-col justify-between rounded-[1.5rem] border border-cyan-200/15 bg-[linear-gradient(145deg,rgba(34,211,238,0.12),rgba(255,255,255,0.035))] p-5 shadow-[0_24px_50px_rgba(0,0,0,0.22)] [backface-visibility:hidden] [transform:rotateY(180deg)]">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-[0.6rem] tracking-[0.16em] text-cyan-200/65 uppercase">In context</span>
+                        <span className="text-micro tracking-meta text-cyan-200/65 uppercase">In context</span>
                         <Check aria-hidden="true" className="size-4 text-cyan-200" />
                       </div>
                       <div>
@@ -396,7 +396,7 @@ export function MethodSection() {
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="max-w-3xl">
           <SectionEyebrow>Learn in context</SectionEyebrow>
-          <h2 id="method-title" className="text-4xl font-semibold tracking-[-0.045em] text-copy-primary sm:text-5xl lg:text-6xl">
+          <h2 id="method-title" className="text-4xl font-semibold tracking-heading text-copy-primary sm:text-5xl lg:text-6xl">
             Một nhịp học tự nhiên như
             <span className="text-brand-cyan"> chính bộ phim bạn yêu thích.</span>
           </h2>
@@ -429,13 +429,13 @@ export function MethodSection() {
                     <div className={`relative z-10 flex size-14 items-center justify-center rounded-2xl border ${tone} shadow-card transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3 motion-reduce:transition-none`}>
                       <Icon aria-hidden="true" className="size-5" />
                     </div>
-                    <span className="ml-4 font-mono text-xs tracking-[0.16em] text-copy-muted lg:hidden">STEP {step.number}</span>
+                    <span className="ml-4 text-xs tracking-meta text-copy-muted lg:hidden">STEP {step.number}</span>
                   </div>
 
                   <article className="h-full rounded-[1.75rem] border border-stroke bg-surface-panel p-6 shadow-[inset_0_1px_0_var(--engflex-border-subtle)] backdrop-blur-sm transition-[background-color,border-color,transform] duration-500 hover:-translate-y-1 hover:border-stroke-strong hover:bg-surface-inner motion-reduce:transition-none sm:p-7">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[0.65rem] font-semibold tracking-[0.2em] text-brand-cyan">{step.eyebrow}</span>
-                      <span className="hidden font-mono text-xs text-copy-subtle lg:block">{step.number}</span>
+                      <span className="text-micro font-semibold tracking-meta text-brand-cyan">{step.eyebrow}</span>
+                      <span className="hidden text-xs text-copy-subtle lg:block">{step.number}</span>
                     </div>
                     <h3 className="mt-7 text-xl font-semibold tracking-tight text-copy-primary sm:text-2xl">{step.title}</h3>
                     <p className="mt-4 leading-7 text-copy-muted">{step.description}</p>
@@ -448,13 +448,13 @@ export function MethodSection() {
           <div aria-hidden="true" className="pointer-events-none absolute -top-20 right-8 hidden xl:block">
             <div className="rotate-6 rounded-xl border border-brand-cyan/20 bg-surface-glass px-4 py-3 shadow-card motion-safe:animate-pulse [animation-duration:4s]">
               <p className="text-sm font-semibold text-copy-primary">serendipity</p>
-              <p className="mt-0.5 text-[0.65rem] text-brand-cyan">a lucky discovery</p>
+              <p className="mt-0.5 text-micro text-brand-cyan">a lucky discovery</p>
             </div>
           </div>
           <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-10 hidden -rotate-6 xl:block">
             <div className="rounded-xl border border-action-gold/20 bg-surface-glass px-4 py-3 shadow-card motion-safe:animate-pulse [animation-delay:1.2s] [animation-duration:5s]">
               <p className="text-sm font-semibold text-copy-primary">speak up</p>
-              <p className="mt-0.5 text-[0.65rem] text-action-gold">nói lên suy nghĩ</p>
+              <p className="mt-0.5 text-micro text-action-gold">nói lên suy nghĩ</p>
             </div>
           </div>
         </div>
@@ -476,11 +476,11 @@ export function FinalCta() {
 
         <div className="relative grid items-center gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:px-16 lg:py-16">
           <div className="relative z-10 max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-action-gold/20 bg-action-gold/10 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.18em] text-action-gold uppercase">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-action-gold/20 bg-action-gold/10 px-3.5 py-2 text-micro tracking-meta text-action-gold uppercase">
               <Star aria-hidden="true" className="size-3.5 fill-action-gold/25" />
               Your next scene starts here
             </div>
-            <h2 id="final-cta-title" className="text-4xl font-semibold tracking-[-0.05em] text-copy-primary sm:text-5xl lg:text-6xl">
+            <h2 id="final-cta-title" className="text-4xl font-semibold tracking-heading text-copy-primary sm:text-5xl lg:text-6xl">
               Đừng chỉ hiểu câu thoại.
               <span className="block bg-gradient-to-r from-brand-cyan via-accent-violet to-action-gold bg-clip-text text-transparent">
                 Hãy biến nó thành phản xạ.
@@ -556,7 +556,7 @@ export function LandingFooter() {
             </span>
             <span>
               <span className="block text-lg font-semibold tracking-tight text-copy-primary">EngFlex</span>
-              <span className="block font-mono text-[0.55rem] tracking-[0.18em] text-brand-cyan uppercase">English in motion</span>
+              <span className="block text-micro tracking-meta text-brand-cyan uppercase">English in motion</span>
             </span>
           </Link>
 

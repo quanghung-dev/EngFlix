@@ -28,7 +28,7 @@ export function StudyModeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90svh] overflow-y-auto rounded-panel border border-stroke bg-canvas-deep p-6 text-foreground shadow-modal sm:max-w-[720px] sm:rounded-feature sm:p-8">
         <DialogHeader className="pr-12">
-          <p className="font-mono text-[11px] font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+          <p className="text-micro font-semibold tracking-meta text-brand-cyan uppercase">
             Bắt đầu luyện tập
           </p>
           <DialogTitle className="text-2xl leading-tight font-semibold tracking-tight text-foreground sm:text-3xl">

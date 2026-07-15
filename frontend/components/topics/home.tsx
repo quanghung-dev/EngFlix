@@ -401,7 +401,7 @@ export function CategoryLessons({
             <SlidersHorizontal className="size-4" />
             Bộ lọc
             {activeFilterCount > 0 && (
-              <span className="ml-1 size-5 rounded-full bg-brand-cyan text-action-foreground text-[10px] font-bold grid place-items-center">
+              <span className="ml-1 size-5 rounded-full bg-brand-cyan text-action-foreground text-micro font-semibold grid place-items-center">
                 {activeFilterCount}
               </span>
             )}
@@ -425,7 +425,7 @@ export function CategoryLessons({
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Level Selector */}
             <div className="space-y-2.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+              <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                 <Award className="size-3.5 text-brand-cyan" /> Trình độ
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -451,7 +451,7 @@ export function CategoryLessons({
 
             {/* Accent Selector */}
             <div className="space-y-2.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+              <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                 <Mic className="size-3.5 text-brand-cyan" /> Giọng đọc
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -477,7 +477,7 @@ export function CategoryLessons({
 
             {/* Duration Selector */}
             <div className="space-y-2.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+              <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                 <Clock className="size-3.5 text-brand-cyan" /> Thời lượng
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -507,7 +507,7 @@ export function CategoryLessons({
 
             {/* Skill Selector */}
             <div className="space-y-2.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+              <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                 <BookOpen className="size-3.5 text-brand-cyan" /> Kỹ năng chính
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -533,7 +533,7 @@ export function CategoryLessons({
 
             {/* Movie Genre Selector */}
             <div className="space-y-2.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+              <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                 <Film className="size-3.5 text-brand-cyan" /> Thể loại phim
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -560,7 +560,7 @@ export function CategoryLessons({
             {/* Status & Sort Group */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary flex items-center gap-1.5">
+                <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary flex items-center gap-1.5">
                   <CheckCircle className="size-3.5 text-brand-cyan" /> Trạng thái học
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -588,7 +588,7 @@ export function CategoryLessons({
               </div>
 
               <div className="space-y-2.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-copy-secondary">
+                <label className="text-micro font-semibold uppercase tracking-meta text-copy-secondary">
                   Sắp xếp theo
                 </label>
                 <div className="flex gap-1.5">

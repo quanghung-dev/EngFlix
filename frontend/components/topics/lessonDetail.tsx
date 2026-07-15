@@ -194,18 +194,18 @@ export default function LessonDetail({ categoryId }: { categoryId: number }) {
       <ProductReveal eager>
         <header className="mt-10 flex flex-col gap-5 border-b border-stroke-subtle pb-10 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
-            <p className="font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
+            <p className="type-meta text-brand-cyan">
               Chủ đề học tập
             </p>
-            <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-foreground lg:text-5xl">
+            <h1 className="type-page-title mt-4 text-foreground">
               {category.name}
             </h1>
-            <p className="mt-5 text-base leading-7 text-copy-muted">
+            <p className="type-body mt-5 text-copy-muted">
               Chọn một phân cảnh, sau đó luyện nghe chính tả hoặc nhại giọng
               để cải thiện phản xạ tiếng Anh theo từng bước.
             </p>
           </div>
-          <Badge variant="info" className="h-7 px-3 font-mono">
+          <Badge variant="info" className="h-7 px-3 tabular-nums">
             {totalLessons} bài học
           </Badge>
         </header>

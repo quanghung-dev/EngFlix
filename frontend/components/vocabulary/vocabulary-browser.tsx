@@ -130,7 +130,7 @@ function DeckGrid({
             </CardHeader>
 
             <CardContent className="mt-auto">
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">
+              <p className="text-micro uppercase tracking-meta text-copy-muted">
                 {typeof deck.word_count === "number"
                   ? `${deck.word_count} từ vựng`
                   : "Mở bộ từ để xem nội dung"}

@@ -192,7 +192,7 @@ export default function CommunityPage() {
           aside={
             <Card variant="inner" className="min-w-48">
               <CardContent>
-                <p className="font-mono text-xs tracking-[0.16em] text-copy-muted uppercase">Đang hiển thị</p>
+                <p className="text-xs tracking-meta text-copy-muted uppercase">Đang hiển thị</p>
                 <p className="mt-2 text-3xl font-semibold tabular-nums text-foreground">{meta?.total ?? posts.length}</p>
                 <p className="mt-1 text-sm text-copy-muted">bài chia sẻ</p>
               </CardContent>
@@ -243,7 +243,7 @@ export default function CommunityPage() {
         <section aria-labelledby="community-posts-heading" className="space-y-5">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="font-mono text-xs tracking-[0.16em] text-brand-cyan uppercase">Latest stories</p>
+              <p className="text-xs tracking-meta text-brand-cyan uppercase">Latest stories</p>
               <h2 id="community-posts-heading" className="mt-2 text-2xl font-semibold text-foreground">Bảng tin mới nhất</h2>
             </div>
             {error ? <p className="max-w-sm text-right text-sm text-destructive">{error}</p> : null}

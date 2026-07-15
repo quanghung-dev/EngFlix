@@ -321,7 +321,7 @@ export default function ChatPage() {
                               <Link href={`/profile/${message.user_id}`} className="product-focus rounded text-sm font-semibold text-foreground hover:text-brand-cyan">{own ? "Bạn" : message.username}</Link>
                               <SocialBadge type={message.badge_type} />
                               <LevelBadge level={message.level} />
-                              <time dateTime={message.created_at} className="font-mono text-[11px] text-copy-muted">{formatSocialDate(message.created_at)}</time>
+                              <time dateTime={message.created_at} className="text-micro text-copy-muted">{formatSocialDate(message.created_at)}</time>
                             </div>
                             <p className={cn(
                               "rounded-panel border px-4 py-3 text-left text-sm leading-6 whitespace-pre-wrap",
@@ -364,7 +364,7 @@ export default function ChatPage() {
                       }
                     }}
                   />
-                  <p className="mt-1 text-right font-mono text-[11px] tabular-nums text-copy-muted">{draft.length}/{MAX_DRAFT_LENGTH}</p>
+                  <p className="mt-1 text-right text-micro tabular-nums text-copy-muted">{draft.length}/{MAX_DRAFT_LENGTH}</p>
                 </div>
                 <Button type="submit" variant="product" size="icon-app" disabled={!draft.trim() || sending} aria-busy={sending} aria-label={sending ? "Đang gửi tin nhắn" : "Gửi tin nhắn"}>
                   <SendIcon aria-hidden="true" />

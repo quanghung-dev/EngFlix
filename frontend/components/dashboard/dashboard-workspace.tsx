@@ -284,7 +284,7 @@ export function DashboardWorkspace() {
                             </Link>
                           )}
                         </div>
-                        <p className="mt-6 font-mono text-4xl font-semibold tracking-tight text-foreground">
+                        <p className="mt-6 text-4xl font-semibold tracking-tight text-foreground">
                           {metric.value}
                         </p>
                         <p className="mt-2 text-sm font-semibold text-copy-secondary">
@@ -326,7 +326,7 @@ export function DashboardWorkspace() {
 
                           <div className="space-y-4">
                             <div>
-                              <span className="inline-block rounded-full bg-brand-cyan/15 px-2.5 py-0.5 text-[10px] font-semibold text-brand-cyan uppercase tracking-wider">
+                              <span className="inline-block rounded-full bg-brand-cyan/15 px-2.5 py-0.5 text-micro font-semibold text-brand-cyan uppercase tracking-meta">
                                 {displayLevel(recentLesson.level)}
                               </span>
                               <h3 className="mt-2 text-lg font-semibold text-foreground leading-snug">
@@ -449,7 +449,7 @@ export function DashboardWorkspace() {
 
                           <div className="space-y-4">
                             <div>
-                              <span className="inline-block rounded-full bg-action-gold/15 px-2.5 py-0.5 text-[10px] font-semibold text-action-gold uppercase tracking-wider">
+                              <span className="inline-block rounded-full bg-action-gold/15 px-2.5 py-0.5 text-micro font-semibold text-action-gold uppercase tracking-meta">
                                 {displayLevel(recommendedLesson.level)}
                               </span>
                               <h3 className="mt-2 text-lg font-semibold text-foreground leading-snug">
@@ -522,10 +522,10 @@ export function DashboardWorkspace() {
                           />
                         </svg>
                         <div className="absolute flex flex-col items-center">
-                          <span className="font-mono text-3xl font-semibold text-foreground">
+                          <span className="text-3xl font-semibold text-foreground">
                             {dailyGoalProgress}/1
                           </span>
-                          <span className="text-[10px] text-copy-muted font-medium uppercase tracking-wider mt-0.5">
+                          <span className="text-micro text-copy-muted font-medium uppercase tracking-meta mt-0.5">
                             Bài học
                           </span>
                         </div>

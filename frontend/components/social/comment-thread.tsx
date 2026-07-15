@@ -138,7 +138,7 @@ export function CommentThread({ postId, onCommentCreated }: CommentThreadProps) 
                   <SocialBadge type={comment.badge_type} />
                   <LevelBadge level={comment.level} />
                   <time
-                    className="ml-auto font-mono text-xs text-copy-muted"
+                    className="ml-auto text-xs text-copy-muted"
                     dateTime={comment.created_at}
                   >
                     {formatSocialDate(comment.created_at)}

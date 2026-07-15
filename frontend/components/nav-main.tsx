@@ -28,7 +28,7 @@ export function NavMain({
 
   return (
     <SidebarGroup className="p-0">
-      <SidebarGroupLabel className="px-3 font-mono text-[11px] font-semibold tracking-[0.18em] text-copy-muted uppercase">
+      <SidebarGroupLabel className="type-meta px-3 text-copy-muted">
         Không gian học
       </SidebarGroupLabel>
       <SidebarGroupContent>

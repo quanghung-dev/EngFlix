@@ -31,16 +31,16 @@ export function CategoryCard({
           </span>
 
           <div className="min-w-0 flex-1">
-            <p className="font-mono text-[11px] font-semibold tracking-[0.18em] text-brand-cyan uppercase">
+            <p className="type-meta text-brand-cyan">
               Chủ đề {String(index + 1).padStart(2, "0")}
             </p>
             <h2
               id={headingId}
-              className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
+              className="type-card-title mt-2 text-foreground sm:text-2xl"
             >
               {category.name}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-copy-muted">
+            <p className="mt-2 text-nav leading-relaxed font-normal text-copy-muted">
               {totalLessons === undefined
                 ? "Đang cập nhật số bài học"
                 : `${totalLessons} bài học để bạn khám phá`}

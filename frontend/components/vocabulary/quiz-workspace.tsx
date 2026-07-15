@@ -351,7 +351,7 @@ function QuizIntro({
         <span className="grid size-16 place-items-center rounded-full border border-brand-cyan/20 bg-brand-cyan/10 text-brand-cyan">
           <Brain className="size-7" aria-hidden="true" />
         </span>
-        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Sẵn sàng luyện</p>
+        <p className="mt-5 text-micro uppercase tracking-meta text-brand-cyan">Sẵn sàng luyện</p>
         <h2 className="mt-2 text-3xl font-semibold text-foreground">{questionCount} câu hỏi phản xạ</h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-copy-muted sm:text-base">
           {source === "personal"
@@ -466,7 +466,7 @@ function QuizPlaying({
   return (
     <Card variant="product" className="mx-auto max-w-4xl">
       <CardHeader className="gap-5 border-b border-stroke-subtle pb-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs uppercase tracking-[0.14em] text-copy-muted">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs uppercase tracking-meta text-copy-muted">
           <span>Câu {currentIndex + 1} / {total}</span>
           <span className="text-status-success">Đúng {score}</span>
         </div>
@@ -490,7 +490,7 @@ function QuizPlaying({
           {mode === "timed" ? (
             <div
               className={cn(
-                "flex min-h-11 items-center gap-2 rounded-control border px-4 font-mono text-sm",
+                "flex min-h-11 items-center gap-2 rounded-control border px-4 text-sm",
                 timeLeft <= 3 ? "border-action-gold/30 bg-action-gold/10 text-action-gold" : "border-stroke bg-surface-inner text-brand-cyan"
               )}
               aria-live={timeLeft <= 5 ? "polite" : "off"}
@@ -528,9 +528,9 @@ function QuizPlaying({
         </div>
 
         <div className="rounded-card border border-brand-cyan/20 bg-canvas-deep p-7 text-center sm:p-10">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Chọn nghĩa đúng của từ</p>
+          <p className="text-micro uppercase tracking-meta text-brand-cyan">Chọn nghĩa đúng của từ</p>
           <h2 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{question.phrase}</h2>
-          {question.note && <p className="mt-4 font-mono text-sm text-copy-muted">{question.note}</p>}
+          {question.note && <p className="mt-4 text-sm text-copy-muted">{question.note}</p>}
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2" aria-label="Các đáp án">
@@ -619,7 +619,7 @@ function QuizFinished({
           <span className="grid size-16 place-items-center rounded-full border border-status-success/25 bg-status-success/10 text-status-success">
             <CheckCircle2 className="size-7" aria-hidden="true" />
           </span>
-          <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-status-success">Hoàn thành</p>
+          <p className="mt-5 text-micro uppercase tracking-meta text-status-success">Hoàn thành</p>
           <h2 className="mt-2 text-3xl font-semibold text-foreground">Bạn trả lời đúng {score}/{questions.length} câu</h2>
           <p className="mt-3 max-w-xl text-sm leading-7 text-copy-muted sm:text-base">
             Kết quả {percentage}% từ {source === "personal" ? "bộ từ cá nhân" : "bộ câu hỏi mẫu"}. Xem lại các câu chưa đúng trước khi bắt đầu lượt luyện tiếp theo.
@@ -627,7 +627,7 @@ function QuizFinished({
         </CardHeader>
         <CardContent>
           <div className="mx-auto max-w-lg">
-            <div className="flex justify-between font-mono text-xs text-copy-muted">
+            <div className="flex justify-between text-xs text-copy-muted">
               <span>Độ chính xác</span>
               <span>{percentage}%</span>
             </div>
@@ -652,7 +652,7 @@ function QuizFinished({
       {showReview && (
         <section aria-labelledby="quiz-review-title" className="space-y-4">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Review</p>
+            <p className="text-micro uppercase tracking-meta text-brand-cyan">Review</p>
             <h2 id="quiz-review-title" className="mt-2 text-2xl font-semibold text-foreground">Xem lại từng câu</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -663,7 +663,7 @@ function QuizFinished({
                   <CardContent>
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-copy-muted">Câu {index + 1}</p>
+                        <p className="text-micro uppercase tracking-meta text-copy-muted">Câu {index + 1}</p>
                         <h3 className="mt-2 text-xl font-semibold text-foreground">{question.phrase}</h3>
                       </div>
                       {answer?.isCorrect ? (

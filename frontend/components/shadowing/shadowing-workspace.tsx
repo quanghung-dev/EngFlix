@@ -797,7 +797,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
     return (
       <div className="flex h-[80vh] w-full flex-col items-center justify-center gap-4 text-copy-secondary">
         <div className="size-10 animate-spin rounded-full border-4 border-brand-cyan border-t-transparent" />
-        <p className="font-mono text-sm tracking-widest text-brand-cyan uppercase animate-pulse">
+        <p className="text-sm tracking-meta text-brand-cyan uppercase animate-pulse">
           Đang tải dữ liệu Shadowing...
         </p>
       </div>
@@ -837,7 +837,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
           <span className="truncate text-copy-secondary font-semibold max-w-[16rem]" title={lesson.title}>
             {lesson.title}
           </span>
-          <Badge variant="info" className="ml-2 font-mono text-[10px] uppercase">
+          <Badge variant="info" className="ml-2 text-micro uppercase">
             {lesson.level}
           </Badge>
         </div>
@@ -848,7 +848,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             variant="glass"
             size="sm"
             onClick={() => setShowTranscript(!showTranscript)}
-            className={cn("text-[11px] font-mono tracking-wider uppercase transition", !showTranscript && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
+            className={cn("text-micro tracking-meta uppercase transition", !showTranscript && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
           >
             <ListMusic className="size-3.5" />
             {showTranscript ? "Ẩn Transcript" : "Hiện Transcript"}
@@ -857,7 +857,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             variant="glass"
             size="sm"
             onClick={() => setShowShortcutsModal(true)}
-            className="text-[11px] font-mono tracking-wider uppercase hover:text-brand-cyan"
+            className="text-micro tracking-meta uppercase hover:text-brand-cyan"
             title="Xem phím tắt"
           >
             <Keyboard className="size-3.5" />
@@ -886,7 +886,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             <div className={cn("mt-4 flex flex-wrap items-center justify-between gap-4 w-full", !largeVideo && "max-w-2xl")}>
               {/* Toggles */}
               <div className="flex items-center gap-5">
-                <label className="inline-flex items-center gap-2.5 cursor-pointer text-xs font-mono text-copy-secondary">
+                <label className="inline-flex items-center gap-2.5 cursor-pointer text-xs text-copy-secondary">
                   <input
                     type="checkbox"
                     checked={autoPause}
@@ -896,7 +896,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                   <div className="relative w-8 h-4 bg-surface-inner border border-stroke-strong peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-panel after:content-[''] after:absolute after:top-[2px] after:start-[3px] after:bg-copy-muted after:border-stroke-strong after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-brand-cyan/20 peer-checked:border-brand-cyan/40 peer-checked:after:bg-brand-cyan" />
                   Tự động dừng
                 </label>
-                <label className="inline-flex items-center gap-2.5 cursor-pointer text-xs font-mono text-copy-secondary">
+                <label className="inline-flex items-center gap-2.5 cursor-pointer text-xs text-copy-secondary">
                   <input
                     type="checkbox"
                     checked={largeVideo}
@@ -926,7 +926,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                     variant="glass"
                     size="sm"
                     onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                    className="h-8 text-xs font-mono rounded-control border-stroke-strong gap-1"
+                    className="h-8 text-xs rounded-control border-stroke-strong gap-1"
                   >
                     <SlidersHorizontal className="size-3" />
                     {playbackSpeed}x
@@ -939,7 +939,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                           key={speed}
                           onClick={() => handleSpeedChange(speed)}
                           className={cn(
-                            "w-full px-3 py-1.5 text-left font-mono text-xs rounded-control transition",
+                            "w-full px-3 py-1.5 text-left text-xs rounded-control transition",
                             playbackSpeed === speed
                               ? "bg-brand-cyan/10 text-brand-cyan"
                               : "text-copy-muted hover:bg-surface-inner hover:text-foreground"
@@ -958,7 +958,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                   size="sm"
                   onClick={() => setIsLooping(!isLooping)}
                   className={cn(
-                    "h-8 text-xs font-mono rounded-control transition",
+                    "h-8 text-xs rounded-control transition",
                     isLooping ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5" : "text-copy-muted"
                   )}
                 >
@@ -972,7 +972,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                   onClick={handleToggleBookmark}
                   disabled={!transcripts[currentSentenceIndex]}
                   className={cn(
-                    "h-8 text-xs font-mono rounded-control transition gap-1.5",
+                    "h-8 text-xs rounded-control transition gap-1.5",
                     transcripts[currentSentenceIndex] && bookmarkedMap.has(transcripts[currentSentenceIndex].id) 
                       ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5 font-semibold" 
                       : "text-copy-muted hover:text-brand-cyan"
@@ -1001,7 +1001,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                 >
                   <ChevronLeft className="size-4" />
                 </Button>
-                <span className="font-mono text-xs text-copy-secondary px-2">
+                <span className="text-xs text-copy-secondary px-2">
                   #{currentSentenceIndex + 1} / {transcripts.length}
                 </span>
                 <Button
@@ -1017,7 +1017,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
 
               {/* Hiển thị điểm số tốt nhất (Best Score) */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-copy-muted">Best Score:</span>
+                <span className="text-xs text-copy-muted">Best Score:</span>
                 <Badge
                   variant={
                     currentSentenceBestScore >= 80
@@ -1026,7 +1026,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                       ? "attention"
                       : "neutral"
                   }
-                  className="font-mono font-semibold"
+                  className="font-semibold"
                 >
                   {currentSentenceBestScore > 0 ? `${currentSentenceBestScore.toFixed(0)}` : "--"}
                 </Badge>
@@ -1036,15 +1036,15 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             {/* Khối dịch từ vựng nhanh (Clickable sentence words) */}
             {activeTranscript && (
               <div className="flex flex-wrap gap-1.5 items-center justify-center p-3 rounded-control border border-stroke bg-canvas-deep/40 text-center mb-5">
-                <span className="text-[10px] font-mono text-copy-muted block w-full uppercase mb-1">Click vào từ tiếng Anh bất kỳ để dịch nhanh bằng AI:</span>
+                <span className="text-micro text-copy-muted block w-full uppercase mb-1">Click vào từ tiếng Anh bất kỳ để dịch nhanh bằng AI:</span>
                 {activeTranscript.content.split(/\s+/).map((word, idx) => {
                   const cleanWord = word.replace(/^[.,\/#!$%\^&\*;:{}=\-_`~()?"'“]+/g, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'”]+$/g, "")
-                  if (!cleanWord) return <span key={idx} className="text-copy-muted text-xs font-mono">{word}</span>
+                  if (!cleanWord) return <span key={idx} className="text-copy-muted text-xs ">{word}</span>
                   return (
                     <span
                       key={idx}
                       onClick={() => handleTranslateWord(cleanWord)}
-                      className="text-xs hover:text-brand-cyan hover:underline cursor-pointer transition select-none font-mono text-copy-secondary"
+                      className="text-xs hover:text-brand-cyan hover:underline cursor-pointer transition select-none text-copy-secondary"
                     >
                       {word}
                     </span>
@@ -1068,32 +1068,32 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                     <X className="size-4" />
                   </button>
 
-                  <h3 className="text-xs font-semibold font-mono tracking-wide uppercase text-brand-cyan mb-4 flex items-center gap-2">
+                  <h3 className="text-xs font-semibold tracking-wide uppercase text-brand-cyan mb-4 flex items-center gap-2">
                     <Sparkles className="size-4 text-brand-cyan animate-pulse" /> Dịch thuật thông minh AI
                   </h3>
 
                   {translateLoading ? (
                     <div className="flex flex-col items-center justify-center py-8 gap-3">
                       <div className="size-6 animate-spin rounded-full border-2 border-brand-cyan border-t-transparent" />
-                      <span className="text-xs text-copy-muted font-mono animate-pulse">DeepSeek đang dịch từ...</span>
+                      <span className="text-xs text-copy-muted animate-pulse">DeepSeek đang dịch từ...</span>
                     </div>
                   ) : (
                     translationResult && (
                       <div className="space-y-4">
                         <div className="bg-canvas-deep border border-stroke p-3 rounded-card text-center">
-                          <h4 className="text-base font-bold text-foreground">{translationResult.phrase}</h4>
-                          <p className="text-xs font-mono text-copy-muted mt-1">{translationResult.phonetic}</p>
-                          <span className="inline-block text-[9px] font-mono text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
+                          <h4 className="text-base font-semibold text-foreground">{translationResult.phrase}</h4>
+                          <p className="text-xs text-copy-muted mt-1">{translationResult.phonetic}</p>
+                          <span className="inline-block text-micro text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
                         </div>
 
                         <div>
-                          <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
+                          <span className="text-micro text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
                           <p className="text-xs font-semibold text-status-success">{translationResult.meaning}</p>
                         </div>
 
                         {translationResult.example_sentence && (
                           <div className="border-t border-stroke/40 pt-3">
-                            <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Ví dụ minh hoạ</span>
+                            <span className="text-micro text-copy-muted uppercase block mb-1">Ví dụ minh hoạ</span>
                             <p className="text-xs text-copy-secondary italic leading-relaxed">“{translationResult.example_sentence}”</p>
                             {translationResult.example_translation && (
                               <p className="text-xs text-copy-muted italic leading-relaxed mt-1">→ “{translationResult.example_translation}”</p>
@@ -1107,7 +1107,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                             size="sm"
                             type="button"
                             onClick={() => setTranslationResult(null)}
-                            className="font-mono text-xs uppercase"
+                            className="text-xs uppercase"
                           >
                             Đóng
                           </Button>
@@ -1117,7 +1117,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                             type="button"
                             onClick={handleSaveWord}
                             disabled={savingWord}
-                            className="font-mono text-xs uppercase"
+                            className="text-xs uppercase"
                           >
                             {savingWord ? "Đang lưu..." : "Lưu từ"}
                           </Button>
@@ -1166,7 +1166,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                     {hasScore && (
                       <span
                         className={cn(
-                          "text-sm font-bold font-mono leading-none",
+                          "text-sm font-semibold leading-none",
                           item.errorType === "Omission" || scoreVal < 60
                             ? "text-destructive"
                             : scoreVal >= 80
@@ -1180,7 +1180,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
 
                     {/* Phiên âm IPA bên dưới */}
                     {item.ipa && (
-                      <span className="font-mono text-xs text-copy-subtle">
+                      <span className="text-xs text-copy-subtle">
                         {item.ipa}
                       </span>
                     )}
@@ -1194,16 +1194,16 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
               <div className="mt-4 p-4 rounded-control border border-brand-cyan/20 bg-brand-cyan/5 text-xs text-copy-secondary animate-fade-in">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <p className="font-mono text-[10px] text-brand-cyan font-bold tracking-widest uppercase mb-2">
+                    <p className="text-micro text-brand-cyan font-semibold tracking-meta uppercase mb-2">
                       ĐÁNH GIÁ TỪ: “{alignedWords[selectedWordIndex].word}”
                     </p>
-                    <p>Accuracy Score: <span className="font-mono font-bold text-foreground">{alignedWords[selectedWordIndex].score?.toFixed(0)}/100</span></p>
+                    <p>Accuracy Score: <span className="font-semibold text-foreground">{alignedWords[selectedWordIndex].score?.toFixed(0)}/100</span></p>
                     <p>{alignedWords[selectedWordIndex].feedback}</p>
                     
                     {alignedWords[selectedWordIndex].weakPhonemes.length > 0 && (
                       <p className="text-destructive mt-1">
                         Âm vị phát âm sai:{" "}
-                        <span className="font-bold font-mono">
+                        <span className="font-semibold ">
                           {alignedWords[selectedWordIndex].weakPhonemes.map(p => `/${p.phoneme}/`).join(", ")}
                         </span>
                       </p>
@@ -1211,7 +1211,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
 
                     {alignedWords[selectedWordIndex].syllables && alignedWords[selectedWordIndex].syllables.length > 0 && (
                       <div className="mt-3 space-y-1.5 border-t border-brand-cyan/15 pt-2">
-                        <p className="font-mono text-[9px] text-copy-muted font-bold tracking-wider uppercase">
+                        <p className="text-micro text-copy-muted font-semibold tracking-meta uppercase">
                           Cấu trúc âm tiết (Syllables):
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -1231,13 +1231,13 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                                     : "bg-destructive/5 border-destructive/20 text-destructive"
                                 )}
                               >
-                                <span className="font-mono">{s.syllable}</span>
-                                <span className="font-mono text-[10px] opacity-70">({s.score.toFixed(0)})</span>
+                                <span className="">{s.syllable}</span>
+                                <span className="text-micro opacity-70">({s.score.toFixed(0)})</span>
                                 {isMissingStress && (
-                                  <span className="text-[9px] font-bold px-1 rounded bg-action-gold/15 text-action-gold uppercase">Thiếu Trọng Âm</span>
+                                  <span className="text-micro font-semibold px-1 rounded bg-action-gold/15 text-action-gold uppercase">Thiếu Trọng Âm</span>
                                 )}
                                 {isUnexpectedStress && (
-                                  <span className="text-[9px] font-bold px-1 rounded bg-destructive/15 text-destructive uppercase">Thừa Trọng Âm</span>
+                                  <span className="text-micro font-semibold px-1 rounded bg-destructive/15 text-destructive uppercase">Thừa Trọng Âm</span>
                                 )}
                               </div>
                             )
@@ -1251,7 +1251,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                         variant="outline"
                         size="sm"
                         onClick={() => handleTranslateWord(alignedWords[selectedWordIndex].word)}
-                        className="h-7 text-[10px] font-mono uppercase tracking-wider text-brand-cyan border-brand-cyan/20 bg-brand-cyan/5 hover:bg-brand-cyan/15 gap-1.5"
+                        className="h-7 text-micro uppercase tracking-meta text-brand-cyan border-brand-cyan/20 bg-brand-cyan/5 hover:bg-brand-cyan/15 gap-1.5"
                       >
                         <Sparkles className="size-3" /> Tra từ AI DeepSeek
                       </Button>
@@ -1271,32 +1271,32 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             {assessmentResult && (
               <div className="mt-5 p-4 rounded-control border border-stroke-strong bg-canvas-deep/60 grid grid-cols-2 gap-4 md:grid-cols-5 animate-scale-in">
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Tổng quan</span>
-                  <span className="text-xl font-bold font-mono text-foreground mt-1">
+                  <span className="text-micro text-copy-muted uppercase">Tổng quan</span>
+                  <span className="text-xl font-semibold text-foreground mt-1">
                     {assessmentResult.overallScore.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Phát âm</span>
-                  <span className="text-xl font-bold font-mono text-foreground mt-1">
+                  <span className="text-micro text-copy-muted uppercase">Phát âm</span>
+                  <span className="text-xl font-semibold text-foreground mt-1">
                     {assessmentResult.scores.accuracy.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Trôi chảy</span>
-                  <span className="text-xl font-bold font-mono text-foreground mt-1">
+                  <span className="text-micro text-copy-muted uppercase">Trôi chảy</span>
+                  <span className="text-xl font-semibold text-foreground mt-1">
                     {assessmentResult.scores.fluency.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Ngữ điệu</span>
-                  <span className="text-xl font-bold font-mono text-foreground mt-1">
+                  <span className="text-micro text-copy-muted uppercase">Ngữ điệu</span>
+                  <span className="text-xl font-semibold text-foreground mt-1">
                     {assessmentResult.scores.prosody.toFixed(0)}
                   </span>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 rounded bg-surface-inner/30 border border-stroke-subtle col-span-2 md:col-span-1">
-                  <span className="text-[10px] font-mono text-copy-muted uppercase">Tốc độ nói</span>
-                  <span className="text-lg font-bold font-mono text-foreground mt-1.5">
+                  <span className="text-micro text-copy-muted uppercase">Tốc độ nói</span>
+                  <span className="text-lg font-semibold text-foreground mt-1.5">
                     {assessmentResult.scores.speakingRate ? `${assessmentResult.scores.speakingRate} WPM` : "-- WPM"}
                   </span>
                 </div>
@@ -1379,7 +1379,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
               <span className="flex items-center gap-2 text-sm font-semibold">
                 <MessageSquare className="size-4 text-brand-cyan" />
                 BÌNH LUẬN
-                <Badge variant="neutral" className="text-[10px]">6912</Badge>
+                <Badge variant="neutral" className="text-micro">6912</Badge>
               </span>
               <ChevronDown className="size-4 text-copy-subtle" />
             </div>
@@ -1393,17 +1393,17 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             {/* Header Bản chép */}
             <div className="flex flex-col gap-4 border-b border-stroke-subtle pb-4 mb-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-mono text-xs font-bold tracking-widest text-brand-cyan uppercase">
+                <h3 className="text-xs font-semibold tracking-meta text-brand-cyan uppercase">
                   BẢN CHÉP
                 </h3>
-                <Badge variant={completionPercentage === 100 ? "success" : "info"} className="font-mono">
+                <Badge variant={completionPercentage === 100 ? "success" : "info"} className="">
                   {completionPercentage}%
                 </Badge>
               </div>
 
               {/* Nút gạt IPA và Trans */}
               <div className="flex items-center gap-4 border-t border-stroke-subtle pt-3">
-                <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-mono text-copy-muted">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs text-copy-muted">
                   <input
                     type="checkbox"
                     checked={showIpa}
@@ -1414,7 +1414,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                   IPA
                 </label>
 
-                <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-mono text-copy-muted">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs text-copy-muted">
                   <input
                     type="checkbox"
                     checked={showTrans}
@@ -1459,12 +1459,12 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
                   >
                     {/* Header card câu thoại */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-[9px] font-bold text-copy-muted">
+                      <span className="text-micro font-semibold text-copy-muted">
                         #{t.sequence + 1}
                       </span>
                       {sentenceBestScore > 0 ? (
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-[10px] text-copy-secondary font-bold">
+                          <span className="text-micro text-copy-secondary font-semibold">
                             Score: {sentenceBestScore.toFixed(0)}
                           </span>
                           {isCompleted && (
@@ -1481,14 +1481,14 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
 
                     {/* Phiên âm IPA toàn câu (nếu bật showIpa) */}
                     {showIpa && t.phonetic && (
-                      <p className="mt-1.5 font-mono text-[10px] text-copy-subtle break-words">
+                      <p className="mt-1.5 text-micro text-copy-subtle break-words">
                         {t.phonetic}
                       </p>
                     )}
 
                     {/* Bản dịch nghĩa tiếng Việt (nếu bật showTrans) */}
                     {showTrans && t.vietnamese && (
-                      <p className="mt-2 text-[10px] text-copy-muted italic border-t border-stroke-subtle pt-2">
+                      <p className="mt-2 text-micro text-copy-muted italic border-t border-stroke-subtle pt-2">
                         {t.vietnamese}
                       </p>
                     )}
@@ -1512,7 +1512,7 @@ export default function ShadowingWorkspace({ lessonId, initialContent }: Shadowi
             </button>
             <div className="flex items-center gap-2 mb-4">
               <Keyboard className="size-5 text-brand-cyan" />
-              <h3 className="text-lg font-semibold font-mono tracking-wide uppercase">
+              <h3 className="text-lg font-semibold tracking-wide uppercase">
                 Phím tắt học tập
               </h3>
             </div>

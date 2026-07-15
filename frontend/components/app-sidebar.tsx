@@ -133,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   className="hidden h-auto w-full object-contain dark:block"
                 />
               </span>
-              <span className="text-lg font-semibold tracking-[-0.035em] text-foreground group-data-[collapsible=icon]:hidden">
+              <span className="text-lg font-semibold tracking-heading text-foreground group-data-[collapsible=icon]:hidden">
                 Eng<span className="text-brand-cyan">Flex</span>
               </span>
             </SidebarMenuButton>

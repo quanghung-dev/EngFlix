@@ -201,7 +201,7 @@ export function NotesWorkspace() {
           }
           aside={
             <div className="rounded-panel border border-action-gold/20 bg-action-gold/10 px-5 py-4 text-action-gold">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em]">Đã lưu</p>
+              <p className="text-micro uppercase tracking-meta">Đã lưu</p>
               <p className="mt-1 text-3xl font-semibold text-foreground">{bookmarks.length}</p>
             </div>
           }
@@ -281,7 +281,7 @@ export function NotesWorkspace() {
                         {bookmark.lesson_title}
                         <ExternalLink className="size-4" aria-hidden="true" />
                       </Link>
-                      <span className="inline-flex items-center gap-1.5 whitespace-nowrap font-mono text-[10px] text-copy-muted">
+                      <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-micro text-copy-muted">
                         <CalendarDays className="size-3.5" aria-hidden="true" />
                         {formatDate(bookmark.created_at)}
                       </span>
@@ -291,7 +291,7 @@ export function NotesWorkspace() {
                       “{bookmark.original_content}”
                     </blockquote>
                     {bookmark.phonetic_content && (
-                      <p className="mt-2 font-mono text-xs leading-5 text-copy-muted">{bookmark.phonetic_content}</p>
+                      <p className="mt-2 text-xs leading-5 text-copy-muted">{bookmark.phonetic_content}</p>
                     )}
                     {bookmark.vietnamese_content && (
                       <p className="mt-4 rounded-panel border border-stroke-subtle bg-surface-inner px-4 py-3 text-sm leading-6 text-copy-secondary">
@@ -300,7 +300,7 @@ export function NotesWorkspace() {
                     )}
 
                     <div className="mt-auto border-t border-stroke-subtle pt-5">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-copy-muted">Ghi chú của bạn</p>
+                      <p className="text-micro uppercase tracking-meta text-copy-muted">Ghi chú của bạn</p>
                       <p className="mt-2 min-h-10 whitespace-pre-wrap text-sm leading-6 text-foreground">
                         {bookmark.note || <span className="italic text-copy-muted">Chưa có ghi chú riêng.</span>}
                       </p>
@@ -326,7 +326,7 @@ export function NotesWorkspace() {
           <Button variant="glass" size="icon-app" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} aria-label="Trang ghi chú trước">
             <ArrowLeft aria-hidden="true" />
           </Button>
-          <span className="font-mono text-xs text-copy-muted">Trang {page}/{totalPages}</span>
+          <span className="text-xs text-copy-muted">Trang {page}/{totalPages}</span>
           <Button variant="glass" size="icon-app" onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} aria-label="Trang ghi chú tiếp theo">
             <ArrowRight aria-hidden="true" />
           </Button>

@@ -48,7 +48,7 @@ Home chuẩn là `/home`. Route `/` chỉ redirect tới `/home`.
 | `frontend/components/landing/landing-interactions.tsx` | Navigation, hero visual, tabs, motion, keyboard behavior |
 | `frontend/components/landing/landing-sections.tsx` | Value strip, bento features, method, final CTA, footer |
 | `frontend/app/globals.css`, phần `.landing-*` | Nền, glass, gradient, border, shadow, focus, keyframes |
-| `frontend/app/layout.tsx` | Geist, Geist Mono, metadata, ngôn ngữ `vi` |
+| `frontend/app/layout.tsx` | Be Vietnam Pro, Geist Mono cho phím tắt, metadata, ngôn ngữ `vi` |
 | `frontend/components/ui/*` | Primitive behavior; chưa phải visual source of truth của Home |
 | `frontend/components/product-shell.tsx`, `frontend/app/(product)`, `frontend/app/(study)` | Product shell và route composition đã triển khai |
 | `frontend/components/product/*` | Page header, async states và reveal dùng chung cho product pages |
@@ -66,7 +66,7 @@ Khi Home thay đổi có chủ đích, tài liệu này phải được audit v�
 | Variant/composition | CVA, clsx, tailwind-merge |
 | Icon | Lucide React |
 | Motion | Motion for React + CSS keyframes/Tailwind animation utilities |
-| Font | Geist Sans, Geist Mono qua `next/font` |
+| Font | Be Vietnam Pro, Geist Mono qua `next/font` |
 | Theme | `next-themes`, light mặc định, dark opt-in, lưu tại browser key `engflex-theme` |
 | Responsive | Tailwind breakpoints + media queries riêng + mobile hook 768px |
 
@@ -418,10 +418,10 @@ Không dùng gradient cho body text, form label, table content hoặc tất cả
 
 | Role | Font |
 |---|---|
-| UI/body/heading | Geist Sans |
-| Metric, timestamp, code-like metadata, eyebrow | Geist Mono |
+| UI/body/heading/metadata | Be Vietnam Pro |
+| Phím tắt và nội dung code-like thực sự | Geist Mono |
 
-Không dùng font mới nếu không có quyết định thay đổi thương hiệu. Mono không dùng cho paragraph dài.
+Be Vietnam Pro là font thương hiệu chính vì hỗ trợ tiếng Việt rõ ràng và có nhịp chữ mềm, phù hợp sản phẩm giáo dục. Mono không dùng cho paragraph, metadata, timestamp hay metric thông thường.
 
 ### 5.2. Weight
 
@@ -429,25 +429,25 @@ Không dùng font mới nếu không có quyết định thay đổi thương hi
 |---:|---|
 | 400 | Body |
 | 500 | Navigation, label, supporting emphasis |
-| 600 | Heading, CTA, card title |
-| 700 | Micro status label cần nhấn mạnh |
-| 650 | Chỉ là optical weight đang có ở landing kicker; không tạo scale riêng |
+| 600 | Section heading, CTA, card title, active navigation |
+| 700 | Page title hoặc nội dung cần nhấn mạnh đặc biệt |
 
 ### 5.3. Official type scale
 
 | Token | Size | Line-height | Weight | Tracking | Dùng cho |
 |---|---|---:|---:|---:|---|
-| `display.hero` | `clamp(3.2rem, 7.3vw, 7.4rem)` | .91 | 600 | -.065em | Hero marketing duy nhất |
-| `heading.page` | 36px mobile, 48px desktop | 1.05–1.12 | 600 | -.045em | H1 của page/major section |
-| `heading.section` | 36 / 48 / 60px tại mobile/sm/lg | 1.05–1.12 | 600 | -.045em | Landing section H2 |
-| `heading.card` | 24 / 30px | 1.2 | 600 | tight | Feature/card H3 |
-| `heading.compact` | 20 / 24px | 1.25 | 600 | tight | Compact card/modal H3 |
-| `body.large` | 18px | 32px | 400 | normal | Lead/supporting paragraph |
-| `body.default` | 16px | 28px | 400 | normal | Body |
-| `body.small` | 14px | 20–24px | 400/500 | normal | Helper/nav/compact UI |
-| `caption` | 12px | 18px | 500 | normal | Caption, metadata |
-| `eyebrow` | 10–11px | 16px | 600/700 | .18–.22em | Uppercase/mono label |
-| `button` | 14px; 16px ở large | 20–24px | 600 | normal | Button |
+| `display.hero` | `clamp(3rem, 7vw, 7rem)` | .94 | 600 | -.04em | Hero marketing duy nhất |
+| `heading.page` | `clamp(28px, 2.2vw, 36px)` | 1.2 | 700 | -.025em | H1 của page/major section |
+| `heading.section` | `clamp(24px, 2vw, 32px)` | 1.3 | 600 | -.025em | Section H2 |
+| `heading.card` | `clamp(19px, 1.4vw, 22px)` | 1.35 | 600 | -.015em | Feature/card H3 |
+| `heading.compact` | 18 / 20px | 1.35 | 600 | -.015em | Compact card/modal H3 |
+| `body.large` | 18px | 1.6 | 400 | normal | Lead/supporting paragraph |
+| `body.default` | 15–16px | 1.6–1.65 | 400 | -.005em–0 | Body |
+| `body.small` | 14px | 1.5–1.6 | 400/500 | normal | Helper/compact UI |
+| `navigation` | 15px | 1.4 | 500/600 active | normal | Sidebar/menu |
+| `caption` | 12px | 1.4 | 500 | normal | Caption |
+| `metadata` | 11–12px | 1.4 | 600 | .08em | Uppercase metadata/eyebrow |
+| `button` | 14–15px | 1.4 | 600 | -.005em–0 | Button |
 
 `heading.page` là **[Chuẩn hóa]** từ section hierarchy của Home cho product pages; product H1 không dùng cỡ hero.
 
@@ -456,9 +456,9 @@ Không dùng font mới nếu không có quyết định thay đổi thương hi
 - Mỗi page chỉ có một H1.
 - Section chính đi theo H2; card title theo H3.
 - Eyebrow đứng trước heading, không thay heading.
-- Heading ưu tiên 600, tránh 700 trừ nội dung compact đặc biệt.
+- Heading ưu tiên 600; 700 dành cho page title và điểm nhấn chính.
 - Tracking âm chỉ dùng cho heading lớn.
-- Uppercase tracking rộng chỉ dùng cho micro-label.
+- Uppercase chỉ dùng cho metadata ngắn và giữ tracking ở khoảng `.08em`.
 - Body line length mục tiêu 55–72 ký tự; copy block thường cap 640–672px.
 - Không dùng micro text dưới 10px cho thông tin cần đọc.
 - Không dùng slate-500 cho text 12–14px quan trọng.
@@ -468,9 +468,9 @@ Không dùng font mới nếu không có quyết định thay đổi thương hi
 
 - Button: 14px semibold; large 16px.
 - Form label: 14px medium.
-- Metric chính: Geist Sans semibold.
-- Metric label/timestamp/step number: Geist Mono 10–12px.
-- Không dùng font mono để tạo cảm giác “tech” cho mọi nội dung.
+- Metric chính: Be Vietnam Pro semibold và `tabular-nums` khi cần canh số.
+- Metric label/timestamp/step number: Be Vietnam Pro 11–12px.
+- Geist Mono chỉ dùng cho phím tắt hoặc dữ liệu code-like thực sự.
 
 ---
 
@@ -1011,7 +1011,7 @@ Home mobile menu button hiện 40px; đây là **[Khoảng trống accessibility
 
 - Badge là thông tin compact, không phải CTA.
 - Height mục tiêu 24–28px; horizontal padding 8–12px; radius full.
-- Text 10–12px, medium/semibold; Geist Mono cho status/metric ngắn.
+- Text 11–12px, medium/semibold; Be Vietnam Pro cho status/metric ngắn.
 - Neutral dùng white 5–8% + slate-300.
 - Info dùng cyan tint; success emerald; attention gold; supporting mode violet.
 - Destructive badge dùng destructive semantic token, không dùng rose recording tùy tiện.
@@ -1250,7 +1250,7 @@ Visual source of truth là Home card, nhưng semantic slots của primitive vẫ
 - Row divider: white 6%.
 - Row hover: white 3–5%, không nâng hoặc shadow từng row.
 - Selected row: cyan tint 5–8% + accessible selected state.
-- Numeric/metric column: Geist Mono, tabular number.
+- Numeric/metric column: Be Vietnam Pro với `tabular-nums`.
 - Status dùng semantic badge; không tô cả row nếu không cần.
 
 ### 17.3. Sizing
@@ -1818,7 +1818,7 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 - Dùng canonical cyan `#6EE7F2` và gold `#F7C76F`.
 - Dùng cyan cho active/info/focus và gold cho conversion/practice.
 - Dùng emerald cho success, violet cho supporting skill.
-- Dùng Geist và Geist Mono đúng vai trò.
+- Dùng Be Vietnam Pro cho UI; Geist Mono chỉ cho phím tắt/code-like.
 - Dùng type scale chuẩn và heading semantic.
 - Dùng spacing scale 4px.
 - Giữ gutter 20/32/40–48px.
@@ -1918,7 +1918,7 @@ Kiểm tra thêm zoom 200% và text wrapping tiếng Việt.
 - [ ] Cỡ/weight/tracking đúng type scale chưa?
 - [ ] Body line-height và line length hợp lý chưa?
 - [ ] Micro text có đủ lớn và đủ contrast không?
-- [ ] Geist Mono chỉ dùng cho metadata/metric chưa?
+- [ ] Geist Mono có được giới hạn ở phím tắt/code-like chưa?
 - [ ] Copy tiếng Việt nhất quán chưa?
 
 ### Spacing và layout

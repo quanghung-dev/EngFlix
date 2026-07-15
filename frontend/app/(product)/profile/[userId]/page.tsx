@@ -454,7 +454,7 @@ export default function UserProfilePage() {
 
       <section aria-labelledby="profile-posts-heading" className="space-y-5">
         <div>
-          <p className="font-mono text-xs tracking-[0.16em] text-brand-cyan uppercase">Learning journal</p>
+          <p className="text-xs tracking-meta text-brand-cyan uppercase">Learning journal</p>
           <h2 id="profile-posts-heading" className="mt-2 text-2xl font-semibold text-foreground">Bài viết trên hồ sơ</h2>
         </div>
 

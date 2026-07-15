@@ -70,7 +70,7 @@ export function PostCard({
                 <LevelBadge level={post.level} />
               </div>
               <time
-                className="mt-1 block font-mono text-xs text-copy-muted"
+                className="mt-1 block text-xs text-copy-muted"
                 dateTime={post.created_at}
               >
                 {formatSocialDate(post.created_at)}
@@ -123,7 +123,7 @@ export function PostCard({
                   className={cn(post.is_liked && "fill-brand-cyan/20")}
                   aria-hidden="true"
                 />
-                <span className="font-mono tabular-nums">{post.likes_count}</span>
+                <span className="tabular-nums">{post.likes_count}</span>
                 Thích
               </Button>
               <Button
@@ -136,7 +136,7 @@ export function PostCard({
                 className={cn(commentsOpen && "bg-brand-cyan/10 text-brand-cyan")}
               >
                 <MessageCircleIcon aria-hidden="true" />
-                <span className="font-mono tabular-nums">{post.comments_count}</span>
+                <span className="tabular-nums">{post.comments_count}</span>
                 Bình luận
               </Button>
             </div>

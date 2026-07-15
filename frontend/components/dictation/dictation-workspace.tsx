@@ -729,7 +729,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
     return (
       <div className="flex h-[80vh] w-full flex-col items-center justify-center gap-4 text-copy-secondary">
         <div className="size-10 animate-spin rounded-full border-4 border-brand-cyan border-t-transparent" />
-        <p className="font-mono text-sm tracking-widest text-brand-cyan uppercase animate-pulse">
+        <p className="text-sm tracking-meta text-brand-cyan uppercase animate-pulse">
           Đang tải dữ liệu bài học...
         </p>
       </div>
@@ -770,7 +770,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
           <span className="truncate text-copy-secondary font-semibold max-w-[16rem]" title={lesson.title}>
             {lesson.title}
           </span>
-          <Badge variant="info" className="ml-2 font-mono text-[10px] uppercase">
+          <Badge variant="info" className="ml-2 text-micro uppercase">
             {lesson.level}
           </Badge>
         </div>
@@ -781,7 +781,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             variant="glass"
             size="sm"
             onClick={() => setShowVideo(!showVideo)}
-            className={cn("text-[11px] font-mono tracking-wider uppercase transition", !showVideo && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
+            className={cn("text-micro tracking-meta uppercase transition", !showVideo && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
           >
             <Tv className="size-3.5" />
             {showVideo ? "Ẩn Media" : "Hiện Media"}
@@ -790,7 +790,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             variant="glass"
             size="sm"
             onClick={() => setShowTranscript(!showTranscript)}
-            className={cn("text-[11px] font-mono tracking-wider uppercase transition", !showTranscript && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
+            className={cn("text-micro tracking-meta uppercase transition", !showTranscript && "border-brand-cyan/40 text-brand-cyan bg-brand-cyan/5")}
           >
             <ListMusic className="size-3.5" />
             {showTranscript ? "Ẩn Transcript" : "Hiện Transcript"}
@@ -799,7 +799,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             variant="glass"
             size="sm"
             onClick={() => setShowShortcutsModal(true)}
-            className="text-[11px] font-mono tracking-wider uppercase hover:text-brand-cyan"
+            className="text-micro tracking-meta uppercase hover:text-brand-cyan"
             title="Xem phím tắt"
           >
             <Keyboard className="size-3.5" />
@@ -813,10 +813,10 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
         {showVideo && (
           <div className={cn("flex flex-col border-r border-stroke-subtle bg-canvas-deep p-5 lg:p-6 overflow-y-auto transition-all duration-300", showTranscript ? "lg:col-span-4" : "lg:col-span-5")}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-mono text-xs font-bold tracking-widest text-brand-cyan uppercase">
+              <h3 className="text-xs font-semibold tracking-meta text-brand-cyan uppercase">
                 VIDEO
               </h3>
-              <span className="flex items-center gap-1.5 font-mono text-xs text-copy-muted">
+              <span className="flex items-center gap-1.5 text-xs text-copy-muted">
                 <Clock className="size-3.5" />
                 {activeTranscript ? `${activeTranscript.start_timestamp.toFixed(1)}s - ${activeTranscript.end_timestamp.toFixed(1)}s` : "0:00"}
               </span>
@@ -831,7 +831,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
 
             {/* Bộ điều khiển phát */}
             <div className="mt-6">
-              <h4 className="font-mono text-[10px] font-bold tracking-widest text-copy-subtle uppercase mb-3">
+              <h4 className="text-micro font-semibold tracking-meta text-copy-subtle uppercase mb-3">
                 ĐIỀU KHIỂN VIDEO
               </h4>
               <div className="grid grid-cols-2 gap-3">
@@ -861,7 +861,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                   priority
                 />
               </div>
-              <p className="mt-2 text-xs font-mono text-copy-muted uppercase tracking-widest">
+              <p className="mt-2 text-xs text-copy-muted uppercase tracking-meta">
                 {isCurrentSentenceCompleted
                   ? "Tuyệt vời! Bạn nghe rất chuẩn!"
                   : userAnswers[currentSentenceIndex]?.trim().length > 0
@@ -886,7 +886,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                   key={tab}
                   onClick={() => setDifficulty(tab)}
                   className={cn(
-                    "px-4 py-1.5 text-xs font-mono font-semibold rounded-control tracking-wider uppercase transition-all duration-200",
+                    "px-4 py-1.5 text-xs font-semibold rounded-control tracking-meta uppercase transition-all duration-200",
                     difficulty === tab
                       ? tab === "easy"
                         ? "bg-status-success/15 text-status-success border border-status-success/35"
@@ -918,7 +918,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                 >
                   <ChevronLeft className="size-4" />
                 </Button>
-                <span className="font-mono text-xs text-copy-secondary px-2">
+                <span className="text-xs text-copy-secondary px-2">
                   {currentSentenceIndex + 1} / {transcripts.length}
                 </span>
                 <Button
@@ -962,7 +962,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                     variant="glass"
                     size="sm"
                     onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                    className="h-7 text-xs font-mono rounded-control border-stroke-strong gap-1"
+                    className="h-7 text-xs rounded-control border-stroke-strong gap-1"
                   >
                     <SlidersHorizontal className="size-3" />
                     {playbackSpeed}x
@@ -975,7 +975,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                           key={speed}
                           onClick={() => handleSpeedChange(speed)}
                           className={cn(
-                            "w-full px-3 py-1.5 text-left font-mono text-xs rounded-control transition",
+                            "w-full px-3 py-1.5 text-left text-xs rounded-control transition",
                             playbackSpeed === speed
                               ? "bg-brand-cyan/10 text-brand-cyan"
                               : "text-copy-muted hover:bg-surface-inner hover:text-foreground"
@@ -994,7 +994,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                   size="sm"
                   onClick={() => setIsLooping(!isLooping)}
                   className={cn(
-                    "h-7 text-xs font-mono rounded-control transition",
+                    "h-7 text-xs rounded-control transition",
                     isLooping ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5" : "text-copy-muted"
                   )}
                   title={isLooping ? "Đang bật lặp đoạn" : "Đang tắt lặp đoạn"}
@@ -1009,7 +1009,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                   onClick={handleToggleBookmark}
                   disabled={!activeTranscript}
                   className={cn(
-                    "h-7 text-xs font-mono rounded-control transition gap-1.5",
+                    "h-7 text-xs rounded-control transition gap-1.5",
                     activeTranscript && bookmarkedMap.has(activeTranscript.id) 
                       ? "border-brand-cyan/30 text-brand-cyan bg-brand-cyan/5 font-semibold" 
                       : "text-copy-muted hover:text-brand-cyan"
@@ -1025,15 +1025,15 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             {/* Khối dịch từ vựng nhanh (Clickable sentence words) */}
             {activeTranscript && (
               <div className="flex flex-wrap gap-1.5 items-center justify-center p-3 rounded-control border border-stroke bg-canvas-deep/40 text-center mb-5">
-                <span className="text-[10px] font-mono text-copy-muted block w-full uppercase mb-1">Click vào từ tiếng Anh bất kỳ để dịch nhanh bằng AI:</span>
+                <span className="text-micro text-copy-muted block w-full uppercase mb-1">Click vào từ tiếng Anh bất kỳ để dịch nhanh bằng AI:</span>
                 {activeTranscript.content.split(/\s+/).map((word, idx) => {
                   const cleanWord = word.replace(/^[.,\/#!$%\^&\*;:{}=\-_`~()?"'“]+/g, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'”]+$/g, "")
-                  if (!cleanWord) return <span key={idx} className="text-copy-muted text-xs font-mono">{word}</span>
+                  if (!cleanWord) return <span key={idx} className="text-copy-muted text-xs ">{word}</span>
                   return (
                     <span
                       key={idx}
                       onClick={() => handleTranslateWord(cleanWord)}
-                      className="text-xs hover:text-brand-cyan hover:underline cursor-pointer transition select-none font-mono text-copy-secondary"
+                      className="text-xs hover:text-brand-cyan hover:underline cursor-pointer transition select-none text-copy-secondary"
                     >
                       {word}
                     </span>
@@ -1057,32 +1057,32 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                     <X className="size-4" />
                   </button>
 
-                  <h3 className="text-xs font-semibold font-mono tracking-wide uppercase text-brand-cyan mb-4 flex items-center gap-2">
+                  <h3 className="text-xs font-semibold tracking-wide uppercase text-brand-cyan mb-4 flex items-center gap-2">
                     <Sparkles className="size-4 text-brand-cyan animate-pulse" /> Dịch thuật thông minh AI
                   </h3>
 
                   {translateLoading ? (
                     <div className="flex flex-col items-center justify-center py-8 gap-3">
                       <div className="size-6 animate-spin rounded-full border-2 border-brand-cyan border-t-transparent" />
-                      <span className="text-xs text-copy-muted font-mono animate-pulse">DeepSeek đang dịch từ...</span>
+                      <span className="text-xs text-copy-muted animate-pulse">DeepSeek đang dịch từ...</span>
                     </div>
                   ) : (
                     translationResult && (
                       <div className="space-y-4">
                         <div className="bg-canvas-deep border border-stroke p-3 rounded-card text-center">
-                          <h4 className="text-base font-bold text-foreground">{translationResult.phrase}</h4>
-                          <p className="text-xs font-mono text-copy-muted mt-1">{translationResult.phonetic}</p>
-                          <span className="inline-block text-[9px] font-mono text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
+                          <h4 className="text-base font-semibold text-foreground">{translationResult.phrase}</h4>
+                          <p className="text-xs text-copy-muted mt-1">{translationResult.phonetic}</p>
+                          <span className="inline-block text-micro text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded mt-2 uppercase">{translationResult.note}</span>
                         </div>
 
                         <div>
-                          <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
+                          <span className="text-micro text-copy-muted uppercase block mb-1">Nghĩa dịch</span>
                           <p className="text-xs font-semibold text-status-success">{translationResult.meaning}</p>
                         </div>
 
                         {translationResult.example_sentence && (
                           <div className="border-t border-stroke/40 pt-3">
-                            <span className="text-[10px] font-mono text-copy-muted uppercase block mb-1">Ví dụ minh hoạ</span>
+                            <span className="text-micro text-copy-muted uppercase block mb-1">Ví dụ minh hoạ</span>
                             <p className="text-xs text-copy-secondary italic leading-relaxed">“{translationResult.example_sentence}”</p>
                             {translationResult.example_translation && (
                               <p className="text-xs text-copy-muted italic leading-relaxed mt-1">→ “{translationResult.example_translation}”</p>
@@ -1096,7 +1096,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                             size="sm"
                             type="button"
                             onClick={() => setTranslationResult(null)}
-                            className="font-mono text-xs uppercase"
+                            className="text-xs uppercase"
                           >
                             Đóng
                           </Button>
@@ -1106,7 +1106,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                             type="button"
                             onClick={handleSaveWord}
                             disabled={savingWord}
-                            className="font-mono text-xs uppercase"
+                            className="text-xs uppercase"
                           >
                             {savingWord ? "Đang lưu..." : "Lưu từ"}
                           </Button>
@@ -1119,7 +1119,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             )}
 
             {/* Tiêu đề vùng gõ */}
-            <p className="font-mono text-[10px] font-bold tracking-widest text-brand-cyan uppercase mb-3">
+            <p className="text-micro font-semibold tracking-meta text-brand-cyan uppercase mb-3">
               GÕ NHỮNG GÌ BẠN NGHE ĐƯỢC:
             </p>
 
@@ -1192,7 +1192,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                   {/* Khung chữ */}
                   <span
                     className={cn(
-                      "px-2.5 py-1 text-xs font-mono rounded border transition-all duration-300",
+                      "px-2.5 py-1 text-xs rounded border transition-all duration-300",
                       card.isCorrect
                         ? "bg-status-success/10 border-status-success/30 text-status-success font-semibold"
                         : card.isRevealed
@@ -1206,7 +1206,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
               ))}
             </div>
 
-            <p className="mt-3 text-[10px] text-copy-subtle leading-normal">
+            <p className="mt-3 text-micro text-copy-subtle leading-normal">
               Các từ được tiết lộ bằng con mắt gợi ý sẽ bị tính là lỗi và ảnh hưởng đến điểm số của bạn.
             </p>
 
@@ -1270,12 +1270,12 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-5 shrink-0 text-status-success mt-0.5" />
                 <div>
-                  <p className="font-semibold text-xs font-mono tracking-widest text-status-success uppercase mb-1">
+                  <p className="font-semibold text-xs tracking-meta text-status-success uppercase mb-1">
                     CHÍNH XÁC - DỊCH NGHĨA:
                   </p>
                   <p className="italic text-copy-secondary">“{activeTranscript.vietnamese}”</p>
                   {activeTranscript.phonetic && (
-                    <p className="mt-1 text-xs text-copy-muted font-mono">Phonetic: {activeTranscript.phonetic}</p>
+                    <p className="mt-1 text-xs text-copy-muted ">Phonetic: {activeTranscript.phonetic}</p>
                   )}
                 </div>
               </div>
@@ -1287,10 +1287,10 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
         {showTranscript && (
           <div className="lg:col-span-3 flex flex-col border-l border-stroke-subtle bg-canvas-deep/80 p-5 lg:p-6 overflow-hidden">
             <div className="flex items-center justify-between border-b border-stroke-subtle pb-4 mb-4">
-              <h3 className="font-mono text-xs font-bold tracking-widest text-brand-cyan uppercase">
+              <h3 className="text-xs font-semibold tracking-meta text-brand-cyan uppercase">
                 BẢN CHÉP
               </h3>
-              <Badge variant={completionPercentage === 100 ? "success" : "info"} className="font-mono">
+              <Badge variant={completionPercentage === 100 ? "success" : "info"} className="">
                 {completionPercentage}%
               </Badge>
             </div>
@@ -1322,7 +1322,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
                     )}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-[10px] font-bold text-copy-muted">
+                      <span className="text-micro font-semibold text-copy-muted">
                         #{t.sequence + 1}
                       </span>
                       {isCompleted && (
@@ -1344,7 +1344,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
 
                     {/* Dịch nghĩa nhỏ gọn dưới chân nếu đã hoàn thành */}
                     {isCompleted && t.vietnamese && (
-                      <p className="mt-2 text-[10px] text-copy-muted italic border-t border-stroke-subtle pt-1.5 truncate">
+                      <p className="mt-2 text-micro text-copy-muted italic border-t border-stroke-subtle pt-1.5 truncate">
                         {t.vietnamese}
                       </p>
                     )}
@@ -1380,7 +1380,7 @@ export default function DictationWorkspace({ lessonId, initialContent }: Dictati
             </button>
             <div className="flex items-center gap-2 mb-4">
               <Keyboard className="size-5 text-brand-cyan" />
-              <h3 className="text-lg font-semibold font-mono tracking-wide uppercase">
+              <h3 className="text-lg font-semibold tracking-wide uppercase">
                 Phím tắt học tập
               </h3>
             </div>

@@ -30,7 +30,7 @@ function ChartTooltip({ active, label, payload, valueSuffix }: ChartTooltipProps
 
   return (
     <div className="rounded-control border border-stroke-strong bg-canvas-deep px-3 py-2 shadow-card">
-      <p className="font-mono text-[10px] uppercase tracking-wider text-copy-muted">
+      <p className="text-micro uppercase tracking-meta text-copy-muted">
         {label}
       </p>
       <p className="mt-1 text-sm font-semibold text-brand-cyan">
@@ -78,13 +78,13 @@ export function WeeklyProgressChart({ data, reduceMotion }: WeeklyProgressChartP
               tickFormatter={formatDay}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "var(--engflex-text-muted)", fontSize: 11 }}
+              tick={{ fill: "var(--engflex-text-muted)", fontSize: 12 }}
             />
             <YAxis
               allowDecimals={false}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "var(--engflex-text-muted)", fontSize: 11 }}
+              tick={{ fill: "var(--engflex-text-muted)", fontSize: 12 }}
             />
             <Tooltip
               cursor={{ fill: "var(--engflex-hover-surface)" }}
@@ -145,14 +145,14 @@ export function PronunciationChart({ attempts, reduceMotion }: PronunciationChar
               dataKey="label"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "var(--engflex-text-muted)", fontSize: 11 }}
+              tick={{ fill: "var(--engflex-text-muted)", fontSize: 12 }}
             />
             <YAxis
               domain={[0, 100]}
               ticks={[0, 25, 50, 75, 100]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "var(--engflex-text-muted)", fontSize: 11 }}
+              tick={{ fill: "var(--engflex-text-muted)", fontSize: 12 }}
             />
             <Tooltip content={<ChartTooltip valueSuffix="điểm" />} />
             <Area

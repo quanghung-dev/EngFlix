@@ -27,13 +27,13 @@ export function ProductPageHeader({
       )}
     >
       <div className="max-w-3xl">
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.2em] text-brand-cyan uppercase">
+        <div className="type-meta flex items-center gap-2 text-brand-cyan">
           {eyebrow}
         </div>
-        <h1 className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.045em] text-foreground lg:text-5xl">
+        <h1 className="type-page-title mt-4 text-foreground">
           {title}
         </h1>
-        <p className="mt-6 max-w-2xl text-base leading-7 text-copy-muted sm:text-lg sm:leading-8">
+        <p className="type-body mt-5 max-w-2xl text-copy-muted sm:text-lg">
           {description}
         </p>
         {actions ? (

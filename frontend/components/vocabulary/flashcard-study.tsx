@@ -112,13 +112,13 @@ function FlashcardContextDetails({
       {/* Original Sentence */}
       {transcript && (
         <div className="space-y-1">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-brand-cyan font-bold">Câu gốc trong phim</span>
+          <span className="text-micro uppercase tracking-meta text-brand-cyan font-semibold">Câu gốc trong phim</span>
           <p className="text-xs font-semibold text-foreground">“{transcript.content}”</p>
           {transcript.vietnamese && (
-            <p className="text-[10px] text-copy-muted italic">Dịch: {transcript.vietnamese}</p>
+            <p className="text-micro text-copy-muted italic">Dịch: {transcript.vietnamese}</p>
           )}
           {transcript.phonetic && (
-            <p className="text-[10px] text-copy-subtle font-mono">Phiên âm: {transcript.phonetic}</p>
+            <p className="text-micro text-copy-subtle ">Phiên âm: {transcript.phonetic}</p>
           )}
         </div>
       )}
@@ -127,20 +127,20 @@ function FlashcardContextDetails({
       <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-stroke-subtle/50">
         {/* Collocations */}
         <div className="space-y-1">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-action-gold font-bold">Cụm từ hay dùng</span>
-          <p className="text-[11px] text-copy-secondary leading-relaxed">
+          <span className="text-micro uppercase tracking-meta text-action-gold font-semibold">Cụm từ hay dùng</span>
+          <p className="text-micro text-copy-secondary leading-relaxed">
             {aiData?.note || "Đang tải collocation..."}
           </p>
         </div>
 
         {/* New test sentence */}
         <div className="space-y-1">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-status-success font-bold">Câu thử thách</span>
-          <p className="text-[11px] text-foreground font-semibold">
+          <span className="text-micro uppercase tracking-meta text-status-success font-semibold">Câu thử thách</span>
+          <p className="text-micro text-foreground font-semibold">
             {aiData?.example_sentence || fallbackExampleSentence || "Đang tải câu mẫu..."}
           </p>
           {(aiData?.example_translation || fallbackExampleTranslation) && (
-            <p className="text-[9px] text-copy-muted italic">Dịch: {aiData?.example_translation || fallbackExampleTranslation}</p>
+            <p className="text-micro text-copy-muted italic">Dịch: {aiData?.example_translation || fallbackExampleTranslation}</p>
           )}
         </div>
       </div>
@@ -207,7 +207,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
         <div className="flex size-16 items-center justify-center rounded-full border border-status-success/30 bg-status-success/10 text-status-success">
           <Check className="size-7" aria-hidden="true" />
         </div>
-        <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-brand-cyan">
+        <p className="mt-6 text-xs uppercase tracking-meta text-brand-cyan">
           Vòng ôn tập hoàn tất
         </p>
         <h2 className="mt-3 text-3xl font-semibold text-foreground">Bạn đã đi hết {items.length} thẻ</h2>
@@ -232,7 +232,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
     <section aria-labelledby="flashcard-title" className="mx-auto max-w-3xl">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">
+          <p className="text-micro uppercase tracking-meta text-brand-cyan">
             Flashcard · {cardIndex + 1}/{items.length}
           </p>
           <h2 id="flashcard-title" className="mt-2 text-xl font-semibold text-foreground">{deckName}</h2>
@@ -274,9 +274,9 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
                 reduceMotion && isFlipped ? "invisible" : "visible"
               }`}
             >
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-copy-muted">Từ / cụm từ</span>
+              <span className="text-micro uppercase tracking-meta text-copy-muted">Từ / cụm từ</span>
               <strong className="mt-5 text-balance text-4xl font-semibold text-foreground sm:text-5xl">{currentItem.phrase}</strong>
-              {currentItem.note && <span className="mt-4 font-mono text-sm text-copy-muted">{currentItem.note}</span>}
+              {currentItem.note && <span className="mt-4 text-sm text-copy-muted">{currentItem.note}</span>}
               <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs text-copy-muted">Chạm hoặc nhấn Enter để xem nghĩa</span>
             </div>
 
@@ -286,7 +286,7 @@ export function FlashcardStudy({ deckName, items, onExit }: FlashcardStudyProps)
                 reduceMotion ? (isFlipped ? "visible" : "invisible") : "[transform:rotateY(180deg)]"
               }`}
             >
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-cyan">Nghĩa</span>
+              <span className="text-micro uppercase tracking-meta text-brand-cyan">Nghĩa</span>
               <strong className="mt-3 text-balance text-2xl font-semibold text-foreground">{currentItem.meaning}</strong>
 
               {isFlipped && (

@@ -45,14 +45,14 @@ export default function HomePage() {
           <div className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-14 lg:grid-cols-[0.92fr_1.08fr] lg:gap-8 xl:gap-16">
             <div className="max-w-3xl">
               <Reveal eager>
-                <div className="landing-eyebrow mb-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cyan sm:text-xs">
+                <div className="landing-eyebrow type-meta mb-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-brand-cyan">
                   <Sparkles className="size-4 text-action-gold" />
                   Tiếng Anh bước ra từ màn ảnh
                 </div>
               </Reveal>
 
               <Reveal eager delay={0.08}>
-                <h1 className="text-balance text-[clamp(3.2rem,7.3vw,7.4rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-copy-primary">
+                <h1 className="type-hero-title text-balance text-copy-primary">
                   Học tiếng Anh
                   <span className="mt-2 block text-copy-muted">qua từng</span>
                   <span className="landing-gradient-text mt-2 block pb-2">
@@ -110,7 +110,7 @@ export default function HomePage() {
           <a
             href="#features"
             aria-label="Cuộn xuống phần tính năng"
-            className="landing-scroll-cue absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-medium uppercase tracking-[0.24em] text-copy-subtle lg:flex"
+            className="landing-scroll-cue type-meta absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 text-copy-subtle lg:flex"
           >
             Khám phá
             <span className="h-9 w-px bg-gradient-to-b from-brand-cyan/70 to-transparent" />
@@ -130,7 +130,7 @@ export default function HomePage() {
               <div className="mb-12 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
                 <div>
                   <p className="landing-kicker">Trải nghiệm học tập</p>
-                  <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-0.045em] text-copy-primary sm:text-5xl lg:text-6xl">
+                  <h2 className="mt-4 text-balance text-4xl font-semibold tracking-heading text-copy-primary sm:text-5xl lg:text-6xl">
                     Một cảnh phim.
                     <span className="block text-copy-muted">Bốn kỹ năng.</span>
                   </h2>

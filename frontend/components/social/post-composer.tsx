@@ -86,7 +86,7 @@ export function PostComposer({
             />
             <p
               id={counterId}
-              className="mt-2 text-right font-mono text-xs tabular-nums text-copy-muted"
+              className="mt-2 text-right text-xs tabular-nums text-copy-muted"
             >
               {content.length}/{MAX_POST_LENGTH}
             </p>

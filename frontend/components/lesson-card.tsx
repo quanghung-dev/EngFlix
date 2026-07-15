@@ -74,20 +74,20 @@ export function LessonCard({
           />
           <Badge
             variant="neutral"
-            className="absolute right-3 bottom-3 font-mono"
+            className="absolute right-3 bottom-3 tabular-nums"
           >
             {formatDuration(lesson.duration)}
           </Badge>
         </AspectRatio>
 
         <div className="flex flex-1 flex-col p-6">
-          <p className="font-mono text-[11px] font-semibold tracking-[0.16em] text-brand-cyan uppercase">
+          <p className="type-meta text-brand-cyan">
             {levelCode} • {accent} • {Math.ceil(lesson.duration / 60)} phút
           </p>
-          <h3 className="mt-3 line-clamp-2 text-xl leading-7 font-semibold tracking-tight text-foreground">
+          <h3 className="type-card-title mt-3 line-clamp-2 text-foreground">
             {lesson.title}
           </h3>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-copy-muted">
+          <p className="mt-2 line-clamp-2 text-nav leading-relaxed font-normal text-copy-muted">
             {description ||
               "Luyện nghe và phản xạ tiếng Anh qua một phân cảnh ngắn."}
           </p>
@@ -98,9 +98,9 @@ export function LessonCard({
 
           {progress > 0 && (
             <div className="mt-3.5 space-y-1.5">
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-copy-secondary">
+              <div className="type-meta flex items-center justify-between text-copy-secondary">
                 <span>Tiến độ</span>
-                <span className="font-mono text-brand-cyan">{progress}%</span>
+                <span className="tabular-nums text-brand-cyan">{progress}%</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-surface-inner overflow-hidden">
                 <div

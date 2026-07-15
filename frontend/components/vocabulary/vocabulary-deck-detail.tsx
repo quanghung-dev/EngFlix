@@ -74,7 +74,7 @@ export function VocabularyDeckDetail({
       <ProductReveal eager delay={0.07}>
         <section className="grid gap-6 rounded-card border border-stroke bg-surface-panel p-6 shadow-card sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
-            <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-brand-cyan">
+            <div className="flex flex-wrap gap-2 text-micro uppercase tracking-meta text-brand-cyan">
               <span>{deck.is_default ? "Bộ từ thư viện" : "Bộ từ cá nhân"}</span>
               {deck.level && <span>· {deck.level}</span>}
               {categoryName && <span>· {categoryName}</span>}
@@ -124,7 +124,7 @@ export function VocabularyDeckDetail({
           <Card variant="inner" className="h-full">
             <CardContent>
               <Layers3 className="size-5 text-brand-cyan" aria-hidden="true" />
-              <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Mục từ trang này</p>
+              <p className="mt-5 text-micro uppercase tracking-meta text-copy-muted">Mục từ trang này</p>
               <p className="mt-2 text-3xl font-semibold text-foreground">{loading ? "—" : items.length}</p>
             </CardContent>
           </Card>
@@ -133,7 +133,7 @@ export function VocabularyDeckDetail({
           <Card variant="inner" className="h-full">
             <CardContent>
               <BookOpenCheck className="size-5 text-action-gold" aria-hidden="true" />
-              <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Chế độ ôn</p>
+              <p className="mt-5 text-micro uppercase tracking-meta text-copy-muted">Chế độ ôn</p>
               <p className="mt-2 text-xl font-semibold text-foreground">Danh sách & flashcard</p>
             </CardContent>
           </Card>
@@ -142,7 +142,7 @@ export function VocabularyDeckDetail({
           <Card variant="inner" className="h-full">
             <CardContent>
               <ShieldCheck className="size-5 text-status-success" aria-hidden="true" />
-              <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-copy-muted">Quyền truy cập</p>
+              <p className="mt-5 text-micro uppercase tracking-meta text-copy-muted">Quyền truy cập</p>
               <p className="mt-2 text-xl font-semibold text-foreground">{isOwner ? "Bạn có thể chỉnh sửa" : "Chỉ đọc"}</p>
             </CardContent>
           </Card>
@@ -152,7 +152,7 @@ export function VocabularyDeckDetail({
       <ProductReveal delay={0.35}>
         <section aria-labelledby="vocabulary-items-title" className="space-y-5">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-cyan">Nội dung bộ từ</p>
+            <p className="text-micro uppercase tracking-meta text-brand-cyan">Nội dung bộ từ</p>
             <h2 id="vocabulary-items-title" className="mt-2 text-2xl font-semibold text-foreground">Từ và ngữ cảnh</h2>
           </div>
           <VocabularyItemList

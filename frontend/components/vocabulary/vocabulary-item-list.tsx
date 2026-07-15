@@ -112,7 +112,7 @@ export function VocabularyItemList({
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left text-sm">
                 <caption className="sr-only">Danh sách từ vựng trong bộ đang mở</caption>
-                <thead className="border-b border-stroke bg-surface-inner/70 font-mono text-[11px] uppercase tracking-[0.15em] text-copy-muted">
+                <thead className="border-b border-stroke bg-surface-inner/70 text-micro uppercase tracking-meta text-copy-muted">
                   <tr>
                     <th scope="col" className="px-6 py-4 font-medium">Từ / cụm từ</th>
                     <th scope="col" className="px-6 py-4 font-medium">Nghĩa</th>
@@ -137,7 +137,7 @@ export function VocabularyItemList({
                           <div>
                             <span className="block text-base">{item.phrase}</span>
                             {item.note && (
-                              <span className="mt-1 block font-mono text-xs font-normal text-copy-muted">
+                              <span className="mt-1 block text-xs font-normal text-copy-muted">
                                 {item.note}
                               </span>
                             )}
@@ -190,7 +190,7 @@ export function VocabularyItemList({
                     <div>
                       <h3 className="text-xl font-semibold text-foreground">{item.phrase}</h3>
                       {item.note && (
-                        <p className="mt-1 font-mono text-xs text-copy-muted">{item.note}</p>
+                        <p className="mt-1 text-xs text-copy-muted">{item.note}</p>
                       )}
                     </div>
                     <Button
@@ -204,7 +204,7 @@ export function VocabularyItemList({
                     </Button>
                   </div>
                   <div>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-brand-cyan">Nghĩa</p>
+                    <p className="text-micro uppercase tracking-meta text-brand-cyan">Nghĩa</p>
                     <p className="mt-2 leading-6 text-copy-secondary">{item.meaning}</p>
                   </div>
                   {item.example_sentence && (
@@ -213,7 +213,7 @@ export function VocabularyItemList({
                         “{item.example_sentence}”
                       </p>
                       {item.example_translation && (
-                        <p className="text-[11px] text-copy-muted italic">
+                        <p className="text-micro text-copy-muted italic">
                           Dịch: {item.example_translation}
                         </p>
                       )}
@@ -248,7 +248,7 @@ export function VocabularyItemList({
           <Button variant="glass" size="app" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
             Trang trước
           </Button>
-          <span className="font-mono text-xs text-copy-muted" aria-live="polite">
+          <span className="text-xs text-copy-muted" aria-live="polite">
             Trang {page} / {totalPages}
           </span>
           <Button

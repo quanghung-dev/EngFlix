@@ -187,7 +187,7 @@ export function LandingNav() {
                 className="hidden h-auto w-10 object-contain transition-transform duration-300 group-hover:scale-110 dark:block"
               />
             </span>
-            <span className="text-lg font-semibold tracking-[-0.035em] text-copy-primary">
+            <span className="text-lg font-semibold tracking-heading text-copy-primary">
               Eng<span className="text-brand-cyan">Flex</span>
             </span>
           </Link>
@@ -414,11 +414,11 @@ export function HeroVisual() {
             <span className="size-2 rounded-full bg-amber-200/70" />
             <span className="size-2 rounded-full bg-emerald-300/70" />
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">
+          <div className="flex items-center gap-2 text-micro font-semibold uppercase tracking-meta text-slate-400 sm:text-xs">
             <Sparkles aria-hidden="true" className="size-3.5 text-[#f7c76f]" />
             Learning cockpit
           </div>
-          <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-wider text-emerald-200 sm:text-[10px]">
+          <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-1 text-micro font-semibold uppercase tracking-meta text-emerald-200 sm:text-micro">
             Live
           </div>
         </div>
@@ -451,14 +451,14 @@ export function HeroVisual() {
             className="absolute bottom-[17%] left-[6%] z-20 w-[82%] rounded-xl border border-white/10 bg-[#04101d]/82 p-3 shadow-[0_18px_48px_rgba(0,0,0,0.4)] backdrop-blur-lg sm:bottom-[10%] sm:left-[12%] sm:w-[67%] sm:rounded-2xl sm:p-4"
             style={{ transform: "translateZ(66px)" }}
           >
-            <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-[#6ee7f2] sm:text-[10px]">
+            <div className="mb-2 flex items-center gap-2 text-micro font-semibold uppercase tracking-meta text-[#6ee7f2] sm:text-micro">
               <Volume2 aria-hidden="true" className="size-3.5" />
               Scene 04 · Subtitle focus
             </div>
-            <p className="text-sm font-medium tracking-[-0.015em] text-white sm:text-lg">
+            <p className="text-sm font-medium tracking-card text-white sm:text-lg">
               “You&apos;re closer than you think.”
             </p>
-            <p className="mt-1 text-[10px] text-slate-400 sm:text-xs">
+            <p className="mt-1 text-micro text-slate-400 sm:text-xs">
               Bạn đang gần mục tiêu hơn bạn nghĩ.
             </p>
           </div>
@@ -467,12 +467,12 @@ export function HeroVisual() {
             className="absolute right-[3%] top-[7%] z-20 rounded-2xl border border-amber-100/20 bg-[#0c1925]/88 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:right-[5%] sm:top-[9%] sm:p-4"
             style={{ transform: "translateZ(80px)" }}
           >
-            <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400 sm:text-[10px]">
+            <div className="text-micro font-semibold uppercase tracking-meta text-slate-400 sm:text-micro">
               Pronunciation
             </div>
             <div className="mt-1 flex items-end gap-1">
-              <span className="text-2xl font-semibold tracking-[-0.06em] text-[#f7c76f] sm:text-3xl">92</span>
-              <span className="mb-1 text-[10px] text-slate-500">/ 100</span>
+              <span className="text-2xl font-semibold tracking-heading text-[#f7c76f] sm:text-3xl">92</span>
+              <span className="mb-1 text-micro text-slate-500">/ 100</span>
             </div>
             <div className="mt-2 h-1 w-16 overflow-hidden rounded-full bg-white/10 sm:w-20">
               <motion.div
@@ -516,10 +516,10 @@ export function HeroVisual() {
         style={{ x: shouldReduceMotion ? 0 : floatX }}
       >
         <div className="mb-2 flex items-center justify-between gap-6">
-          <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+          <span className="text-micro font-semibold uppercase tracking-meta text-slate-400">
             Voice match
           </span>
-          <span className="text-[10px] font-semibold text-[#6ee7f2]">Excellent</span>
+          <span className="text-micro font-semibold text-[#6ee7f2]">Excellent</span>
         </div>
         <div className="flex h-12 items-end gap-1">
           {WAVEFORM_BARS.map((bar, index) => (
@@ -570,7 +570,7 @@ function ExperienceStage({
         className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:42px_42px]"
       />
       <div className="absolute inset-x-0 top-0 z-10 flex h-12 items-center justify-between border-b border-white/[0.07] bg-[#07121d]/55 px-4 backdrop-blur-md">
-        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+        <div className="flex items-center gap-2 text-micro font-semibold uppercase tracking-meta text-slate-400">
           <span className="size-1.5 rounded-full bg-rose-300/80" />
           Movie scene · 02:14
         </div>
@@ -619,7 +619,7 @@ function WatchStage({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: 0.08 }}
       >
-        <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-[#6ee7f2]">
+        <div className="mb-2 text-micro font-semibold uppercase tracking-meta text-[#6ee7f2]">
           Tap any word to explore
         </div>
         <p className="text-sm font-medium text-white sm:text-lg">
@@ -647,7 +647,7 @@ function PracticeStage({ shouldReduceMotion }: { shouldReduceMotion: boolean }) 
           transition={{ duration: 1.7, repeat: Infinity, ease: "easeOut" }}
         />
       </motion.div>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-amber-100/80">
+      <p className="mt-4 text-xs font-semibold uppercase tracking-meta text-amber-100/80">
         Your turn · Recording
       </p>
       <div className="mt-6 flex h-16 items-center gap-1 sm:gap-1.5" aria-hidden="true">
@@ -679,7 +679,7 @@ function FeedbackStage({ shouldReduceMotion }: { shouldReduceMotion: boolean }) 
       <div className="w-full max-w-lg rounded-[1.5rem] border border-emerald-100/15 bg-[#061520]/82 p-4 shadow-[0_26px_70px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-200/70 sm:text-[10px]">
+            <p className="text-micro font-semibold uppercase tracking-meta text-emerald-200/70 sm:text-micro">
               AI pronunciation report
             </p>
             <p className="mt-1 text-sm font-semibold text-white sm:text-base">Great performance!</p>
@@ -699,14 +699,14 @@ function FeedbackStage({ shouldReduceMotion }: { shouldReduceMotion: boolean }) 
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.35, delay: index * 0.07 }}
             >
-              <p className="text-[9px] uppercase tracking-wider text-slate-500 sm:text-[10px]">{metric.label}</p>
+              <p className="text-micro uppercase tracking-meta text-slate-500 sm:text-micro">{metric.label}</p>
               <p className="mt-1 text-xs font-semibold sm:text-sm" style={{ color: metric.color }}>
                 {metric.value}
               </p>
             </motion.div>
           ))}
         </div>
-        <div className="mt-3 flex items-start gap-2 rounded-xl border border-cyan-100/10 bg-cyan-100/[0.04] p-3 text-[11px] leading-relaxed text-slate-300 sm:text-xs">
+        <div className="mt-3 flex items-start gap-2 rounded-xl border border-cyan-100/10 bg-cyan-100/[0.04] p-3 text-micro leading-relaxed text-slate-300 sm:text-xs">
           <Sparkles aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-[#6ee7f2]" />
           Âm cuối rất rõ. Hãy kéo dài nhẹ từ “forward” để câu tự nhiên hơn.
         </div>
@@ -815,11 +815,11 @@ export function ExperienceShowcase() {
               className="relative z-10"
               aria-live="polite"
             >
-              <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] ${activeMode.accentClass}`}>
+              <div className={`flex items-center gap-2 text-micro font-semibold uppercase tracking-meta ${activeMode.accentClass}`}>
                 <activeMode.icon aria-hidden="true" className="size-4" />
                 {activeMode.eyebrow}
               </div>
-              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.045em] text-copy-primary sm:text-3xl lg:text-[2rem]">
+              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-heading text-copy-primary sm:text-3xl lg:text-3xl">
                 {activeMode.title}
               </h3>
               <p className="mt-4 text-sm leading-7 text-copy-muted">{activeMode.description}</p>

@@ -106,8 +106,8 @@ export function LoginForm({
       <form onSubmit={handleSubmit} {...props}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-1 text-center">
-            <h1 className="text-2xl font-bold text-copy-primary">Đăng nhập tài khoản</h1>
-            <p className="text-sm text-balance text-copy-muted">
+            <h1 className="type-page-title text-copy-primary">Đăng nhập tài khoản</h1>
+            <p className="mt-1 text-sm leading-relaxed text-balance text-copy-muted">
               Nhập email và mật khẩu để bắt đầu học tập trên EngFlex
             </p>
           </div>

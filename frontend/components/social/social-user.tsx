@@ -65,7 +65,7 @@ interface LevelBadgeProps {
 
 export function LevelBadge({ level, className }: LevelBadgeProps) {
   return (
-    <Badge variant="success" className={cn("font-mono tabular-nums", className)}>
+    <Badge variant="success" className={cn("tabular-nums", className)}>
       Lv.{level}
     </Badge>
   )

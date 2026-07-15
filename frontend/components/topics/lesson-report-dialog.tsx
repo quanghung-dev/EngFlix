@@ -58,11 +58,11 @@ export function LessonReportDialog({
 
         <DialogHeader className="text-center sm:text-left">
           <div className="flex justify-center sm:justify-start mb-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-cyan/15 px-3 py-1 text-[10px] font-bold text-brand-cyan uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-cyan/15 px-3 py-1 text-micro font-semibold text-brand-cyan uppercase tracking-meta">
               <Sparkles className="size-3 text-action-gold animate-pulse" /> Vòng học hoàn tất!
             </span>
           </div>
-          <DialogTitle className="text-2xl font-bold tracking-tight">
+          <DialogTitle className="text-2xl font-semibold tracking-tight">
             Báo cáo kết quả bài học
           </DialogTitle>
           <DialogDescription className="text-sm text-copy-muted mt-1 leading-normal">
@@ -76,11 +76,11 @@ export function LessonReportDialog({
           <div className="space-y-4">
             {showDictation && (
               <div className="p-4 rounded-panel border border-stroke-subtle bg-canvas-muted/20">
-                <span className="text-[10px] font-mono text-copy-muted uppercase tracking-wider block">
+                <span className="text-micro text-copy-muted uppercase tracking-meta block">
                   Độ chính xác Dictation
                 </span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-mono font-bold text-brand-cyan">
+                  <span className="text-3xl font-semibold text-brand-cyan">
                     {stats.dictationAccuracy}%
                   </span>
                 </div>
@@ -95,11 +95,11 @@ export function LessonReportDialog({
 
             {showShadowing && (
               <div className="p-4 rounded-panel border border-stroke-subtle bg-canvas-muted/20">
-                <span className="text-[10px] font-mono text-copy-muted uppercase tracking-wider block">
+                <span className="text-micro text-copy-muted uppercase tracking-meta block">
                   Điểm phát âm (Shadowing)
                 </span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-mono font-bold text-accent-violet">
+                  <span className="text-3xl font-semibold text-accent-violet">
                     {stats.pronunciationScore}/100
                   </span>
                 </div>
@@ -142,7 +142,7 @@ export function LessonReportDialog({
 
         {/* Action Panel: Next Steps */}
         <div className="space-y-2.5">
-          <h4 className="text-[10px] font-bold uppercase tracking-wider text-copy-muted">
+          <h4 className="text-micro font-semibold uppercase tracking-meta text-copy-muted">
             Hành động tiếp theo
           </h4>
 
