@@ -209,11 +209,6 @@ export function DashboardWorkspace() {
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={
-            <>
-              <GraduationCap className="size-4" aria-hidden="true" /> Không gian học tập
-            </>
-          }
           title={
             <>
               Chào mừng trở lại,{" "}

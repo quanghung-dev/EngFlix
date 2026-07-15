@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 interface ProductPageHeaderProps {
-  eyebrow: ReactNode
+  eyebrow?: ReactNode
   title: ReactNode
   description: ReactNode
   actions?: ReactNode
@@ -27,10 +27,12 @@ export function ProductPageHeader({
       )}
     >
       <div className="max-w-3xl">
-        <div className="type-meta flex items-center gap-2 text-brand-cyan">
-          {eyebrow}
-        </div>
-        <h1 className="type-page-title mt-4 text-foreground">
+        {eyebrow ? (
+          <div className="type-meta flex items-center gap-2 text-brand-cyan">
+            {eyebrow}
+          </div>
+        ) : null}
+        <h1 className={cn("type-page-title text-foreground", eyebrow ? "mt-4" : "mt-0")}>
           {title}
         </h1>
         <p className="type-body mt-5 max-w-2xl text-copy-muted sm:text-lg">

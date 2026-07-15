@@ -225,7 +225,6 @@ export function VocabularyQuizWorkspace() {
     <div className="mx-auto w-full max-w-[1280px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><Brain className="size-4" aria-hidden="true" /> Active recall</>}
           title="Luyện phản xạ từ vựng"
           description="Chọn nghĩa đúng, nghe lại phát âm và xem ngay lý do đúng hoặc sai. Bạn có thể dùng nhịp 10 giây hoặc luyện không giới hạn thời gian."
           actions={

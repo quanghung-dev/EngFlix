@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
-  Globe2Icon,
   PlusIcon,
   RefreshCwIcon,
   SparklesIcon,
@@ -174,7 +173,6 @@ export default function CommunityPage() {
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><Globe2Icon className="size-4" aria-hidden="true" /> Community feed</>}
           title="Cùng học, cùng tiến bộ"
           description="Chia sẻ câu hỏi, ghi lại chiến thắng nhỏ và tiếp sức cho những người đang luyện tiếng Anh cùng bạn."
           actions={

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState, useEffect } from "react"
 import Link from "next/link"
-import { BookOpen, Brain, LogIn, Plus } from "lucide-react"
+import { Brain, LogIn, Plus } from "lucide-react"
 
 import { ProductPageHeader } from "@/components/product/page-header"
 import { ProductReveal } from "@/components/product/product-reveal"
@@ -358,7 +358,6 @@ export function VocabularyWorkspace() {
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><BookOpen className="size-4" aria-hidden="true" /> Kho học liệu</>}
           title="Kho từ vựng của EngFlex"
           description="Khám phá bộ từ mẫu, xây thư viện cá nhân và chuyển ngay sang flashcard hoặc quiz khi bạn muốn ôn chủ động."
           actions={

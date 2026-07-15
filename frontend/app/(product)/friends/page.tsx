@@ -7,7 +7,6 @@ import {
   SearchIcon,
   UserMinusIcon,
   UserPlusIcon,
-  UsersIcon,
   XIcon,
 } from "lucide-react"
 
@@ -270,7 +269,6 @@ export default function FriendsPage() {
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><UsersIcon className="size-4" aria-hidden="true" /> Learning circle</>}
           title="Những người học cùng bạn"
           description="Quản lý kết nối, phản hồi lời mời và tìm thêm bạn học trong cộng đồng EngFlex."
           aside={

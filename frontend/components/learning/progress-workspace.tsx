@@ -9,7 +9,6 @@ import {
   BrainCircuit,
   Clock3,
   Flame,
-  Gauge,
   RefreshCw,
   Sparkles,
 } from "lucide-react"
@@ -108,7 +107,6 @@ export function ProgressWorkspace() {
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><Gauge className="size-4" aria-hidden="true" /> Learning telemetry</>}
           title="Nhìn rõ nhịp học của chính bạn."
           description="Tổng hợp bài đã hoàn tất, chuỗi học và điểm phát âm từ dữ liệu thật để bạn chọn bước luyện tiếp theo."
           actions={

@@ -424,7 +424,6 @@ export default function UserProfilePage() {
 
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={isOwnProfile ? "Your learning identity" : "Member profile"}
           title={profile.name}
           description={
             isOwnProfile

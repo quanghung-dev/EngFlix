@@ -8,7 +8,6 @@ import {
   Bookmark,
   CalendarDays,
   ExternalLink,
-  NotebookPen,
   Pencil,
   Search,
   Trash2,
@@ -190,7 +189,6 @@ export function NotesWorkspace() {
     <div className="mx-auto w-full max-w-[1320px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          eyebrow={<><NotebookPen className="size-4" aria-hidden="true" /> Sổ tay học tập</>}
           title="Những câu đáng nhớ, ở cùng một nơi."
           description="Tìm lại câu thoại đã lưu, bổ sung ngữ cảnh của riêng bạn và quay về bài học khi cần luyện thêm."
           actions={
