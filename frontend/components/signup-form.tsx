@@ -13,8 +13,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { apiRequest } from "@/lib/api-client"
 import { auth, googleProvider } from "@/lib/firebase"
+import {
+  clearAuthenticatedSession,
+  syncAuthenticatedSession,
+} from "@/services/auth.service"
 
 export function SignupForm({
   className,
@@ -59,24 +62,14 @@ export function SignupForm({
         })
       }
 
-      // 3. Lấy ID Token mới tạo
-      const token = await user.getIdToken()
-      if (!token) {
-        throw new Error("Đăng ký thành công nhưng không lấy được mã xác thực")
-      }
-
-      // 4. Lưu token vào localStorage
-      localStorage.setItem("token", token)
-
-      // 5. Gọi API đồng bộ (sync) thông tin với Postgres DB ở backend
-      await apiRequest("auth/sync", {
-        method: "POST",
-      })
+      // 3. Đồng bộ phiên Firebase với hồ sơ Postgres.
+      await syncAuthenticatedSession(user)
 
       // 6. Điều hướng về trang thư viện bài học
       router.push("/topics")
     } catch (err: unknown) {
       console.error("Đăng ký Firebase thất bại:", err)
+      await clearAuthenticatedSession()
 
       // Việt hóa mã lỗi Firebase thông dụng
       let errorMsg = "Đăng ký không thành công. Vui lòng thử lại sau."
@@ -104,24 +97,13 @@ export function SignupForm({
     try {
       // 1. Đăng nhập Google
       const userCredential = await signInWithPopup(auth, googleProvider)
-      const token = await userCredential.user.getIdToken()
-
-      if (!token) {
-        throw new Error("Không lấy được mã xác thực từ Google")
-      }
-
-      // 2. Lưu token vào localStorage
-      localStorage.setItem("token", token)
-
-      // 3. Đồng bộ hóa với backend
-      await apiRequest("auth/sync", {
-        method: "POST",
-      })
+      await syncAuthenticatedSession(userCredential.user)
 
       // 4. Điều hướng về trang thư viện bài học
       router.push("/topics")
     } catch (err: unknown) {
       console.error("Đăng ký bằng Google thất bại:", err)
+      await clearAuthenticatedSession()
       if (!(err instanceof FirebaseError && err.code === "auth/popup-closed-by-user")) {
         setError(err instanceof Error && err.message ? err.message : "Kết nối tài khoản Google thất bại.")
       }

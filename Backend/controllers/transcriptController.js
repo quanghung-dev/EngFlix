@@ -1,5 +1,7 @@
 const { errorResponse, dataResponse } = require('../utils/response');
 const transcriptService = require('../services/transcriptService.js');
+const { setPublicCache } = require('../utils/cacheHeaders.js');
+const { revalidateFrontend } = require('../utils/revalidateFrontend.js');
 
 const createTranscript = async (req, res, next) => {
     try {
@@ -17,6 +19,7 @@ const createTranscript = async (req, res, next) => {
         if (!newTranscript) {
             return errorResponse(res, 400, 'Failed to create transcript');
         }
+        await revalidateFrontend([`lesson:${lesson_id}`, `transcripts:${lesson_id}`]);
         return dataResponse(res, 201, newTranscript);
     } catch (error) {
         next(error);
@@ -30,6 +33,7 @@ const getTranscriptsById = async (req, res, next) => {
         if (!transcript) {
             return errorResponse(res, 404, 'Transcript not found');
         }
+        setPublicCache(res);
         return dataResponse(res, 200, transcript);
     } catch (error) {
         next(error);
@@ -44,6 +48,7 @@ const getTranscriptsByLessonId = async (req, res, next) => {
         }
 
         const transcripts = await transcriptService.getTranscriptsByLessonId(lessonId);
+        setPublicCache(res);
         return dataResponse(res, 200, transcripts)
     } catch (error) {
         next(error);
@@ -61,6 +66,7 @@ const updateTranscript = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Transcript not found');
         }
+        await revalidateFrontend([`lesson:${result.lesson_id}`, `transcripts:${result.lesson_id}`]);
         return dataResponse(res, 200, result);
     } catch (error) {
         next(error);
@@ -74,6 +80,7 @@ const deleteTranscript = async (req, res, next) => {
         if (!result) {
             return errorResponse(res, 404, 'Transcript not found');
         }
+        await revalidateFrontend([`lesson:${result.lesson_id}`, `transcripts:${result.lesson_id}`]);
         return dataResponse(res, 200, { message: 'Xoa transcript thanh cong' });
 
     } catch (error) {
@@ -141,6 +148,7 @@ const replaceTranscripts = async(req, res, next) =>{
             return errorResponse(res, 400, 'Mảng transcripts là bắt buộc và không được rỗng');
         }
         const result = await transcriptService.replaceTranscriptsByLesson(lessonId, transcripts);
+        await revalidateFrontend([`lesson:${lessonId}`, `transcripts:${lessonId}`]);
         return dataResponse(res, 201, result);
 
     } catch (error) {
@@ -168,6 +176,7 @@ const bulkCreateTranscripts = async (req, res, next) => {
             return errorResponse(res, 400, 'Mảng transcripts là bắt buộc và phải có ít nhất 1 phần tử');
         }
         const result = await transcriptService.bulkCreateTranscripts(lessonId, transcripts);
+        await revalidateFrontend([`lesson:${lessonId}`, `transcripts:${lessonId}`]);
         return dataResponse(res, 201, result);
     } catch (error) {
         next(error);

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useMemo } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -16,7 +16,7 @@ import {
   Mic,
   Clapperboard
 } from "lucide-react"
-import { useQuery, useQueries } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { CategoryCard } from "@/components/category-card"
 import { LessonCard } from "@/components/lesson-card"
@@ -30,11 +30,13 @@ import {
 } from "@/components/topics/topics-states"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { getAllCategories } from "@/services/category.service"
-import { getLessons, getLearningHistory } from "@/services/lesson.service"
+import { getLearningHistory } from "@/services/lesson.service"
+import { getTopicsOverview } from "@/services/topics.service"
+import { useAuthenticatedUser } from "@/hooks/use-authenticated-user"
 import { cn } from "@/lib/utils"
 import type { CategoryType } from "@/types/category"
 import type { LessonType, LearningHistoryType } from "@/types/lesson"
+import type { TopicsOverviewType } from "@/types/topics"
 
 interface CategoryLessonRow {
   category: CategoryType
@@ -119,11 +121,12 @@ function CategoryRow({
 }
 
 export function CategoryLessons({
-  initialCategories = [],
+  initialOverview,
 }: {
-  initialCategories?: CategoryType[]
+  initialOverview?: TopicsOverviewType
 }) {
   const router = useRouter()
+  const { user, resolved: authResolved } = useAuthenticatedUser({ required: false })
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null)
 
   // Filters State
@@ -137,56 +140,32 @@ export function CategoryLessons({
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null) // 'studied' | 'unstudied' | null
   const [sortBy, setSortBy] = useState<"newest" | "popular">("newest")
 
-  const isReload = typeof window !== "undefined" &&
-    (window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming)?.type === "reload";
-
-  const fetchOptions = isReload ? { headers: { "Cache-Control": "no-cache" } } : undefined;
-
-  // Query: Categories
+  // One public request replaces categories + N category lesson requests + all-lessons.
   const {
-    data: categoriesResponse,
-    refetch: refetchCategories,
-    isLoading: categoriesLoading,
-    isError: categoriesError,
+    data: overviewResponse,
+    refetch: refetchOverview,
+    isLoading: overviewLoading,
+    isError: overviewError,
   } = useQuery({
-    queryKey: ["categories"],
-    queryFn: ({ signal }) => getAllCategories(undefined, { signal, ...fetchOptions }),
-    initialData: {
-      data: initialCategories,
-      meta: { page: 1, limit: initialCategories.length, total: initialCategories.length, total_pages: 1 },
-    },
-  })
-
-  const categories = categoriesResponse?.data || []
-
-  // Query: Lessons for Categories (Default view)
-  const lessonsQueries = useQueries({
-    queries: categories.map((category) => ({
-      queryKey: ["lessons", { category_id: category.id, limit: 4 }],
-      queryFn: ({ signal }) =>
-        getLessons(
-          { category_id: category.id, limit: 4 },
-          { signal, ...fetchOptions }
-        ),
-      staleTime: 5 * 60 * 1000,
-    })),
-  })
-
-  // Query: All Lessons (For search & filtering)
-  const { data: allLessonsResponse, isLoading: allLessonsLoading } = useQuery({
-    queryKey: ["all-lessons"],
-    queryFn: () => getLessons({ limit: 100 }),
+    queryKey: ["topics-overview"],
+    queryFn: ({ signal }) => getTopicsOverview({ signal }),
+    initialData: initialOverview ? { data: initialOverview } : undefined,
     staleTime: 5 * 60 * 1000,
   })
-  const allLessons = allLessonsResponse?.data || []
 
-  // Query: Learning history (To show completed progress / filter studied state)
+  const overview = overviewResponse?.data
+  const categories = useMemo(() => overview?.categories || [], [overview?.categories])
+  const allLessons = useMemo(() => overview?.lessons || [], [overview?.lessons])
+  const allLessonsLoading = overviewLoading
+
+  // Personalized state stays private and is skipped for signed-out visitors.
   const { data: historyResponse } = useQuery({
     queryKey: ["learning-history"],
     queryFn: () => getLearningHistory({ limit: 100 }),
     staleTime: 60 * 1000,
+    enabled: authResolved && Boolean(user),
   })
-  const history = historyResponse?.data || []
+  const history = useMemo(() => historyResponse?.data || [], [historyResponse?.data])
 
   // Toggles for Filters
   const toggleLevel = (lvl: string) => {
@@ -337,15 +316,11 @@ export function CategoryLessons({
   }, [allLessons, search, selectedLevels, selectedAccents, selectedDurations, selectedSkills, selectedGenres, selectedStatus, sortBy, history])
 
   const handleRetryCategories = async () => {
-    await refetchCategories()
-    lessonsQueries.forEach((q) => q.refetch())
+    await refetchOverview()
   }
 
-  const handleRetryCategory = (category: CategoryType) => {
-    const idx = categories.findIndex((c) => c.id === category.id)
-    if (idx !== -1) {
-      lessonsQueries[idx].refetch()
-    }
+  const handleRetryCategory = () => {
+    void refetchOverview()
   }
 
   const handleSelectMode = (mode: "dictation" | "shadowing") => {
@@ -354,9 +329,9 @@ export function CategoryLessons({
     setSelectedLesson(null)
   }
 
-  if (categoriesLoading) return <CategoryListSkeleton />
+  if (overviewLoading) return <CategoryListSkeleton />
 
-  if (categoriesError) {
+  if (overviewError) {
     return (
       <ContentErrorState
         title="Chưa thể mở thư viện chủ đề"
@@ -384,21 +359,13 @@ export function CategoryLessons({
     )
   }
 
-  const rows = categories.map<CategoryLessonRow>((category, index) => {
-    const query = lessonsQueries[index]
-    const lessonsList = query?.data?.data || []
-    const totalLessons = query?.data?.meta?.total
-    const loading = query ? query.isPending || query.isFetching : false
-    const error = query?.isError
-      ? `Chưa thể tải bài học của chủ đề “${category.name}”. Dữ liệu ở các chủ đề khác vẫn được giữ nguyên.`
-      : null
-
+  const rows = categories.map<CategoryLessonRow>((category) => {
     return {
       category,
-      lessons: lessonsList,
-      totalLessons,
-      loading,
-      error,
+      lessons: category.lessons,
+      totalLessons: category.total_lessons,
+      loading: false,
+      error: null,
     }
   })
 

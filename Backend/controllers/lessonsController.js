@@ -3,6 +3,9 @@ const lessonService = require('../services/lessonsService.js');
 const categoryService = require('../services/categoryService.js');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 const { redisClient, getIsRedisConnected } = require('../db/redis');
+const studyService = require('../services/studyService.js');
+const { setPublicCache, setPrivateNoStore } = require('../utils/cacheHeaders.js');
+const { revalidateFrontend } = require('../utils/revalidateFrontend.js');
 
 const parseOptionalPositiveInteger = (value, fieldName) => {
     if (value === undefined || value === null || value === '') {
@@ -37,6 +40,7 @@ const getLessons = async (req, res, next) => {
                 const cachedData = await redisClient.get(cacheKey);
                 if (cachedData) {
                     const { lessons, totalCount } = JSON.parse(cachedData);
+                    setPublicCache(res);
                     return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
                 }
             } catch (err) {
@@ -56,6 +60,7 @@ const getLessons = async (req, res, next) => {
             }
         }
 
+        setPublicCache(res);
         return dataResponse(res, 200, lessons, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -70,11 +75,50 @@ const getLessonById = async (req, res, next) => {
         if (!lesson) {
             return errorResponse(res, 404, 'lesson not found');
         }
+        setPublicCache(res);
         return dataResponse(res, 200, lesson);
     } catch (error) {
         if (error.statusCode === 404) {
             return errorResponse(res, 404, 'lesson not found');
         }
+        next(error);
+    }
+};
+
+const getStudyContent = async (req, res, next) => {
+    try {
+        const lessonIdResult = parseOptionalPositiveInteger(req.params.lessonId, 'lessonId');
+        if (lessonIdResult.error || !lessonIdResult.value) {
+            return errorResponse(res, 400, lessonIdResult.error || 'lessonId must be a positive integer');
+        }
+
+        const content = await studyService.getContent(lessonIdResult.value);
+        if (!content) return errorResponse(res, 404, 'lesson not found');
+
+        setPublicCache(res);
+        return dataResponse(res, 200, content);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getStudyState = async (req, res, next) => {
+    try {
+        const lessonIdResult = parseOptionalPositiveInteger(req.params.lessonId, 'lessonId');
+        const mode = req.query.mode;
+        if (lessonIdResult.error || !lessonIdResult.value) {
+            return errorResponse(res, 400, lessonIdResult.error || 'lessonId must be a positive integer');
+        }
+        if (mode !== 'dictation' && mode !== 'shadowing') {
+            return errorResponse(res, 400, 'mode must be dictation or shadowing');
+        }
+
+        const state = await studyService.getState(req.user.uid, lessonIdResult.value, mode);
+        if (!state) return errorResponse(res, 404, 'lesson not found');
+
+        setPrivateNoStore(res);
+        return dataResponse(res, 200, state);
+    } catch (error) {
         next(error);
     }
 };
@@ -103,6 +147,12 @@ const createLesson = async (req, res, next) => {
             return errorResponse(res, 500, 'Tao bai hoc that bai');
         }
         await clearLessonsCache();
+        await revalidateFrontend([
+            'topics',
+            'lessons',
+            `lesson:${newLesson.id}`,
+            `category:${newLesson.category_id}`
+        ]);
         return dataResponse(res, 201, newLesson);
     } catch (error) {
         next(error);
@@ -121,6 +171,12 @@ const updateLesson = async (req, res, next) => {
             return errorResponse(res, 404, 'Khong tim thay bai hoc de cap nhat');
         }
         await clearLessonsCache();
+        await revalidateFrontend([
+            'topics',
+            'lessons',
+            `lesson:${updatedLesson.id}`,
+            `category:${updatedLesson.category_id}`
+        ]);
         return dataResponse(res, 200, updatedLesson);
     } catch (error) {
         next(error);
@@ -135,6 +191,7 @@ const deleteLesson = async (req, res, next) => {
             return errorResponse(res, 404, 'Khong tim thay bai hoc de xoa');
         }
         await clearLessonsCache();
+        await revalidateFrontend(['topics', 'lessons', `lesson:${id}`]);
         return dataResponse(res, 200, { message: 'Xoa bai hoc thanh cong' });
     } catch (error) {
         next(error);
@@ -158,6 +215,12 @@ const createLessonFromYoutube = async (req, res, next) => {
             return errorResponse(res, 500, 'Tao bai hoc tu youtube that bai');
         }
         await clearLessonsCache();
+        await revalidateFrontend([
+            'topics',
+            'lessons',
+            `lesson:${newLesson.id}`,
+            `category:${newLesson.category_id}`
+        ]);
         return dataResponse(res, 201, newLesson);
     } catch (error) {
         next(error);
@@ -167,6 +230,8 @@ const createLessonFromYoutube = async (req, res, next) => {
 module.exports = {
     getLessons,
     getLessonById,
+    getStudyContent,
+    getStudyState,
     createLesson,
     updateLesson,
     deleteLesson,

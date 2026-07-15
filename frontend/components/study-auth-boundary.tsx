@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react"
 
 import { AsyncContentState } from "@/components/product/async-content-state"
 import { useAuthenticatedUser } from "@/hooks/use-authenticated-user"
+import { getAuthToken } from "@/lib/auth-session"
 
 interface AttemptState {
   uid: string
@@ -24,13 +25,10 @@ export function StudyAuthBoundary({ children }: { children: ReactNode }) {
     if (!resolved || !user) return
     let active = true
 
-    void user
-      .getIdToken()
+    void getAuthToken()
       .then((token) => {
         if (!active) return
-        // Transitional bridge for legacy study workspaces; API requests use
-        // apiRequest and always obtain a fresh Firebase token independently.
-        localStorage.setItem("token", token)
+        if (!token) throw new Error("Missing Firebase ID token")
         setReady({ uid: user.uid, attempt })
       })
       .catch(() => {

@@ -15,9 +15,7 @@ export default function SignupPage() {
   useEffect(() => {
     let active = true
     void auth.authStateReady().then(() => {
-      if (!active) return
-      if (auth.currentUser) router.replace("/topics")
-      else localStorage.removeItem("token")
+      if (active && auth.currentUser) router.replace("/topics")
     })
     return () => {
       active = false

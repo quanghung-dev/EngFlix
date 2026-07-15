@@ -34,19 +34,15 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  getLessonById,
-  getLessonTranscripts,
-  getCompletedTranscripts,
   completeTranscript,
+  getStudyState,
   recordLearningHistory
 } from "@/services/lesson.service"
-import { getAllCategories } from "@/services/category.service"
 import {
   createBookmark,
-  deleteBookmark,
-  getTranscriptBookmarksByLesson
+  deleteBookmark
 } from "@/services/bookmark.service"
-import { LessonType, TranscriptType } from "@/types/lesson"
+import type { StudyContentType, TranscriptProgressType } from "@/types/lesson"
 import { cn } from "@/lib/utils"
 import { LessonReportDialog } from "@/components/topics/lesson-report-dialog"
 
@@ -60,15 +56,19 @@ declare global {
 
 interface DictationWorkspaceProps {
   lessonId: number
+  initialContent: StudyContentType
 }
 
-export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps) {
+export default function DictationWorkspace({ lessonId, initialContent }: DictationWorkspaceProps) {
   const router = useRouter()
 
   // State dữ liệu bài học
-  const [lesson, setLesson] = useState<LessonType | null>(null)
-  const [transcripts, setTranscripts] = useState<TranscriptType[]>([])
-  const [categoryName, setCategoryName] = useState<string>("")
+  const lesson = initialContent.lesson
+  const transcripts = useMemo(
+    () => [...initialContent.transcripts].sort((a, b) => a.sequence - b.sequence),
+    [initialContent.transcripts]
+  )
+  const categoryName = initialContent.category?.name || ""
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -199,56 +199,34 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
     let isActive = true
 
     async function loadData() {
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
-      if (!token) {
-        if (isActive) {
-          router.push("/login")
-        }
-        return
-      }
-
       try {
         setLoading(true)
-        const [lessonRes, transcriptsRes, completedRes, categoriesRes, bookmarksRes] = await Promise.all([
-          getLessonById(lessonId),
-          getLessonTranscripts(lessonId),
-          getCompletedTranscripts(lessonId),
-          getAllCategories(),
-          getTranscriptBookmarksByLesson(lessonId)
-        ])
+        const stateResponse = await getStudyState(lessonId, "dictation")
 
         if (!isActive) return
 
-        if (!lessonRes.data) {
-          setError("Không tìm thấy thông tin bài học.")
-          return
-        }
-
-        setLesson(lessonRes.data)
-        const sortedTranscripts = (transcriptsRes.data || []).sort(
-          (a, b) => a.sequence - b.sequence
-        )
-        setTranscripts(sortedTranscripts)
-
         // Phục hồi tiến trình đã hoàn thành từ API
         const completedSet = new Set<number>()
-        if (completedRes.data) {
-          completedRes.data.forEach((item) => completedSet.add(item.transcript_id))
+        if (stateResponse.data.progress) {
+          stateResponse.data.progress.forEach((item) => {
+            const progress = item as TranscriptProgressType
+            completedSet.add(progress.transcript_id)
+          })
         }
         setCompletedIds(completedSet)
 
         // Phục hồi bookmarks
         const bookmarkMap = new Map<number, number>()
-        if (bookmarksRes?.data) {
-          bookmarksRes.data.forEach((b: any) => {
+        if (stateResponse.data.bookmarks) {
+          stateResponse.data.bookmarks.forEach((b) => {
             bookmarkMap.set(b.transcript_id, b.id)
           })
         }
         setBookmarkedMap(bookmarkMap)
 
         // Tìm câu chưa hoàn thành đầu tiên để bắt đầu học
-        if (sortedTranscripts.length > 0) {
-          const firstIncompleteIdx = sortedTranscripts.findIndex(
+        if (transcripts.length > 0) {
+          const firstIncompleteIdx = transcripts.findIndex(
             (t) => !completedSet.has(t.id)
           )
           if (firstIncompleteIdx !== -1) {
@@ -259,15 +237,6 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
         }
 
         // Lấy tên danh mục
-        if (lessonRes.data.category_id && categoriesRes.data) {
-          const matchedCategory = categoriesRes.data.find(
-            (c) => c.id === lessonRes.data.category_id
-          )
-          if (matchedCategory) {
-            setCategoryName(matchedCategory.name)
-          }
-        }
-
         setLoading(false)
       } catch (err) {
         console.error("Lỗi tải trang học chính tả:", err)
@@ -282,7 +251,7 @@ export default function DictationWorkspace({ lessonId }: DictationWorkspaceProps
     return () => {
       isActive = false
     }
-  }, [lessonId])
+  }, [lessonId, transcripts])
 
   // Tích hợp YouTube Player API
   useEffect(() => {

@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, LogOutIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { clearAuthenticatedSession } from "@/services/auth.service"
 
 export function NavUser({
@@ -41,7 +39,6 @@ export function NavUser({
 
   const handleLogout = async () => {
     try {
-      await signOut(auth)
       await clearAuthenticatedSession()
       router.push("/login")
     } catch (error) {

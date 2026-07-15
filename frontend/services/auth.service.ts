@@ -1,8 +1,7 @@
 import { apiRequest } from "@/lib/api-client"
 import { DataResponse } from "@/types/api"
-import { auth, storage } from "@/lib/firebase"
+import { auth } from "@/lib/firebase"
 import { signOut, type User } from "firebase/auth"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import type {
   OwnUserProfile,
   ProfileMutationResult,
@@ -19,8 +18,6 @@ export async function syncAuthenticatedSession(user: User): Promise<void> {
     headers: { Authorization: `Bearer ${token}` },
   })
 
-  // Keep the legacy study bridge alive only after the full login transaction succeeds.
-  localStorage.setItem("token", await user.getIdToken())
 }
 
 export async function clearAuthenticatedSession(): Promise<void> {
@@ -28,8 +25,6 @@ export async function clearAuthenticatedSession(): Promise<void> {
     await signOut(auth)
   } catch (error) {
     console.error("Không thể đóng phiên Firebase", error)
-  } finally {
-    localStorage.removeItem("token")
   }
 }
 
@@ -75,6 +70,12 @@ export async function uploadAvatar(
   file: File,
   uid: string
 ): Promise<DataResponse<ProfileMutationResult>> {
+  const [{ getFirebaseStorage }, { ref, uploadBytes, getDownloadURL }] = await Promise.all([
+    import("@/lib/firebase-storage"),
+    import("firebase/storage"),
+  ])
+  const storage = getFirebaseStorage()
+
   // 1. Upload file lên Firebase Storage tại path avatars/{uid}/{timestamp}.{ext}
   const ext = file.name.split(".").pop() || "jpg"
   const storageRef = ref(storage, `avatars/${uid}/${Date.now()}.${ext}`)

@@ -1,10 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useSyncExternalStore } from "react"
 import { useRouter } from "next/navigation"
-import { onAuthStateChanged, type User } from "firebase/auth"
 
-import { auth } from "@/lib/firebase"
+import {
+  getAuthSessionSnapshot,
+  getServerAuthSessionSnapshot,
+  subscribeAuthSession,
+} from "@/lib/auth-session"
 
 interface UseAuthenticatedUserOptions {
   required?: boolean
@@ -16,19 +19,15 @@ export function useAuthenticatedUser({
   redirectTo = "/login",
 }: UseAuthenticatedUserOptions = {}) {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(auth.currentUser)
-  const [resolved, setResolved] = useState(false)
+  const { user, resolved } = useSyncExternalStore(
+    subscribeAuthSession,
+    getAuthSessionSnapshot,
+    getServerAuthSessionSnapshot,
+  )
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser)
-      setResolved(true)
-
-      if (required && !nextUser) {
-        router.replace(redirectTo)
-      }
-    })
-  }, [redirectTo, required, router])
+    if (resolved && required && !user) router.replace(redirectTo)
+  }, [redirectTo, required, resolved, router, user])
 
   return {
     user,

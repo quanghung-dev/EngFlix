@@ -1,7 +1,5 @@
 import axios from "axios";
 
-import { auth } from "@/lib/firebase";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 async function normalizeHeaders(headers?: HeadersInit, forceRefresh = false) {
@@ -10,12 +8,9 @@ async function normalizeHeaders(headers?: HeadersInit, forceRefresh = false) {
         : {};
         
     if (typeof window !== "undefined") {
-        await auth.authStateReady();
-        const firebaseUser = auth.currentUser;
-        const token = firebaseUser
-            ? await firebaseUser.getIdToken(forceRefresh)
-            : null;
-        if (token) {
+        const { getAuthToken } = await import("@/lib/auth-session");
+        const token = await getAuthToken(forceRefresh);
+        if (token && !norm["authorization"]) {
             norm["Authorization"] = `Bearer ${token}`;
         }
     }
@@ -42,6 +37,7 @@ export async function apiRequest<T>(
             method,
             data: requestData,
             headers: await normalizeHeaders(options?.headers, forceRefresh),
+            signal: options?.signal ?? undefined,
         });
 
     try {
@@ -51,10 +47,13 @@ export async function apiRequest<T>(
         if (
             axios.isAxiosError(error) &&
             error.response?.status === 401 &&
-            auth.currentUser
+            typeof window !== "undefined"
         ) {
-            const response = await request(true);
-            return response.data;
+            const { getAuthToken } = await import("@/lib/auth-session");
+            if (await getAuthToken()) {
+                const response = await request(true);
+                return response.data;
+            }
         }
         throw error;
     }

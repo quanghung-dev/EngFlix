@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import DictationWorkspace from "@/components/dictation/dictation-workspace"
+import { isPublicApiError } from "@/lib/public-api"
+import { getStudyContent } from "@/services/lesson.service"
 
 export const metadata: Metadata = {
   title: "Luyện nghe chính tả",
@@ -22,5 +24,13 @@ export default async function Page({ params }: PageProps) {
     notFound()
   }
 
-  return <DictationWorkspace lessonId={parsedId} />
+  let content
+  try {
+    content = (await getStudyContent(parsedId)).data
+  } catch (error) {
+    if (isPublicApiError(error) && error.status === 404) notFound()
+    throw error
+  }
+
+  return <DictationWorkspace lessonId={parsedId} initialContent={content} />
 }

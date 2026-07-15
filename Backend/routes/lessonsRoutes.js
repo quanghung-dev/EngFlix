@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const transcriptController = require('../controllers/transcriptController.js');
 const lessonController = require('../controllers/lessonsController.js');
+const verifyToken = require('../middlewares/auth.js');
 
 /**
  * @swagger
@@ -97,6 +98,9 @@ const lessonController = require('../controllers/lessonsController.js');
  *         description: Internal server error
  */
 router.get('/', lessonController.getLessons);
+
+router.get('/:lessonId/content', lessonController.getStudyContent);
+router.get('/:lessonId/study-state', verifyToken, lessonController.getStudyState);
 
 /**
  * @swagger

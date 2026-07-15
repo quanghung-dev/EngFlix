@@ -3,6 +3,8 @@ const { successResponse, dataResponse, errorResponse } = require('../utils/respo
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
 const { redisClient, getIsRedisConnected } = require('../db/redis');
 const e = require('cors');
+const { setPublicCache } = require('../utils/cacheHeaders.js');
+const { revalidateFrontend } = require('../utils/revalidateFrontend.js');
 
 const getAllCategories = async (req, res, next) => {
     try {
@@ -18,6 +20,7 @@ const getAllCategories = async (req, res, next) => {
                 const cachedData = await redisClient.get(cacheKey);
                 if (cachedData) {
                     const { categories, totalCount } = JSON.parse(cachedData);
+                    setPublicCache(res);
                     return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
                 }
             } catch (err) {
@@ -40,6 +43,7 @@ const getAllCategories = async (req, res, next) => {
             }
         }
 
+        setPublicCache(res);
         return dataResponse(res, 200, categories, buildPaginationMeta(page, limit, totalCount));
     } catch (error) {
         next(error);
@@ -70,6 +74,7 @@ const createCategory = async (req, res, next) => {
             return errorResponse(res, 500, 'Tạo danh mục thất bại');
         }
         await clearCategoriesCache();
+        await revalidateFrontend(['topics', 'categories']);
         return dataResponse(res,201, result);
     } catch (error) {
         next(error);
@@ -101,6 +106,7 @@ const updateCategory = async (req, res, next) => {
             return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
         await clearCategoriesCache();
+        await revalidateFrontend(['topics', 'categories', 'lessons']);
         return dataResponse(res, 200, result);
     } catch (error) {
         next(error);    
@@ -114,6 +120,7 @@ const deleteCategory = async (req, res, next) => {
             return errorResponse(res, 404, 'Không tìm thấy danh mục với ID đã cho');
         }
         await clearCategoriesCache();
+        await revalidateFrontend(['topics', 'categories', 'lessons']);
         return dataResponse(res, 200, result);
     } catch (error) {
         next(error);

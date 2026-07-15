@@ -37,20 +37,16 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  getLessonById,
-  getLessonTranscripts,
   assessPronunciation,
-  getPronunciationProgress,
+  getStudyState,
   updatePronunciationProgress,
   recordLearningHistory
 } from "@/services/lesson.service"
-import { getAllCategories } from "@/services/category.service"
 import {
   createBookmark,
-  deleteBookmark,
-  getTranscriptBookmarksByLesson
+  deleteBookmark
 } from "@/services/bookmark.service"
-import { LessonType, TranscriptType } from "@/types/lesson"
+import type { PronunciationProgressType, StudyContentType } from "@/types/lesson"
 import { WavRecorder } from "@/lib/wav-recorder"
 import { cn } from "@/lib/utils"
 import { LessonReportDialog } from "@/components/topics/lesson-report-dialog"
@@ -64,6 +60,7 @@ declare global {
 
 interface ShadowingWorkspaceProps {
   lessonId: number
+  initialContent: StudyContentType
 }
 
 interface WordSyllable {
@@ -95,13 +92,16 @@ interface AssessmentResult {
   words: WordAssessment[]
 }
 
-export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps) {
+export default function ShadowingWorkspace({ lessonId, initialContent }: ShadowingWorkspaceProps) {
   const router = useRouter()
 
   // State dữ liệu bài học
-  const [lesson, setLesson] = useState<LessonType | null>(null)
-  const [transcripts, setTranscripts] = useState<TranscriptType[]>([])
-  const [categoryName, setCategoryName] = useState<string>("")
+  const lesson = initialContent.lesson
+  const transcripts = useMemo(
+    () => [...initialContent.transcripts].sort((a, b) => a.sequence - b.sequence),
+    [initialContent.transcripts]
+  )
+  const categoryName = initialContent.category?.name || ""
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -256,47 +256,23 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
     async function loadData() {
       // Kiểm tra token
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
-      if (!token) {
-        if (isActive) {
-          router.push("/login")
-        }
-        return
-      }
-
       try {
         setLoading(true)
-        const [lessonRes, transcriptsRes, progressRes, categoriesRes, bookmarksRes] = await Promise.all([
-          getLessonById(lessonId),
-          getLessonTranscripts(lessonId),
-          getPronunciationProgress(lessonId),
-          getAllCategories(),
-          getTranscriptBookmarksByLesson(lessonId)
-        ])
+        const stateResponse = await getStudyState(lessonId, "shadowing")
 
         if (!isActive) return
-
-        if (!lessonRes.data) {
-          setError("Không tìm thấy thông tin bài học.")
-          return
-        }
-
-        setLesson(lessonRes.data)
-        const sortedTranscripts = (transcriptsRes.data || []).sort(
-          (a, b) => a.sequence - b.sequence
-        )
-        setTranscripts(sortedTranscripts)
 
         // Phục hồi tiến độ phát âm từ cơ sở dữ liệu
         const completedSet = new Set<number>()
         const scoresMap = new Map<number, number>()
-        if (progressRes.data) {
-          progressRes.data.forEach((item: any) => {
-            const score = Number(item.best_score)
-            scoresMap.set(item.transcript_id, score)
+        if (stateResponse.data.progress) {
+          stateResponse.data.progress.forEach((item) => {
+            const progress = item as PronunciationProgressType
+            const score = Number(progress.best_score)
+            scoresMap.set(progress.transcript_id, score)
             // Lấy điểm phát âm trên 60 coi như hoàn thành câu đó
             if (score >= 60) {
-              completedSet.add(item.transcript_id)
+              completedSet.add(progress.transcript_id)
             }
           })
         }
@@ -305,16 +281,16 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
 
         // Phục hồi bookmarks
         const bookmarkMap = new Map<number, number>()
-        if (bookmarksRes?.data) {
-          bookmarksRes.data.forEach((b: any) => {
+        if (stateResponse.data.bookmarks) {
+          stateResponse.data.bookmarks.forEach((b) => {
             bookmarkMap.set(b.transcript_id, b.id)
           })
         }
         setBookmarkedMap(bookmarkMap)
 
         // Tìm câu chưa hoàn thành đầu tiên
-        if (sortedTranscripts.length > 0) {
-          const firstIncompleteIdx = sortedTranscripts.findIndex(
+        if (transcripts.length > 0) {
+          const firstIncompleteIdx = transcripts.findIndex(
             (t) => !completedSet.has(t.id)
           )
           if (firstIncompleteIdx !== -1) {
@@ -325,15 +301,6 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
         }
 
         // Lấy tên danh mục
-        if (lessonRes.data.category_id && categoriesRes.data) {
-          const matchedCategory = categoriesRes.data.find(
-            (c) => c.id === lessonRes.data.category_id
-          )
-          if (matchedCategory) {
-            setCategoryName(matchedCategory.name)
-          }
-        }
-
         setLoading(false)
       } catch (err) {
         console.error("Lỗi tải dữ liệu Shadowing:", err)
@@ -348,7 +315,7 @@ export default function ShadowingWorkspace({ lessonId }: ShadowingWorkspaceProps
     return () => {
       isActive = false
     }
-  }, [lessonId])
+  }, [lessonId, transcripts])
 
   // Tích hợp YouTube Player API
   useEffect(() => {

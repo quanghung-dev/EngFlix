@@ -1,6 +1,4 @@
-import { isAxiosError } from "axios";
-
-import { apiRequest } from "@/lib/api-client";
+import { isPublicApiError, publicApiRequest, type PublicRequestInit } from "@/lib/public-api";
 import { CategoryType } from "@/types/category";
 import { PagedResponse } from "@/types/api";
 
@@ -9,7 +7,7 @@ export async function getAllCategories(
     page?: number;
     limit?: number;
   },
-  options?: RequestInit
+  options?: PublicRequestInit
 ): Promise<PagedResponse<CategoryType>> {
   try {
     const queryParams = new URLSearchParams();
@@ -23,9 +21,16 @@ export async function getAllCategories(
     const queryString = queryParams.toString();
     const url = queryString ? `/categories?${queryString}` : "/categories";
 
-    return apiRequest<PagedResponse<CategoryType>>(url, options)
+    return publicApiRequest<PagedResponse<CategoryType>>(url, {
+      ...options,
+      next: {
+        revalidate: 300,
+        tags: ["categories"],
+        ...options?.next,
+      },
+    })
   } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) {
+    if (isPublicApiError(error) && error.status === 404) {
       return {
         data: [],
         meta: {

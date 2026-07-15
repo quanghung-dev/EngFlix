@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Providers } from "@/components/providers";
 
 import "./globals.css";
 
@@ -40,9 +39,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col antialiased">
         <AppThemeProvider>
-          <Providers>
-            <TooltipProvider>{children}</TooltipProvider>
-          </Providers>
+          <TooltipProvider>{children}</TooltipProvider>
         </AppThemeProvider>
       </body>
     </html>

@@ -1,6 +1,5 @@
 const pool = require('../db/index.js');
 
-// Lấy số ngày học liên tiếp (Streak) của người dùng
 const getStreakCount = async (userId) => {
     const query = `
         WITH activity_dates AS (
@@ -20,84 +19,59 @@ const getStreakCount = async (userId) => {
             FROM shadowing_status
             WHERE user_id = $1
         )
-        SELECT activity_date 
-        FROM activity_dates 
+        SELECT activity_date
+        FROM activity_dates
         ORDER BY activity_date DESC
     `;
-    
+
     const result = await pool.query(query, [userId]);
-    
-    const getVNTime = (date = new Date()) => {
-        const formatter = new Intl.DateTimeFormat('en-US', {
+    const vnDate = (date = new Date()) => {
+        const parts = new Intl.DateTimeFormat('en-US', {
             timeZone: 'Asia/Ho_Chi_Minh',
             year: 'numeric',
             month: '2-digit',
             day: '2-digit'
-        });
-        const parts = formatter.formatToParts(date);
-        const month = parts.find(p => p.type === 'month').value;
-        const day = parts.find(p => p.type === 'day').value;
-        const year = parts.find(p => p.type === 'year').value;
-        return `${year}-${month}-${day}`;
+        }).formatToParts(date);
+        const value = (type) => parts.find((part) => part.type === type)?.value;
+        return `${value('year')}-${value('month')}-${value('day')}`;
     };
 
-    const dates = result.rows.map(r => {
-        const d = new Date(r.activity_date);
-        return d.toISOString().split('T')[0];
+    const dates = result.rows.map((row) => {
+        const date = new Date(row.activity_date);
+        return date.toISOString().split('T')[0];
     });
-    
     if (dates.length === 0) return 0;
-    
-    const todayStr = getVNTime(new Date());
-    const yesterdayStr = getVNTime(new Date(Date.now() - 24 * 60 * 60 * 1000));
-    
-    const latestDateStr = dates[0];
-    
-    if (latestDateStr !== todayStr && latestDateStr !== yesterdayStr) {
-        return 0; // Đã quá 1 ngày không học -> reset streak về 0
-    }
-    
+
+    const today = vnDate();
+    const yesterday = vnDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    if (dates[0] !== today && dates[0] !== yesterday) return 0;
+
     let streak = 1;
-    let currentDate = new Date(latestDateStr);
-    
-    for (let i = 1; i < dates.length; i++) {
-        const nextDate = new Date(dates[i]);
-        
-        const diffTime = currentDate.getTime() - nextDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 1) {
-            streak++;
+    let currentDate = new Date(dates[0]);
+    for (let index = 1; index < dates.length; index += 1) {
+        const nextDate = new Date(dates[index]);
+        const differenceInDays = Math.ceil(
+            (currentDate.getTime() - nextDate.getTime()) / (24 * 60 * 60 * 1000)
+        );
+        if (differenceInDays === 1) {
+            streak += 1;
             currentDate = nextDate;
-        } else if (diffDays > 1) {
-            break; // Đứt quãng -> dừng đếm
+        } else if (differenceInDays > 1) {
+            break;
         }
     }
-    
     return streak;
 };
 
-// Lấy dữ liệu thống kê tổng hợp cho Dashboard
 const getProgressStats = async (userId) => {
-    // 1. Tính toán Streak học tập
-    const streak = await getStreakCount(userId);
+    const historyCountQuery = `
+        SELECT COUNT(*)::int AS count
+        FROM learning_history
+        WHERE user_id = $1
+          AND completed_dictation IS TRUE
+          AND completed_pronunciation IS TRUE
+    `;
 
-    // 2. Tính toán tổng số bài học đã tham gia
-    const historyCountRes = await pool.query(
-        `
-            SELECT COUNT(*)::int AS count
-            FROM learning_history
-            WHERE user_id = $1
-              AND completed_dictation IS TRUE
-              AND completed_pronunciation IS TRUE
-        `,
-        [userId]
-    );
-    const totalLessons = historyCountRes.rows[0].count;
-    // Mỗi bài học ước tính 15 phút học
-    const totalMinutes = totalLessons * 15;
-
-    // 3. Lấy số lượng bài học hoàn thành theo ngày (7 ngày gần nhất) để vẽ biểu đồ
     const weeklyProgressQuery = `
         SELECT COALESCE(d.date::date, h.activity_date) AS activity_date,
                COALESCE(h.lessons_completed, 0)::int AS lessons_completed
@@ -112,14 +86,16 @@ const getProgressStats = async (userId) => {
             WHERE user_id = $1
               AND completed_dictation IS TRUE
               AND completed_pronunciation IS TRUE
-              AND (updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh')::date >= (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date - 6
+              AND updated_at >= (
+                  (((CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date - 6)::timestamp
+                      AT TIME ZONE 'Asia/Ho_Chi_Minh')
+                      AT TIME ZONE 'UTC'
+              )
             GROUP BY 1
         ) h ON d.date = h.activity_date
         ORDER BY activity_date ASC
     `;
-    const weeklyProgressRes = await pool.query(weeklyProgressQuery, [userId]);
 
-    // 4. Lấy lịch sử 10 lần phát âm Shadowing gần nhất để vẽ biểu đồ tiến độ phát âm
     const shadowingAttemptsQuery = `
         SELECT id, score, created_at
         FROM (
@@ -133,37 +109,42 @@ const getProgressStats = async (userId) => {
         ) latest_attempts
         ORDER BY created_at ASC, id ASC
     `;
-    const shadowingAttemptsRes = await pool.query(shadowingAttemptsQuery, [userId]);
 
-    // 5. Lấy thống kê từ vựng đã lưu
     const vocabStatsQuery = `
-        SELECT COUNT(*)::int AS total_words
+        SELECT
+            COUNT(*)::int AS total_words,
+            COUNT(*) FILTER (
+                WHERE vi.next_review_at IS NULL OR vi.next_review_at <= NOW()
+            )::int AS words_to_review
         FROM vocabulary_items vi
         JOIN vocabulary_decks vd ON vi.deck_id = vd.id
         WHERE vd.user_id = $1
-          AND vd.is_default = false
+          AND vd.is_default IS FALSE
     `;
-    const vocabStatsRes = await pool.query(vocabStatsQuery, [userId]);
-    const totalWords = vocabStatsRes.rows[0].total_words;
 
-    // 6. Lấy số lượng từ cần ôn tập hôm nay (Spaced Repetition)
-    const reviewStatsQuery = `
-        SELECT COUNT(*)::int AS words_to_review
-        FROM vocabulary_items vi
-        JOIN vocabulary_decks vd ON vi.deck_id = vd.id
-        WHERE vd.user_id = $1
-          AND vd.is_default = false
-          AND (vi.next_review_at IS NULL OR vi.next_review_at <= NOW())
-    `;
-    const reviewStatsRes = await pool.query(reviewStatsQuery, [userId]);
-    const wordsToReview = reviewStatsRes.rows[0].words_to_review;
+    const [
+        streak,
+        historyCountResult,
+        weeklyProgressResult,
+        shadowingAttemptsResult,
+        vocabStatsResult
+    ] = await Promise.all([
+        getStreakCount(userId),
+        pool.query(historyCountQuery, [userId]),
+        pool.query(weeklyProgressQuery, [userId]),
+        pool.query(shadowingAttemptsQuery, [userId]),
+        pool.query(vocabStatsQuery, [userId])
+    ]);
+
+    const totalLessons = historyCountResult.rows[0].count;
+    const { total_words: totalWords, words_to_review: wordsToReview } = vocabStatsResult.rows[0];
 
     return {
         streak,
         total_lessons: totalLessons,
-        total_minutes: totalMinutes,
-        weekly_progress: weeklyProgressRes.rows,
-        shadowing_attempts: shadowingAttemptsRes.rows,
+        total_minutes: totalLessons * 15,
+        weekly_progress: weeklyProgressResult.rows,
+        shadowing_attempts: shadowingAttemptsResult.rows,
         total_words: totalWords,
         words_to_review: wordsToReview
     };

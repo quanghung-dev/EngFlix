@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth"
 import {
   BarChart3Icon,
   BookOpenTextIcon,
@@ -18,7 +17,6 @@ import {
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sidebar,
   SidebarContent,
@@ -31,12 +29,16 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { auth } from "@/lib/firebase"
+import { useAuthenticatedUser } from "@/hooks/use-authenticated-user"
 import { getOwnProfile } from "@/services/auth.service"
 
 interface SidebarProfileSummary {
   name: string
   avatar_url: string | null
+}
+
+interface ScopedSidebarProfileSummary extends SidebarProfileSummary {
+  userId: string
 }
 
 const navigationItems = [
@@ -52,17 +54,8 @@ const navigationItems = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setOpenMobile } = useSidebar()
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(auth.currentUser)
-  const [authResolved, setAuthResolved] = useState(false)
-  const [profileSummary, setProfileSummary] = useState<SidebarProfileSummary | null>(null)
-
-  useEffect(() => {
-    return onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user)
-      setProfileSummary(null)
-      setAuthResolved(true)
-    })
-  }, [])
+  const { user: currentUser, resolved: authResolved } = useAuthenticatedUser({ required: false })
+  const [profileSummary, setProfileSummary] = useState<ScopedSidebarProfileSummary | null>(null)
 
   useEffect(() => {
     if (!currentUser) return
@@ -72,6 +65,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       .then((response) => {
         if (active) {
           setProfileSummary({
+            userId: currentUser.uid,
             name: response.data.name,
             avatar_url: response.data.avatar_url,
           })
@@ -89,16 +83,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   useEffect(() => {
     function handleProfileUpdate(event: Event) {
       const detail = (event as CustomEvent<SidebarProfileSummary>).detail
-      if (detail?.name) setProfileSummary(detail)
+      if (detail?.name && currentUser) {
+        setProfileSummary({ ...detail, userId: currentUser.uid })
+      }
     }
 
     window.addEventListener("engflex:profile-updated", handleProfileUpdate)
     return () => window.removeEventListener("engflex:profile-updated", handleProfileUpdate)
-  }, [])
+  }, [currentUser])
 
+  const activeProfileSummary =
+    profileSummary?.userId === currentUser?.uid ? profileSummary : null
   const displayName =
-    profileSummary?.name || currentUser?.displayName || currentUser?.email?.split("@")[0] || "Học viên"
-  const avatarUrl = profileSummary?.avatar_url || currentUser?.photoURL
+    activeProfileSummary?.name || currentUser?.displayName || currentUser?.email?.split("@")[0] || "Học viên"
+  const avatarUrl = activeProfileSummary?.avatar_url || currentUser?.photoURL
 
   return (
     <Sidebar collapsible="icon" {...props}>

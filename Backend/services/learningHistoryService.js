@@ -125,16 +125,6 @@ const getLearningHistorySummaryByLesson = async (userId, lessonId) => {
     };
 };
 
-const testGetgetLearningHistory = async () => {
-    const query = `
-        SELECT *
-        FROM learning_history
-        ORDER BY updated_at DESC, id DESC
-    `;
-    const result = await pool.query(query);
-    return result.rows;
-};
-
 module.exports = {
     recordHistory,
     getHistoryByLesson,
@@ -142,6 +132,5 @@ module.exports = {
     getLearningHistoryFinished,
     getLearningHistoryUnfinished,
     getLearningHistorySummary,
-    getLearningHistorySummaryByLesson,
-    testGetgetLearningHistory
+    getLearningHistorySummaryByLesson
 };

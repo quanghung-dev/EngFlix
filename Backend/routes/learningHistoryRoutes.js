@@ -10,39 +10,6 @@ const learningHistoryController = require('../controllers/learningHistoryControl
  *   description: Authenticated learning history APIs
  */
 
-/**
- * @swagger
- * /api/v1/learning-history/test/all:
- *   get:
- *     summary: Test get all learning history
- *     description: Returns all learning history records for testing without requiring a user ID or bearer token.
- *     tags: [Learning History]
- *     responses:
- *       200:
- *         description: Learning history returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/LearningHistory'
- *             example:
- *               data:
- *                 - id: 1
- *                   user_id: "firebase-user-id"
- *                   lesson_id: 1
- *                   completed_dictation: false
- *                   completed_pronunciation: null
- *                   created_at: "2026-05-15T00:00:00.000Z"
- *                   updated_at: "2026-05-15T00:00:00.000Z"
- *       500:
- *         description: Internal server error
- */
-router.get('/test/all', learningHistoryController.testGetgetLearningHistory);
-
 router.use(verifyToken);
 
 /**

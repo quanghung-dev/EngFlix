@@ -25,16 +25,23 @@ const chatRoutes = require('./routes/chatRoutes.js');
 const friendshipRoutes = require('./routes/friendshipRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const progressRoutes = require('./routes/progressRoutes.js');
+const topicsRoutes = require('./routes/topicsRoutes.js');
+const { setPrivateNoStore } = require('./utils/cacheHeaders.js');
 
 app.use(cors());
 app.use(compression());
 app.use(express.json());
+app.use((req, res, next) => {
+    if (req.headers.authorization) setPrivateNoStore(res);
+    next();
+});
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/topics', topicsRoutes);
 app.use('/api/v1/lessons', lessonsRoutes);
 app.use('/api/v1/transcripts', transcriptRoutes);
 app.use('/api/v1/transcript-bookmarks', transcriptBookmarksRoutes);

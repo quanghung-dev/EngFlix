@@ -85,3 +85,27 @@ export interface PronunciationProgressType {
   created_at: string;
   updated_at: string;
 }
+
+export interface StudyContentType {
+  lesson: LessonType;
+  category: {
+    id: number;
+    name: string;
+  } | null;
+  transcripts: TranscriptType[];
+}
+
+export interface StudyBookmarkType {
+  id: number;
+  user_id: string;
+  transcript_id: number;
+  lesson_id: number;
+  note: string | null;
+  created_at: string;
+}
+
+export interface StudyStateType {
+  progress: Array<TranscriptProgressType | PronunciationProgressType>;
+  bookmarks: StudyBookmarkType[];
+  history: LearningHistoryType | null;
+}

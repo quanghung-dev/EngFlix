@@ -4,20 +4,20 @@ import { ClapperboardIcon } from "lucide-react"
 import { ProductPageHeader } from "@/components/product/page-header"
 import { ProductReveal } from "@/components/product/product-reveal"
 import { CategoryLessons } from "@/components/topics/home"
-import { getAllCategories } from "@/services/category.service"
-import type { CategoryType } from "@/types/category"
+import { getTopicsOverview } from "@/services/topics.service"
+import type { TopicsOverviewType } from "@/types/topics"
 
 export const metadata: Metadata = {
   title: "Khám phá chủ đề",
 }
 
 export default async function Page() {
-  let initialCategories: CategoryType[] = []
+  let initialOverview: TopicsOverviewType | undefined
   try {
-    const categoryResponse = await getAllCategories()
-    initialCategories = categoryResponse.data || []
+    const overviewResponse = await getTopicsOverview()
+    initialOverview = overviewResponse.data
   } catch (error) {
-    console.error("Server-side categories fetch error:", error)
+    console.error("Server-side topics overview fetch error:", error)
   }
 
   return (
@@ -36,7 +36,7 @@ export default async function Page() {
         />
       </ProductReveal>
 
-      <CategoryLessons initialCategories={initialCategories} />
+      <CategoryLessons initialOverview={initialOverview} />
     </div>
   )
 }
