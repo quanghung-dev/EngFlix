@@ -15,7 +15,6 @@ import { InlineFeedback } from "@/components/social/inline-feedback"
 import { PostCard } from "@/components/social/post-card"
 import { PostComposer } from "@/components/social/post-composer"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { useAuthenticatedUser } from "@/hooks/use-authenticated-user"
 import {
   createPost,
@@ -173,8 +172,6 @@ export default function CommunityPage() {
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          title="Cùng học, cùng tiến bộ"
-          description="Chia sẻ câu hỏi, ghi lại chiến thắng nhỏ và tiếp sức cho những người đang luyện tiếng Anh cùng bạn."
           actions={
             <Button
               type="button"
@@ -186,15 +183,6 @@ export default function CommunityPage() {
               <RefreshCwIcon aria-hidden="true" />
               Làm mới bảng tin
             </Button>
-          }
-          aside={
-            <Card variant="inner" className="min-w-48">
-              <CardContent>
-                <p className="text-xs tracking-meta text-copy-muted uppercase">Đang hiển thị</p>
-                <p className="mt-2 text-3xl font-semibold tabular-nums text-foreground">{meta?.total ?? posts.length}</p>
-                <p className="mt-1 text-sm text-copy-muted">bài chia sẻ</p>
-              </CardContent>
-            </Card>
           }
         />
       </ProductReveal>

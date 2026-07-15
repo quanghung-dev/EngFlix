@@ -2,9 +2,6 @@
 
 import { useCallback, useMemo, useRef, useState, useEffect } from "react"
 import Link from "next/link"
-import { Brain, LogIn, Plus } from "lucide-react"
-
-import { ProductPageHeader } from "@/components/product/page-header"
 import { ProductReveal } from "@/components/product/product-reveal"
 import {
   AlertDialog,
@@ -356,29 +353,7 @@ export function VocabularyWorkspace() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
-      <ProductReveal eager>
-        <ProductPageHeader
-          actions={
-            <>
-              {isAuthenticated ? (
-                <Button variant="product" size="app" onClick={openCreateDeck}>
-                  <Plus aria-hidden="true" />
-                  Tạo bộ từ cá nhân
-                </Button>
-              ) : (
-                <Button nativeButton={false} render={<Link href="/login" />} variant="product" size="app">
-                  <LogIn aria-hidden="true" />
-                  Đăng nhập để tạo bộ từ
-                </Button>
-              )}
-              <Button nativeButton={false} render={<Link href={isAuthenticated ? "/vocabulary/quiz" : "/login"} />} variant="glass" size="app">
-                <Brain aria-hidden="true" />
-                Luyện quiz
-              </Button>
-            </>
-          }
-        />
-      </ProductReveal>
+
 
       {feedback && (
         <p

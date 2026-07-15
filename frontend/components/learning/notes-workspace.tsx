@@ -14,7 +14,6 @@ import {
 } from "lucide-react"
 
 import { AsyncContentState } from "@/components/product/async-content-state"
-import { ProductPageHeader } from "@/components/product/page-header"
 import { ProductReveal } from "@/components/product/product-reveal"
 import {
   AlertDialog,
@@ -187,24 +186,7 @@ export function NotesWorkspace() {
 
   return (
     <div className="mx-auto w-full max-w-[1320px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-      <ProductReveal eager>
-        <ProductPageHeader
-          title="Những câu đáng nhớ, ở cùng một nơi."
-          description="Tìm lại câu thoại đã lưu, bổ sung ngữ cảnh của riêng bạn và quay về bài học khi cần luyện thêm."
-          actions={
-            <Link href="/topics" className={cn(buttonVariants({ variant: "product", size: "app" }))}>
-              Khám phá bài học
-              <ArrowRight aria-hidden="true" />
-            </Link>
-          }
-          aside={
-            <div className="rounded-panel border border-action-gold/20 bg-action-gold/10 px-5 py-4 text-action-gold">
-              <p className="text-micro uppercase tracking-meta">Đã lưu</p>
-              <p className="mt-1 text-3xl font-semibold text-foreground">{bookmarks.length}</p>
-            </div>
-          }
-        />
-      </ProductReveal>
+
 
       <ProductReveal delay={0.07} className="mt-8">
         <div className="relative max-w-xl">

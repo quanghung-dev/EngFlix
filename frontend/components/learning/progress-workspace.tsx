@@ -10,7 +10,6 @@ import {
   Clock3,
   Flame,
   RefreshCw,
-  Sparkles,
 } from "lucide-react"
 
 import { PronunciationChart, WeeklyProgressChart } from "@/components/learning/progress-charts"
@@ -107,8 +106,6 @@ export function ProgressWorkspace() {
     <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
       <ProductReveal eager>
         <ProductPageHeader
-          title="Nhìn rõ nhịp học của chính bạn."
-          description="Tổng hợp bài đã hoàn tất, chuỗi học và điểm phát âm từ dữ liệu thật để bạn chọn bước luyện tiếp theo."
           actions={
             <>
               <Link href="/topics" className={cn(buttonVariants({ variant: "product", size: "app" }))}>
@@ -150,18 +147,7 @@ export function ProgressWorkspace() {
           <ProgressSkeleton />
         ) : error && !stats ? (
           <AsyncContentState kind="error" title="Chưa thể mở báo cáo" description={error} onRetry={refresh} />
-        ) : stats && !hasActivity ? (
-          <AsyncContentState
-            kind="empty"
-            title="Hành trình của bạn bắt đầu từ bài đầu tiên"
-            description="Hoàn tất cả Dictation và Shadowing của một bài để dữ liệu tiến trình bắt đầu được ghi nhận."
-            icon={<Sparkles className="size-7" aria-hidden="true" />}
-            action={
-              <Link href="/topics" className={cn(buttonVariants({ variant: "product", size: "app" }))}>
-                Chọn bài đầu tiên
-              </Link>
-            }
-          />
+
         ) : stats ? (
           <div className="space-y-6">
             {error && (

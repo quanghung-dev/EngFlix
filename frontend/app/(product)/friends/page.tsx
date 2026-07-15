@@ -11,7 +11,6 @@ import {
 } from "lucide-react"
 
 import { AsyncContentState } from "@/components/product/async-content-state"
-import { ProductPageHeader } from "@/components/product/page-header"
 import { ProductReveal } from "@/components/product/product-reveal"
 import { ConfirmActionDialog } from "@/components/social/confirm-action-dialog"
 import { InlineFeedback } from "@/components/social/inline-feedback"
@@ -267,18 +266,7 @@ export default function FriendsPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-      <ProductReveal eager>
-        <ProductPageHeader
-          title="Những người học cùng bạn"
-          description="Quản lý kết nối, phản hồi lời mời và tìm thêm bạn học trong cộng đồng EngFlex."
-          aside={
-            <div className="grid grid-cols-2 gap-3">
-              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-foreground">{friends.length}</p><p className="mt-1 text-xs text-copy-muted">bạn bè</p></CardContent></Card>
-              <Card variant="inner"><CardContent><p className="text-2xl font-semibold text-foreground">{requests.length}</p><p className="mt-1 text-xs text-copy-muted">lời mời</p></CardContent></Card>
-            </div>
-          }
-        />
-      </ProductReveal>
+
 
       {feedback ? <div aria-live="polite"><InlineFeedback tone={feedback.tone}>{feedback.message}</InlineFeedback></div> : null}
 
