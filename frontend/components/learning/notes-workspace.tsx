@@ -185,10 +185,10 @@ export function NotesWorkspace() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1320px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+    <div className="mx-auto w-full max-w-[1320px] px-5 pb-8 pt-0 sm:px-8 sm:pb-10 lg:px-12 lg:pb-12">
 
 
-      <ProductReveal delay={0.07} className="mt-8">
+      <ProductReveal delay={0.07}>
         <div className="relative max-w-xl">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-copy-muted" aria-hidden="true" />
           <Input

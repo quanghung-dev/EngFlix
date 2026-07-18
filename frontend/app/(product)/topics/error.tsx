@@ -4,7 +4,7 @@ import { ContentErrorState } from "@/components/topics/topics-states"
 
 export default function Error({ reset }: { reset: () => void }) {
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-16">
+    <div className="mx-auto w-full max-w-7xl px-5 pb-10 pt-0 sm:px-8 sm:pb-12 lg:px-10 lg:pb-16">
       <ContentErrorState
         title="Trang chủ đề tạm thời gián đoạn"
         description="EngFlex chưa thể hiển thị nội dung của trang này. Hãy thử lại để khôi phục đúng khu vực đang xem."

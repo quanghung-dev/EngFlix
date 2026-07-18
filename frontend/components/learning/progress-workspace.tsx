@@ -97,10 +97,10 @@ export function ProgressWorkspace() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+    <div className="mx-auto w-full max-w-[1440px] px-5 pb-8 pt-0 sm:px-8 sm:pb-10 lg:px-12 lg:pb-12">
 
 
-      <section className="mt-8" aria-label="Báo cáo tiến trình" aria-busy={!resolved || loading}>
+      <section aria-label="Báo cáo tiến trình" aria-busy={!resolved || loading}>
         {!resolved ? (
           <ProgressSkeleton />
         ) : !user ? (

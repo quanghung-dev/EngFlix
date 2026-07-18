@@ -395,7 +395,7 @@ export default function UserProfilePage() {
 
   if (!resolved || loading) {
     return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-0 sm:px-6 lg:px-8 lg:pb-12">
         <AsyncContentState kind="loading" title="Đang mở hồ sơ" description="EngFlex đang tải thông tin và các bài chia sẻ." />
       </div>
     )
@@ -403,7 +403,7 @@ export default function UserProfilePage() {
 
   if (error || !profile) {
     return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-0 sm:px-6 lg:px-8 lg:pb-12">
         <AsyncContentState kind="error" title="Không thể mở hồ sơ" description={error ?? "Hồ sơ này không tồn tại."} onRetry={() => void loadProfile()} />
       </div>
     )
@@ -412,7 +412,7 @@ export default function UserProfilePage() {
   const hasMore = Boolean(meta && posts.length < meta.total)
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 pb-8 pt-0 sm:px-6 lg:px-8 lg:pb-12">
       <input
         ref={avatarInputRef}
         type="file"

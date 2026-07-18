@@ -168,7 +168,7 @@ export default function CommunityPage() {
   const hasMore = Boolean(meta && posts.length < meta.total)
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 pb-8 pt-0 sm:px-6 lg:px-8 lg:pb-12">
 
 
       {user ? (

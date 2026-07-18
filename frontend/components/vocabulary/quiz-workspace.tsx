@@ -222,7 +222,7 @@ export function VocabularyQuizWorkspace() {
   }, [currentQuestion, isAnswered, selectedAnswer])
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
+    <div className="mx-auto w-full max-w-[1280px] px-5 pb-8 pt-0 sm:px-8 lg:px-10 lg:pb-12">
       <ProductReveal eager>
         <ProductPageHeader
           title="Luyện phản xạ từ vựng"

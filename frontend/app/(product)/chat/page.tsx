@@ -269,7 +269,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[96rem] space-y-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+    <div className="mx-auto w-full max-w-[96rem] space-y-8 px-4 pb-8 pt-0 sm:px-6 lg:px-8 lg:pb-12">
 
       <ProductReveal delay={0.07}>
         <div className="grid items-stretch gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">

@@ -146,7 +146,7 @@ export function CategoryListSkeleton() {
 
 export function TopicsRouteSkeleton() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-16">
+    <div className="mx-auto w-full max-w-7xl px-5 pb-10 pt-0 sm:px-8 sm:pb-12 lg:px-10 lg:pb-16">
       <div aria-hidden="true" className="mb-14 max-w-2xl space-y-4">
         <Skeleton className="h-4 w-36 rounded-control" />
         <Skeleton className="h-12 w-72 rounded-nav sm:w-96" />
@@ -180,7 +180,7 @@ export function TopicDetailSkeleton() {
 
 export function TopicDetailRouteSkeleton() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-16">
+    <div className="mx-auto w-full max-w-7xl px-5 pb-10 pt-0 sm:px-8 sm:pb-12 lg:px-10 lg:pb-16">
       <TopicDetailSkeleton />
     </div>
   )

@@ -352,13 +352,13 @@ export function VocabularyWorkspace() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
+    <div className="mx-auto w-full max-w-[1440px] px-5 pb-8 pt-0 sm:px-8 lg:px-10 lg:pb-12">
 
 
       {feedback && (
         <p
           role={feedback.tone === "error" ? "alert" : "status"}
-          className={`mt-7 rounded-control border p-4 text-sm leading-6 ${
+          className={`mb-7 rounded-control border p-4 text-sm leading-6 ${
             feedback.tone === "error"
               ? "border-destructive/30 bg-destructive/10 text-destructive"
               : "border-status-success/25 bg-status-success/10 text-status-success"
@@ -368,7 +368,7 @@ export function VocabularyWorkspace() {
         </p>
       )}
 
-      <div className="mt-10">
+      <div>
         {activeDeck ? (
           studyMode ? (
             <FlashcardStudy deckName={activeDeck.name} items={studyItems} onExit={() => setStudyMode(false)} />

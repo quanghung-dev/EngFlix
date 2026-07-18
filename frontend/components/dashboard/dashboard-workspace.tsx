@@ -204,7 +204,7 @@ export function DashboardWorkspace() {
   ]
 
   return (
-    <div className="mx-auto w-full max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+    <div className="mx-auto w-full max-w-[1440px] px-5 pb-8 pt-0 sm:px-8 sm:pb-10 lg:px-12 lg:pb-12">
       <ProductReveal eager>
         <ProductPageHeader
           title={

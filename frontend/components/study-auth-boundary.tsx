@@ -61,7 +61,7 @@ export function StudyAuthBoundary({ children }: { children: ReactNode }) {
 
   if (!resolved || !user || !isReady) {
     return (
-      <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
+      <div className="mx-auto w-full max-w-3xl px-5 pb-12 pt-0 sm:px-8">
         {currentFailure ? (
           <AsyncContentState
             kind="error"
