@@ -1,337 +1,217 @@
-# EngFlex Backend - API Server
+# EngFlex Backend
 
-Module **Backend** của dự án EngFlex là một RESTful API server chịu trách nhiệm xử lý toàn bộ logic nghiệp vụ cốt lõi, lưu trữ và truy vấn cơ sở dữ liệu, xác thực người dùng, tích hợp các dịch vụ AI bên thứ ba (Firebase Auth, Azure Cognitive Services) và phục vụ dữ liệu cho hai môi trường Frontend (Next.js) và Mobile (Android Client).
+The Express API serves the web and Android clients. It verifies Firebase ID tokens, stores application data in PostgreSQL, and integrates pronunciation assessment, vocabulary translation, caching, and live chat.
 
----
+[Project overview](../README.md) · [Web guide](../frontend/README.md) · [Android guide](../mobile/README.md)
 
-## 1. Tech Stack
+## Stack and structure
 
-Dưới đây là các công nghệ và thư viện chính được sử dụng thực tế trong mã nguồn backend:
-
-* **Ngôn ngữ**: Node.js (CommonJS, ES6)
-* **Framework**: Express.js (phiên bản `^5.2.1`)
-* **Cơ sở dữ liệu**: PostgreSQL
-* **Thư viện truy vấn**: `pg` (PostgreSQL client pool, phiên bản `^8.20.0`)
-* **Xác thực và phân quyền**: Firebase Admin SDK (phiên bản `^13.9.0`)
-* **Đánh giá phát âm AI**: Microsoft Cognitive Services Speech SDK (`^1.50.0`)
-* **Quản lý tải file**: Multer (`^2.2.0` - dùng cho việc nhận file ghi âm `.wav`)
-* **Tài liệu hóa API**: Swagger UI (`swagger-jsdoc` & `swagger-ui-express`)
-* **Chạy môi trường phát triển**: Nodemon (`^3.1.14`)
-* **Container hóa**: Docker & Docker Compose
-* **Platform triển khai**: Vercel (đã cấu hình qua `vercel.json`)
-* **Testing framework**: *Chưa được cấu hình trong project.*
-
----
-
-## 2. Kiến Trúc Backend
-
-Backend được thiết kế theo kiến trúc phân lớp (Layered Architecture) kết hợp với mô hình MVC đơn giản (chỉ bao gồm Controller và View là JSON API).
-
-```mermaid
-graph TD
-    Client[Client Request: Web/Mobile] -->|HTTP REST API| Routes[Routes Layer]
-    Routes -->|Token Verification| Middleware[Middleware Layer]
-    Middleware --> Controllers[Controllers Layer]
-    Controllers --> Services[Services Layer]
-    Services --> DB[(PostgreSQL Database)]
-    Services -->|Speech SDK| AzureSpeech[Azure Cognitive Services Speech]
-    Services -->|Admin SDK| FirebaseAdmin[Firebase Admin SDK]
-```
-
-### Vai trò các lớp:
-1. **Routes (`routes/`)**: Khai báo các endpoint HTTP, ánh xạ url tới các hàm xử lý trong Controller. Được tích hợp JSDoc Swagger để tự động tạo giao diện API Docs.
-2. **Middlewares (`middlewares/`)**:
-   - `auth.js`: Đánh chặn và giải mã Firebase ID Token (`Bearer <token>`) từ client để xác thực thông tin user.
-   - `errorHandler.js`: Bắt và định dạng mọi lỗi phát sinh trong hệ thống trước khi gửi trả về client.
-3. **Controllers (`controllers/`)**: Tiếp nhận tham số từ request (query, params, body), kiểm tra tính hợp lệ cơ bản của dữ liệu, gọi tầng Service xử lý nghiệp vụ, và trả về dữ liệu chuẩn thông qua các hàm tiện ích (`utils/response.js`).
-4. **Services (`services/`)**: Triển khai logic nghiệp vụ chi tiết, thực hiện các truy vấn cơ sở dữ liệu trực tiếp trên PostgreSQL connection pool.
-5. **Database (`db/` & `migrations/`)**: Quản lý kết nối cơ sở dữ liệu và lưu vết cấu trúc schema bằng các file SQL migrations.
-
----
-
-## 3. Cấu Trúc Thư Mục
-
-Cấu trúc thư mục chính của dự án Backend được thể hiện dưới đây:
+The backend uses CommonJS JavaScript, Express 5, `pg`, Firebase Admin, Azure Speech SDK, Multer, Redis, Pusher, and Swagger UI. The OpenAI JavaScript client connects to DeepSeek for vocabulary translation.
 
 ```text
 Backend/
-├── config/             # Cấu hình Swagger API Docs
-│   └── swagger.js      # Khai báo metadata và cấu hình quét JSDoc
-├── constants/          # Khai báo các hằng số dùng chung trong hệ thống
-├── controllers/        # Bộ điều khiển nhận request và gửi response
-├── db/                 # Khởi tạo và quản lý PostgreSQL Connection Pool
-│   └── index.js        # Cấu hình pool (hỗ trợ SSL cho Neon DB)
-├── firebase/           # Khởi tạo Firebase Admin SDK
-│   └── index.js        # Đọc credentials từ file hoặc biến môi trường
-├── middlewares/        # Middlewares xử lý auth, phân quyền, và bắt lỗi
-├── migrations/         # Các file script SQL cấu trúc DB (001_xxx.sql đến 012_xxx.sql)
-├── routes/             # Định nghĩa toàn bộ hệ thống API endpoints
-├── scripts/            # Các kịch bản tự động hóa chạy migrations
-│   └── run-migrations.js # Đọc và thực thi tuần tự các file SQL trong migrations/
-├── uploads/            # Thư mục lưu trữ tạm thời các file audio thu âm của người dùng
-└── utils/              # Các hàm tiện ích bổ trợ (định dạng response, date, logs)
+├── index.js                 Express setup and route registration
+├── routes/                  HTTP routes and Swagger annotations
+├── middlewares/             Authentication, roles, and error handling
+├── controllers/             Request validation and HTTP responses
+├── services/                Business logic and SQL queries
+├── db/                      PostgreSQL pool and Redis connection
+├── firebase/                Firebase Admin initialization
+├── migrations/              Versioned SQL changes
+├── scripts/run-migrations.js
+├── config/swagger.js        OpenAPI configuration
+└── utils/                   Response, caching, and other helpers
 ```
 
----
+Requests flow through routes and middleware to controllers and services. Services query PostgreSQL directly; there is no ORM layer.
 
-## 4. Yêu Cầu Hệ Thống
+## Prerequisites
 
-Để cài đặt và vận hành backend, hệ thống cần đáp ứng các yêu cầu sau:
+- Node.js and npm. To use the same runtime for the web app, use a version satisfying its locked requirement of Node.js 20.9.0 or later.
+- PostgreSQL; the included Compose configuration uses PostgreSQL 15.
+- A Firebase project with Admin credentials. Enable Email/Password authentication for email-based login.
+- Redis for the caching path; Compose supplies Redis 7.
+- Azure Speech credentials for pronunciation, DeepSeek credentials for AI translation, and Pusher credentials for live chat, as needed.
 
-* **Node.js**: Phiên bản `>= 18.x` (được khuyến nghị)
-* **npm**: Trình quản lý thư viện đi kèm Node.js
-* **PostgreSQL**: Phiên bản `>= 15`
-* **Docker & Docker Compose**: (Tùy chọn) Nếu muốn chạy nhanh mà không cần cài đặt database thủ công.
+Run the commands below from `Backend/`. The repository includes a package lock, so use `npm ci` for reproducible dependency installation.
 
----
+## Configuration
 
-## 5. Cài Đặt
+Create `.env` in this directory. There is no checked-in `.env.example`. For a backend running on the host with PostgreSQL and Redis supplied by Compose:
 
-### Cách 1: Triển khai thủ công trên máy local
+```dotenv
+PORT=8000
+DB_HOST=localhost
+DB_PORT=5430
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=engflix
+REDIS_URL=redis://localhost:6379
+FIREBASE_WEB_API_KEY=your-firebase-web-api-key
+```
 
-1. **Di chuyển vào thư mục backend**:
-   ```bash
-   cd Backend
-   ```
+These database credentials match the included local Compose service. Supply Firebase Admin credentials using one of the methods below before starting the API. Add feature-specific variables only when configuring those integrations.
 
-2. **Cài đặt các gói thư viện**:
-   ```bash
-   npm install
-   ```
+### Database and server variables
 
-3. **Cấu hình file môi trường**:
-   Sao chép hoặc tạo mới file `.env` tại thư mục gốc của backend (Xem chi tiết cấu hình tại mục [Environment Variables](#6-environment-variables)):
-   ```bash
-   cp .env.example .env
-   ```
+| Variable | Behavior |
+| --- | --- |
+| `PORT` | Express port; defaults to `3000`. Use `8000` for the host workflow in these guides. |
+| `DATABASE_URL` | PostgreSQL connection string. Takes precedence over every `DB_*` setting. |
+| `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_DATABASE` | Separate connection settings used when `DATABASE_URL` is absent. |
+| `REDIS_URL` | Defaults to `redis://localhost:6379`; use `redis://redis:6379` inside Compose. |
+| `FIREBASE_WEB_API_KEY` | Firebase Web API key for the backend email/password login endpoint. `FIREBASE_API_KEY` is accepted as a fallback. |
 
-4. **Khởi tạo dữ liệu cơ sở dữ liệu (Migrations)**:
-   Đảm bảo PostgreSQL đang chạy và khớp với cấu hình trong `.env`, sau đó thực thi lệnh:
-   ```bash
-   npm run migrate
-   ```
+For a local database installed outside Docker, replace `DB_PORT=5430` with its actual port, commonly `5432`. The database pool enables its SSL configuration when a connection string contains `sslmode=require` or the database host uses `neon.tech`.
 
-5. **Khởi động ứng dụng**:
-   ```bash
-   npm run dev
-   ```
+### Firebase Admin credentials
 
----
+The initialization code checks the following sources in order:
 
-### Cách 2: Triển khai thông qua Docker Compose
+1. `FIREBASE_SERVICE_ACCOUNT`: the entire service account JSON encoded as one environment variable.
+2. `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`: individual fields. Literal `\n` sequences in the private key are converted to newlines. Optional fields are `FIREBASE_PRIVATE_KEY_ID`, `FIREBASE_CLIENT_ID`, and `FIREBASE_CLIENT_X509_CERT_URL`.
+3. A local `Backend/serviceAccountKey.json` file, which is gitignored.
 
-Hệ thống đã tích hợp sẵn tệp cấu hình Docker Compose giúp xây dựng môi trường phát triển nhanh chóng:
+For local development, placing your downloaded Admin service account file at `Backend/serviceAccountKey.json` is the simplest file-based setup. The API fails during initialization if no valid credentials are available. The Admin account must belong to the same Firebase project as the clients.
 
-1. **Khởi động các dịch vụ (PostgreSQL & Backend Server)**:
-   ```bash
-   docker compose up --build -d
-   ```
-   *Lệnh này sẽ tải image PostgreSQL 15, build ứng dụng Node.js từ Dockerfile, khởi tạo backend tại cổng `3000` và database tại cổng `5430` (được map ra ngoài máy chủ).*
+### Feature integrations
 
-2. **Chạy các file SQL Migrations**:
-   Sau khi các container ở trạng thái hoạt động tốt (`healthy`), hãy thực thi:
-   ```bash
-   docker compose exec backend npm run migrate
-   ```
+| Variables | Used for | Behavior without configuration |
+| --- | --- | --- |
+| `AZURE_SPEECH_KEY`, `AZURE_SPEECH_REGION` | Azure pronunciation assessment | Assessment requires valid credentials. |
+| `DEEPSEEK_API_KEY` | AI vocabulary translation in `services/translationService.js` | Returns placeholder vocabulary information. |
+| `PUSHER_APP_ID`, `PUSHER_KEY`, `PUSHER_SECRET`, `PUSHER_CLUSTER` | Live chat events | Messages can still be stored and fetched, but live events are not sent. |
+| `FRONTEND_REVALIDATE_URL`, `CACHE_REVALIDATE_SECRET` | Invalidate the web app's tagged cache after content changes | Callback is skipped when either value is absent. |
 
----
+For local cache invalidation, use `FRONTEND_REVALIDATE_URL=http://localhost:3000/api/cache/revalidate` and set the same `CACHE_REVALIDATE_SECRET` in the frontend. A containerized backend needs a URL reachable from inside its container.
 
-## 6. Environment Variables
+Keep Admin credentials and third-party secrets out of Git and client-side configuration.
 
-Dưới đây là mô tả chi tiết các biến cấu hình cần thiết trong file `.env`:
+## Start locally
 
-| Biến môi trường | Bắt buộc | Mô tả | Ví dụ mẫu |
-| :--- | :---: | :--- | :--- |
-| `PORT` | Không | Cổng dịch vụ chạy Express (mặc định là `3000`, trong dev thường cấu hình `8000`) | `8000` |
-| `DATABASE_URL` | Có | Chuỗi kết nối PostgreSQL đầy đủ (Ưu tiên nếu sử dụng Neon DB) | `postgresql://user:pass@ep-flat-wave.neon.tech/neondb?sslmode=require` |
-| `DB_USER` | Có | Username đăng nhập cơ sở dữ liệu PostgreSQL (nếu không có DATABASE_URL) | `postgres` |
-| `DB_PASSWORD` | Có | Mật khẩu tài khoản PostgreSQL | `my_secure_password` |
-| `DB_HOST` | Có | Địa chỉ máy chủ PostgreSQL | `localhost` hoặc `db` (khi dùng Docker) |
-| `DB_PORT` | Có | Cổng kết nối PostgreSQL | `5432` |
-| `DB_DATABASE` | Có | Tên cơ sở dữ liệu cần kết nối | `engflix` |
-| `FIREBASE_WEB_API_KEY` | Có | API Key dùng để kết nối với API Firebase Auth REST (phục vụ login bằng email/password) | `your_firebase_api_key` |
-| `AZURE_SPEECH_KEY` | Có | Key truy cập dịch vụ Azure Cognitive Services Speech | `your_azure_speech_subscription_key` |
-| `AZURE_SPEECH_REGION`| Có | Vùng địa lý đăng ký Azure Speech | `southeastasia` |
-| `AZURE_VISION_KEY` | Không | Key của dịch vụ Azure Vision (Chưa được cấu hình sử dụng trực tiếp trong API) | `your_azure_vision_key` |
-| `AZURE_VISION_ENDPOINT`| Không | Endpoint dịch vụ Azure Vision (Chưa được cấu hình sử dụng trực tiếp trong API) | `https://your-vision-endpoint.cognitiveservices.azure.com/` |
-| `DEEPSEEK_API_KEY` | Không | API Key của dịch vụ DeepSeek (Chỉ sử dụng thử nghiệm độc lập ở file `test.js`) | `sk-your-deepseek-api-key` |
-| `FIREBASE_SERVICE_ACCOUNT` | Không | Chuỗi JSON chứa toàn bộ key service account của Firebase (Nếu có biến này, hệ thống sẽ ưu tiên dùng để cấu hình Firebase Admin) | `{"type": "service_account", ...}` |
+### Option A: Run Node.js on the host
 
-> [!WARNING]
-> Không được commit file `.env` chứa thông tin bảo mật hoặc thông tin tài khoản thật lên hệ thống Git. Hãy tạo file `.env.example` để chia sẻ cấu hình mẫu cho dự án.
+With `.env` and Firebase credentials ready:
 
----
+```sh
+docker compose up -d db redis
+npm ci
+npm run migrate
+npm run dev
+```
 
-## 7. Cách Chạy Project
+This starts the database and cache in containers and the API on the host. With `PORT=8000`, visit [Swagger UI](http://localhost:8000/api-docs).
 
-* **Môi trường Development (Local)**:
-  ```bash
-  npm run dev
-  ```
-  *Ứng dụng sẽ tự động tải lại (hot reload) mỗi khi có sự thay đổi mã nguồn nhờ nodemon.*
+### Option B: Run the full Compose stack
 
-* **Khởi chạy Migrations DB**:
-  ```bash
-  npm run migrate
-  ```
-  *Đọc tuần tự toàn bộ file SQL trong thư mục `migrations` để cập nhật cấu trúc database.*
+The existing Compose file starts PostgreSQL, Redis, and the backend:
 
----
+```sh
+docker compose up --build -d
+docker compose exec backend npm run migrate
+docker compose logs -f backend
+```
 
-## 8. Chức Năng Chính
+| Service | Container port | Host port |
+| --- | --- | --- |
+| Backend | 3000 | 3000 |
+| PostgreSQL | 5432 | 5430 |
+| Redis | 6379 | 6379 |
 
-Backend đã cung cấp các tính năng nghiệp vụ cụ thể sau:
-1. **Xác thực (Authentication)**: Đăng nhập bằng email/password (qua API Firebase Auth REST) và đồng bộ thông tin tài khoản của người dùng từ Firebase về cơ sở dữ liệu cục bộ PostgreSQL (`/api/v1/auth/sync`).
-2. **Quản lý Bài học & Danh mục**: Cung cấp danh sách các danh mục cấp độ bài học, tìm kiếm, phân trang và truy xuất chi tiết bài học kèm theo danh sách các câu transcripts (`/api/v1/lessons`, `/api/v1/categories`).
-3. **Tiến độ học tập**: Theo dõi việc đọc transcripts của người dùng, ghi nhận lịch sử hoàn thành hoặc học dở của bài học, lưu trạng thái nghe chép chính tả (Dictation) và nhại giọng (Shadowing) cho từng câu.
-4. **Từ vựng cá nhân hóa**: Cho phép người dùng học các bộ từ vựng mặc định của hệ thống, tạo các bộ từ vựng cá nhân, thêm/sửa/xóa từ vựng trong bộ của mình (`/api/v1/vocabulary-decks`).
-5. **Đánh giá phát âm AI**: Tiếp nhận tệp âm thanh `.wav` thu âm giọng đọc của người dùng gửi lên từ Client, sử dụng Azure Cognitive Services Speech SDK để đánh giá phát âm chi tiết (tính điểm Overall, Accuracy, Fluency, Completeness, Prosody) và đưa ra phản hồi sửa lỗi.
-6. **Mạng xã hội & Cộng đồng**: Đăng bài viết cộng đồng (tạo feed, xem trang cá nhân, xóa bài), tương tác thích (like) bài viết, và viết bình luận (comments).
-7. **Hệ thống bạn bè**: Gửi yêu cầu kết bạn, chấp nhận kết bạn, tìm kiếm người dùng mới, và lấy danh sách bạn bè hiện tại.
-8. **Chat trực tuyến**: Gửi và nhận tin nhắn trong phòng chat cộng đồng của hệ thống.
-9. **Dashboard quản trị**: Các API CRUD quản lý Bài học, Categories, Transcripts, và Từ vựng dành riêng cho vai trò Admin (`/api/v1/admin/*`).
+Compose mounts this directory into `/app`, so the backend can read `.env` and the local service account file there. Explicit Compose environment values override matching `.env` values, including `PORT=3000` and `DB_HOST=db`. An existing `DATABASE_URL` still takes precedence in the application; omit it when using the Compose database.
 
----
+The Dockerfile currently uses `node:18-alpine` and runs the Nodemon development command. It is a development setup; its runtime differs from the web app's requirement.
 
-## 9. API Documentation
+To run the web app alongside this stack, set `NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1` and start Next.js with `npm run dev -- --port 3001`. Set the revalidation callback to the web app's reachable address if using it.
 
-Tài liệu API được xây dựng tự động bằng Swagger UI. Khi server đang chạy, nhà phát triển có thể truy cập trực tiếp bằng trình duyệt tại địa chỉ:
-* **Swagger UI URL**: `http://localhost:8000/api-docs`
+Swagger UI is available at `http://localhost:3000/api-docs` in this mode, but its configured request server is still `http://localhost:8000` in `config/swagger.js`. Adjust that configuration before using Swagger's request execution against the Compose API.
 
-### Danh sách nhóm API chính (RESTful):
+Stop containers without deleting database volumes:
 
-| Method | Endpoint | Xác thực (Bearer Token) | Mô tả |
-| :--- | :--- | :---: | :--- |
-| `POST` | `/api/v1/auth/login` | Không | Đăng nhập bằng email/password (trả về Firebase ID Token) |
-| `POST` | `/api/v1/auth/sync` | **Có** | Đồng bộ dữ liệu tài khoản từ Firebase vào PostgreSQL |
-| `GET` | `/api/v1/auth/profile` | **Có** | Lấy thông tin cá nhân của người dùng hiện tại |
-| `PUT` | `/api/v1/auth/profile` | **Có** | Cập nhật tên và số điện thoại cá nhân |
-| `PUT` | `/api/v1/auth/avatar` | **Có** | Cập nhật đường dẫn ảnh đại diện mới |
-| `GET` | `/api/v1/categories` | Không | Lấy danh sách các danh mục bài học |
-| `GET` | `/api/v1/lessons` | Không | Lấy danh sách bài học (hỗ trợ phân trang, tìm kiếm) |
-| `GET` | `/api/v1/lessons/:lessonId/transcripts`| Không | Lấy danh sách câu transcript của một bài học |
-| `GET` | `/api/v1/bookmarks` | **Có** | Lấy danh sách bài học/câu đã lưu đánh dấu |
-| `POST` | `/api/v1/bookmarks/:lessonId` | **Có** | Lưu đánh dấu bài học |
-| `POST` | `/api/v1/transcript-bookmarks` | **Có** | Thêm đánh dấu và ghi chú cho câu transcript |
-| `GET` | `/api/v1/learning-history` | **Có** | Lấy lịch sử học tập cá nhân |
-| `POST` | `/api/v1/learning-history` | **Có** | Lưu lịch sử học bài học (hoàn thành Dictation/Pronunciation) |
-| `POST` | `/api/v1/pronunciation-attempts`| **Có** | Tải lên file WAV và nhận đánh giá phát âm AI (Azure Speech SDK) |
-| `GET` | `/api/v1/pronunciation/progress/:lessonId`| **Có** | Lấy điểm phát âm tốt nhất theo bài học |
-| `GET` | `/api/v1/posts/feed` | **Có** | Lấy bảng tin cộng đồng |
-| `POST` | `/api/v1/posts` | **Có** | Tạo bài viết mới |
-| `POST` | `/api/v1/posts/:id/comments` | **Có** | Thêm bình luận vào bài viết |
-| `GET` | `/api/v1/friendships` | **Có** | Danh sách bạn bè hiện tại |
-| `POST` | `/api/v1/friendships/requests` | **Có** | Gửi yêu cầu kết bạn mới |
-| `GET` | `/api/v1/chat` | **Có** | Lấy danh sách tin nhắn phòng chat cộng đồng |
-| `POST` | `/api/v1/chat` | **Có** | Gửi tin nhắn chat mới |
+```sh
+docker compose down
+```
 
----
+## Database migrations
 
-## 10. Database Schema
+```sh
+npm run migrate
+```
 
-Cơ sở dữ liệu của dự án sử dụng hệ quản trị cơ sở dữ liệu **PostgreSQL** bao gồm các bảng chính sau:
+The runner sorts `.sql` files by full filename, executes each pending file in a transaction, and records it in `schema_migrations`. Applied filenames are skipped on later runs. Both files beginning with `013_` are separate migrations and must be retained.
 
-1. **`users`**: Lưu trữ thông tin tài khoản người dùng (`uid` khóa chính lấy từ Firebase UID, email, tên, vai trò `user_role`, `avatar_url`, `phone`, `created_at`).
-2. **`categories`**: Danh mục bài học (ví dụ: Beginner, Business, Daily life).
-3. **`lessons`**: Lưu chi tiết thông tin bài học (title, video_url nhúng từ Youtube, level, duration).
-4. **`transcripts`**: Lưu nội dung từng câu của bài học (lesson_id, sequence, content, phonetic, dịch nghĩa vietnamese, mốc thời gian start_timestamp và end_timestamp phục vụ cắt video phát lặp).
-5. **`bookmarks`** & **`transcript_bookmarks`**: Lưu trữ ghi chú các bài học hoặc các câu transcript mà người dùng đánh dấu học lại.
-6. **`transcript_progress`**: Theo dõi tiến độ học đọc transcript của người dùng.
-7. **`learning_history`**: Lưu lịch sử hoàn thành tổng quan bài học.
-8. **`dictation_status`** & **`shadowing_status`**: Ghi nhận xem người dùng đã hoàn thành các câu ở các chế độ Dictation hay Shadowing tương ứng chưa.
-9. **`vocabulary_categories`**, **`vocabulary_decks`**, & **`vocabulary_items`**: Hệ thống danh mục, bộ từ vựng cá nhân tự tạo và các từ vựng chi tiết được lưu trữ.
-10. **`pronunciation_attempts`** & **`pronunciation_progress`**: Lưu trữ lịch sử tất cả các lần ghi âm thử thách phát âm của người dùng cùng điểm số phân tích và cập nhật điểm số tốt nhất cho mỗi câu.
-11. **`friendships`**: Quản lý mối quan hệ bạn bè giữa các người dùng (`sender_id`, `receiver_id`, `status` - pending/accepted).
-12. **`posts`**, **`likes`**, & **`comments`**: Các bảng cho hệ thống mạng xã hội nội bộ.
-13. **`messages`**: Quản lý các tin nhắn chat cộng đồng giữa các người dùng.
+Review migrations before applying them to an existing database. In particular, migration `014_fix_system_audit.sql` migrates legacy bookmarks, drops the old table, and removes duplicate vocabulary items.
 
-*Lưu ý: Mối quan hệ được duy trì thông qua các khóa ngoại (Foreign Keys) chặt chẽ giữa các bảng như được biểu diễn trong sơ đồ ERD ở tài liệu tổng.*
+The runner currently logs failures and exits without reliably reporting a nonzero exit status. Read its output and inspect `schema_migrations` rather than treating a successful shell exit as proof that all migrations ran. There is no dedicated seed or rollback command.
 
----
+## API usage
 
-## 11. Kết Nối Giữa Các Module
+The base path is `/api/v1`. Open `/api-docs` for endpoint parameters, request bodies, and response schemas; route annotations live in `routes/`.
 
-* **API Endpoints**: Backend cung cấp cổng kết nối RESTful API tại `http://localhost:8000/api/v1/` mặc định trong môi trường phát triển local.
-* **Authentication**: Các Client (Web & Mobile) phải đăng nhập trực tiếp với Firebase Auth để lấy ID Token dạng JWT. Token này phải được đính kèm vào header của mọi request API yêu cầu đăng nhập:
-  ```http
-  Authorization: Bearer <FIREBASE_ID_TOKEN>
-  ```
-* **CORS**: Đã được cấu hình thông qua gói `cors` nhằm cho phép tất cả các nguồn gốc kết nối (Web Client) gửi yêu cầu và nhận dữ liệu trong quá trình phát triển.
+| Route group | Purpose |
+| --- | --- |
+| `/auth` | Login, profile synchronization, and profile updates |
+| `/topics`, `/categories`, `/lessons`, `/transcripts` | Browse content and load study data |
+| `/transcript-bookmarks`, `/transcript-progress`, `/learning-history` | Notes, completion records, and learning history |
+| `/dictation-status`, `/shadowing-status`, `/progress` | Exercise completion and progress summaries |
+| `/vocabulary-categories`, `/vocabulary-decks` | Vocabulary organization, deck contents, and review operations |
+| `/pronunciation-attempts`, `/pronunciation` | Audio assessment, attempts, and pronunciation progress |
+| `/chat`, `/friendships`, `/posts` | Community messages, friendships, posts, likes, and comments |
+| `/admin` | Role-protected dashboard and content management |
 
----
+These are route prefixes, not a list of identical CRUD operations. Check Swagger or the route source for supported methods and access requirements.
 
-## 12. Testing
+### Authentication
 
-> [!NOTE]
-> Dự án Backend **hiện chưa có bộ kiểm thử tự động (Unit Test / Integration Test)** tích hợp trong mã nguồn chính.
-> 
-> Chỉ có một tệp kịch bản kiểm tra kết nối API DeepSeek thủ công tại: [test.js](file:///d:/EngFlex/Backend/test.js).
-> Để chạy file này:
-> ```bash
-> node test.js
-> ```
+1. Sign in through a client or the backend login endpoint.
+2. Obtain a Firebase **ID token**.
+3. Synchronize the profile using `POST /api/v1/auth/sync`.
+4. Send protected requests with `Authorization: Bearer <ID_TOKEN>`.
 
----
+In Swagger's **Authorize** dialog, paste only the ID token; Swagger adds the Bearer prefix. A refresh token cannot be used as an API bearer token. Administrative routes additionally check the user's role.
 
-## 13. Code Quality
+### Pronunciation uploads
 
-* **Công cụ**: *Chưa được cấu hình linting (ESLint, Prettier) hay các công cụ phân tích tĩnh trong phần backend.*
-* **Quy ước viết code**: Sử dụng chuẩn Node.js CommonJS module (`require`, `module.exports`) và xử lý lỗi tập trung bằng Middleware.
+Send `multipart/form-data` to `POST /api/v1/pronunciation-attempts` with:
 
----
+| Field | Value |
+| --- | --- |
+| `audio` | WAV file with MIME type `audio/wav` or `audio/x-wav` |
+| `referenceText` | Text the learner should read |
+| `lessonId` | Lesson identifier |
+| `transcriptId` | Transcript identifier |
 
-## 14. Build và Deployment
+Clients record mono, 16-bit PCM WAV audio at 16 kHz. Multer stages uploads in an `audio` directory under the operating system's temporary directory. The separately mounted `/uploads` static path is not the pronunciation upload destination.
 
-### Tạo Production Build trên Vercel
-Backend được thiết kế tương thích để chạy dưới dạng các Serverless Functions trên nền tảng **Vercel** thông qua file [vercel.json](file:///d:/EngFlex/Backend/vercel.json).
-* Khi đẩy mã nguồn lên GitHub và kết nối với dự án Vercel, hệ thống CI/CD của Vercel sẽ tự động build ứng dụng thành Serverless API.
-* Hãy cấu hình toàn bộ các biến môi trường tại trang cấu hình Settings của Vercel giống như trong file `.env`.
+## Commands and verification
 
-### Docker Production Image
-Nếu triển khai lên các máy chủ ảo hoặc các dịch vụ đám mây (AWS, Google Cloud, DigitalOcean):
-1. Đảm bảo cấu hình môi trường sản xuất (sử dụng cổng `3000` hoặc cổng được cấp phát).
-2. Chạy lệnh build image từ Dockerfile:
-   ```bash
-   docker build -t engflix-backend:latest .
-   ```
+| Command | Purpose |
+| --- | --- |
+| `npm ci` | Install locked dependencies |
+| `npm run dev` | Start the API with Nodemon |
+| `npm run migrate` | Apply pending SQL migrations |
+| `node index.js` | Start the API directly without Nodemon |
 
----
+No `start`, `test`, or `lint` npm script is defined. `test.js` is a standalone DeepSeek experiment, not an automated test suite.
 
-## 15. Troubleshooting
+For a smoke check, verify the migration log, load Swagger, fetch public lesson/category data, sign in and synchronize a profile, then check a protected endpoint. Test assessment, translation, and live chat separately when their credentials are configured.
 
-1. **Lỗi `Error loading Firebase credentials`**:
-   - *Nguyên nhân*: Chưa cấu hình file `serviceAccountKey.json` ở thư mục gốc của Backend hoặc thiếu biến môi trường `FIREBASE_PRIVATE_KEY`.
-   - *Khắc phục*: Tải file JSON cấu hình Service Account từ bảng điều khiển Firebase Console -> Project Settings -> Service accounts, lưu dưới tên `serviceAccountKey.json` trong thư mục `Backend/`.
-2. **Lỗi `connect ECONNREFUSED 127.0.0.1:5432`**:
-   - *Nguyên nhân*: Máy chủ PostgreSQL chưa khởi động hoặc sai thông tin kết nối cổng / user trong file `.env`.
-   - *Khắc phục*: Kiểm tra dịch vụ Postgres trên máy local hoặc thay đổi port thành `5430` nếu đang kết nối từ máy local vào PostgreSQL chạy trong container Docker.
-3. **Lỗi Azure Speech trả về trạng thái lỗi hoặc điểm số rỗng**:
-   - *Nguyên nhân*: Key Azure Speech hoặc vùng (region) cấu hình bị sai hoặc hết hạn hạn mức.
-   - *Khắc phục*: Kiểm tra cấu hình `AZURE_SPEECH_KEY` và `AZURE_SPEECH_REGION` trong file `.env` xem có khớp với trang quản trị Microsoft Azure Portal hay không.
-4. **Lỗi CORS khi gọi API từ Frontend**:
-   - *Nguyên nhân*: Đôi khi cấu hình allowed origins không bao gồm port chạy của Web Client.
-   - *Khắc phục*: Xem lại file `index.js` tại dòng khai báo `app.use(cors())`. Trong phát triển, cấu hình này đang cho phép nhận request từ tất cả các origin.
+## Deployment notes
 
----
+`vercel.json` routes requests to the exported Express application. `index.js` skips `app.listen` when `VERCEL` is set. Configure database access, Firebase Admin credentials, and the required integration variables in the deployment environment. Run migrations as a separate operation; API startup does not apply them.
 
-## 16. Security Notes
+The repository's Docker configuration is designed for development. A production setup needs its own runtime, process command, secret configuration, and persistent external services.
 
-* **Bảo mật Credentials**: Tuyệt đối không commit file `.env`, file `serviceAccountKey.json` hoặc các tệp cấu hình chứa key thật lên GitHub. Các file này đã được khai báo loại trừ trong `.gitignore`.
-* **Database Access**: Khi chạy production, luôn tắt chế độ `rejectUnauthorized: false` hoặc sử dụng SSL đầy đủ để đảm bảo dữ liệu truyền nhận giữa backend và database không bị nghe lén.
-* **Firebase Token**: Firebase ID Token có thời gian sống ngắn (1 giờ). Client cần tự động làm mới token và gửi token mới lên backend để tránh nhận lỗi `401 Unauthorized`.
+## Troubleshooting
 
----
-
-## 17. Contributing
-
-Quy trình đóng góp phát triển mã nguồn backend:
-1. Tạo một nhánh mới từ nhánh chính (`git checkout -b feature/amazing-feature`).
-2. Thực hiện cập nhật mã nguồn (tuân thủ cấu trúc phân lớp).
-3. Đảm bảo viết đầy đủ tài liệu API bằng comment JSDoc `@swagger` trên các route mới.
-4. Tạo Pull Request (PR) mô tả rõ ràng các thay đổi và tự kiểm tra tính tương thích với database schema.
-
----
-
-## 18. License
-
-> Project hiện chưa khai báo license.
+| Symptom | Check |
+| --- | --- |
+| API fails during Firebase initialization | Supply a valid Admin credential source from the list above. |
+| Database connection refused | Use port 5430 from the host for Compose PostgreSQL; inside Compose use `db:5432`. Check whether `DATABASE_URL` overrides your settings. |
+| Web and API both try to use port 3000 | Use backend `PORT=8000`, or run the web app on 3001 with the full Compose stack. |
+| Missing tables after migration command | Read the logged error and check `schema_migrations`; exit status alone is insufficient. |
+| Redis connection errors | Start the Redis service and check `REDIS_URL`; repeated connection errors can appear while Redis is unavailable. |
+| Protected endpoint returns 401 | Refresh the Firebase ID token and confirm both sides use the same Firebase project. |
+| Live chat does not update | Configure all four backend Pusher variables and matching public frontend values. |
+| Translation returns generic text | Check `DEEPSEEK_API_KEY` and the service logs. |
+| Pronunciation upload is rejected | Check multipart field names, WAV MIME type, token, and Azure credentials. |
